@@ -4,3 +4,4 @@ dist/
 .env
 .DS_Store
 __pycache__/
+preview/shivas-site.html
