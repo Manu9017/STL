@@ -2,7 +2,7 @@
  "v": 3,
  "createdOnFiles": {
   "v": 1,
-  "at": "2026-09-27T10:38:08Z"
+  "at": "2026-09-27T11:00:49Z"
  },
  "title": "SHIVAS Technology Website",
  "launch": {
@@ -14,7 +14,7 @@
    "x": 0,
    "y": 0,
    "w": 1440,
-   "h": 4200,
+   "h": 4204,
    "title": "Home: choose a division",
    "is_interactive": true
   },
@@ -22,7 +22,7 @@
    "x": 1520,
    "y": 0,
    "w": 1440,
-   "h": 7018,
+   "h": 7478,
    "title": "Galvanizing division",
    "is_interactive": true
   },
@@ -30,7 +30,7 @@
    "x": 3040,
    "y": 0,
    "w": 1440,
-   "h": 6648,
+   "h": 7108,
    "title": "Wire drawing division",
    "is_interactive": true
   },
@@ -38,7 +38,7 @@
    "x": 4560,
    "y": 0,
    "w": 1440,
-   "h": 3628,
+   "h": 4088,
    "title": "Product page template: pulse-fired furnace",
    "is_interactive": true
   },
@@ -46,7 +46,7 @@
    "x": 6080,
    "y": 0,
    "w": 1440,
-   "h": 3508,
+   "h": 3968,
    "title": "Company and group",
    "is_interactive": true
   },
@@ -54,7 +54,7 @@
    "x": 7600,
    "y": 0,
    "w": 1440,
-   "h": 1828,
+   "h": 2288,
    "title": "Request a quote",
    "is_interactive": true
   },
@@ -62,7 +62,7 @@
    "x": 9120,
    "y": 0,
    "w": 390,
-   "h": 1320,
+   "h": 1324,
    "title": "Mobile home",
    "is_interactive": true
   }

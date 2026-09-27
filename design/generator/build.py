@@ -1,11 +1,14 @@
 import json, os, datetime, re
+import brand
 from p_main import main_page, mobile_page
 from p_galv import galv_page
 from p_wire import wire_page
 from p_rest import furnace_page, about_page, contact_page
 
-ROOT = "/mnt/user-data/outputs/artifacts/bd30008f-1f30-46e3-afd3-f262c4183b8d/project"
+ROOT = os.environ.get("ARTBOARDS_DIR", os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "artboards"))
 os.makedirs(ROOT, exist_ok=True)
+# in the repo canvas.json sits beside artboards/; in a canvas export it sits beside the artboards
+CANVAS_JSON = os.environ.get("CANVAS_JSON", os.path.join(ROOT, "..", "canvas.json") if "ARTBOARDS_DIR" not in os.environ else os.path.join(ROOT, "canvas.json"))
 
 pages = [
     ("Main.dc.html", "Home: choose a division", main_page),
@@ -21,6 +24,7 @@ boards, order = {}, []
 x = 0
 for fn, title, fnc in pages:
     html, h = fnc()
+    html, h = brand.apply(fn, html)
     w = 390 if fn == "Mobile.dc.html" else 1440
     with open(os.path.join(ROOT, fn), "w") as f:
         f.write(html)
@@ -55,8 +59,19 @@ canvas = {
     },
     "designSystems": [],
 }
-with open(os.path.join(ROOT, "canvas.json"), "w") as f:
+with open(CANVAS_JSON, "w") as f:
     json.dump(canvas, f, indent=1)
+
+# illustrations follow the same palette
+ILLUS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "assets", "illustrations")
+if os.path.isdir(ILLUS) and "ARTBOARDS_DIR" not in os.environ:
+    for fn in sorted(os.listdir(ILLUS)):
+        if fn.endswith(".svg"):
+            p = os.path.join(ILLUS, fn)
+            svg = open(p).read()
+            new = brand.recolor_svg(svg)
+            if new != svg:
+                open(p, "w").write(new)
 
 # sanity: unbalanced holes and unclosed common tags
 for fn, _, _ in pages:

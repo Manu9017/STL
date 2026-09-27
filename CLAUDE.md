@@ -12,7 +12,7 @@ Replace the 2019 site at shivastechnology.com with a fast, static, SEO-strong si
 - `design/artboards/*.dc.html` — approved page designs, with all copy, layout, colours and inline SVG.
   - They use a design-canvas format: `{{hole}}` bindings, `<sc-for>` loops, `<sc-if>` branches, a `class Component extends DCLogic` script and `<helmet>`. Treat these as specs. Do **not** ship them as they are.
   - Links point to `X.dc.html`. Map them to the real routes in the table below.
-- `design/generator/*.py` — the Python that generated the artboards. It holds all copy, stage data, spec tables and SVG functions in structured form, which is easier to port than the HTML.
+- `design/generator/*.py` — the Python that generated the artboards. It holds all copy, stage data, spec tables and SVG functions in structured form, which is easier to port than the HTML. Run `python3 design/generator/build.py` to regenerate `design/artboards/`, `design/canvas.json` and the illustration colours; `brand.py` adds the logo, palette and cross-links on top of the page modules.
 - `assets/illustrations/*.svg` — every illustration exported as a standalone SVG. Use these; don't redraw them.
 - `docs/` — the redirect map, the due-diligence list and the content checklist.
 
@@ -24,18 +24,40 @@ Replace the 2019 site at shivastechnology.com with a fast, static, SEO-strong si
 - Content lives in Markdown/MDX with content collections: `products`, `knowledge`, `projects`.
 - Deploy to Cloudflare Pages, Netlify or Vercel. Handle redirects at the host (`public/_redirects`).
 
+## Logo
+- The SHIVAS logo is the red "Shivas" wordmark over "SHIVAS TECHNOLOGY LTD", as on the current site.
+- Files in `assets/logo/`: `shivas-logo-original.jpg` (as found), and transparent PNG cut-outs:
+  `shivas-logo-compact.png` (header, light grounds), `shivas-logo-compact-light.png` (footer, dark grounds),
+  and full versions with the tagline. Header logo 48px high on desktop, 34px on mobile; footer 44px.
+- In the artboards the logo is an `<img>` pointing at the design canvas's asset store (`/_blob/...`). Map it to these files.
+
 ## Design tokens
+The palette is built on the logo red. The generator writes it through `design/generator/brand.py`
+(the `PALETTE` map turns the original tokens in `lib.py` into these values).
+
 | Token | Value | Use |
 |---|---|---|
-| ink | #102638 | dark grounds, galvanizing hero |
-| blue | #1F4E79 | SHIVAS brand, logo |
-| teal | #0E7C86 / dark #0A5C63 | wire division accent |
-| amber | #E3A23B / dark #8A5A12 for text on light | galvanizing accent, primary CTA |
-| zinc | #E7ECEF | light section ground |
-| paper | #F6F8F9 | page ground |
-| rule | #CFD8DE | borders |
-| text / muted | #1B2B39 / #4A5B6A | on light |
-| on-dark / muted | #E9EEF2 / #A9B8C5 | on dark |
+| red | #E3000F | brand red from the logo: primary CTA buttons, active nav underline, call-to-action bands |
+| ink | #0A1F4D | headings, dark grounds, galvanizing hero |
+| ink-2 | #133078 | cards on dark grounds |
+| blue | #0070AD / dark #005A87 | wire division accent |
+| gold | #FFB400 / #A85F00 for text on light | galvanizing accent |
+| zinc | #E6F6FA | light section ground |
+| paper | #F5F8FF | page ground |
+| rule | #D3DDEE | borders |
+| text / muted | #14213D / #475A78 | on light |
+| on-dark / muted | #EEF3FF / #B9C8E8 | on dark |
+
+All text pairs meet WCAG AA (white on red 4.9:1).
+
+## Navigation and cross-links
+Every page must carry these, so visitors can move between the two divisions from anywhere:
+- Header nav with the current section underlined in red, and a red "Request a quote" button.
+- A 4px brand stripe under the header: red, gold, blue in equal thirds.
+- On every inner page, a breadcrumb bar (also emitted as `BreadcrumbList` JSON-LD) with "Jump to" links on the right into the other division, the furnace page, the company page or the quote form.
+- On every inner page, a "Keep exploring SHIVAS" row of three related-page cards above the footer.
+- The same footer site map on every page, including a Home link.
+- Mobile: the menu button opens a full-height menu of every page with quote and WhatsApp buttons.
 
 - Font: **Archivo** variable (Google Fonts, `wdth 62..125`, `wght 100..900`). Self-host it.
   - Headings: `font-stretch: 112–125%`, weight 800.
