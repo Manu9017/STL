@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 270" width="640" role="img" aria-label="Acid fume extraction: enclosed room, duct, packed-bed scrubber, FRP blower and stack"><style>
+.ln{fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.lt{fill:none;stroke-width:1;stroke-linecap:round}
+.lk{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.dsh{stroke-dasharray:5 5}
+.s-steel{stroke:#2B4A62}.s-soft{stroke:#8FA3B3}.s-teal{stroke:#0E7C86}.s-amber{stroke:#E3A23B}.s-dk{stroke:#7F97AB}.s-dk2{stroke:#C4D1DB}
+.f-teal{fill:#0E7C86}.f-amber{fill:#E3A23B}.f-steel{fill:#2B4A62}.f-zinc{fill:#E7ECEF}.f-white{fill:#FFFFFF}.f-ink{fill:#102638}.f-soft{fill:#C9D3DA}
+.lbl{font-family:'Archivo',sans-serif;font-size:11px;font-weight:500;fill:#4A5B6A}
+.lbl-d{font-family:'Archivo',sans-serif;font-size:11px;font-weight:500;fill:#A9B8C5}
+.mid{text-anchor:middle}
+@keyframes run{to{stroke-dashoffset:-40}}
+.wire-run{stroke-dasharray:6 14;animation:run 1.4s linear infinite}
+@keyframes pulse{0%,45%{opacity:.95}50%,100%{opacity:.12}}
+.pulse{animation:pulse 2.4s steps(1,end) infinite}
+@keyframes melt{0%,100%{opacity:.82}50%{opacity:1}}
+.melt{animation:melt 4s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.wire-run,.pulse,.melt{animation:none}}</style><line x1="0" y1="252" x2="640" y2="252" class="ln s-soft"></line><path d="M10 252 V110 L120 80 L230 110 V252" class="ln s-steel"></path><rect x="28" y="200" width="54" height="52" class="ln s-steel"></rect><line x1="28" y1="214" x2="82" y2="214" class="lt s-teal"></line><rect x="92" y="200" width="54" height="52" class="ln s-steel"></rect><line x1="92" y1="214" x2="146" y2="214" class="lt s-teal"></line><rect x="156" y="200" width="54" height="52" class="ln s-steel"></rect><line x1="156" y1="214" x2="210" y2="214" class="lt s-teal"></line><path d="M120 80 V40 H330 V70" class="lk s-steel"></path><path d="M170 34 l10 6 l-10 6" class="ln s-teal"></path><path d="M230 34 l10 6 l-10 6" class="ln s-teal"></path><path d="M290 34 l10 6 l-10 6" class="ln s-teal"></path><rect x="300" y="70" width="64" height="150" rx="3" class="ln s-steel"></rect><rect x="306" y="120" width="52" height="46" class="lt s-soft"></rect><line x1="310" y1="126" x2="354" y2="132" class="lt s-soft"></line><line x1="310" y1="134" x2="354" y2="140" class="lt s-soft"></line><line x1="310" y1="142" x2="354" y2="148" class="lt s-soft"></line><line x1="310" y1="150" x2="354" y2="156" class="lt s-soft"></line><line x1="310" y1="158" x2="354" y2="164" class="lt s-soft"></line><line x1="308" y1="100" x2="356" y2="100" class="ln s-teal"></line><path d="M316 100 v8" class="lt s-teal"></path><path d="M332 100 v8" class="lt s-teal"></path><path d="M348 100 v8" class="lt s-teal"></path><rect x="290" y="220" width="84" height="32" class="ln s-steel"></rect><path d="M374 236 H400 V100 H356" class="ln s-teal"></path><path d="M332 70 V50 H440 V150" class="lk s-steel"></path><circle cx="460" cy="178" r="30" class="ln s-steel"></circle><circle cx="460" cy="178" r="8" class="ln s-steel"></circle><path d="M440 150 H452 M490 178 H520" class="lk s-steel"></path><rect x="436" y="208" width="48" height="44" class="ln s-steel"></rect><path d="M520 178 H560 V10 H584 V252" class="lk s-steel"></path><path d="M566 4 q6 -8 12 0" class="ln s-soft"></path><text x="120" y="266" class="lbl mid">Enclosed pretreatment room</text><text x="332" y="64" class="lbl mid">Scrubber</text><text x="460" y="266" class="lbl mid">FRP blower</text><text x="572" y="266" class="lbl mid">Stack</text></svg>

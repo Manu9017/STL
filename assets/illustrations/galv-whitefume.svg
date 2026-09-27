@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 110" width="200" height="110" role="img" aria-label="Zinc white fume extraction"><style>
+.ln{fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.lt{fill:none;stroke-width:1;stroke-linecap:round}
+.lk{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.dsh{stroke-dasharray:5 5}
+.s-steel{stroke:#2B4A62}.s-soft{stroke:#8FA3B3}.s-teal{stroke:#0E7C86}.s-amber{stroke:#E3A23B}.s-dk{stroke:#7F97AB}.s-dk2{stroke:#C4D1DB}
+.f-teal{fill:#0E7C86}.f-amber{fill:#E3A23B}.f-steel{fill:#2B4A62}.f-zinc{fill:#E7ECEF}.f-white{fill:#FFFFFF}.f-ink{fill:#102638}.f-soft{fill:#C9D3DA}
+.lbl{font-family:'Archivo',sans-serif;font-size:11px;font-weight:500;fill:#4A5B6A}
+.lbl-d{font-family:'Archivo',sans-serif;font-size:11px;font-weight:500;fill:#A9B8C5}
+.mid{text-anchor:middle}
+@keyframes run{to{stroke-dashoffset:-40}}
+.wire-run{stroke-dasharray:6 14;animation:run 1.4s linear infinite}
+@keyframes pulse{0%,45%{opacity:.95}50%,100%{opacity:.12}}
+.pulse{animation:pulse 2.4s steps(1,end) infinite}
+@keyframes melt{0%,100%{opacity:.82}50%{opacity:1}}
+.melt{animation:melt 4s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.wire-run,.pulse,.melt{animation:none}}</style><path d="M20 100 V60 H80 V100" class="lk s-steel"></path><rect x="24" y="80" width="52" height="18" class="f-amber"></rect><path d="M50 60 V20 H120" class="lk s-steel"></path><rect x="120" y="12" width="44" height="70" class="ln s-steel"></rect><line x1="130" y1="20" x2="130" y2="70" class="lt s-soft"></line><line x1="142" y1="20" x2="142" y2="70" class="lt s-soft"></line><line x1="154" y1="20" x2="154" y2="70" class="lt s-soft"></line><path d="M142 82 V100 H186" class="ln s-steel"></path></svg>
