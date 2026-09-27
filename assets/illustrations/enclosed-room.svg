@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" width="600" role="img" aria-label="Enclosed pretreatment room with internal crane and extraction"><style>
+.ln{fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.lt{fill:none;stroke-width:1;stroke-linecap:round}
+.lk{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.dsh{stroke-dasharray:5 5}
+.s-steel{stroke:#2B4A62}.s-soft{stroke:#8FA3B3}.s-teal{stroke:#0E7C86}.s-amber{stroke:#E3A23B}.s-dk{stroke:#7F97AB}.s-dk2{stroke:#C4D1DB}
+.f-teal{fill:#0E7C86}.f-amber{fill:#E3A23B}.f-steel{fill:#2B4A62}.f-zinc{fill:#E7ECEF}.f-white{fill:#FFFFFF}.f-ink{fill:#102638}.f-soft{fill:#C9D3DA}
+.lbl{font-family:'Archivo',sans-serif;font-size:11px;font-weight:500;fill:#4A5B6A}
+.lbl-d{font-family:'Archivo',sans-serif;font-size:11px;font-weight:500;fill:#A9B8C5}
+.mid{text-anchor:middle}
+@keyframes run{to{stroke-dashoffset:-40}}
+.wire-run{stroke-dasharray:6 14;animation:run 1.4s linear infinite}
+@keyframes pulse{0%,45%{opacity:.95}50%,100%{opacity:.12}}
+.pulse{animation:pulse 2.4s steps(1,end) infinite}
+@keyframes melt{0%,100%{opacity:.82}50%{opacity:1}}
+.melt{animation:melt 4s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.wire-run,.pulse,.melt{animation:none}}</style><line x1="0" y1="282" x2="600" y2="282" class="ln s-dk"></line><path d="M20 282 V90 L300 40 L580 90 V282" class="ln s-dk"></path><line x1="40" y1="118" x2="560" y2="118" class="ln s-dk"></line><rect x="250" y="122" width="40" height="12" class="ln s-dk"></rect><line x1="270" y1="134" x2="270" y2="190" class="ln s-dk2"></line><rect x="220" y="190" width="100" height="6" class="ln s-dk2"></rect><rect x="40" y="226" width="62" height="56" class="ln s-dk"></rect><line x1="40" y1="238" x2="102" y2="238" class="lt s-amber"></line><rect x="118" y="226" width="62" height="56" class="ln s-dk"></rect><line x1="118" y1="238" x2="180" y2="238" class="lt s-amber"></line><rect x="196" y="226" width="62" height="56" class="ln s-dk"></rect><line x1="196" y1="238" x2="258" y2="238" class="lt s-amber"></line><rect x="274" y="226" width="62" height="56" class="ln s-dk"></rect><line x1="274" y1="238" x2="336" y2="238" class="lt s-amber"></line><rect x="352" y="226" width="62" height="56" class="ln s-dk"></rect><line x1="352" y1="238" x2="414" y2="238" class="lt s-amber"></line><rect x="430" y="226" width="62" height="56" class="ln s-dk"></rect><line x1="430" y1="238" x2="492" y2="238" class="lt s-amber"></line><rect x="508" y="226" width="62" height="56" class="ln s-dk"></rect><line x1="508" y1="238" x2="570" y2="238" class="lt s-amber"></line><path d="M300 40 V12 H560" class="lk s-dk"></path><path d="M380 6 l10 6 l-10 6" class="ln s-amber"></path><path d="M450 6 l10 6 l-10 6" class="ln s-amber"></path><path d="M520 6 l10 6 l-10 6" class="ln s-amber"></path><rect x="560" y="210" width="20" height="72" class="ln s-amber"></rect><text x="300" y="298" class="lbl-d mid">Tanks, crane and extraction inside one sealed room</text></svg>

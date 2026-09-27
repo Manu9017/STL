@@ -1,0 +1,98 @@
+{
+ "v": 3,
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-09-27T10:38:08Z"
+ },
+ "title": "SHIVAS Technology Website",
+ "launch": {
+  "view": "canvas"
+ },
+ "pages": [],
+ "boards": {
+  "Main.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 4200,
+   "title": "Home: choose a division",
+   "is_interactive": true
+  },
+  "Galvanizing.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 1440,
+   "h": 7018,
+   "title": "Galvanizing division",
+   "is_interactive": true
+  },
+  "WireDrawing.dc.html": {
+   "x": 3040,
+   "y": 0,
+   "w": 1440,
+   "h": 6648,
+   "title": "Wire drawing division",
+   "is_interactive": true
+  },
+  "Furnace.dc.html": {
+   "x": 4560,
+   "y": 0,
+   "w": 1440,
+   "h": 3628,
+   "title": "Product page template: pulse-fired furnace",
+   "is_interactive": true
+  },
+  "About.dc.html": {
+   "x": 6080,
+   "y": 0,
+   "w": 1440,
+   "h": 3508,
+   "title": "Company and group",
+   "is_interactive": true
+  },
+  "Contact.dc.html": {
+   "x": 7600,
+   "y": 0,
+   "w": 1440,
+   "h": 1828,
+   "title": "Request a quote",
+   "is_interactive": true
+  },
+  "Mobile.dc.html": {
+   "x": 9120,
+   "y": 0,
+   "w": 390,
+   "h": 1320,
+   "title": "Mobile home",
+   "is_interactive": true
+  }
+ },
+ "order": [
+  "Main.dc.html",
+  "Galvanizing.dc.html",
+  "WireDrawing.dc.html",
+  "Furnace.dc.html",
+  "About.dc.html",
+  "Contact.dc.html",
+  "Mobile.dc.html"
+ ],
+ "notes": {
+  "rowtitle": {
+   "x": 0,
+   "y": -320,
+   "text": "shivastechnology.com redesign: desktop pages and mobile",
+   "kind": "title1",
+   "maxW": 9510
+  },
+  "sitemap": {
+   "x": -520,
+   "y": 0,
+   "text": "Sitemap\n\nHome: division gateway\nWire drawing: straight line, OTO, line equipment, die calculator\nGalvanizing: process explorer, 12 systems, furnace, air and water, automation, knowledge\nProduct pages: one per system, built from the furnace template\nKnowledge: guides feeding SEO\nProjects: case studies (to add)\nCompany and group\nRequest a quote: division-specific RFQ\n\nText in [brackets] is a placeholder for real facts or photos.",
+   "w": 420,
+   "maxH": 700,
+   "fill": "blue",
+   "size": "m"
+  }
+ },
+ "designSystems": []
+}

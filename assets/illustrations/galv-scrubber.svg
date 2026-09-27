@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 110" width="200" height="110" role="img" aria-label="Acid fume scrubber, blower and stack"><style>
+.ln{fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.lt{fill:none;stroke-width:1;stroke-linecap:round}
+.lk{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.dsh{stroke-dasharray:5 5}
+.s-steel{stroke:#2B4A62}.s-soft{stroke:#8FA3B3}.s-teal{stroke:#0E7C86}.s-amber{stroke:#E3A23B}.s-dk{stroke:#7F97AB}.s-dk2{stroke:#C4D1DB}
+.f-teal{fill:#0E7C86}.f-amber{fill:#E3A23B}.f-steel{fill:#2B4A62}.f-zinc{fill:#E7ECEF}.f-white{fill:#FFFFFF}.f-ink{fill:#102638}.f-soft{fill:#C9D3DA}
+.lbl{font-family:'Archivo',sans-serif;font-size:11px;font-weight:500;fill:#4A5B6A}
+.lbl-d{font-family:'Archivo',sans-serif;font-size:11px;font-weight:500;fill:#A9B8C5}
+.mid{text-anchor:middle}
+@keyframes run{to{stroke-dashoffset:-40}}
+.wire-run{stroke-dasharray:6 14;animation:run 1.4s linear infinite}
+@keyframes pulse{0%,45%{opacity:.95}50%,100%{opacity:.12}}
+.pulse{animation:pulse 2.4s steps(1,end) infinite}
+@keyframes melt{0%,100%{opacity:.82}50%{opacity:1}}
+.melt{animation:melt 4s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.wire-run,.pulse,.melt{animation:none}}</style><rect x="40" y="14" width="36" height="86" rx="2" class="ln s-steel"></rect><line x1="44" y1="44" x2="72" y2="49" class="lt s-soft"></line><line x1="44" y1="50" x2="72" y2="55" class="lt s-soft"></line><line x1="44" y1="56" x2="72" y2="61" class="lt s-soft"></line><line x1="44" y1="62" x2="72" y2="67" class="lt s-soft"></line><line x1="44" y1="68" x2="72" y2="73" class="lt s-soft"></line><path d="M8 60 H40 M58 14 V6 H108 V52" class="lk s-steel"></path><circle cx="118" cy="68" r="16" class="ln s-steel"></circle><path d="M134 68 H156 V100 M156 100 V4 H170 V100" class="lk s-steel"></path></svg>

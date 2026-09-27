@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 110" width="200" height="110" role="img" aria-label="Pickling line"><style>
+.ln{fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.lt{fill:none;stroke-width:1;stroke-linecap:round}
+.lk{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.dsh{stroke-dasharray:5 5}
+.s-steel{stroke:#2B4A62}.s-soft{stroke:#8FA3B3}.s-teal{stroke:#0E7C86}.s-amber{stroke:#E3A23B}.s-dk{stroke:#7F97AB}.s-dk2{stroke:#C4D1DB}
+.f-teal{fill:#0E7C86}.f-amber{fill:#E3A23B}.f-steel{fill:#2B4A62}.f-zinc{fill:#E7ECEF}.f-white{fill:#FFFFFF}.f-ink{fill:#102638}.f-soft{fill:#C9D3DA}
+.lbl{font-family:'Archivo',sans-serif;font-size:11px;font-weight:500;fill:#4A5B6A}
+.lbl-d{font-family:'Archivo',sans-serif;font-size:11px;font-weight:500;fill:#A9B8C5}
+.mid{text-anchor:middle}
+@keyframes run{to{stroke-dashoffset:-40}}
+.wire-run{stroke-dasharray:6 14;animation:run 1.4s linear infinite}
+@keyframes pulse{0%,45%{opacity:.95}50%,100%{opacity:.12}}
+.pulse{animation:pulse 2.4s steps(1,end) infinite}
+@keyframes melt{0%,100%{opacity:.82}50%{opacity:1}}
+.melt{animation:melt 4s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.wire-run,.pulse,.melt{animation:none}}</style><rect x="14" y="40" width="40" height="56" class="ln s-steel"></rect><line x1="14" y1="52" x2="54" y2="52" class="ln s-teal"></line><rect x="60" y="40" width="40" height="56" class="ln s-steel"></rect><line x1="60" y1="52" x2="100" y2="52" class="ln s-teal"></line><rect x="106" y="40" width="40" height="56" class="ln s-steel"></rect><line x1="106" y1="52" x2="146" y2="52" class="ln s-teal"></line><rect x="152" y="40" width="40" height="56" class="ln s-steel"></rect><line x1="152" y1="52" x2="192" y2="52" class="ln s-teal"></line><path d="M20 20 H180" class="ln s-steel"></path></svg>
