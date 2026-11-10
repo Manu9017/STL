@@ -198,7 +198,8 @@ def main():
             for a, line in p.imgs:
                 if "alt" not in a:
                     warnings.append(f"{rel}:{line}: <img> without alt ({a.get('src', '')[:60]})")
-                if not (a.get("width") and a.get("height")) and not (a.get("src") or "").startswith("data:"):
+                # no src = a slot that script fills (gallery viewer, lightbox); data: = inline
+                if a.get("src") and not (a.get("width") and a.get("height")) and not a["src"].startswith("data:"):
                     nosize += 1
             if nosize:
                 # explicit sizes stop layout shift (Lighthouse CLS)
@@ -261,7 +262,7 @@ def main():
         errors.append("robots.txt missing")
 
     # division pages share one code base; large drift usually means an edit reached only one of them
-    # At import (Nov 2026) the natural difference was 69 lines (wire-drawing) and 101 (reinplast).
+    # Natural difference (Nov 2026, after adding canonicals): 71 lines (wire-drawing), 103 (reinplast).
     srcs = {d: Counter(parsed[d].src.splitlines()) for d in DIVISION_PAGES if d in parsed}
     drift = []
     if len(srcs) == 3:
@@ -271,7 +272,7 @@ def main():
             diff = sum((base - o).values()) + sum((o - base).values())
             drift.append(f"{other} {diff}")
             if diff > 150:
-                warnings.append(f"{other} differs from {DIVISION_PAGES[0]} on {diff} lines (101 or fewer is normal): did a shared edit reach all three division pages?")
+                warnings.append(f"{other} differs from {DIVISION_PAGES[0]} on {diff} lines (about 71 and 103 is normal): did a shared edit reach all three division pages?")
 
     # tracking state
     cfg = os.path.join(root, "assets", "config.js")

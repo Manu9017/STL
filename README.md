@@ -4,7 +4,7 @@ Website for the SHIVAS group, Ghaziabad, India: SHIVAS Technology Limited (hot-d
 
 - `site/`: **the live site**. Plain HTML/CSS/JS with no build step. Open `site/index.html`, or see `site/README.md` for GitHub Pages hosting.
 - `CLAUDE.md`: how the site is organised and the rules for editing it. Start here.
-- `tools/`: `check_site.py` (links, SEO, claims), `screenshot.cjs` (desktop and phone screenshots), `artifact_files.py` (publish batches).
+- `tools/`: `check_site.py` (links, SEO, claims), `screenshot.cjs` (desktop and phone screenshots), `fix_img_sizes.py` (add real image sizes), `artifact_files.py` (publish batches).
 - `.claude/skills/`: Claude Code skills: `site-check`, `site-preview`, `site-edit`, `publish-artifact`.
 - `design/`, `assets/`, `docs/astro-rebuild-brief.md`: earlier design handoff for an Astro rebuild (on hold).
 

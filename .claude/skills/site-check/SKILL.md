@@ -23,15 +23,14 @@ The exit code is 1 when there are errors.
 - `enquiry copied to a third party`: remove it. Leads go to SHIVAS only.
 - `sitemap.xml: … has no file`: remove the entry, or restore the page.
 
-**Warnings: compare with the baseline.** At import (10 Nov 2026) the site had 0 errors and 125 warnings:
-- 110 pages with `<img>` lacking width/height. This is a known issue that costs Lighthouse CLS points. Fix it page by page when touching a page, using the real pixel size of the webp.
-- No canonical link on `index.html`, `galvanizing.html`, `wire-drawing.html`, `reinplast.html` and `items/index.html`.
-- `galvanizing.html` and `reinplast.html` missing from `sitemap.xml`.
-- 8 `EN 746` references inside the 3D viewers (`v/`). These are flagged to the user. Don't claim EN 746 until it is confirmed.
+**Warnings: compare with the baseline.** On 10 Nov 2026 (after the image-size, canonical and sitemap fixes) the site had 0 errors and 8 warnings:
+- 8 `EN 746` references inside the 3D viewers (`v/arp-10.html`, `v/spin-galvanizing.html`, `v/zinc-ash-plant.html`). These are flagged to the user. Don't claim EN 746 until it is confirmed.
+
+Any `<img> without width/height` on a new or edited page: run `python3 tools/fix_img_sizes.py <page>`. It adds the real pixel size. Then screenshot the page.
 
 Any warning that is **new** compared with the baseline was probably caused by your edit, so fix it. If a known warning is fixed, update the baseline numbers in this file.
 
-The header line `Division pages vs galvanizing.html, differing lines` should stay near 69 (wire-drawing) and 101 (reinplast). A jump means a shared edit reached only one of the three division pages.
+The header line `Division pages vs galvanizing.html, differing lines` should stay near 71 (wire-drawing) and 103 (reinplast). A jump means a shared edit reached only one of the three division pages.
 
 ## After the check
 Tell the user the totals. If you fixed anything, say what. Don't silently change copy to clear a claim or placeholder warning: those are facts the user has to confirm.

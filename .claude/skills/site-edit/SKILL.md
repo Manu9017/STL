@@ -26,7 +26,7 @@ They are one app shown three ways (`data-page`). Make a shared edit in all three
 ## Adding or editing a product page (items/)
 1. Copy the closest existing item in the same division, for example `items/kettle.html` for galvanizing or `items/slm.html` for wire drawing.
 2. Update `<title>` (`Name | SHIVAS Technology` or `| SHIVAS Reinplast`), the meta description, `<link rel="canonical" href="https://www.shivastechnology.com/items/<id>.html">`, `<html data-brand>`, and the `Product` (and `FAQPage`) JSON-LD.
-3. Use pictures from `assets/library/` with `alt`, `width`, `height` and `loading="lazy"`. If there is no photo, use a `drawings.svg#<id>` line drawing.
+3. Use pictures from `assets/library/` with `alt` and `loading="lazy"`, then run `python3 tools/fix_img_sizes.py items/<id>.html` to add each picture's real width/height. If there is no photo, use a `drawings.svg#<id>` line drawing.
 4. Add a card to `items/index.html` (`<a class="mini" href="<id>.html" data-div="hdg|wire|rein">`), and links from the division page(s) and related items where they fit.
 5. Add `<url><loc>https://www.shivastechnology.com/items/<id>.html</loc></url>` to `sitemap.xml`.
 
