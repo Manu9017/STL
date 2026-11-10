@@ -27,5 +27,7 @@ Anyone with the link sees an update straight away, so **publish only when the us
 7. Give the user the link and say what changed.
 
 ## Notes
+- The service rewrites the page head when it stores `index.html`: it drops `<!DOCTYPE><html><head>` and moves the `<title>`, meta tags and `<style>` blocks. So the first publish in a session is refused with a diff that shows these moves. That's expected. Check the diff for **real content** that is on the live page and not in `site/index.html`. If there is any, merge it in. If there's none, publish again unchanged and it goes through.
+- Example (10 Nov 2026): the live page still had `--m:"IBM Plex Mono"` where `site/` has `--m:"Noto Sans"`. Noto Sans is correct: it matches `assets/v39.css`, the newest layer, and the font the page loads.
 - If the only change is in `index.html`, publish the page without `files`.
 - Pages link with relative paths (`items/kettle.html`, `../assets/…`). Keep them relative so the same files work on the artifact, GitHub Pages and a custom domain.
