@@ -20,9 +20,10 @@ Anyone with the link sees an update straight away, so **publish only when the us
 3. **Publish batch 1 with the page:** `Artifact` publish with `url` = the artifact URL, `file_path` = `site/index.html`, and `files` = the contents of `batch-1.json`. Leave out `icon`, since the artifact keeps its own.
 4. **Publish each later batch** to the same `url` with the same `file_path` and the next batch's `files`. Files left out of a publish are kept, so the batches add up.
 5. To remove a page from the artifact, publish with that path mapped to `null`.
-6. **Tag the commit** so the next `--changed` run knows what was published:
+6. **Record what was published** so the next `--changed` run knows. Git tags can't be pushed from cloud sessions, so the commit id goes in a file:
    ```bash
-   git tag -f artifact-published && git push -f origin artifact-published
+   git rev-parse HEAD > docs/artifact-published.txt   # the commit whose site/ you just published
+   git commit -m "Record artifact publish" docs/artifact-published.txt && git push
    ```
 7. Give the user the link and say what changed.
 

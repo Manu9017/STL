@@ -2,7 +2,7 @@
 """Print the `files` maps for republishing site/ to its claude.ai artifact.
 
     python3 tools/artifact_files.py            # summary + batch files written to preview/artifact-batches/
-    python3 tools/artifact_files.py --changed  # only files changed since the last publish (git diff against the tag)
+    python3 tools/artifact_files.py --changed  # only files changed since the last publish (git diff against docs/artifact-published.txt)
 
 One Artifact publish takes at most 255 supporting files and 64 MB, so the site goes up in batches.
 index.html is the page itself (file_path), everything else is a supporting file. Files that are not
@@ -21,7 +21,6 @@ SITE = os.path.join(REPO, "site")
 OUT = os.path.join(REPO, "preview", "artifact-batches")
 EXCLUDE_TOP = {"README.md", ".nojekyll", "photos", "setup", "CNAME"}
 MAX_FILES, MAX_BYTES = 250, 60 * 1024 * 1024
-TAG = "artifact-published"
 
 
 def all_files():
@@ -38,12 +37,19 @@ def all_files():
     return sorted(out)
 
 
+MARK = os.path.join(REPO, "docs", "artifact-published.txt")  # commit whose site/ is live on the artifact
+
+
 def changed_files():
     try:
-        r = subprocess.run(["git", "diff", "--name-only", "--diff-filter=ACMR", TAG, "--", "site"],
+        base = open(MARK).read().split()[0]
+    except (OSError, IndexError):
+        sys.exit(f"{os.path.relpath(MARK, REPO)} missing: publish everything once, then write the commit id into it")
+    try:
+        r = subprocess.run(["git", "diff", "--name-only", "--diff-filter=ACMR", base, "--", "site"],
                            cwd=REPO, capture_output=True, text=True, check=True)
     except subprocess.CalledProcessError:
-        sys.exit(f"No git tag '{TAG}' yet: publish everything once, then run: git tag -f {TAG}")
+        sys.exit(f"Commit {base} from {os.path.relpath(MARK, REPO)} not found (shallow clone? run: git fetch --unshallow)")
     rels = [p[len("site/"):] for p in r.stdout.split() if p.startswith("site/")]
     return sorted(p for p in rels if p.split("/")[0] not in EXCLUDE_TOP and p != "index.html")
 
