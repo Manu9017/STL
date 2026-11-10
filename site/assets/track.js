@@ -130,7 +130,9 @@
   /* ---------- page view, time on page, clicks that matter, enquiry form ---------- */
   if (consent === 'yes') { ready = lookup(); extras(); }
   send('view', {});
-  if (!consent) { if (document.body) ask(); else document.addEventListener('DOMContentLoaded', ask); }
+  // SHIVAS_NOBAR (set by the 3D viewers): no consent bar, it would cover the viewer's controls. A visitor's earlier
+  // choice on the main site still applies; without one only the plain page view is sent (no location, no visitor number).
+  if (!consent && !window.SHIVAS_NOBAR) { if (document.body) ask(); else document.addEventListener('DOMContentLoaded', ask); }
   addEventListener('scroll', function () {
     var h = document.documentElement, m = Math.round(100 * (scrollY + innerHeight) / Math.max(h.scrollHeight, 1)); if (m > maxScroll) maxScroll = Math.min(m, 100);
   }, { passive: true });

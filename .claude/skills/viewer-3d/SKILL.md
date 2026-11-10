@@ -30,6 +30,11 @@ The README says it, and the site must say it too: these are **indicative general
 - **Before `</body>`:**
   `<script defer src="shivas-bar.js" data-name="{Name}" data-item="{item id}" data-d="{desktop position}" data-p="{phone position}"></script>`
 - **Sitemap:** an entry in `sitemap.xml`.
+- **Loading screen:** right after `<body>`, the inline `<div id="shv-load" role="status">` with its own `<style>`. It shows a spinner, "Loading the 3D model", the name and "indicative general arrangement".
+  - `shivas-bar.js` removes it two frames after a canvas larger than 200×120 is on screen.
+  - A CSS animation fades it out after 25 s in any case.
+  - Copy it from an existing viewer when adding one.
+- **Visitor log:** `shivas-bar.js` also loads the visitor log (no consent bar on viewers; see `tracking-setup`).
 
 `shivas-bar.js` adds one round SHIVAS button. It opens a menu with these links:
 - Ask about this plant (WhatsApp, pre-filled with the name)

@@ -7,7 +7,8 @@
      data-name  what the model shows (goes into the WhatsApp message)
      data-item  items/<id>.html for the product page (optional)
      data-d     position on screens 760 px and wider; data-p below 760 px (CSS, fixed to the viewport)
-   Self-contained: no other file needed except ../apple-touch-icon.png for the logo. Keys typed inside the menu
+   Also hides the viewer's loading screen (#shv-load) once the model is on screen, and loads the visitor log
+   (../assets/config.js + track.js, without the consent bar). Needs ../apple-touch-icon.png for the logo. Keys typed inside the menu
    do not reach the viewer, so its shortcuts (F, X, Esc, arrows) keep working outside it. */
 (function () {
   'use strict';
@@ -84,4 +85,25 @@
     place();
   }
   if (document.body) build(); else document.addEventListener('DOMContentLoaded', build);
+
+  // loading screen (#shv-load, inline at the top of <body> so it shows at once): hide it when a 3D canvas is on screen
+  var load = document.getElementById('shv-load');
+  if (load) {
+    var t0 = Date.now();
+    var hide = function () { load.style.transition = 'opacity .3s'; load.style.opacity = '0'; setTimeout(function () { load.remove(); }, 320); };
+    (function wait() {
+      var c = [].some.call(document.querySelectorAll('canvas'), function (x) { var r = x.getBoundingClientRect(); return r.width > 200 && r.height > 120; });
+      if (c) requestAnimationFrame(function () { requestAnimationFrame(function () { setTimeout(hide, 250); }); });
+      else if (Date.now() - t0 > 20000) hide();
+      else setTimeout(wait, 150);
+    })();
+  }
+
+  // visitor log: does nothing until assets/config.js is filled in. No consent bar on the viewers (SHIVAS_NOBAR).
+  if (!window.SHIVAS_TRACK) {
+    window.SHIVAS_NOBAR = true;
+    var cf = document.createElement('script'); cf.src = base + 'assets/config.js';
+    cf.onload = cf.onerror = function () { var t = document.createElement('script'); t.src = base + 'assets/track.js'; t.async = true; document.head.appendChild(t); };
+    document.head.appendChild(cf);
+  }
 })();

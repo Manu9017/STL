@@ -20,10 +20,10 @@ node tools/a11y.cjs index.html items/kettle.html      # a few pages
 ## Baseline (10 Nov 2026)
 | Page | Phone perf / a11y / best / SEO | Desktop |
 |---|---|---|
-| index.html | 96 / 100 / 100 / 100 | 100 across |
-| items/kettle.html, items/slm.html | 98 / 100 / 100 / 100 | 100 across |
+| index.html | 95 / 100 / 100 / 100 | 100 across |
+| items/kettle.html, items/slm.html | 97–98 / 100 / 100 / 100 | 100 across |
 | blog/pickling-right.html | 100 / 100 / 100 / 100 | 100 across |
-| galvanizing.html | about 82 / 99 / 100 / 100 | 100 / 99 |
+| galvanizing.html | about 83 / 99 / 100 / 100 | 99 / 99 |
 
 The galvanizing, wire-drawing and Reinplast pages are each an 800 KB single-page app (8,700 DOM nodes), and that is what holds their phone score back. Don't refactor them for it unless asked.
 
@@ -35,7 +35,7 @@ axe on all 118 pages × 2 themes: **4 known issues, 12 instances**, all inside t
 Anything else is new. Fix it.
 
 ## How the site is kept fast (don't undo these)
-- **Font:** Noto Sans latin only, `assets/fonts/noto-sans-latin.woff2` (36 KB). It is preloaded, and the `@font-face` is inline in each page's `<style id="v52f">`. Never add Google Fonts back to the pages. The 3D viewers load their own fonts, and that's fine.
+- **Fonts:** Noto Sans latin for body text (`assets/fonts/noto-sans-latin.woff2`, 36 KB) and Archivo 600–800 latin for headings (`archivo-latin.woff2`, 35 KB). Both are preloaded, and their `@font-face` is inline in each page's `<style id="v52f">`. Never add Google Fonts back to the pages. The 3D viewers load their own fonts, and that's fine.
 - **Photos:**
   - Every `<img>` has width/height. Run `python3 tools/fix_img_sizes.py <page>` for new pages.
   - Large photos get 480/960 px copies in `assets/resp/` plus `srcset`. Run `python3 tools/responsive_images.py`. It is idempotent and never touches `assets/library/`.

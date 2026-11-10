@@ -3,7 +3,9 @@
  * Receives what the website sends (assets/track.js) and writes it to two tabs:
  *   Visits  – one row per page view: page, device, browser, country, city, network / company, time on page …
  *   Leads   – every enquiry form and "ask our engineer" request, with what that visitor looked at before.
- * Also: an email for every lead at once, and a summary of yesterday's visitors every morning at 8:00 (India time).
+ * Also: an email for every lead at once, a report of yesterday's visitors every morning at 8:00 (India time) and of the
+ * last 7 days every Monday, sent to DIGEST_TO and to the Google account that set this up. Tabs Pages, Daily and Viewers
+ * summarise the Visits tab.
  * Set up: see README.txt in this folder. Run setup() once, then Deploy → New deployment → Web app.
  */
 
@@ -123,46 +125,106 @@ function alert_(d) {
 function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }); }
 
 // ---------------- every morning: yesterday's visitors ----------------
-function dailyDigest() {
-  var sh = book_().getSheetByName('Visits'), last = sh.getLastRow(); if (last < 2) return;
-  var tz = 'Asia/Kolkata', now = new Date(), today = Utilities.formatDate(now, tz, 'yyyy-MM-dd');
-  var y = Utilities.formatDate(new Date(now.getTime() - 864e5), tz, 'yyyy-MM-dd');
-  var from = Math.max(2, last - 19999), rows = sh.getRange(from, 1, last - from + 1, VISIT_COLS.length).getValues();
+// ---------------- reports ----------------
+// Who gets them: DIGEST_TO, the Google account that set this script up (so the owner always gets the report, without
+// putting a personal address in this public file) and any extra addresses in the script property REPORT_TO
+// (Apps Script: Project settings → Script properties → REPORT_TO, comma-separated).
+function recipients_() {
+  var list = [DIGEST_TO];
+  try { var me = Session.getEffectiveUser().getEmail(); if (me) list.push(me); } catch (e) {}
+  var extra = PropertiesService.getScriptProperties().getProperty('REPORT_TO');
+  if (extra) list = list.concat(extra.split(/[,;\s]+/));
+  var seen = {};
+  return list.map(function (x) { return String(x || '').trim(); }).filter(function (x) {
+    var k = x.toLowerCase(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(k) || seen[k]) return false; seen[k] = 1; return true;
+  }).join(',');
+}
+
+// everything that happened between two days (yyyy-MM-dd, India time; 'from' included, 'to' not)
+function summary_(from, to) {
+  var sh = book_().getSheetByName('Visits'), last = sh.getLastRow(), tz = 'Asia/Kolkata';
+  var s = { views: 0, people: {}, anon: 0, countries: {}, devices: {}, firms: {}, leads: [], calcs: [], clicks: [], pages: {}, visitors: {} };
+  if (last < 2) return s;
+  var start = Math.max(2, last - 29999), rows = sh.getRange(start, 1, last - start + 1, VISIT_COLS.length).getValues();
   var c = {}; VISIT_COLS.forEach(function (x, i) { c[x[0]] = i; });
-  var views = 0, people = {}, anon = 0, countries = {}, devices = {}, firms = {}, leads = [], calcs = [], clicks = [], pages = {};
+  var where = function (r) { return [r[c.city], r[c.country]].filter(Boolean).join(', '); };
   rows.forEach(function (r) {
-    if (Utilities.formatDate(new Date(r[c.at]), tz, 'yyyy-MM-dd') !== y) return;
-    var t = r[c.type];
+    var day = Utilities.formatDate(new Date(r[c.at]), tz, 'yyyy-MM-dd');
+    if (day < from || day >= to) return;
+    var t = r[c.type], title = String(r[c.title] || r[c.page] || ''), page = String(r[c.page] || '');
     if (t === 'view') {
-      views++; if (r[c.visitor]) people[r[c.visitor]] = 1; else anon++;
-      var co = r[c.country] || (r[c.tz] ? 'Time zone ' + r[c.tz] : 'Unknown'); countries[co] = (countries[co] || 0) + 1;
-      devices[r[c.device] || 'Unknown'] = (devices[r[c.device] || 'Unknown'] || 0) + 1;
-      pages[r[c.title] || r[c.page]] = (pages[r[c.title] || r[c.page]] || 0) + 1;
-      if (r[c.nettype] === 'Company network') {
-        var f = firms[r[c.org]] = firms[r[c.org]] || { n: 0, secs: 0, where: [r[c.city], r[c.country]].filter(Boolean).join(', '), pages: {} };
-        f.n++; f.secs += +r[c.secs] || 0; f.pages[r[c.title] || r[c.page]] = 1;
+      s.views++;
+      var vid = r[c.visitor]; if (vid) s.people[vid] = 1; else s.anon++;
+      var co = r[c.country] || (r[c.tz] ? 'Time zone ' + r[c.tz] : 'Unknown'); s.countries[co] = (s.countries[co] || 0) + 1;
+      s.devices[r[c.device] || 'Unknown'] = (s.devices[r[c.device] || 'Unknown'] || 0) + 1;
+      var key = page.split('#')[0] || title, pg = s.pages[key] = s.pages[key] || { title: title, page: key, n: 0, secs: 0, timed: 0, who: {} };
+      pg.n++; if (+r[c.secs]) { pg.secs += +r[c.secs]; pg.timed++; } pg.who[vid || 'anon' + s.anon] = 1;
+      if (vid) {
+        var v = s.visitors[vid] = s.visitors[vid] || { id: vid, n: 0, secs: 0, pages: [], where: where(r), org: r[c.org] || '', net: r[c.nettype] || '', device: [r[c.device], r[c.model], r[c.os]].filter(Boolean).join(' · '), visit: r[c.visit], ref: r[c.ref] || '' };
+        v.n++; v.secs += +r[c.secs] || 0; if (v.pages.indexOf(title) < 0) v.pages.push(title);
       }
-    } else if (t === 'lead') leads.push(r[c.detail]);
-    else if (t === 'calc') calcs.push(String(r[c.detail]).split('\n')[0] + (r[c.org] ? ' — ' + r[c.org] : '') + (r[c.city] ? ', ' + r[c.city] : ''));
-    else if (t === 'click' && /^(WhatsApp|Email|Phone)/.test(r[c.detail])) clicks.push(r[c.detail] + (r[c.org] ? ' — ' + r[c.org] : '') + (r[c.city] ? ', ' + r[c.city] : ''));
+      if (r[c.nettype] === 'Company network') {
+        var f = s.firms[r[c.org]] = s.firms[r[c.org]] || { n: 0, secs: 0, where: where(r), pages: {} };
+        f.n++; f.secs += +r[c.secs] || 0; f.pages[title] = 1;
+      }
+    } else if (t === 'lead') s.leads.push(r[c.detail]);
+    else if (t === 'calc') s.calcs.push(String(r[c.detail]).split('\n')[0] + (r[c.org] ? ' — ' + r[c.org] : '') + (r[c.city] ? ', ' + r[c.city] : ''));
+    else if (t === 'click' && /^(WhatsApp|Email|Phone|3D viewer)/.test(r[c.detail])) s.clicks.push(r[c.detail] + (r[c.org] ? ' — ' + r[c.org] : '') + (r[c.city] ? ', ' + r[c.city] : ''));
   });
-  if (!views && !leads.length) return;
+  return s;
+}
+
+function report_(s, label) {
+  var grey = 'color:#566778', th = 'text-align:left;padding:4px 10px 4px 0;border-bottom:1px solid #dde5ee;font-weight:600', td = 'padding:4px 10px 4px 0;border-bottom:1px solid #eef3f8;vertical-align:top';
+  var mins = function (secs) { return secs ? (secs < 90 ? Math.round(secs) + ' s' : Math.round(secs / 60) + ' min') : ''; };
   var top = function (o, n) { return Object.keys(o).sort(function (a, b) { return o[b] - o[a]; }).slice(0, n).map(function (k) { return esc(k) + ' <b>' + o[k] + '</b>'; }).join(' · '); };
-  var firmList = Object.keys(firms).sort(function (a, b) { return firms[b].n - firms[a].n; }).slice(0, 40).map(function (k) {
-    var f = firms[k]; return '<li><b>' + esc(k) + '</b> · ' + esc(f.where) + ' · ' + f.n + ' pages, ' + Math.round(f.secs / 60) + ' min<br><span style="color:#566778">' + esc(Object.keys(f.pages).slice(0, 8).join(' · ')) + '</span></li>';
+  var li = function (a) { return a.length ? '<ul>' + a.slice(0, 40).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '<p style="' + grey + '">None</p>'; };
+  var table = function (head, rows) { return rows.length ? '<table style="border-collapse:collapse;font-size:13px"><tr>' + head.map(function (h) { return '<th style="' + th + '">' + h + '</th>'; }).join('') + '</tr>' + rows.join('') + '</table>' : '<p style="' + grey + '">None</p>'; };
+  var pages = Object.keys(s.pages).map(function (k) { return s.pages[k]; }).sort(function (a, b) { return b.n - a.n; });
+  var pageRow = function (p) { return '<tr><td style="' + td + '">' + esc(p.title) + '<br><span style="' + grey + ';font-size:12px">' + esc(p.page) + '</span></td><td style="' + td + '"><b>' + p.n + '</b></td><td style="' + td + '">' + Object.keys(p.who).length + '</td><td style="' + td + '">' + mins(p.timed ? p.secs / p.timed : 0) + '</td></tr>'; };
+  var models = pages.filter(function (p) { return /^v\//.test(p.page); });
+  var vis = Object.keys(s.visitors).map(function (k) { return s.visitors[k]; }).sort(function (a, b) { return b.n - a.n; });
+  var firmList = Object.keys(s.firms).sort(function (a, b) { return s.firms[b].n - s.firms[a].n; }).slice(0, 40).map(function (k) {
+    var f = s.firms[k]; return '<li><b>' + esc(k) + '</b> · ' + esc(f.where) + ' · ' + f.n + ' pages, ' + Math.round(f.secs / 60) + ' min<br><span style="' + grey + '">' + esc(Object.keys(f.pages).slice(0, 8).join(' · ')) + '</span></li>';
   }).join('');
-  var li = function (a) { return a.length ? '<ul>' + a.slice(0, 40).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '<p style="color:#566778">None</p>'; };
-  var html = '<div style="font:14px/1.5 Arial,sans-serif;color:#13202c">' +
-    '<p style="font-size:16px"><b>SHIVAS website, ' + y + '</b></p>' +
-    '<p>' + views + ' page views · ' + Object.keys(people).length + ' visitors who said OK · ' + anon + ' views from visitors who did not</p>' +
-    '<p><b>Enquiries</b></p>' + li(leads) +
-    '<p><b>Companies</b> (visits from office networks; home and mobile connections cannot be named)</p>' + (firmList ? '<ol>' + firmList + '</ol>' : '<p style="color:#566778">None identified</p>') +
-    '<p><b>WhatsApp, email and phone taps</b></p>' + li(clicks) +
-    '<p><b>Calculators used</b></p>' + li(calcs) +
-    '<p><b>Countries</b><br>' + top(countries, 12) + '</p><p><b>Devices</b><br>' + top(devices, 5) + '</p><p><b>Most viewed</b><br>' + top(pages, 12) + '</p>' +
-    '<p style="color:#566778">Every row is in the Visits tab of the visitor log.</p></div>';
-  MailApp.sendEmail({ to: DIGEST_TO, subject: 'SHIVAS website ' + y + ': ' + views + ' views · ' + Object.keys(firms).length + ' companies · ' + leads.length + ' enquiries', htmlBody: html, name: 'SHIVAS website' });
+  var url = ''; try { url = book_().getUrl(); } catch (e) {}
+  return '<div style="font:14px/1.5 Arial,sans-serif;color:#13202c;max-width:760px">' +
+    '<p style="font-size:17px;margin:0 0 4px"><b>SHIVAS website · ' + esc(label) + '</b></p>' +
+    '<p style="margin:0 0 14px">' + s.views + ' page views · ' + Object.keys(s.people).length + ' visitors who pressed OK · ' + s.anon + ' views from visitors who did not · ' + s.leads.length + ' enquiries</p>' +
+    (url ? '<p><a href="' + url + '" style="color:#1f4e79;font-weight:600">Open the visitor log (Google Sheet)</a> <span style="' + grey + '">· tabs Visits, Pages, Daily, Viewers, Companies, Leads</span></p>' : '') +
+    '<h3 style="margin:18px 0 6px">Enquiries</h3>' + li(s.leads) +
+    '<h3 style="margin:18px 0 6px">Pages viewed</h3>' + table(['Page', 'Views', 'Visitors', 'Avg time'], pages.slice(0, 60).map(pageRow)) +
+    '<h3 style="margin:18px 0 6px">3D models opened</h3>' + table(['Model', 'Views', 'Visitors', 'Avg time'], models.map(pageRow)) +
+    '<h3 style="margin:18px 0 6px">Visitors and what they looked at</h3><p style="' + grey + ';margin:0 0 6px">Visitors who pressed OK on the bar. Others are counted above but not listed. Home and mobile connections cannot be named.</p>' +
+    table(['Visitor', 'From', 'Network', 'Pages they viewed'], vis.slice(0, 60).map(function (v) {
+      return '<tr><td style="' + td + '">' + esc(v.id) + '<br><span style="' + grey + ';font-size:12px">visit ' + esc(v.visit || 1) + ' · ' + v.n + ' views · ' + mins(v.secs) + '</span></td><td style="' + td + '">' + esc(v.where) + '<br><span style="' + grey + ';font-size:12px">' + esc(v.device) + '</span></td><td style="' + td + '">' + esc(v.org) + (v.net ? '<br><span style="' + grey + ';font-size:12px">' + esc(v.net) + '</span>' : '') + '</td><td style="' + td + '">' + esc(v.pages.slice(0, 12).join(' · ')) + (v.ref ? '<br><span style="' + grey + ';font-size:12px">came from ' + esc(v.ref) + '</span>' : '') + '</td></tr>';
+    })) +
+    '<h3 style="margin:18px 0 6px">Companies</h3><p style="' + grey + ';margin:0">Visits from office networks</p>' + (firmList ? '<ol>' + firmList + '</ol>' : '<p style="' + grey + '">None identified</p>') +
+    '<h3 style="margin:18px 0 6px">WhatsApp, email, phone and 3D taps</h3>' + li(s.clicks) +
+    '<h3 style="margin:18px 0 6px">Calculators used</h3>' + li(s.calcs) +
+    '<p><b>Countries</b><br>' + (top(s.countries, 12) || 'None') + '</p><p><b>Devices</b><br>' + (top(s.devices, 5) || 'None') + '</p>' +
+    '<p style="' + grey + '">Every row is in the Visits tab. Visit rows older than ' + KEEP_DAYS + ' days are deleted; enquiries are kept.</p></div>';
+}
+
+function day_(offset) { return Utilities.formatDate(new Date(Date.now() + offset * 864e5), 'Asia/Kolkata', 'yyyy-MM-dd'); }
+
+// every morning at 8:00: yesterday
+function dailyDigest() {
+  var y = day_(-1), s = summary_(y, day_(0));
+  if (s.views || s.leads.length) MailApp.sendEmail({ to: recipients_(), subject: 'SHIVAS website ' + y + ': ' + s.views + ' views · ' + Object.keys(s.people).length + ' visitors · ' + Object.keys(s.firms).length + ' companies · ' + s.leads.length + ' enquiries', htmlBody: report_(s, y), name: 'SHIVAS website' });
   cleanup();
+}
+
+// every Monday at 8:30: the last 7 days
+function weeklyDigest() {
+  var from = day_(-7), to = day_(0), s = summary_(from, to), label = 'week ' + from + ' to ' + day_(-1);
+  MailApp.sendEmail({ to: recipients_(), subject: 'SHIVAS website ' + label + ': ' + s.views + ' views · ' + Object.keys(s.people).length + ' visitors · ' + s.leads.length + ' enquiries', htmlBody: report_(s, label), name: 'SHIVAS website' });
+}
+
+// run this once by hand after setup: sends today's report so far, to check the emails arrive
+function sendTestReport() {
+  var t = day_(0), s = summary_(t, day_(1));
+  MailApp.sendEmail({ to: recipients_(), subject: 'SHIVAS website test report ' + t + ': ' + s.views + ' views so far', htmlBody: report_(s, t + ' so far (test)'), name: 'SHIVAS website' });
 }
 
 // visit rows older than KEEP_DAYS are deleted (enquiries in Leads are kept)
@@ -188,8 +250,15 @@ function setup() {
   var cs = book.getSheetByName('Companies') || book.insertSheet('Companies');
   var L = function (k) { var n = col_(VISIT_COLS, k), s = ''; while (n) { var m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = (n - 1 - m) / 26; } return s; };
   cs.getRange('A1').setFormula('=IFERROR(QUERY(Visits!A:' + L('pv') + ',"select ' + L('org') + ', ' + L('city') + ', ' + L('country') + ', count(' + L('page') + '), max(A) where ' + L('nettype') + " = 'Company network' and " + L('type') + " = 'view' group by " + L('org') + ', ' + L('city') + ', ' + L('country') + ' order by max(A) desc label ' + L('org') + " 'Company network', " + L('city') + " 'City', " + L('country') + " 'Country', count(" + L('page') + ") 'Page views', max(A) 'Last visit'\",1),\"No company visits yet\")");
+  // Pages, Daily and Viewers tabs: live summaries of the Visits tab
+  var tab = function (name, formula) { var t = book.getSheetByName(name) || book.insertSheet(name); t.getRange('A1').setFormula(formula); t.setFrozenRows(1); return t; };
+  var V = 'Visits!A:' + L('pv'), q = function (sel) { return '=IFERROR(QUERY(' + V + ',"' + sel + '",1),"No page views yet")'; };
+  tab('Pages', q('select ' + L('title') + ', ' + L('page') + ', count(' + L('type') + '), avg(' + L('secs') + '), max(A) where ' + L('type') + " = 'view' group by " + L('title') + ', ' + L('page') + ' order by count(' + L('type') + ') desc label ' + L('title') + " 'Page', " + L('page') + " 'Address', count(" + L('type') + ") 'Views', avg(" + L('secs') + ") 'Avg seconds', max(A) 'Last view'"));
+  tab('Daily', q('select toDate(A), count(' + L('type') + ') where ' + L('type') + " = 'view' group by toDate(A) order by toDate(A) desc label toDate(A) 'Day', count(" + L('type') + ") 'Page views'")).getRange('A:A').setNumberFormat('ddd dd mmm yyyy');
+  tab('Viewers', q('select ' + L('visitor') + ', max(A), count(' + L('type') + '), ' + L('org') + ', ' + L('city') + ', ' + L('country') + ', ' + L('device') + ' where ' + L('type') + " = 'view' and " + L('visitor') + " <> '' group by " + L('visitor') + ', ' + L('org') + ', ' + L('city') + ', ' + L('country') + ', ' + L('device') + ' order by max(A) desc label ' + L('visitor') + " 'Visitor', max(A) 'Last seen', count(" + L('type') + ") 'Page views', " + L('org') + " 'Network / company', " + L('city') + " 'City', " + L('country') + " 'Country', " + L('device') + " 'Device'"));
   var old = book.getSheetByName('Sheet1'); if (old && old.getLastRow() === 0 && book.getSheets().length > 1) book.deleteSheet(old);
-  ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'dailyDigest') ScriptApp.deleteTrigger(t); });
+  ScriptApp.getProjectTriggers().forEach(function (t) { if (/^(dailyDigest|weeklyDigest)$/.test(t.getHandlerFunction())) ScriptApp.deleteTrigger(t); });
   ScriptApp.newTrigger('dailyDigest').timeBased().atHour(8).everyDays(1).inTimezone('Asia/Kolkata').create();
+  ScriptApp.newTrigger('weeklyDigest').timeBased().onWeekDay(ScriptApp.WeekDay.MONDAY).atHour(8).nearMinute(30).inTimezone('Asia/Kolkata').create();
   MailApp.getRemainingDailyQuota();   // asks for the email permission now, not on the first enquiry
 }

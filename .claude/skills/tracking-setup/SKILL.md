@@ -11,12 +11,36 @@ Everything is **off** until `site/assets/config.js` has values. With all three e
 window.SHIVAS_CONFIG = { sheetUrl: '', ga4: '', companyScript: '' };
 ```
 
+## What the visitor log does once it is on
+- **Sheet tabs:**
+  - Visits: one row per page view, click, calculation or lead;
+  - Pages: views per page, average time, last view;
+  - Daily: views per day;
+  - Viewers: each visitor who pressed OK, with network, city and device;
+  - Companies: office networks;
+  - Leads: enquiries.
+
+  Pages, Daily, Viewers and Companies are `QUERY` formulas over Visits, written by `setup()`.
+- **Emails:**
+  - Each lead, straight away, to ALERT_TECH or ALERT_REIN.
+  - `dailyDigest` at 08:00 IST (yesterday) and `weeklyDigest` on Mondays at 08:30 (last 7 days). Both contain every page viewed, the 3D models opened, each consented visitor with the pages they viewed, companies, taps, calculators and a link to the Sheet.
+- **Report recipients** (`recipients_()`): DIGEST_TO, plus the Google account that runs the script (`Session.getEffectiveUser()`), plus the script property `REPORT_TO` (comma-separated). Never write a personal address into `Code.gs`: it is served publicly under `site/setup/`.
+- **Test run:** `sendTestReport()` sends today's report so far.
+- **3D viewers:** `v/shivas-bar.js` loads `config.js` and `track.js` with `window.SHIVAS_NOBAR = true`. There is no consent bar there (it would cover the viewer's controls). A visitor's earlier choice applies; without one, only the plain page view is sent.
+
+## Testing it here
+- `track.js` stays silent for automation (`navigator.webdriver`). To test it:
+  - launch Chromium with `--disable-blink-features=AutomationControlled` and override `navigator.webdriver` in an init script;
+  - route `assets/config.js` to a test `sheetUrl`, and route `script.google.com` to capture the POST bodies.
+- `Code.gs` can be run in Node against small stand-ins for SpreadsheetApp, MailApp, Utilities, Session, PropertiesService and ScriptApp, to check the formulas, recipients and email HTML before the owner pastes it in. A run like this was last done in Nov 2026.
+
 ## What only the owner can do
 These steps run in the owner's Google account. Claude can't do them from here, so send the user these steps (from `site/setup/visitor-log/README.txt`):
 1. Create a Google Sheet called "SHIVAS visitor log". Go to Extensions → Apps Script and paste all of `site/setup/visitor-log/Code.gs`.
 2. Run `setup` and allow the permissions it asks for.
 3. Deploy → New deployment → Web app, with "Execute as" set to Me and "Who has access" set to Anyone. Copy the URL that ends in `/exec`.
-4. Optional: create a GA4 property and copy its measurement ID (`G-…`).
+4. Run `sendTestReport` once to check the email arrives.
+5. Optional: create a GA4 property and copy its measurement ID (`G-…`).
 
 ## What Claude does once the URL or ID arrives
 1. **Check the values.**

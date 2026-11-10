@@ -5,8 +5,17 @@ What you get
   network or company name, time on page, where the visitor came from.
 - A row and an email for every enquiry and every "Ask our engineer" request from the calculators,
   with what that visitor looked at before getting in touch.
-- An email every morning at 8:00 (India time): yesterday's visits, companies, enquiries,
-  WhatsApp / phone / email taps and calculators used.
+- A report by email every morning at 8:00 (India time) for yesterday, and every Monday at 8:30 for
+  the last 7 days: every page viewed (views, visitors, average time), the 3D models opened, each
+  visitor who pressed OK with where they came from and the pages they looked at, companies,
+  enquiries, WhatsApp / phone / email taps and calculators used, with a link to the Sheet.
+  It goes to info@shivastechnology.com AND to the Google account you set this up with.
+  To send it to more people: Apps Script → Project settings → Script properties → add REPORT_TO
+  with the addresses, separated by commas.
+- Tabs in the Sheet: Visits (every page view), Pages (views per page), Daily (views per day),
+  Viewers (each visitor who pressed OK), Companies (office networks) and Leads (enquiries).
+- The 3D model pages are counted too. They do not show the bar (it would cover the model's buttons);
+  a choice made on the main site applies there, otherwise only the plain page view is recorded.
 
 What it cannot do
 - Name a person who has not sent you their details. A name comes only from the enquiry form,
@@ -20,7 +29,9 @@ Steps
 2. Create a new Google Sheet. Name it "SHIVAS visitor log".
 3. In the sheet: Extensions → Apps Script. Delete what is there, paste all of Code.gs, press Save.
 4. In the function list at the top choose "setup" and press Run. Allow the permissions it asks for
-   (the sheet, sending email, running every morning). The tabs Visits, Leads and Companies appear.
+   (the sheet, sending email, running every morning). The tabs Visits, Leads, Companies, Pages,
+   Daily and Viewers appear. (Already set up before Nov 2026? Paste the new Code.gs and run setup
+   again: it adds the new tabs and the Monday report and keeps your data.)
 5. Deploy → New deployment → gear icon → Web app.
      Execute as: Me      Who has access: Anyone
    Press Deploy and copy the Web app URL (it ends in /exec).
@@ -29,6 +40,8 @@ Steps
    Upload the site again (or ask Claude to republish it).
 7. Test: open the website, press OK on the bar at the bottom, fill the enquiry form.
    A row appears in Visits and Leads within a few seconds and the enquiry email arrives.
+8. Check the report: choose "sendTestReport" in the function list and press Run. An email with
+   today's visits so far arrives at info@shivastechnology.com and at your own Google address.
 
 Options (assets/config.js)
 - ga4: a Google Analytics 4 measurement ID (G-...) for charts of countries, cities and devices.

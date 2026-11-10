@@ -44,6 +44,24 @@ Text colours that fail contrast are fixed in the A11Y LAYER at the end of `asset
 4. Add it to `sitemap.xml`. Link to it from 1–3 related item pages or articles.
 5. Technical claims must be standard practice or come from the user. Cite ISO 1461 / ASTM A123 / IS 2629 / IS 4759 where relevant.
 
+## Navigation (keep it identical everywhere)
+- **Inner pages:** `<nav class="snav" aria-label="Site">` with Home, Products (`items/index.html`), 3D models, Calculators, Photos (`gallery.html`), Articles (`blog/index.html`), About and Contact, using paths relative to the page.
+  - Put `aria-current="page"` on the current section.
+  - Product pages mark Products; articles mark Articles; `calculator.html` marks Calculators.
+- **Home header:** Products, 3D models, Calculators, Articles, About, Contact. Seven links overflow at 1240–1440 px.
+- **Division pages:** in-page section links in `#nav .links`. The NAV LAYER in `v39.css` puts them on a second row from 900 px.
+- **Quote button:** always "Get a quote" (on phones the dock says "Quote").
+
+## Choosing hero and feature photos (accuracy)
+- **Where the meaning comes from:**
+  - The file name prefix tells you the product a photo is filed under, for example `line-fpl-…` means `items/line-fpl.html`, which is a *fumeless pickling line* and not a galvanizing plant. Check the product's `<title>` before using a photo anywhere else.
+  - `-own-` photos have verified captions in `assets/library.js` (`config`). Use those words.
+  - `-sup-` photos have no caption. Caption them with the product name, and nothing more specific.
+- **Division heroes:** `.v61-hm` in `galvanizing.html`, `wire-drawing.html` and `reinplast.html`.
+  - Only the visible division's main photo is `fetchpriority="high"`; the others are `loading="lazy"`.
+  - Keep that per page.
+- **Gaps:** where no accurate photo exists (for example the pultrusion line), don't substitute a related one. Add the gap to `docs/content-checklist.md`.
+
 ## Home page (index.html)
 The sections are: hero (photo mosaic `.hmos`, buttons, proof strip `.hproof`), Start here, What we do, 3D models (`#models3d`), How we work, Calculators, Photos, Articles, About, Contact. Styles added in Nov 2026 live in `<style id="v60home">`. Mosaic photos use captions from `assets/library.js`. Use only `-own-` photos there.
 
