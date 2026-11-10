@@ -21,7 +21,7 @@ grep -rl "98109 20468\|919810920468\|+91-98109-20468" site --include=*.html | wc
 Replace every format the number is written in (display, `tel:`, `wa.me/`, JSON-LD). Use a script for bulk edits, then re-run the grep to confirm nothing is left.
 
 ## Division pages: galvanizing.html, wire-drawing.html, reinplast.html
-They are one app shown three ways (`data-page`). Make a shared edit in all three files with the same old→new text. A Python replace that asserts exactly one match per file is safest. Afterwards the site-check drift numbers must stay at about 69 and 101.
+They are one app shown three ways (`data-page`). Make a shared edit in all three files with the same old→new text. A Python replace that asserts exactly one match per file is safest. Afterwards the site-check drift numbers must stay at about 71 and 103.
 
 ## Adding or editing a product page (items/)
 1. Copy the closest existing item in the same division, for example `items/kettle.html` for galvanizing or `items/slm.html` for wire drawing.
