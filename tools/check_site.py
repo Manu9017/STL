@@ -33,6 +33,8 @@ CLAIMS = [
     (re.compile(r"\bEN\s*746\b"), "EN 746 reference (do not claim until confirmed)"),
     (re.compile(r"\bBS\s*729\b"), "BS 729 is withdrawn: cite ISO 1461 / ASTM A123 / IS 2629 / IS 4759"),
 ]
+# EN 746-2 in these 3D viewers' spec tables was reviewed and kept by the owner (10 Nov 2026).
+EN746_KEPT = {"v/arp-10.html", "v/spin-galvanizing.html", "v/zinc-ash-plant.html"}
 THIRD_PARTY_MAIL = re.compile(r"indianbusinesshub|clquery", re.I)
 PLACEHOLDER = re.compile(r"\[(?:[A-Z][^\[\]<>{}\n]{2,70})\]")
 DIVISION_PAGES = ["galvanizing.html", "wire-drawing.html", "reinplast.html"]
@@ -223,7 +225,7 @@ def main():
 
         for i, ln in enumerate(p.src.splitlines(), 1):
             for rx, why in CLAIMS:
-                if rx.search(ln):
+                if rx.search(ln) and not (why.startswith("EN 746") and rel in EN746_KEPT):
                     warnings.append(f"{rel}:{i}: {why}")
             if THIRD_PARTY_MAIL.search(ln) and "mailto:" not in ln:
                 errors.append(f"{rel}:{i}: third-party lead address in page source")

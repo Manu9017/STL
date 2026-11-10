@@ -23,8 +23,7 @@ The exit code is 1 when there are errors.
 - `enquiry copied to a third party`: remove it. Leads go to SHIVAS only.
 - `sitemap.xml: … has no file`: remove the entry, or restore the page.
 
-**Warnings: compare with the baseline.** On 10 Nov 2026 (after the image-size, canonical and sitemap fixes) the site had 0 errors and 8 warnings:
-- 8 `EN 746` references inside the 3D viewers (`v/arp-10.html`, `v/spin-galvanizing.html`, `v/zinc-ash-plant.html`). These are flagged to the user. Don't claim EN 746 until it is confirmed.
+**Warnings: compare with the baseline.** On 10 Nov 2026 (after the image-size, canonical and sitemap fixes) the site had **0 errors and 0 warnings**. The EN 746-2 references in three 3D viewers were kept by the owner and are allow-listed in `EN746_KEPT`. Any other EN 746 mention still warns.
 
 Any `<img> without width/height` on a new or edited page: run `python3 tools/fix_img_sizes.py <page>`. It adds the real pixel size. Then screenshot the page.
 

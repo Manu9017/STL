@@ -42,11 +42,11 @@ The logo-red palette in `docs/astro-rebuild-brief.md` belongs to the on-hold reb
 
 ## Facts and claims (always)
 - Never invent numbers, clients, projects, certificates or photos. If a fact is missing, write `[bracketed]` and add it to `docs/content-checklist.md`.
-- Don't claim CE, ISO 9001 or EN 746 until the certificates are confirmed. (The 3D viewers `v/arp-10.html`, `v/spin-galvanizing.html` and `v/zinc-ash-plant.html` cite EN 746-2 in their spec tables. This is flagged for the user.)
+- Don't claim CE, ISO 9001 or EN 746 until the certificates are confirmed. Exception: the EN 746-2 references in the spec tables of the 3D viewers `v/arp-10.html`, `v/spin-galvanizing.html` and `v/zinc-ash-plant.html` were reviewed and kept by the owner on 10 Nov 2026. Don't add EN 746 anywhere else.
 - Don't cite BS 729. Use ISO 1461, ASTM A123, IS 2629 and IS 4759.
 - Don't copy any competitor's text or images.
 - Enquiries go to SHIVAS only. Never copy leads to a third party (the 2019 site copied them to clquery@indianbusinesshub.com).
-- Contacts in the site: enquiry desk and WhatsApp +91 98109 20468; sales +91 98102 80104 and +91 98186 10744; info@shivastechnology.com. Change them everywhere at once (header, mobile menu, dock, enquiry section, footer, JSON-LD).
+- Contacts in the site (all confirmed valid, 10 Nov 2026): enquiry desk and WhatsApp +91 98109 20468; sales +91 98102 80104 and +91 98186 10744; info@shivastechnology.com. Change them everywhere at once (header, mobile menu, dock, enquiry section, footer, JSON-LD).
 
 ## Skills (in `.claude/skills/`)
 - `site-check`: run `python3 tools/check_site.py`. It checks links, SEO tags, JSON-LD, sitemap, claims, placeholders and division-page drift. **Run it before every commit.**
