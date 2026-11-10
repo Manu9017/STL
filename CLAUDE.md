@@ -64,6 +64,12 @@ The logo-red palette in `docs/astro-rebuild-brief.md` belongs to the on-hold reb
 - `viewer-3d`: the 3D viewers, the SHIVAS button positions, and adding a model.
 - `tracking-setup`: turning on the visitor log or GA4 once the owner sends the Apps Script URL or the `G-` ID.
 - `publish-artifact`: republish `site/` to the claude.ai artifact so the shared link shows the latest version.
+- `deploy-site`: go live on www.shivastechnology.com (Cloudflare Pages recommended), domain, 301 redirects from the 2019 site (`site/_redirects`, from `docs/redirects.csv`).
+- `enquiry-reply`: draft replies to enquiries as **Gmail drafts** (Gmail and Calendar are connected). Never send without the owner, and never quote prices.
+- `write-article`: a new engineering article, from topic to sitemap.
+- `content-gaps`: the missing facts and photos, as questions for the owner, applied everywhere.
+- `page-cro`, `form-cro`, `analytics-tracking`, `lead-research-assistant`: adapted from davila7/claude-code-templates (MIT), with SHIVAS notes on top.
+- **Installed plugins** (Sales, Marketing, Design, Copywriting, HarborRank, B2B Sales Enablement and others) add generic skills. Where they overlap, these project skills and the facts rules above take priority.
 
 ## Workflow
 1. Edit under `site/`.
