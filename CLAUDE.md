@@ -68,7 +68,8 @@ The logo-red palette in `docs/astro-rebuild-brief.md` belongs to the on-hold reb
 - `enquiry-reply`: draft replies to enquiries as **Gmail drafts** (Gmail and Calendar are connected). Never send without the owner, and never quote prices.
 - `write-article`: a new engineering article, from topic to sitemap.
 - `content-gaps`: the missing facts and photos, as questions for the owner, applied everywhere.
-- `page-cro`, `form-cro`, `analytics-tracking`, `lead-research-assistant`: adapted from davila7/claude-code-templates (MIT), with SHIVAS notes on top.
+- `page-cro`, `form-cro`, `analytics-tracking`, `lead-research-assistant`, `social-content` (draft-only LinkedIn and WhatsApp posts) and `schema-markup` (JSON-LD, with no invented prices or ratings): adapted from davila7/claude-code-templates (MIT), with SHIVAS notes on top.
+- **Agents** (`.claude/agents/`, from the same repository with SHIVAS notes): `seo-specialist` and `search-ai-optimization-expert` (audits and advice only, never invented rankings), and `sales-engineer` (technical offers and plant briefs; it pauses for owner sign-off on prices, guarantees and certificates).
 - **Installed plugins** (Sales, Marketing, Design, Copywriting, HarborRank, B2B Sales Enablement and others) add generic skills. Where they overlap, these project skills and the facts rules above take priority.
 
 ## Workflow
