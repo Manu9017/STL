@@ -30,7 +30,7 @@
    cnt.textContent=(cur+1)+' / '+list.length;
    if(cap){cap.hidden=kind==='photo'&&!x.cap;cap.innerHTML=(kind==='model'?'<span class="tag">3D model</span> ':'')+(x.cap?x.cap.replace(/[<&]/g,function(c){return c==='<'?'&lt;':'&amp;'}):'')}
    [].forEach.call(th.children,function(b,k){b.setAttribute('aria-current',String(k===cur))})}
-  th.innerHTML=list.map(function(x,k){return '<button type="button" role="listitem" data-i="'+k+'" aria-label="'+x.tag+' '+(k+1)+' of '+list.length+'"><img src="'+x.prev+'" alt="" loading="lazy" decoding="async" width="120" height="80"></button>'}).join('');
+  th.innerHTML=list.map(function(x,k){return '<button type="button" data-i="'+k+'" aria-label="'+x.tag+' '+(k+1)+' of '+list.length+'"><img src="'+x.prev+'" alt="" loading="lazy" decoding="async" width="120" height="80"></button>'}).join('');
   sec.querySelectorAll('.gal-nav').forEach(function(b){b.hidden=list.length<2});cnt.hidden=list.length<2;th.hidden=list.length<2;
   sec.hidden=false;show(0);
   main.addEventListener('error',function(){var x=list[cur];if(main.getAttribute('src')!==x.full){main.removeAttribute('srcset');main.src=x.full}});

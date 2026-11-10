@@ -9,6 +9,7 @@
    <out>/<page>--desktop.png and <out>/<page>--phone.png. Also prints console errors and failed requests,
    so a broken script or missing file shows up even when the picture looks fine. */
 const http = require('http');
+const zlib = require('zlib');
 const fs = require('fs');
 const path = require('path');
 
@@ -34,7 +35,13 @@ function serve(port) {
       if (p.endsWith('/')) p += 'index.html';
       const f = path.join(ROOT, p);
       if (!f.startsWith(ROOT) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end('not found'); }
-      res.writeHead(200, { 'Content-Type': TYPES[path.extname(f).toLowerCase()] || 'application/octet-stream' });
+      const type = TYPES[path.extname(f).toLowerCase()] || 'application/octet-stream';
+      // gzip text like GitHub Pages / Cloudflare do, so speed tests see realistic transfer sizes
+      if (/text|javascript|json|xml|svg/.test(type) && /gzip/.test(req.headers['accept-encoding'] || '')) {
+        res.writeHead(200, { 'Content-Type': type, 'Content-Encoding': 'gzip', 'Cache-Control': 'max-age=600' });
+        return fs.createReadStream(f).pipe(zlib.createGzip()).pipe(res);
+      }
+      res.writeHead(200, { 'Content-Type': type, 'Cache-Control': 'max-age=600' });
       fs.createReadStream(f).pipe(res);
     });
     srv.listen(port, '127.0.0.1', () => resolve(srv));
@@ -71,6 +78,16 @@ function serve(port) {
         await page.goto(base + pg, { waitUntil: 'load', timeout: 30000 });
       } catch (e) {
         issues.push('load: ' + e.message.split('\n')[0]);
+      }
+      if (FULL) {   // full-length shots: load lazy images first, or they show as empty boxes
+        await page.evaluate(async () => {
+          const imgs = [...document.images]; imgs.forEach((i) => { i.loading = 'eager'; });
+          await Promise.race([Promise.all(imgs.map((i) => i.complete ? 0 : new Promise((ok) => { i.onload = i.onerror = ok; }))),
+            new Promise((ok) => setTimeout(ok, 8000))]);
+          // walk down the page so decode-on-view images and scroll reveals render, then go back up
+          for (let y = 0; y < document.documentElement.scrollHeight; y += innerHeight * 0.8) { scrollTo(0, y); await new Promise((ok) => setTimeout(ok, 120)); }
+          scrollTo(0, 0); await new Promise((ok) => setTimeout(ok, 300));
+        }).catch(() => {});
       }
       await page.waitForTimeout(600);
       const file = path.join(OUT, `${pg.replace(/[\/#?]/g, '_').replace(/\.html$/, '')}--${name}.png`);
