@@ -1,106 +1,62 @@
-# CLAUDE.md — shivastechnology.com rebuild
+# CLAUDE.md: SHIVAS website
 
-Read this first. It is the brief for building the production site from the approved design.
+Read this first.
 
-## Goal
-Replace the 2019 site at shivastechnology.com with a fast, static, SEO-strong site.
-- Positioning: closest to Assomac (wire drawing) and Arvind Corrotech (turnkey HDG).
-- Visitors land on a gateway and choose one of two divisions: **Wire drawing** or **Hot dip galvanizing**.
-- The company name is always written **SHIVAS** in capitals.
+## What this repo is
+The website for the SHIVAS group, Ghaziabad, India:
+- **SHIVAS Technology Limited** (since 2019): hot-dip galvanizing plants and wire drawing machines.
+- **SHIVAS Reinplast Company of India** (since 1991): PP/FRP tanks, fume scrubbers, pickling, ETP and ZLD.
+- **SHIVAS Products India** (since 2002): FRP pultruded profiles and resins.
 
-## Source of truth
-- `design/artboards/*.dc.html` — approved page designs, with all copy, layout, colours and inline SVG.
-  - They use a design-canvas format: `{{hole}}` bindings, `<sc-for>` loops, `<sc-if>` branches, a `class Component extends DCLogic` script and `<helmet>`. Treat these as specs. Do **not** ship them as they are.
-  - Links point to `X.dc.html`. Map them to the real routes in the table below.
-- `design/generator/*.py` — the Python that generated the artboards. It holds all copy, stage data, spec tables and SVG functions in structured form, which is easier to port than the HTML. Run `python3 design/generator/build.py` to regenerate `design/artboards/`, `design/canvas.json` and the illustration colours; `brand.py` adds the logo, palette and cross-links on top of the page modules.
-- `assets/illustrations/*.svg` — every illustration exported as a standalone SVG. Use these; don't redraw them.
-- `docs/` — the redirect map, the due-diligence list and the content checklist.
+The company name is always written **SHIVAS** in capitals.
 
-## Stack (recommended)
-- **Astro** (static output), TypeScript, plain CSS with custom properties. No UI framework unless an island needs one.
-- Two interactive islands, in vanilla TS or Preact:
-  1. The galvanizing process explorer: 9 stages, crane follows the selection, prev/next buttons.
-  2. The wire die sequence calculator: inputs D, d, n and v. Per-pass reduction r = 1 − (d/D)^(2/n). Die i diameter = D·(d/D)^(i/n). Block speed = v·(d/dᵢ)².
-- Content lives in Markdown/MDX with content collections: `products`, `knowledge`, `projects`.
-- Deploy to Cloudflare Pages, Netlify or Vercel. Handle redirects at the host (`public/_redirects`).
-
-## Logo
-- The SHIVAS logo is the red "Shivas" wordmark over "SHIVAS TECHNOLOGY LTD", as on the current site.
-- Files in `assets/logo/`: `shivas-logo-original.jpg` (as found), and transparent PNG cut-outs:
-  `shivas-logo-compact.png` (header, light grounds), `shivas-logo-compact-light.png` (footer, dark grounds),
-  and full versions with the tagline. Header logo 48px high on desktop, 34px on mobile; footer 44px.
-- In the artboards the logo is an `<img>` pointing at the design canvas's asset store (`/_blob/...`). Map it to these files.
-
-## Design tokens
-The palette is built on the logo red. The generator writes it through `design/generator/brand.py`
-(the `PALETTE` map turns the original tokens in `lib.py` into these values).
-
-| Token | Value | Use |
-|---|---|---|
-| red | #E3000F | brand red from the logo: primary CTA buttons, active nav underline, call-to-action bands |
-| ink | #0A1F4D | headings, dark grounds, galvanizing hero |
-| ink-2 | #133078 | cards on dark grounds |
-| blue | #0070AD / dark #005A87 | wire division accent |
-| gold | #FFB400 / #A85F00 for text on light | galvanizing accent |
-| zinc | #E6F6FA | light section ground |
-| paper | #F5F8FF | page ground |
-| rule | #D3DDEE | borders |
-| text / muted | #14213D / #475A78 | on light |
-| on-dark / muted | #EEF3FF / #B9C8E8 | on dark |
-
-All text pairs meet WCAG AA (white on red 4.9:1).
-
-## Navigation and cross-links
-Every page must carry these, so visitors can move between the two divisions from anywhere:
-- Header nav with the current section underlined in red, and a red "Request a quote" button.
-- A 4px brand stripe under the header: red, gold, blue in equal thirds.
-- On every inner page, a breadcrumb bar (also emitted as `BreadcrumbList` JSON-LD) with "Jump to" links on the right into the other division, the furnace page, the company page or the quote form.
-- On every inner page, a "Keep exploring SHIVAS" row of three related-page cards above the footer.
-- The same footer site map on every page, including a Home link.
-- Mobile: the menu button opens a full-height menu of every page with quote and WhatsApp buttons.
-
-- Font: **Archivo** variable (Google Fonts, `wdth 62..125`, `wght 100..900`). Self-host it.
-  - Headings: `font-stretch: 112–125%`, weight 800.
-  - Body: 100%, 400–500.
-- Buttons have a 2px radius. Sections are left-aligned on a 1280px content width with 80px side margins.
-- Motion is limited to the running wire and the pulsing burner flames. Respect `prefers-reduced-motion`.
-- Keep the look as designed. No gradient washes, emoji, all-caps labels or card shadows.
-
-## Routes
-| Artboard | Route |
+| Path | What it is |
 |---|---|
-| Main.dc.html | `/` |
-| WireDrawing.dc.html | `/wire-drawing/` (sections: `#straight-line`, `#oto`, `#line`, `#calculator`) |
-| Galvanizing.dc.html | `/galvanizing/` (sections: `#process`, `#systems`, `#air-water`, `#automation`, `#knowledge`) |
-| Furnace.dc.html | `/galvanizing/pulse-fired-furnaces/`. This is the **template for every product page.** |
-| About.dc.html | `/company/` |
-| Contact.dc.html | `/contact/` |
-| Mobile.dc.html | Reference for the responsive layout below 768px |
+| `site/` | **The live website and the source of truth.** Plain HTML, CSS and JS. No build step. It was built in Claude chat, published as the artifact https://claude.ai/artifact/QbaMojD3TugfPsudMNCAXJ and imported here on 10 Nov 2026. |
+| `tools/` | Checker, screenshot and publish helpers (see Skills below). |
+| `.claude/skills/` | Project skills for working on the site. |
+| `design/`, `assets/`, `preview/build.py` | The earlier design handoff for an Astro rebuild. **On hold.** Its brief is kept in `docs/astro-rebuild-brief.md`. Do not build from it unless the user asks. |
+| `docs/` | Redirect map, due-diligence list, content checklist, the old brief. |
 
-Product pages to build from the furnace template:
-- Galvanizing: zinc-kettles, kettle-enclosures, enclosed-process-rooms, pp-frp-process-tanks, flux-filtration-regeneration, zinc-fume-extraction, acid-fume-extraction, etp-zld, dryers-heat-recovery, cranes-material-handling, automation-scada.
-- Wire drawing: straight-line-machines, oto-machines, pay-offs, descalers, pointing-butt-welding, die-boxes, dead-block-coilers, spoolers, take-ups, inverted-vertical-machines, annealing-furnaces, galvanized-wire-lines, drives-control-panels.
+## How `site/` is put together
+| Path | Notes |
+|---|---|
+| `index.html` | Home page (gateway to the companies, calculators, photos, articles, enquiry form). |
+| `galvanizing.html`, `wire-drawing.html`, `reinplast.html` | **One shared app, three copies.** Each is about 800 KB with `<div id="app" data-page="hdg / wire / …">`. They differ only in the title, meta, `data-page` and a few self-links. **Any change to shared content must go into all three.** `tools/check_site.py` reports how far they have drifted. |
+| `items/*.html` | One page per product, line or plant (about 85). `items/index.html` lists them all. Shared styles in `assets/item.css`, script in `assets/item.js`. `items/r-frp.html` is a redirect stub. |
+| `blog/*.html` | 25 articles plus `blog/index.html`. |
+| `v/*.html` | Self-contained 3D model viewers (three.js from cdnjs), opened from `3d-models.html`. They are 0.7–2.4 MB each, so don't rewrite them casually. |
+| `calculator.html`, `calculators.html` | Plant calculator (`assets/calc.js`) and the other calculators (`assets/calcs.js`). |
+| `about`, `contact`, `careers`, `gallery`, `pultrusion`, `privacy`, `3d-models` `.html` | Other pages. |
+| `assets/library.js`, `assets/library/` | The image library: every approved picture (PREVIEW / THUMB / FULL webp) and `drawings.svg`. `library.js` is **generated** by the SHIVAS image-library tools, which are not in this repo, so don't hand-edit it. See `site/photos/README.md`. |
+| `assets/site.js` | Site-wide helpers on every page (scroll-to-top, back-to-top, auto rails). It loads `config.js` and `track.js`. |
+| `assets/config.js`, `assets/track.js`, `setup/visitor-log/` | Visitor log (Google Sheet + Apps Script), GA4 and company identification. **Currently all off**: `config.js` is empty. Turning it on is a privacy decision, so ask the user first and keep `privacy.html` in step. |
+| `assets/v39.css`, `assets/v39.js` and inline `<style id="v3x">` blocks | Layered design revisions from the chat sessions. Later layers override earlier ones. Prefer editing the latest layer. |
+| `sitemap.xml`, `robots.txt` | Base URL `https://www.shivastechnology.com/`. Add every new indexable page to the sitemap. |
 
-Also create:
-- `/knowledge/` hub, with the 6 article stubs listed on the galvanizing page.
-- `/projects/` (case studies).
-- `/privacy/`, `/terms/` and a 404 page.
+Each page carries its own `<title>`, meta description, canonical link and JSON-LD (`Organization`, `Product`, `FAQPage`, `Article`). Keep them unique and valid.
 
-## Must-dos
-1. **Enquiry form.** Post to our own endpoint (Formspree, Web3Forms or a serverless function) and deliver to info@shivastechnology.com only. The old site copied every lead to clquery@indianbusinesshub.com. Do not reproduce that.
-2. **Redirects.** Apply every row in `docs/redirects.csv` as a 301 redirect.
-3. **SEO:**
-   - Unique title and description on every page.
-   - `Organization` + `LocalBusiness` JSON-LD sitewide, `Product` on product pages, `BreadcrumbList`.
-   - `sitemap.xml`, `robots.txt` and canonical URLs.
-   - Open Graph images.
-4. **Performance.** Target Lighthouse 95+. Inline SVG where it is animated. Serve photos as AVIF/WebP with explicit width and height.
-5. **Accessibility.** Real buttons, links and labels (already in the design), visible focus rings, AA contrast.
-6. **Placeholders.** Every `[bracketed]` string is a fact still to be supplied. Collect them into `docs/content-checklist.md` and never invent numbers, clients or certificates.
-7. **Contact actions.** WhatsApp click-to-chat: `https://wa.me/919810280104`. Phone: `tel:+919810280104`.
-8. **Footer.** Include CIN and GSTIN, links to the group sites (shivasasia.com, pptanks.com, pickling-plants.com, frpblower.com) and a privacy policy compliant with India's DPDP Act 2023.
+## Look
+Current tokens (in each page's inline `:root`): navy `#1f4e79`, teal `#0e7c86` (Reinplast), amber `#e8a317` (primary buttons), ink `#13202c`, muted `#4f6275`, line `#dde5ee`, bg `#f6f8fb`. There is a dark mode under `[data-theme="dark"]`. Font: Archivo or Noto Sans from Google Fonts.
+The logo-red palette in `docs/astro-rebuild-brief.md` belongs to the on-hold rebuild, not to this site.
 
-## Don't
-- Don't copy any competitor's text or images.
-- Don't claim CE, ISO 9001 or EN 746 until the certificates are confirmed.
+## Facts and claims (always)
+- Never invent numbers, clients, projects, certificates or photos. If a fact is missing, write `[bracketed]` and add it to `docs/content-checklist.md`.
+- Don't claim CE, ISO 9001 or EN 746 until the certificates are confirmed. (The 3D viewers `v/arp-10.html`, `v/spin-galvanizing.html` and `v/zinc-ash-plant.html` cite EN 746-2 in their spec tables. This is flagged for the user.)
 - Don't cite BS 729. Use ISO 1461, ASTM A123, IS 2629 and IS 4759.
+- Don't copy any competitor's text or images.
+- Enquiries go to SHIVAS only. Never copy leads to a third party (the 2019 site copied them to clquery@indianbusinesshub.com).
+- Contacts in the site: enquiry desk and WhatsApp +91 98109 20468; sales +91 98102 80104 and +91 98186 10744; info@shivastechnology.com. Change them everywhere at once (header, mobile menu, dock, enquiry section, footer, JSON-LD).
+
+## Skills (in `.claude/skills/`)
+- `site-check`: run `python3 tools/check_site.py`. It checks links, SEO tags, JSON-LD, sitemap, claims, placeholders and division-page drift. **Run it before every commit.**
+- `site-preview`: serve and screenshot pages on desktop and phone with `node tools/screenshot.cjs`.
+- `site-edit`: how to change copy, add a product page or an article, and keep the shared pages in step.
+- `publish-artifact`: republish `site/` to the claude.ai artifact so the shared link shows the latest version.
+
+## Workflow
+1. Edit under `site/`.
+2. Run `python3 tools/check_site.py`. There must be 0 errors and no new warnings.
+3. Screenshot the pages you changed (desktop and phone) and look at them.
+4. Commit on the working branch and push.
+5. Republish the artifact only when the user asks. The link is public.

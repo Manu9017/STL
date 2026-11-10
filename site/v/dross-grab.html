@@ -1,0 +1,775 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><link id="v52f" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap"></head><body>
+<title>SH-DG-400 Dross Grab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: engineering datasheet — 3D model first, then numbered data sections in one column; tables scroll in their own frames */
+:root{
+  --bg:#eef2f6; --surface:#ffffff; --ink:#10212f; --muted:#526476; --line:#d3dce5;
+  --blue:#1F4E79; --teal:#0E7C86; --amber:#D9970F; --amber-soft:#fbf1dc;
+  --ok:#1d7a46; --chip:#e4ebf2;
+  --view1:#dfe7ef; --view2:#bccbd9;
+  --f-disp:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"Barlow","Segoe UI",Arial,sans-serif;
+  --f-mono:"Noto Sans",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0b131b; --surface:#111d28; --ink:#e4ecf3; --muted:#91a3b4; --line:#223649;
+  --blue:#6aa6dc; --teal:#36b9c3; --amber:#f0b440; --amber-soft:#3a2d12;
+  --ok:#4cc483; --chip:#1a2a39; --view1:#14212e; --view2:#0a1219; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0b131b; --surface:#111d28; --ink:#e4ecf3; --muted:#91a3b4; --line:#223649;
+  --blue:#6aa6dc; --teal:#36b9c3; --amber:#f0b440; --amber-soft:#3a2d12;
+  --ok:#4cc483; --chip:#1a2a39; --view1:#14212e; --view2:#0a1219; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 15px/1.55 var(--f-body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 40px}
+.wrap{max-width:1100px;margin:0 auto}
+header{padding-block:18px 10px;display:flex;flex-wrap:wrap;gap:6px 20px;align-items:flex-end;justify-content:space-between;border-bottom:2px solid var(--blue)}
+.brand{font:600 13px/1 var(--f-disp);letter-spacing:.14em;text-transform:uppercase;color:var(--teal)}
+h1{font:700 clamp(28px,6vw,44px)/1 var(--f-disp);margin:6px 0 4px;letter-spacing:.01em;text-wrap:balance}
+.sub{color:var(--muted);margin:0;max-width:62ch}
+.docref{font:500 12px/1.5 var(--f-mono);color:var(--muted);text-align:right}
+.docref b{color:var(--ink);font-weight:500}
+nav.toc{display:flex;gap:6px;overflow-x:auto;padding-block:12px;scrollbar-width:none}
+nav.toc a{flex:none;font:600 13px/1 var(--f-disp);letter-spacing:.08em;text-transform:uppercase;color:var(--blue);text-decoration:none;background:var(--chip);padding:8px 11px;border-radius:3px}
+nav.toc a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+/* viewer */
+.viewer{position:relative;height:min(70vh,640px);min-height:380px;background:linear-gradient(180deg,var(--view1),var(--view2));border:1px solid var(--line);overflow:hidden;border-radius:4px 4px 0 0}
+#c3d{display:block;width:100%;height:100%;touch-action:none}
+.lbl{position:absolute;left:0;top:0;transform:translate(-50%,-50%);font:600 11px/1 var(--f-mono);background:var(--amber);color:#1b1404;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;pointer-events:none;box-shadow:0 0 0 2px rgba(0,0,0,.25)}
+.vtag{position:absolute;left:10px;top:10px;font:600 12px/1.3 var(--f-mono);color:var(--ink);background:color-mix(in srgb,var(--surface) 82%,transparent);padding:6px 8px;border-radius:3px;max-width:calc(100% - 20px)}
+.vtag span{color:var(--teal)}
+.vhint{position:absolute;right:10px;bottom:8px;font:400 11px/1 var(--f-mono);color:var(--muted)}
+.ctrl{background:var(--surface);border:1px solid var(--line);border-top:0;padding:12px;display:grid;gap:12px;border-radius:0 0 4px 4px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button,select{font:600 13px/1 var(--f-disp);letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line);background:var(--chip);color:var(--ink);padding:9px 12px;border-radius:3px;cursor:pointer}
+button.pri{background:var(--blue);border-color:var(--blue);color:#fff}
+button[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:#fff}
+select{text-transform:none;letter-spacing:0;font:500 14px/1 var(--f-body);padding:8px 10px}
+label.sl{display:flex;align-items:center;gap:10px;flex:1 1 260px;font:600 13px/1 var(--f-disp);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+label.sl input{flex:1;accent-color:var(--amber);min-width:0}
+.read{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.read div{background:var(--surface);padding:8px 10px}
+.read small{display:block;font:600 11px/1.2 var(--f-disp);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.read b{font:500 16px/1.3 var(--f-mono);font-variant-numeric:tabular-nums}
+.legend{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:4px 16px;font-size:13px;margin:0;padding:0;list-style:none}
+.legend li{display:flex;gap:8px;align-items:baseline}
+.legend i{font:600 11px/20px var(--f-mono);font-style:normal;background:var(--amber);color:#1b1404;border-radius:50%;width:20px;height:20px;text-align:center;flex:none}
+/* data */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:22px}
+.tile{background:var(--surface);border:1px solid var(--line);padding:12px;border-radius:3px}
+.tile small{font:600 12px/1.2 var(--f-disp);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.tile b{display:block;font:600 26px/1.15 var(--f-disp);margin-top:4px;color:var(--blue)}
+.tile span{font-size:12.5px;color:var(--muted)}
+section{margin-top:38px;scroll-margin-top:12px}
+h2{font:700 24px/1.1 var(--f-disp);letter-spacing:.02em;margin:0 0 4px;display:flex;gap:10px;align-items:baseline;text-wrap:balance}
+h2 em{font:500 13px/1 var(--f-mono);font-style:normal;color:var(--amber)}
+.lead{color:var(--muted);margin:0 0 14px;max-width:72ch}
+h3{font:600 16px/1.2 var(--f-disp);letter-spacing:.08em;text-transform:uppercase;color:var(--teal);margin:20px 0 8px}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:3px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font:600 12px/1.2 var(--f-disp);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--chip);white-space:nowrap}
+td.n,th.n{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+td.k{font-weight:600;white-space:nowrap}
+tr.grp td{background:var(--amber-soft);font:600 12px/1.2 var(--f-disp);letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+tr.sel td{background:color-mix(in srgb,var(--teal) 14%,var(--surface))}
+tr.tot td{font-weight:600;border-top:2px solid var(--blue)}
+.ok{color:var(--ok);font-weight:600}
+.chart{background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:8px;overflow-x:auto}
+.chart svg{display:block;width:100%;min-width:320px;height:auto}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:16px;align-items:start}
+.two>*{min-width:0}
+ol.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:grid;gap:8px}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:30px 1fr;gap:10px;background:var(--surface);border:1px solid var(--line);padding:10px;border-radius:3px}
+ol.steps li::before{content:counter(s);font:700 18px/30px var(--f-disp);text-align:center;background:var(--blue);color:#fff;border-radius:3px;height:30px}
+ol.steps b{font-weight:600}
+ul.rules{margin:0;padding-left:18px;display:grid;gap:6px;max-width:80ch}
+.note{font-size:13px;color:var(--muted);margin-top:8px}
+.warn{border-left:4px solid var(--amber);background:var(--amber-soft);padding:10px 12px;border-radius:0 3px 3px 0;margin-top:12px;font-size:14px}
+
+.logo,.vbadge{display:flex;align-items:center;gap:9px;border-left:4px solid var(--teal);padding-left:9px}
+.lw{font:700 30px/0.9 var(--f-disp);letter-spacing:.07em;color:var(--blue)}
+.lt{font:600 10.5px/1.15 var(--f-disp);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.vbadge{position:absolute;left:10px;top:10px;background:color-mix(in srgb,var(--surface) 88%,transparent);padding:7px 11px 7px 9px;border-radius:0 3px 3px 0}
+.vbadge .lw{font-size:22px}.vbadge .lt{font-size:9.5px}
+.fsbtn{position:absolute;right:10px;top:10px;display:flex;gap:6px;align-items:center;background:color-mix(in srgb,var(--surface) 88%,transparent);padding:9px 11px}
+.cap.inside{position:absolute;left:10px;right:10px;bottom:10px;}
+.cap{max-width:470px;background:color-mix(in srgb,var(--surface) 90%,transparent);padding:8px 12px;border-radius:3px;pointer-events:none;border-left:4px solid var(--amber)}
+.capn{font:500 11px/1.3 var(--f-mono);color:var(--teal)}
+#phase{display:block;font:700 20px/1.15 var(--f-disp);letter-spacing:.02em}
+#capD{margin:2px 0 0;font-size:13px;line-height:1.38;color:var(--muted)}
+.lbl{display:flex;align-items:center;gap:6px;width:auto!important;height:22px!important;padding:0;border-radius:11px!important;transform:none}
+.lbl i{font-style:normal;width:22px;height:22px;display:grid;place-items:center;flex:none}
+.lbl span{display:none;font:600 11.5px/1 var(--f-body);padding-right:9px;white-space:nowrap}
+#labels.names .lbl span{display:inline}
+.transport{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.transport .ic{width:44px;height:44px;padding:0;display:grid;place-items:center;border-radius:50%}
+.transport .play{width:56px;height:56px;padding:0;display:grid;place-items:center;border-radius:50%;background:var(--blue);border-color:var(--blue);color:#fff}
+.tl{flex:1 1 220px;display:flex;gap:3px;min-width:0}
+.seg{flex:1;position:relative;height:34px;padding:0;overflow:hidden;background:var(--chip);border-radius:3px;min-width:0}
+.seg .fb{position:absolute;inset:0 auto 0 0;width:0;background:color-mix(in srgb,var(--teal) 40%,transparent)}
+.seg.done .fb{width:100%;background:color-mix(in srgb,var(--teal) 22%,transparent)}
+.seg.on .fb{width:calc(var(--p,0)*100%);background:var(--teal)}
+.seg.on{outline:2px solid var(--teal);outline-offset:-2px}
+.seg em{position:relative;font:600 12px/34px var(--f-mono);font-style:normal}
+.seg.on em{color:#fff}
+#jawv{font:500 14px var(--f-mono);min-width:44px;color:var(--ink)}
+.vlbl{font:600 12px/1 var(--f-disp);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-left:4px}
+.hint{margin:0;font-size:12.5px;color:var(--muted)}
+.stage.fs{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;flex-direction:column;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+.stage.fs .viewer{flex:1 1 auto;height:auto;min-height:0;border:0;border-radius:0}
+.stage.fs .ctrl{border-radius:0;border-left:0;border-right:0;max-height:44vh;overflow-y:auto;gap:10px}
+.stage.fs .legend,.stage.fs .hint{display:none}
+@media (max-width:700px){.stage.fs .opts,.stage.fs .read{display:none}.cap{max-width:none}#capD{font-size:12.5px}.vbadge .lt{display:none}.fsbtn span{display:none}}
+svg text{font-family:var(--f-body)}
+.s-ink{fill:var(--ink)} .s-mut{fill:var(--muted)} .st-line{stroke:var(--line)} .st-ink{stroke:var(--ink)}
+.st-blue{stroke:var(--blue)} .st-teal{stroke:var(--teal)} .st-amber{stroke:var(--amber)} .f-surf{fill:var(--surface)} .f-chip{fill:var(--chip)}
+.f-blue{fill:var(--blue)} .f-teal{fill:var(--teal)} .f-amber{fill:var(--amber)}
+footer{margin-top:40px;padding-top:12px;border-top:1px solid var(--line);font:400 12px/1.6 var(--f-mono);color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 18px;justify-content:space-between}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto}}
+</style>
+
+<div class="wrap"><p style="margin:12px 0 0;font:600 14px var(--f-body)"><a href="../3d-models.html" style="color:var(--blue)">← All SHIVAS 3D models</a> · <a href="../galvanizing.html" style="color:var(--blue)">Galvanizing</a> · <a href="../items/dross.html" style="color:var(--blue)">Dross removal</a></p>
+<header>
+  <div>
+    <div class="logo"><span class="lw">SHIVAS</span><span class="lt">Technology Limited<br>Ghaziabad · since 1991</span></div>
+    <h1>SH-DG-400 Pneumatic Dross Grab</h1>
+    <p class="sub">Crane-suspended clamshell for bottom dross removal from hot-dip galvanizing kettles. Kettle width ≥ 1,000 mm, depth 1,400–3,200 mm.</p>
+  </div>
+  <div class="docref">Doc <b>SH-DG-400-GA</b> · Rev <b>0</b><br>07 Nov 2026 · all dims mm</div>
+</header>
+
+<nav class="toc" aria-label="Sections">
+  <a href="#model">3D model</a><a href="#mech">Mechanism</a><a href="#spec">Specification</a><a href="#bom">BOM</a><a href="#heights">Heights &amp; crane</a><a href="#pneu">Pneumatics</a><a href="#op">Operation</a><a href="#maint">Maintenance</a><a href="#calc">Calculations</a>
+</nav>
+
+<section id="model" style="margin-top:6px">
+ <div class="stage" id="stage">
+  <div class="viewer" id="viewer" tabindex="0" aria-label="3D model of the dross grab. Space plays or pauses, F toggles full screen, arrow keys step through the cycle.">
+    <canvas id="c3d"></canvas>
+    <div id="labels"></div>
+    <div class="vbadge" aria-hidden="true"><span class="lw">SHIVAS</span><span class="lt">Technology<br>Limited</span></div>
+    <button class="fsbtn" id="bFs" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" fill="none" stroke="currentColor" stroke-width="2.2"/></svg><span>Full screen</span></button>
+    <div class="cap inside" id="cap" aria-live="polite"><div class="capn" id="capN">Step 1 of 10</div><b id="phase">Loading model…</b><p id="capD"></p></div>
+  </div>
+  <div class="ctrl">
+    <div class="transport">
+      <button class="ic" id="bPrev" type="button" aria-label="Previous step"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 5h2.5v14H6zM19 5v14L9 12z" fill="currentColor"/></svg></button>
+      <button class="play" id="bPlay" type="button" aria-label="Pause cycle"></button>
+      <button class="ic" id="bNext" type="button" aria-label="Next step"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M15.5 5H18v14h-2.5zM5 5v14l10-7z" fill="currentColor"/></svg></button>
+      <div class="tl" id="tl" role="group" aria-label="Cycle steps"></div>
+    </div>
+    <div class="row">
+      <select id="speed" aria-label="Animation speed"><option value="0.5">0.5× speed</option><option value="1" selected>1× speed</option><option value="2">2× speed</option></select>
+      <button type="button" id="tFollow" aria-pressed="true">Follow machine</button>
+      <button type="button" id="tLbl">Labels: names</button>
+      <label class="sl" for="jaw">Jaw <input id="jaw" type="range" min="0" max="65" step="0.5" value="0"><b id="jawv">0°</b></label>
+    </div>
+    <div class="row opts">
+      <select id="depth" aria-label="Kettle depth">
+        <option value="1400">Kettle depth 1.4 m</option><option value="2000">Kettle depth 2.0 m</option><option value="2600" selected>Kettle depth 2.6 m</option><option value="3200">Kettle depth 3.2 m</option>
+      </select>
+      <button type="button" id="tZinc" aria-pressed="true">Zinc</button>
+      <button type="button" id="tKettle" aria-pressed="true">Kettle</button>
+      <span class="vlbl">View</span>
+      <button type="button" data-view="iso">Machine</button><button type="button" data-view="front">Front</button><button type="button" data-view="jaws">Jaws</button><button type="button" data-view="head">Cylinder</button>
+    </div>
+    <div class="read">
+      <div><small>Jaw angle / shell</small><b id="rTh">0.0°</b></div>
+      <div><small>Lip span</small><b id="rSpan">0 mm</b></div>
+      <div><small>Rod travel (of 450)</small><b id="rRod">399 mm</b></div>
+      <div><small>Lip force @ 5 / 6 bar</small><b id="rF">3.50 / 4.20 kN</b></div>
+    </div>
+    <p class="hint">Drag to orbit · pinch or scroll to zoom · Space play/pause · ← → steps · F full screen. While playing, the kettle and furnace turn see-through so the machine stays in view.</p>
+    <ul class="legend" id="legend"></ul>
+  </div>
+ </div>
+
+  <div class="tiles">
+    <div class="tile"><small>Rated bite</small><b>400 kg</b><span>dross, 150 mm layer</span></div>
+    <div class="tile"><small>Bowl volume</small><b>114 L</b><span>790 kg if full (structural)</span></div>
+    <div class="tile"><small>Jaw opening</small><b>65° · 634 mm</b><span>lip span, open</span></div>
+    <div class="tile"><small>Lip closing force</small><b>≥ 3.5 kN</b><span>per shell @ 5 bar, all angles</span></div>
+    <div class="tile"><small>Self weight</small><b id="tW">≈ 526 kg</b><span id="tWs">kettle depth 2.6 m</span></div>
+    <div class="tile"><small>Air per cycle</small><b>≈ 150 NL</b><span>6 bar, open + close</span></div>
+  </div>
+</section>
+
+<section id="mech">
+  <h2><em>01</em>Mechanism &amp; forces</h2>
+  <p class="lead">Two nesting quadrant shells hang on one Ø70 shaft. The drawbar pushes a crosshead down the hanger slots; four links drive lugs on the shell end plates (R330, −10° when closed). Push-to-close puts the full piston bore on the closing stroke. Lips meet 51 mm before the cylinder bottoms, so the full force clamps the dross.</p>
+  <div class="two">
+    <div class="chart">
+      <svg id="fchart" viewBox="0 0 520 300" role="img" aria-label="Lip closing force per shell against jaw angle"></svg>
+    </div>
+    <div class="tbl">
+      <table>
+        <thead><tr><th class="n">Jaw θ</th><th class="n">Crosshead*</th><th class="n">Rod travel</th><th class="n">Link ∠</th><th class="n">Lip span</th><th class="n">F @5 bar</th><th class="n">F @6 bar</th></tr></thead>
+        <tbody id="ktab"></tbody>
+      </table>
+    </div>
+  </div>
+  <p class="note">*Crosshead pin centre above main shaft centre. Rod travel from fully retracted (jaws open). Forces at the lip (R350), per shell, cylinder efficiency 0.85, pin friction neglected.</p>
+
+  <h3>Why this geometry</h3>
+  <ul class="rules">
+    <li>Lugs sit on the end plates, outside the shell skins, and links run beyond the skin ends (inner links z ±336, outer z ±352). Nothing moving passes through the bowl, so dross never fouls the linkage.</li>
+    <li>Link angle stays 20°–36° off vertical across the stroke: no toggle, no dead point, nearly flat force curve (3.5–4.7 kN at 5 bar).</li>
+    <li>Crosshead runs in 44 mm slots in the two hanger plates: guided and anti-rotation without bushes. Drawbar runs in the 70 mm gap between mast channel webs.</li>
+    <li>All submerged pins have 2 mm diametral clearance. Zinc wets steel and freezes in tight fits; clearance and cycling the jaws while hot keep them free.</li>
+    <li>Inner shell (618 long) nests 3 mm inside the outer shell end plates (656 long), so the closed bowl is sealed at the ends.</li>
+  </ul>
+</section>
+
+<section id="spec">
+  <h2><em>02</em>Technical specification</h2>
+  <div class="tbl"><table>
+    <tbody>
+    <tr class="grp"><td colspan="2">General</td></tr>
+    <tr><td class="k">Model</td><td>SH-DG-400, crane-suspended pneumatic clamshell dross grab</td></tr>
+    <tr><td class="k">Duty</td><td>Bottom dross (hard zinc, FeZn<sub>13</sub> crystals in zinc) removal after settling; intermittent</td></tr>
+    <tr><td class="k">Kettle suitability</td><td>Internal width ≥ 1,000 mm · depth 1,400–3,200 mm (mast cut to suit) · any length</td></tr>
+    <tr><td class="k">Rated bite</td><td>400 kg dross at 150 mm layer (280 kg at 100 mm, 565 kg at 200 mm); dross bulk density 7.0 t/m³</td></tr>
+    <tr><td class="k">Structural payload</td><td>800 kg (bowl full, 114 L × 6.9 t/m³)</td></tr>
+    <tr><td class="k">Self weight</td><td>455 / 490 / 526 / 561 kg for kettle depth 1.4 / 2.0 / 2.6 / 3.2 m (calculated; allow +5 %)</td></tr>
+    <tr><td class="k">Max hook load</td><td>1.35 t at 2.6 m depth (grab + full bowl + 25 kg adhering zinc)</td></tr>
+    <tr><td class="k">Crane</td><td>≥ 2 t SWL, dual speed hoist with creep ≤ 1 m/min, travel creep ≤ 5 m/min</td></tr>
+    <tr><td class="k">Plan envelope</td><td>720 across kettle × 750 along kettle, open or closed (rim rest excluded)</td></tr>
+    <tr class="grp"><td colspan="2">Jaws</td></tr>
+    <tr><td class="k">Shells</td><td>2 quadrant shells, R350 outer, 12 thk skin; outer shell 656 long, inner 618 long (nesting)</td></tr>
+    <tr><td class="k">Perforation</td><td>Ø12 at 30 triangular pitch (≈ 14.5 % open), 40 mm plain bands at lip, top edge and ends; ≈ 860 holes</td></tr>
+    <tr><td class="k">Stiffening</td><td>End plates 16 thk with Ø140 × 20 shaft bosses (inner shell inboard, outer shell outboard); 2 quadrant rings 12 thk (R250–338) per shell</td></tr>
+    <tr><td class="k">Opening</td><td>65° per shell; lip span 634 open; bowl 114 L closed</td></tr>
+    <tr><td class="k">Lips</td><td>Weld-on wear bars 20 × 80, R10 edges; lips butt at closure (mechanical closed stop)</td></tr>
+    <tr><td class="k">Floor clearance</td><td>25 mm lip-to-kettle-floor at closure (default); 0–100 adjustable by rim rest pin holes at 25 pitch</td></tr>
+    <tr class="grp"><td colspan="2">Linkage</td></tr>
+    <tr><td class="k">Arrangement</td><td>Drawbar 70 × 50 → crosshead pin Ø40 in hanger slots → 4 links 12 × 60, 560 c/c → lug pins Ø30 at R330</td></tr>
+    <tr><td class="k">Crosshead stroke</td><td>399 (pin at 797 open → 399 closed, above shaft); slot 44 × 495 allows 51 overtravel</td></tr>
+    <tr><td class="k">Lip force / shell</td><td>3.50–4.73 kN @ 5 bar · 4.20–5.67 kN @ 6 bar; max shell torque 2.0 kN·m</td></tr>
+    <tr><td class="k">Main shaft</td><td>Ø70 × 780, fixed in hanger by Ø16 taper cotter; shells turn on it in Ø72 bores; end collars with Ø12 cross-pins</td></tr>
+    <tr class="grp"><td colspan="2">Actuation</td></tr>
+    <tr><td class="k">Cylinder</td><td>ISO 15552, Ø160 bore / Ø40 rod × 450 stroke, double acting, adjustable air cushions, FKM seals rated ≥ 120 °C, MF1 front flange, rod down, M36×2 rod end</td></tr>
+    <tr><td class="k">Stroke logic</td><td>Extend = CLOSE (full bore, 12.1 kN theor. @ 6 bar) · Retract = OPEN (11.3 kN)</td></tr>
+    <tr><td class="k">Air</td><td>6 bar at valve (5 bar min at cylinder) · ≈ 150 NL per open–close cycle incl. hoses · close ≈ 4 s, open ≈ 4 s</td></tr>
+    <tr><td class="k">Load holding</td><td>Double pilot-operated check valve on cylinder ports; jaws hold on air, hose or coupling failure</td></tr>
+    <tr><td class="k">Control</td><td>5/3 hand-lever valve, spring-centred (hold-to-run), exhaust centre, G½, at operator stand ≥ 2 m from kettle edge. No electrics on the grab.</td></tr>
+    <tr><td class="k">Air feed</td><td>Overhead twin-hose spring reel 2 × ½" × 15 m; keyed safety couplings (OPEN and CLOSE profiles differ)</td></tr>
+    <tr class="grp"><td colspan="2">Structure</td></tr>
+    <tr><td class="k">Mast</td><td>2 × ISMC 125 back-to-back, 70 gap, battens 10 × 100 × 200 at 600 pitch both faces (open frame, zinc drains)</td></tr>
+    <tr><td class="k">Hanger plates</td><td>2 × 20 thk, 160 wide at shaft tapering to 100, 1,200 long, overlap-welded 250 to mast webs</td></tr>
+    <tr><td class="k">Head</td><td>Head plate 25 thk 1,000 above kettle rim with grab landed; heat shield 500 × 500 (MS 3 + ceramic fibre 25 + SS 1) below</td></tr>
+    <tr><td class="k">Lifting point</td><td>Yoke 2 × 20 × 120 straps, eye plate 25 thk, Ø25 hole, for 4.75 t (¾") bow shackle (pin 22.4, jaw 27)</td></tr>
+    <tr><td class="k">Rim rest</td><td>2 × ISMC 75 × (kettle width + 400), clamped on mast by side plates and 2 pins Ø24 through the channel flanges (holes at 25 pitch); lands on kettle top flanges, sets lip clearance, keeps grab off the floor</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Materials</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Zone</th><th>Parts</th><th>Material</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Below zinc</td><td>Shells, end plates, rings, wear bars, hanger plates</td><td>Low-C, low-Si plate (C ≤ 0.12 %, Si ≤ 0.03 %), same family as kettle plate (e.g. SAIL DSQ). Mill TC required.</td></tr>
+      <tr><td class="k">Below zinc</td><td>Shaft, crosshead pin, lug pins, drawbar</td><td>EN-8 (C45) normalised; sized as consumables</td></tr>
+      <tr><td class="k">Above zinc</td><td>Mast, battens, head plate, yoke, rim rest</td><td>IS 2062 E250; eye plate IS 2062 E350 BR</td></tr>
+      <tr><td class="k">Finish</td><td>Above kettle rim only</td><td>Heat-resistant silicone paint 600 °C. Nothing below the rim is painted, greased or plated.</td></tr>
+      <tr><td class="k">Welding</td><td>All</td><td>E7018 low-hydrogen; full penetration at hanger-to-mast and eye/yoke welds; MPI of lifting-path welds</td></tr>
+      <tr><td class="k">Forbidden below zinc line</td><td>—</td><td>Stainless steel (zinc embrittlement), brass/bronze/copper, aluminium, galvanized or zinc-plated parts, bearings, grease, threaded fasteners</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="bom">
+  <h2><em>03</em>Bill of materials</h2>
+  <p class="lead" id="bomlead">Masses for kettle depth 2.6 m. Items 7–10 change with depth.</p>
+  <div class="tbl"><table>
+    <thead><tr><th class="n">No.</th><th>Item / size</th><th>Material</th><th class="n">Qty</th><th class="n">kg</th></tr></thead>
+    <tbody id="bomt"></tbody>
+  </table></div>
+  <p class="note">Item numbers match the labels on the 3D model. SHIVAS fabricates items 1–2, 5–20 in-house; 3, 4 and 21 are bought out.</p>
+</section>
+
+<section id="heights">
+  <h2><em>04</em>Heights &amp; crane clearance</h2>
+  <p class="lead">Head plate is set 1,000 above the kettle rim when the grab sits on its rim rest, so the cylinder stays out of zinc heat. Head plate above shaft H = D + 625.</p>
+  <div class="tbl"><table>
+    <thead><tr><th class="n">Kettle depth D</th><th class="n">H (head plate)</th><th class="n">Mast</th><th class="n">Drawbar</th><th class="n">Overall height</th><th class="n">Self weight</th><th class="n">Min hook height*</th></tr></thead>
+    <tbody id="htab"></tbody>
+  </table></div>
+  <p class="note">*Hook seat above shop floor for rim 900 above floor, lips 300 clear of rim, 150 for shackle and hook: = rim height + 0.30 + (H + 1,370)/1,000 + 0.15 m. Raise by the height of any kettle enclosure or hood the grab must clear.</p>
+</section>
+
+<section id="pneu">
+  <h2><em>05</em>Pneumatic circuit</h2>
+  <div class="two">
+    <div class="chart" style="max-width:440px">
+      <svg viewBox="0 0 360 640" role="img" aria-label="Pneumatic circuit from plant air to cylinder">
+        <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" class="f-blue"/></marker></defs>
+        <g fill="none" stroke-width="2.2" class="st-blue">
+          <path d="M180 44V68"/><path d="M180 104V128"/><path d="M180 176V200"/>
+          <path d="M140 262V312"/><path d="M220 262V312"/><path d="M140 352V384"/><path d="M220 352V384"/><path d="M140 418V446"/><path d="M220 418V446"/><path d="M140 480V508"/><path d="M220 480V508"/>
+          <path d="M140 542V560H120V572" marker-end="url(#ar)"/><path d="M220 542V600H246" marker-end="url(#ar)"/>
+          <path d="M280 230H306V248" stroke-dasharray="4 3"/>
+        </g>
+        <g stroke-width="1.4" class="st-ink">
+          <rect x="70" y="10" width="220" height="34" rx="3" class="f-chip"/>
+          <rect x="70" y="68" width="220" height="36" rx="3" class="f-surf"/>
+          <rect x="70" y="128" width="220" height="48" rx="3" class="f-surf"/>
+          <rect x="80" y="200" width="66" height="62" class="f-surf"/><rect x="146" y="200" width="68" height="62" class="f-surf"/><rect x="214" y="200" width="66" height="62" class="f-surf"/>
+          <rect x="70" y="312" width="220" height="40" rx="3" class="f-surf"/>
+          <rect x="70" y="384" width="220" height="34" rx="3" class="f-surf"/>
+          <rect x="70" y="446" width="220" height="34" rx="3" class="f-surf"/>
+          <rect x="70" y="508" width="220" height="34" rx="3" class="f-surf"/>
+          <rect x="270" y="248" width="72" height="34" rx="3" class="f-surf"/>
+          <rect x="96" y="572" width="140" height="56" class="f-surf"/>
+          <line x1="146" y1="572" x2="146" y2="628"/><line x1="146" y1="600" x2="246" y2="600" stroke-width="5"/>
+        </g>
+        <g class="st-teal" stroke-width="1.6" fill="none">
+          <path d="M100 248L126 214"/><path d="M126 248L100 214"/><path d="M168 214V248"/><path d="M192 214V248"/><path d="M236 214L262 248"/><path d="M262 214L236 248"/>
+        </g>
+        <g font-size="11.5" class="s-ink" text-anchor="middle">
+          <text x="180" y="31" font-weight="600">Plant air header 7 bar</text>
+          <text x="180" y="84">Lockable 3-way exhaust ball valve</text><text x="180" y="98" class="s-mut" font-size="10.5">isolation · LOTO</text>
+          <text x="180" y="146">FRL G½: filter 5 µm · regulator</text><text x="180" y="161">set 6 bar · gauge 0–10 bar</text>
+          <text x="180" y="196" class="s-mut" font-size="10.5">5/3 hand lever · spring centre · exhaust centre</text>
+          <text x="113" y="276" font-size="10.5" class="s-mut">CLOSE</text><text x="180" y="276" font-size="10.5" class="s-mut">centre</text><text x="247" y="276" font-size="10.5" class="s-mut">OPEN</text>
+          <text x="306" y="262" font-size="10">Exhaust flow</text><text x="306" y="275" font-size="10">controls</text>
+          <text x="180" y="329">Twin-hose spring reel (overhead)</text><text x="180" y="344" class="s-mut" font-size="10.5">2 × ½" × 15 m</text>
+          <text x="180" y="405">Keyed safety couplings A ≠ B</text>
+          <text x="180" y="467">Hoses ½" × 2.5 m, fire sleeve</text>
+          <text x="180" y="529">Double pilot-op. check valve G½</text>
+          <text x="186" y="592" font-size="10.5">Ø160 × 450</text><text x="196" y="620" font-size="10.5" class="s-mut">rod ↓ to drawbar</text>
+        </g>
+        <g font-size="10.5" class="s-ink" font-weight="600"><text x="96" y="294">A · CLOSE</text><text x="228" y="294">B · OPEN</text><text x="60" y="568">cap (top)</text><text x="252" y="596">rod end</text></g>
+      </svg>
+    </div>
+    <div>
+      <h3 style="margin-top:0">Circuit logic</h3>
+      <ul class="rules">
+        <li>Lever to CLOSE pressurises A (cap end): cylinder extends, crosshead goes down, jaws close. Release lever: spring centre vents A and B, pilot-check valves lock both ports, jaws hold.</li>
+        <li>Exhaust centre is required: a closed-centre valve would trap pilot pressure and the check valves would not seat.</li>
+        <li>Speed is set at the operator stand with the exhaust flow controls (target 4 s per stroke). Nothing needs adjusting on the hot grab.</li>
+        <li>Air consumption: cylinder 17.5 L per double stroke = 121 NL at 6 bar; hoses add 26 NL. Plant compressor demand during dross removal ≈ 150 NL per bite, about 0.1 m³/min averaged.</li>
+        <li>Test after every reconnection: lever CLOSE must close the jaws. Keyed couplings prevent swapped lines, which would reverse the lever.</li>
+      </ul>
+      <h3>Bought-out items</h3>
+      <div class="tbl"><table>
+        <tbody>
+          <tr><td>Cylinder ISO 15552 Ø160×450, FKM seals, MF1</td><td class="n">1</td></tr>
+          <tr><td>Double pilot-operated check valve, G½</td><td class="n">1</td></tr>
+          <tr><td>5/3 hand-lever valve, exhaust centre, G½, Qn ≥ 2,000 NL/min</td><td class="n">1</td></tr>
+          <tr><td>Exhaust flow control / silencer, G½</td><td class="n">2</td></tr>
+          <tr><td>FRL unit G½ with gauge</td><td class="n">1</td></tr>
+          <tr><td>Lockable 3-way exhaust ball valve G½</td><td class="n">1</td></tr>
+          <tr><td>Twin-hose spring reel 2 × ½" × 15 m</td><td class="n">1</td></tr>
+          <tr><td>Keyed safety coupling pairs (2 profiles)</td><td class="n">2</td></tr>
+          <tr><td>Silicone-coated fibreglass fire sleeve, ½" hose, 2.5 m</td><td class="n">2</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Makes: Janatics, SMC, Festo or equivalent with the stated seal and flow ratings.</p>
+    </div>
+  </div>
+</section>
+
+<section id="op">
+  <h2><em>06</em>Operating procedure</h2>
+  <ol class="steps">
+    <li><div><b>Plan the session.</b> Remove dross after at least 6 h without dipping (overnight settling), bath at normal working temperature. Do not stir the bath before grabbing.</div></li>
+    <li><div><b>Pre-start checks.</b> 6 bar at FRL; couplings connected; lever CLOSE closes the jaws; pins move freely; lip wear bars intact; hose sleeves in place; rim rest pinned at the set hole on both sides.</div></li>
+    <li><div><b>Dry the grab.</b> Hang with the shells 200–300 mm above zinc for 10 min. Repeat after any washing, rain or condensation. A wet grab causes a zinc eruption.</div></li>
+    <li><div><b>Skim and lower.</b> Skim surface ash at the bite position. Open jaws in air, lower at creep speed until the rim rest lands on both kettle flanges. Slack the hook about 50 mm.</div></li>
+    <li><div><b>Bite.</b> Hold lever at CLOSE until lips meet (≈ 4 s), hold 3 s more, release to centre.</div></li>
+    <li><div><b>Lift and drain.</b> Take up slack, lift at creep for the first 500 mm. Stop with the bowl 100–200 mm above zinc for 30 s so free zinc drains back through the perforations.</div></li>
+    <li><div><b>Dump.</b> Traverse at creep to the pre-heated, dry dross moulds. Lower to 150 mm above the mould, OPEN, cycle the jaws twice to shake out.</div></li>
+    <li><div><b>Next bite.</b> Step 500–600 mm along the kettle per bite, working from one end. Keep cycling the jaws in air between bites while hot, so zinc does not freeze at the pins.</div></li>
+    <li><div><b>Park.</b> Close jaws, park on the stand over a drip tray, isolate and vent air, disconnect couplings and cap them, return hoses to the reel.</div></li>
+  </ol>
+  <div class="warn">Exclusion zone 3 m around the kettle while the grab moves. Operator at the valve stand with face shield, aluminised jacket and gloves. Nobody under the suspended grab. Never let the grab strike kettle walls or floor: kettle damage is the costliest failure in the plant. Do not use the grab to lift anything else.</div>
+</section>
+
+<section id="maint">
+  <h2><em>07</em>Inspection &amp; maintenance</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>When</th><th>Check</th><th>Limit / action</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Each session</td><td>Zinc build-up at pins, crosshead slot, perforations</td><td>Clear while hot with a chisel bar; perforations ≥ 80 % open</td></tr>
+      <tr><td class="k">Each session</td><td>Hoses, sleeves, couplings</td><td>Replace any scorched sleeve or leaking coupling</td></tr>
+      <tr><td class="k">Weekly</td><td>Pin clearance (new 2 mm diametral)</td><td>Replace pin at 3.5 mm; rebore/bush lug at 5 mm</td></tr>
+      <tr><td class="k">Weekly</td><td>Lip wear bars 20 thk</td><td>Replace at 12 thk remaining</td></tr>
+      <tr><td class="k">Weekly</td><td>Crosshead slot width (new 44)</td><td>Build up and grind at 48</td></tr>
+      <tr><td class="k">Monthly</td><td>Lock test: jaws closed, air isolated and vented, couplings off, 10 min</td><td>No jaw movement; else service check valve</td></tr>
+      <tr><td class="k">Monthly</td><td>FRL drain, cushion setting, rod condition</td><td>Clean, reset to 4 s strokes</td></tr>
+      <tr><td class="k">6-monthly</td><td>Zinc erosion: shaft Ø70, skins 12, end plates 16 (UT)</td><td>Replace shaft at Ø64; skin at 8; end plate at 11</td></tr>
+      <tr><td class="k">Yearly</td><td>MPI of eye, yoke and head-plate welds; cylinder seal kit</td><td>Any crack: remove from service</td></tr>
+      <tr><td class="k">After weld repair</td><td>Proof load in air</td><td>1,000 kg test mass in closed bowl (125 % of 800 kg payload), 10 min, then MPI</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="calc">
+  <h2><em>08</em>Design calculations</h2>
+  <p class="lead">Lifting checks use max hook load 1.35 t × dynamic factor 2.0 = 26.5 kN. Allowable stress at 450 °C taken as 0.6 × room-temperature yield reduced to 60 % (EN-8: 170 MPa; E250: 90 MPa).</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Check</th><th>Basis</th><th class="n">Result</th><th class="n">Allowable</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Lip closing force</td><td>5 bar, η 0.85, worst angle (closed)</td><td class="n">3.50 kN</td><td class="n">≥ 3.5 kN</td><td class="ok">OK</td></tr>
+      <tr><td class="k">Main shaft Ø70 bending</td><td>6.0 kN per shell end at 290 lever, M 1.74 kN·m</td><td class="n">52 MPa</td><td class="n">170 MPa</td><td class="ok">SF 3.3</td></tr>
+      <tr><td class="k">Main shaft deflection</td><td>cantilever 290, E 170 GPa at 450 °C</td><td class="n">0.24 mm</td><td class="n">1.0 mm</td><td class="ok">OK</td></tr>
+      <tr><td class="k">Crosshead pin Ø40</td><td>12.1 kN, double shear</td><td class="n">4.8 MPa</td><td class="n">100 MPa</td><td class="ok">OK</td></tr>
+      <tr><td class="k">Link 12 × 60 buckling</td><td>3.73 kN max, pinned, weak axis, L 560</td><td class="n">P<sub>cr</sub> 54.4 kN</td><td class="n">SF ≥ 4</td><td class="ok">SF 14.6</td></tr>
+      <tr><td class="k">Lug pin Ø30</td><td>3.73 kN single shear / bearing on 16 plate</td><td class="n">5.3 / 7.8 MPa</td><td class="n">90 MPa</td><td class="ok">OK</td></tr>
+      <tr><td class="k">Drawbar 70 × 50</td><td>12.1 kN compression, L 2,308 pinned</td><td class="n">P<sub>cr</sub> 270 kN</td><td class="n">SF ≥ 4</td><td class="ok">SF 22</td></tr>
+      <tr><td class="k">Mast 2 × ISMC 125</td><td>26.5 kN tension on 2 × 1,670 mm²</td><td class="n">7.9 MPa</td><td class="n">90 MPa</td><td class="ok">OK</td></tr>
+      <tr><td class="k">Hanger net section</td><td>at slot, 2 × (100 − 44) × 20</td><td class="n">11.8 MPa</td><td class="n">90 MPa</td><td class="ok">OK</td></tr>
+      <tr><td class="k">Hanger bearing on shaft</td><td>26.5 kN / (2 × 20 × 70)</td><td class="n">9.5 MPa</td><td class="n">135 MPa</td><td class="ok">OK</td></tr>
+      <tr><td class="k">Eye plate tear-out</td><td>2 × (75 − 12.5) × 25</td><td class="n">8.5 MPa</td><td class="n">100 MPa</td><td class="ok">OK</td></tr>
+      <tr><td class="k">Eye bearing</td><td>shackle pin 22.4 × 25</td><td class="n">47 MPa</td><td class="n">210 MPa</td><td class="ok">OK</td></tr>
+      <tr><td class="k">Yoke welds</td><td>8 fillet, 4 runs × 120, throat 2,688 mm²</td><td class="n">9.9 MPa</td><td class="n">95 MPa</td><td class="ok">OK</td></tr>
+      <tr><td class="k">Buoyancy</td><td>≈ 285 kg steel submerged, ρ<sub>Zn</sub> 6.6 vs steel 7.85 t/m³</td><td class="n">45 kg apparent</td><td class="n">—</td><td>Grab lands on rim rest with ≈ 285 kg apparent weight</td></tr>
+    </tbody>
+  </table></div>
+  <div class="warn">Steel loses 84 % of its weight in molten zinc, so a dross grab cannot dig by weight. This design bites by lip travel: lips approach horizontally near closure and scrape the dross layer toward the centre, while the rim rest holds the depth.</div>
+</section>
+
+<footer><span>SHIVAS Technology Limited · info@shivastechnology.com · 98109 20468</span><span>SH-DG-400-GA Rev 0 · design basis for fabrication drawings</span></footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function(){
+const DEG=Math.PI/180;
+const G={R:350,Ri:338,re:330,phi0:-10*DEG,l:560,thO:65*DEG,ycO:797.4,W:1400,L:4000};
+function kin(th){const a=G.phi0+th,Ex=G.re*Math.cos(a),Ey=G.re*Math.sin(a);return{Ex,Ey,yc:Ey+Math.sqrt(G.l*G.l-Ex*Ex)};}
+const F5=[3498,3758,4028,4267,4465,4613,4701,4726,4684,4573,4396,4154,3852,3534];
+const F6=[4198,4510,4834,5121,5358,5535,5642,5671,5620,5488,5275,4985,4622,4240];
+function fAt(arr,deg){const i=Math.min(12.999,Math.max(0,deg/5)),k=Math.floor(i),t=i-k;return arr[k]+(arr[k+1]-arr[k])*t;}
+
+/* ---------- tables ---------- */
+const kt=document.getElementById('ktab');let kh='';
+for(let d=0;d<=65;d+=5){const k=kin(d*DEG),ang=Math.asin(k.Ex/G.l)/DEG;
+ kh+=`<tr><td class="n">${d}°</td><td class="n">${Math.round(k.yc)}</td><td class="n">${Math.round(G.ycO-k.yc)}</td><td class="n">${ang.toFixed(1)}°</td><td class="n">${Math.round(2*G.R*Math.sin(d*DEG))}</td><td class="n">${(F5[d/5]/1000).toFixed(2)}</td><td class="n">${(F6[d/5]/1000).toFixed(2)}</td></tr>`;}
+kt.innerHTML=kh;
+
+function bom(D){const W=G.W,rho=7850,Hm=D-375+1000,Ldb=Hm-120-797,mast=Hm-950,nb=Math.ceil((mast-200)/600)+1,P=Math.PI;
+ const r=[
+ ['1','Lifting eye plate 25 thk, Ø25 hole, for 4.75 t bow shackle','IS 2062 E350 BR',1,0.025*0.15*0.165*rho],
+ ['2','Yoke straps 20×120×900 + top cross plate 30×160×280','IS 2062 E250',1,2*0.02*0.12*0.9*rho+0.03*0.16*0.28*rho],
+ ['3','Pneumatic cylinder ISO 15552 Ø160×450, FKM seals, MF1 flange','Bought-out',1,30],
+ ['4','Double pilot-operated check valve block G½ + fittings','Bought-out',1,2.5],
+ ['5','Heat shield 500×500 (MS 3 + ceramic fibre 25 + SS 1)','Fabricated',1,7],
+ ['6','Head plate 25×320×320','IS 2062 E250',1,0.025*0.32*0.32*rho],
+ ['7',`Mast ISMC 125, back-to-back, 70 gap × ${mast} long`,'IS 2062 E250',2,13.1*mast/1000],
+ ['8','Battens 10×100×200','IS 2062 E250',2*nb,0.01*0.1*0.2*rho],
+ ['9',`Drawbar flat 70×50 × ${Ldb} long`,'EN-8 (C45)',1,0.07*0.05*Ldb/1000*rho],
+ ['10',`Rim rest 2× ISMC 75 × ${W+400} + clamp, 2 pins Ø24`,'IS 2062 E250',1,2*7.14*(W+400)/1000+8],
+ ['11','Hanger plate 20 thk, 160→100 wide × 1,200, slot 44 × 495','Low-Si plate',2,(0.02*(0.16*0.32+0.1*0.88)-0.044*0.495*0.02+0.02*P*0.08*0.08/2)*rho],
+ ['12','Main shaft Ø70 × 780, collars, Ø16 taper cotter','EN-8 normalised',1,P/4*0.07*0.07*0.78*rho+1.5],
+ ['13','Crosshead pin Ø40 × 744, spacer tubes Ø60, collars','EN-8 / ERW tube',1,P/4*0.04*0.04*0.744*rho+6],
+ ['14','Links 12×60, 560 c/c, Ø42 eyes','IS 2062 E250',4,0.012*0.06*0.62*rho],
+ ['15','Outer shell skin 12 thk, R350 × 656, Ø12 perf.','Low-Si plate',1,P/2*0.344*0.656*0.012*rho*0.855],
+ ['16','Inner shell skin 12 thk, R350 × 618, Ø12 perf.','Low-Si plate',1,P/2*0.344*0.618*0.012*rho*0.855],
+ ['17','End plates 16 thk with lug ear and Ø140 × 20 boss','Low-Si plate',4,(P/4*0.35*0.35+0.014)*0.016*rho],
+ ['18','Stiffener rings 12 thk, R250–338 quadrant','Low-Si plate',4,P/4*(0.338*0.338-0.25*0.25)*0.012*rho],
+ ['19','Lip wear bars 20×80, weld-on','Low-Si plate',2,(0.656+0.618)/2*0.02*0.08*rho],
+ ['20','Lug pins Ø30 with cross-pins','EN-8',4,0.4],
+ ['21','Hoses ½" × 2.5 m, fire sleeve, keyed couplings','Bought-out',2,1.5],
+ ['22','Cotters, washers, drawbar guide pads','—',1,5]];
+ let t=0;r.forEach(x=>{x[5]=x[3]*x[4];t+=x[5];});return{Hm,Ldb,mast,rows:r,total:Math.round(t)};}
+function fillTables(D){
+ const b=bom(D);let h='';
+ b.rows.forEach(x=>{h+=`<tr><td class="n">${x[0]}</td><td>${x[1]}</td><td>${x[2]}</td><td class="n">${x[3]}</td><td class="n">${x[5].toFixed(1)}</td></tr>`;});
+ h+=`<tr class="tot"><td></td><td>Total, calculated</td><td></td><td></td><td class="n">${b.total}</td></tr>`;
+ document.getElementById('bomt').innerHTML=h;
+ document.getElementById('bomlead').textContent=`Masses for kettle depth ${(D/1000).toFixed(1)} m (change depth above the model). Items 7–10 change with depth.`;
+ document.getElementById('tW').textContent='≈ '+b.total+' kg';document.getElementById('tWs').textContent='kettle depth '+(D/1000).toFixed(1)+' m';
+ let hh='';[1400,2000,2600,3200].forEach(d=>{const q=bom(d);const ov=350+q.Hm+1095,hk=0.9+0.3+(350+q.Hm+1020)/1000+0.15;
+  hh+=`<tr class="${d===D?'sel':''}"><td class="n">${d.toLocaleString('en-IN')}</td><td class="n">${q.Hm.toLocaleString('en-IN')}</td><td class="n">${q.mast.toLocaleString('en-IN')}</td><td class="n">${q.Ldb.toLocaleString('en-IN')}</td><td class="n">${ov.toLocaleString('en-IN')}</td><td class="n">${q.total} kg</td><td class="n">${hk.toFixed(2)} m</td></tr>`;});
+ document.getElementById('htab').innerHTML=hh;}
+
+/* ---------- force chart ---------- */
+const svg=document.getElementById('fchart');
+function buildChart(){const x0=48,x1=505,y0=255,y1=20,X=d=>x0+(x1-x0)*d/65,Y=f=>y0-(y0-y1)*f/6;let s='';
+ for(let f=0;f<=6;f++){s+=`<line x1="${x0}" x2="${x1}" y1="${Y(f)}" y2="${Y(f)}" class="st-line" stroke-width="1"/><text x="${x0-8}" y="${Y(f)+4}" text-anchor="end" font-size="11" class="s-mut">${f}</text>`;}
+ for(let d=0;d<=65;d+=5){if(d%10===0||d===65)s+=`<text x="${X(d)}" y="${y0+17}" text-anchor="middle" font-size="11" class="s-mut">${d}°</text>`;}
+ const pl=a=>a.map((f,i)=>`${X(i*5).toFixed(1)},${Y(f/1000).toFixed(1)}`).join(' ');
+ s+=`<line x1="${x0}" x2="${x1}" y1="${Y(3.5)}" y2="${Y(3.5)}" class="st-amber" stroke-width="1.5" stroke-dasharray="5 4"/><text x="${x1}" y="${Y(3.5)+15}" text-anchor="end" font-size="11" class="s-ink">design minimum 3.5 kN</text>`;
+ s+=`<polyline points="${pl(F6)}" fill="none" class="st-blue" stroke-width="2.5"/><polyline points="${pl(F5)}" fill="none" class="st-teal" stroke-width="2.5"/>`;
+ s+=`<text x="${X(35)}" y="${Y(5.671)-8}" text-anchor="middle" font-size="12" font-weight="600" class="s-ink">6 bar</text><text x="${X(35)}" y="${Y(4.726)-8}" text-anchor="middle" font-size="12" font-weight="600" class="s-ink">5 bar</text>`;
+ s+=`<text x="14" y="${(y0+y1)/2}" transform="rotate(-90 14 ${(y0+y1)/2})" text-anchor="middle" font-size="11" class="s-mut">Lip force per shell, kN</text><text x="${(x0+x1)/2}" y="292" text-anchor="middle" font-size="11" class="s-mut">Jaw angle per shell (0 = closed)</text>`;
+ s+=`<line id="cmark" x1="${X(0)}" x2="${X(0)}" y1="${y1}" y2="${y0}" class="st-ink" stroke-width="1.2" stroke-dasharray="2 3"/>`;
+ svg.innerHTML=s;svg._X=X;}
+buildChart();
+
+/* ---------- 3D ---------- */
+const box=document.getElementById('viewer'),cv=document.getElementById('c3d'),phaseEl=document.getElementById('phase');
+if(typeof THREE==='undefined'){phaseEl.textContent='3D library failed to load. Tables below are complete.';fillTables(2600);return;}
+const renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+const scene=new THREE.Scene();
+const cam=new THREE.PerspectiveCamera(38,1,0.05,80);
+const ctl=new THREE.OrbitControls(cam,cv);ctl.enableDamping=true;ctl.dampingFactor=0.08;ctl.maxPolarAngle=Math.PI*0.62;
+scene.add(new THREE.HemisphereLight(0xdfe9f5,0x3a3328,0.75));
+const sun=new THREE.DirectionalLight(0xffffff,0.9);sun.position.set(4,9,6);scene.add(sun);
+const fill=new THREE.DirectionalLight(0x9fc4e8,0.35);fill.position.set(-5,3,-4);scene.add(fill);
+const glow=new THREE.PointLight(0xffb070,0.35,6);scene.add(glow);
+
+const M=(c,m,r,o)=>new THREE.MeshStandardMaterial(Object.assign({color:c,metalness:m,roughness:r},o||{}));
+const mSteel=M(0x6b747d,0.55,0.5),mBare=M(0x7d858d,0.65,0.42),mDark=M(0x3e454c,0.5,0.6),mBlue=M(0x1F4E79,0.3,0.5),mTeal=M(0x0E7C86,0.3,0.5),
+ mAmber=M(0xE3A21A,0.2,0.55),mChrome=M(0xd8dde2,0.95,0.15),mAlu=M(0xb9c0c7,0.7,0.35),mBlack=M(0x1c1f22,0.1,0.8),
+ mSleeve=M(0xc9782b,0.0,0.85),mKettle=M(0x4a5157,0.6,0.55),mCase=M(0x2c3b4a,0.35,0.7),mBrick=M(0x8b5a3c,0.0,0.95),
+ mFloor=M(0x6c737a,0.0,0.95,{side:THREE.DoubleSide}),mDross=M(0x2f2a26,0.2,0.95),mDrossL=M(0x2f2a26,0.2,0.95,{transparent:true,opacity:0.7,depthWrite:false}),
+ mZinc=M(0xb7c2cc,1.0,0.22,{transparent:true,opacity:0.32,depthWrite:false}),mZtop=M(0xd5dde4,1.0,0.12,{transparent:true,opacity:0.45,depthWrite:false,side:THREE.DoubleSide});
+
+function bx(w,h,d,m,x,y,z){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x||0,y||0,z||0);return o;}
+function cylZ(r,len,m,x,y,z,seg){const o=new THREE.Mesh(new THREE.CylinderGeometry(r,r,len,seg||20),m);o.rotation.x=Math.PI/2;o.position.set(x||0,y||0,z||0);return o;}
+function cylY(r,len,m,x,y,z,seg){const o=new THREE.Mesh(new THREE.CylinderGeometry(r,r,len,seg||20),m);o.position.set(x||0,y||0,z||0);return o;}
+function ext(shape,depth,m,z){const g=new THREE.ExtrudeGeometry(shape,{depth,bevelEnabled:false,curveSegments:28});const o=new THREE.Mesh(g,m);o.position.z=z||0;return o;}
+function arcPanel(r,a0,a1,z0,z1){const sa=28,sz=6,p=[],u=[],n=[],ix=[];
+ for(let i=0;i<=sa;i++){const a=a0+(a1-a0)*i/sa,c=Math.cos(a),s=Math.sin(a);for(let j=0;j<=sz;j++){p.push(r*c,r*s,z0+(z1-z0)*j/sz);n.push(c,s,0);u.push(i/sa,j/sz);}}
+ for(let i=0;i<sa;i++)for(let j=0;j<sz;j++){const a=i*(sz+1)+j,b=a+1,c=a+sz+1,d=c+1;ix.push(a,c,b,b,c,d);}
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(n,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(u,2));g.setIndex(ix);return g;}
+function perfTex(arc,len){const s=1.5,c=document.createElement('canvas');c.width=Math.round(arc*s);c.height=Math.round(len*s);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.fillStyle='#000';let row=0;
+ for(let v=40;v<=len-40;v+=30*0.866,row++){for(let q=40+(row%2?15:0);q<=arc-40;q+=30){x.beginPath();x.arc(q*s,v*s,6*s,0,7);x.fill();}}
+ const t=new THREE.CanvasTexture(c);t.anisotropy=4;return t;}
+function quarter(a0,a1,r){const s=new THREE.Shape();s.moveTo(0,0);s.lineTo(r*Math.cos(a0),r*Math.sin(a0));s.absarc(0,0,r,a0,a1,false);s.lineTo(0,0);return s;}
+function ring(ro,ri){const s=new THREE.Shape();s.absarc(0,0,ro,0,Math.PI*2,false);const h=new THREE.Path();h.absarc(0,0,ri,0,Math.PI*2,true);s.holes.push(h);return s;}
+function ringQ(a0,a1,ro,ri){const s=new THREE.Shape();s.moveTo(ro*Math.cos(a0),ro*Math.sin(a0));s.absarc(0,0,ro,a0,a1,false);s.lineTo(ri*Math.cos(a1),ri*Math.sin(a1));s.absarc(0,0,ri,a1,a0,true);s.closePath();return s;}
+function anchor(parent,x,y,z){const o=new THREE.Object3D();o.position.set(x,y,z);parent.add(o);return o;}
+
+/* grab (local mm, pivot = origin) */
+const grab=new THREE.Group();grab.scale.setScalar(0.001);scene.add(grab);
+const A={};
+// shells
+function shell(outer){
+ const g=new THREE.Group();const zh=outer?328:309,a0=outer?-90*DEG:180*DEG,a1=outer?0:270*DEG;
+ const tex=perfTex(Math.PI/2*344,2*zh);const ms=new THREE.MeshStandardMaterial({color:0x8a9299,metalness:0.6,roughness:0.45,alphaMap:tex,alphaTest:0.5,side:THREE.DoubleSide});
+ g.add(new THREE.Mesh(arcPanel(G.R,a0,a1,-zh,zh),ms));g.add(new THREE.Mesh(arcPanel(G.Ri,a0,a1,-zh,zh),ms));
+ const ep=quarter(a0,a1,G.R),lugA=outer?G.phi0:Math.PI-G.phi0,lx=G.re*Math.cos(lugA),ly=G.re*Math.sin(lugA);
+ [[zh,1],[-zh-16,-1]].forEach(([z])=>{g.add(ext(ep,16,mBare,z));
+   const e=ext(ring(36,16),16,mBare,z);e.position.x=lx;e.position.y=ly;g.add(e);
+   const bz=outer?(z>0?z+16:z-20):(z>0?z-20:z+16);g.add(ext(ring(70,36),20,mBare,bz));});
+ // stiffener rings
+ [-155,145].forEach(z=>g.add(ext(ringQ(a0,a1,G.Ri,250),12,mBare,z)));
+ // top edge flats
+ const te=outer?0:180*DEG;const tb=bx(12,8,2*zh,mBare,(G.R-6)*Math.cos(te),0,0);g.add(tb);
+ // lip wear bar
+ g.add(bx(80,20,2*zh,mDark,outer?41:-41,-342,0));
+ // lug pin
+ const pinLen=outer?40:46,pz=outer?(328+pinLen/2-4):(309+pinLen/2-2);
+ [1,-1].forEach(s=>g.add(cylZ(15,pinLen,mDark,lx,ly,s*pz,16)));
+ A[outer?'sh15':'sh16']=anchor(g,outer?240:-240,-240,0);
+ if(outer)A.lip=anchor(g,41,-350,-zh*0.6);
+ return g;}
+const shO=shell(true),shI=shell(false);grab.add(shO,shI);
+// main shaft & collars
+grab.add(cylZ(35,780,mDark,0,0,0,24));[1,-1].forEach(s=>grab.add(cylZ(46,16,mDark,0,0,s*372,24)));A.shaft=anchor(grab,0,0,384);
+// hanger plates
+(function(){const s=new THREE.Shape();s.moveTo(-50,1200);s.lineTo(-50,330);s.lineTo(-80,250);s.lineTo(-80,0);s.absarc(0,0,80,Math.PI,2*Math.PI,false);s.lineTo(80,250);s.lineTo(50,330);s.lineTo(50,1200);s.lineTo(-50,1200);
+ const h1=new THREE.Path();h1.absarc(0,0,36,0,Math.PI*2,true);s.holes.push(h1);
+ const h2=new THREE.Path();h2.moveTo(-22,348);h2.lineTo(-22,800);h2.absarc(0,800,22,Math.PI,0,true);h2.lineTo(22,348);h2.absarc(0,348,22,0,-Math.PI,true);s.holes.push(h2);
+ grab.add(ext(s,20,mSteel,40));grab.add(ext(s,20,mSteel,-60));A.hang=anchor(grab,-50,1050,60);})();
+// crosshead group
+const xh=new THREE.Group();grab.add(xh);
+xh.add(cylZ(20,744,mDark,0,0,0,18));[1,-1].forEach(s=>{const sp=cylZ(30,270,mSteel,0,0,s*195,18);xh.add(sp);xh.add(cylZ(28,8,mDark,0,0,s*366,18));xh.add(cylZ(30,4,mSteel,0,0,s*344,18));});
+A.xh=anchor(xh,0,0,372);
+// links
+const links=[];[[336,false],[-336,false],[352,true],[-352,true]].forEach(([z,o])=>{const m=new THREE.Mesh(new THREE.BoxGeometry(60,G.l+60,12),o?mTeal:mTeal);m.position.z=z;m.userData.outer=o;grab.add(m);links.push(m);});
+A.link=anchor(grab,0,0,0);
+// drawbar + rod
+const drawbar=new THREE.Mesh(new THREE.BoxGeometry(70,1,50),mBare);grab.add(drawbar);
+const rod=new THREE.Mesh(new THREE.CylinderGeometry(20,20,1,20),mChrome);grab.add(rod);
+A.db=anchor(grab,0,0,0);
+// dross chunk
+const chunkShape=(function(){const s=new THREE.Shape(),h=140,a=Math.asin(h/330);s.moveTo(-Math.sqrt(330*330-h*h),-h);s.absarc(0,0,330,-Math.PI+a,-a,false);s.closePath();return s;})();
+const chunk=ext(chunkShape,600,mDross,-300);grab.add(chunk);chunk.visible=false;
+const fallChunk=new THREE.Mesh(chunk.geometry,mDross);fallChunk.scale.setScalar(0.001);fallChunk.visible=false;scene.add(fallChunk);
+// upper assembly
+let upper=null,D=2600,Hm=3225,Ldb=2308,yRest=2225,hoseA=null,hoseB=null,portA,portB;
+function buildUpper(){
+ if(upper){grab.remove(upper);upper.traverse(o=>{if(o.geometry)o.geometry.dispose();});}
+ upper=new THREE.Group();grab.add(upper);Hm=D+625;Ldb=Hm-120-797;yRest=D-375;
+ const y0=950,mh=Hm-25-y0;
+ [1,-1].forEach(s=>{upper.add(bx(125,mh,5.3,mSteel,0,y0+mh/2,s*37.65));[1,-1].forEach(t=>upper.add(bx(8.1,mh,65,mSteel,t*58.45,y0+mh/2,s*67.5)));});
+ for(let y=y0+100;y<Hm-150;y+=600){[1,-1].forEach(t=>upper.add(bx(10,100,200,mSteel,t*67.5,y,0)));}
+ upper.add(bx(320,25,320,mBlue,0,Hm-12.5,0));
+ const hs=bx(500,8,500,mAlu,0,Hm-82,0);upper.add(hs);[[-200,-200],[200,-200],[-200,200],[200,200]].forEach(([x,z])=>upper.add(cylY(8,50,mDark,x,Hm-53,z,8)));
+ // cylinder
+ upper.add(bx(180,50,180,mAlu,0,Hm+25,0));upper.add(cylY(82,550,mAlu,0,Hm+325,0,32));upper.add(bx(180,50,180,mAlu,0,Hm+625,0));
+ [[72,72],[-72,72],[72,-72],[-72,-72]].forEach(([x,z])=>upper.add(cylY(7,660,mChrome,x,Hm+325,z,8)));
+ upper.add(bx(70,60,60,mBlack,125,Hm+625,0));upper.add(bx(70,60,60,mBlack,125,Hm+28,0));
+ portA=anchor(upper,165,Hm+625,0);portB=anchor(upper,165,Hm+28,0);
+ // yoke & eye
+ [1,-1].forEach(s=>upper.add(bx(120,900,20,mBlue,0,Hm+450,s*130)));
+ upper.add(bx(160,30,300,mBlue,0,Hm+915,0));
+ const es=new THREE.Shape();es.moveTo(-75,0);es.lineTo(75,0);es.lineTo(75,90);es.absarc(0,90,75,0,Math.PI,false);es.lineTo(-75,0);const eh=new THREE.Path();eh.absarc(0,90,12.5,0,Math.PI*2,true);es.holes.push(eh);
+ const eye=ext(es,25,mBlue,-12.5);eye.position.y=Hm+930;upper.add(eye);
+ // shackle
+ const py=Hm+1020;upper.add(cylZ(11.2,78,mAmber,0,py,0,12));[1,-1].forEach(s=>upper.add(cylY(11,92,mAmber,0,py+46,s*24.5,12)));
+ const bow=new THREE.Mesh(new THREE.TorusGeometry(24.5,11,10,18,Math.PI),mAmber);bow.rotation.y=Math.PI/2;bow.position.y=py+92;upper.add(bow);
+ // hook + block + ropes
+ const hk=new THREE.Mesh(new THREE.TorusGeometry(48,15,10,28,Math.PI*1.45),mDark);hk.rotation.z=-Math.PI*0.95;hk.position.y=py+92+35+33+15;upper.add(hk);
+ upper.add(cylY(16,200,mDark,0,py+92+35+48+15+100,0,12));
+ upper.add(bx(240,320,140,mAmber,0,py+92+35+48+15+200+160,0));
+ [1,-1].forEach(s=>upper.add(cylY(8,7000,mBlack,s*70,py+92+35+48+15+360+3500,0,6)));
+ // rim rest
+ const rl=G.W+400;[1,-1].forEach(s=>{upper.add(bx(rl,75,40,mAmber,0,yRest+12+37.5,s*122));upper.add(bx(12,150,284,mAmber,s*78.5,yRest+12+75,0));const pn=new THREE.Mesh(new THREE.CylinderGeometry(12,12,190,10),mDark);pn.rotation.z=Math.PI/2;pn.position.set(0,yRest+12+75,s*70);upper.add(pn);});
+ [1,-1].forEach(t=>upper.add(bx(120,12,284,mDark,t*(G.W/2+80),yRest+6,0)));
+ A.eye=anchor(upper,0,Hm+1085,0);A.yoke=anchor(upper,60,Hm+620,140);A.cyl=anchor(upper,-82,Hm+350,0);A.pocv=anchor(upper,160,Hm+625,30);
+ A.hs=anchor(upper,-250,Hm-82,250);A.head=anchor(upper,-160,Hm-12,-160);A.mast=anchor(upper,62,y0+mh*0.7,100);
+ A.rim=anchor(upper,-rl/2+60,yRest+87,142);
+}
+/* environment (ghosts while playing) */
+const mTray=M(0x3e454c,0.5,0.6),mReel=M(0x0E7C86,0.3,0.5),mEdge=new THREE.LineBasicMaterial({color:0x7fa6c8,transparent:true,opacity:0.12,depthWrite:false});
+const ENV=[[mKettle,1,0.08],[mCase,1,0.05],[mBrick,1,0.05],[mFloor,1,0.07],[mTray,1,0.18],[mReel,1,0.25],[mZinc,0.32,0.07],[mZtop,0.45,0.14],[mDrossL,0.7,0.22]];
+ENV.forEach(e=>{e[0].transparent=true;e[0].needsUpdate=true;});
+let ghost=0;
+function applyGhost(g){ENV.forEach(([m,a,b])=>{m.opacity=a+(b-a)*g;m.depthWrite=(a===1&&m.opacity>0.92);});mEdge.opacity=0.12+0.5*g;}
+function eBox(w,h,d,m,x,y,z){const o=bx(w,h,d,m,x,y,z);o.add(new THREE.LineSegments(new THREE.EdgesGeometry(o.geometry),mEdge));return o;}
+/* kettle */
+let ket=null,zincG=null,trayPile=null;
+function buildKettle(){
+ if(ket){scene.remove(ket);ket.traverse(o=>{if(o.geometry)o.geometry.dispose();});}
+ ket=new THREE.Group();scene.add(ket);const W=G.W/1000,L=G.L/1000,d=D/1000,t=0.05,fl=d-0.9;
+ ket.add(eBox(W+2*t,t,L+t,mKettle,0,-t/2,-t/2));
+ [1,-1].forEach(s=>{ket.add(eBox(t,d-0.03,L+t,mKettle,s*(W/2+t/2),(d-0.03)/2,-t/2));ket.add(eBox(0.16,0.03,L+t,mKettle,s*(W/2+0.07),d-0.015,-t/2));});
+ ket.add(eBox(W+2*t,d-0.03,t,mKettle,0,(d-0.03)/2,-L/2-t/2));
+ const cw=0.55,ch=d+0.4;[1,-1].forEach(s=>{ket.add(eBox(cw,ch-0.03,L+t+cw,mCase,s*(W/2+t+cw/2),(ch-0.03)/2-0.4,-(cw)/2-t/2));ket.add(bx(cw-0.04,0.02,L+t+cw-0.04,mBrick,s*(W/2+t+cw/2),d-0.02,-(cw)/2-t/2));});
+ ket.add(eBox(W+2*t,ch-0.03,cw,mCase,0,(ch-0.03)/2-0.4,-L/2-t-cw/2));
+ const fs=new THREE.Shape();fs.moveTo(-5.5,-7);fs.lineTo(8.5,-7);fs.lineTo(8.5,7);fs.lineTo(-5.5,7);fs.lineTo(-5.5,-7);const xo=W/2+t+cw,fh=new THREE.Path();fh.moveTo(-xo,-L/2);fh.lineTo(-xo,L/2+t+cw);fh.lineTo(xo,L/2+t+cw);fh.lineTo(xo,-L/2);fh.lineTo(-xo,-L/2);fs.holes.push(fh);
+ const fp=new THREE.Mesh(new THREE.ShapeGeometry(fs),mFloor);fp.rotation.x=-Math.PI/2;fp.position.y=fl;ket.add(fp);
+ zincG=new THREE.Group();ket.add(zincG);
+ zincG.add(bx(W-0.004,d-0.1-0.15,L-0.004,mZinc,0,0.15+(d-0.25)/2,0));
+ const zt=new THREE.Mesh(new THREE.PlaneGeometry(W-0.004,L-0.004),mZtop);zt.rotation.x=-Math.PI/2;zt.position.y=d-0.1;zincG.add(zt);
+ zincG.add(bx(W-0.004,0.15,L-0.004,mDrossL,0,0.075,0));
+ const tx=2.2,tz=1.0,tw=1.0,td=0.8,th=0.25;
+ ket.add(eBox(tw,0.02,td,mTray,tx,fl+0.01,tz));[[tw,th,0.02,0,td/2],[tw,th,0.02,0,-td/2],[0.02,th,td,tw/2,0],[0.02,th,td,-tw/2,0]].forEach(a=>ket.add(eBox(a[0],a[1],a[2],mTray,tx+a[3],fl+th/2,tz+a[4])));
+ ket.add(bx(0.08,0.02,td,mTray,tx,fl+0.12,tz));
+ trayPile=new THREE.Mesh(new THREE.SphereGeometry(1,14,8,0,Math.PI*2,0,Math.PI/2),mDross);trayPile.position.set(tx,fl+0.02,tz);trayPile.scale.set(0.001,0.001,0.001);ket.add(trayPile);
+ ket.add(cylZ(0.18,0.22,mReel,0.9,d+4.2,tz,24));ket.add(bx(0.06,0.5,0.06,mReel,0.9,d+4.5,tz));
+ ket.userData={reel:new THREE.Vector3(0.9,d+4.05,tz)};
+ glow.position.set(0,d-0.05,0.8);
+ applyGhost(ghost);
+}
+/* labels */
+const LBL=[['1','Lifting eye + shackle','eye'],['2','Yoke','yoke'],['3','Cylinder Ø160×450','cyl'],['4','Pilot-check valves','pocv'],['5','Heat shield','hs'],['6','Head plate','head'],['7','Mast 2×ISMC 125','mast'],['9','Drawbar 70×50','db'],['10','Rim rest','rim'],['11','Hanger plates','hang'],['12','Main shaft Ø70','shaft'],['13','Crosshead pin','xh'],['14','Links','link'],['15','Outer shell','sh15'],['16','Inner shell','sh16'],['19','Lip wear bar','lip']];
+const lblBox=document.getElementById('labels');const lblEls=LBL.map(l=>{const e=document.createElement('div');e.className='lbl';e.innerHTML=`<i>${l[0]}</i><span>${l[1]}</span>`;lblBox.appendChild(e);return e;});
+document.getElementById('legend').innerHTML=LBL.map(l=>`<li><i>${l[0]}</i><span>${l[1]}</span></li>`).join('');
+/* pose */
+let theta=0;const tmpV=new THREE.Vector3();
+function setPose(th){theta=th;shO.rotation.z=th;shI.rotation.z=-th;const k=kin(th);xh.position.y=k.yc;
+ const aO=G.phi0+th,lo=[G.re*Math.cos(aO),G.re*Math.sin(aO)];
+ links.forEach(m=>{const lx=m.userData.outer?lo[0]:-lo[0],ly=lo[1],dx=lx,dy=ly-k.yc;m.position.x=lx/2;m.position.y=(ly+k.yc)/2;m.rotation.z=Math.atan2(dy,dx)-Math.PI/2;});
+ A.link.position.set(lo[0]/2,(lo[1]+k.yc)/2,358);
+ drawbar.scale.y=Ldb+50;drawbar.position.y=k.yc-50+(Ldb+50)/2;A.db.position.set(35,k.yc+Ldb*0.18,25);
+ const rb=k.yc+Ldb,rt=Hm+50;rod.scale.y=rt-rb;rod.position.y=(rb+rt)/2;
+ const deg=th/DEG;document.getElementById('rTh').textContent=deg.toFixed(1)+'°';
+ document.getElementById('rSpan').textContent=Math.round(2*G.R*Math.sin(th))+' mm';
+ document.getElementById('rRod').textContent=Math.round(G.ycO-k.yc)+' mm';
+ document.getElementById('rF').textContent=(fAt(F5,deg)/1000).toFixed(2)+' / '+(fAt(F6,deg)/1000).toFixed(2)+' kN';
+ const cm=document.getElementById('cmark');if(cm){const x=svg._X(deg);cm.setAttribute('x1',x);cm.setAttribute('x2',x);}
+}
+/* hoses */
+function hose(old,p0){if(old){scene.remove(old);old.geometry.dispose();old.children.forEach(c=>c.geometry.dispose());}
+ const r=ket.userData.reel,p1=p0.clone().add(new THREE.Vector3(0.25,0.15,0)),p3=r.clone(),p2=new THREE.Vector3((p1.x+p3.x)/2+0.3,(p1.y+p3.y)/2,(p1.z+p3.z)/2);
+ const c=new THREE.CatmullRomCurve3([p0,p1,p2,p3]);const m=new THREE.Mesh(new THREE.TubeGeometry(c,36,0.012,6,false),mBlack);scene.add(m);
+ const sl=new THREE.CatmullRomCurve3([p0,p1,p0.clone().lerp(p2,0.45)]);m.add(new THREE.Mesh(new THREE.TubeGeometry(sl,12,0.017,8,false),mSleeve));return m;}
+/* cycle */
+const PH=[
+ ['Drying above zinc',2.5,'Shells held 200–300 mm above the bath to drive off moisture before immersion.'],
+ ['Opening jaws',2,'Lever to OPEN: cylinder retracts, crosshead rises, both shells swing out to 65°.'],
+ ['Lowering onto rim rest',4,'Creep speed down through the zinc until the yellow rim rest sits on the kettle flanges. Lips stop 25 mm above the floor.'],
+ ['Closing: the bite',3,'Lever to CLOSE: cylinder extends, crosshead pushes down, links swing the shells and the lips scrape dross to the centre.'],
+ ['Lifting',2.5,'Creep lift for the first 500 mm. Pilot-check valves keep the jaws locked shut.'],
+ ['Draining zinc',2.5,'Bowl held just above the bath for 30 s. Free zinc runs back through the Ø12 perforations.'],
+ ['Travel to dross moulds',3.5,'Lift clear of the rim, then crane travel to the dry, pre-heated dross moulds.'],
+ ['Lowering to mould',2,'Lower until the lips are 150 mm above the mould.'],
+ ['Opening: dump',2,'Lever to OPEN: shells swing out and the dross drops into the mould.'],
+ ['Closing, return',3.5,'Close in air (cycling while hot keeps zinc from freezing at the pins) and return for the next bite.']];
+const TOT=PH.reduce((a,p)=>a+p[1],0),starts=[];{let a=0;PH.forEach(p=>{starts.push(a);a+=p[1];});}
+const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let playing=!reduced,tc=0,spd=1,dumped=false,fallV=0,pileN=0,lastPh=-1;
+const ss=t=>t<=0?0:t>=1?1:t*t*(3-2*t),lerp=(a,b,t)=>a+(b-a)*t;
+const drips=[];for(let i=0;i<10;i++){const s=new THREE.Mesh(new THREE.SphereGeometry(0.008,8,6),mAlu);s.visible=false;scene.add(s);drips.push({m:s,v:0});}
+const gz=1.0;
+function cyclePose(t){const d=D/1000,yTop=d+0.70,yBot=0.375,yDr=d+0.40,yTr=d-0.15,tx=2.2,TH=G.thO;
+ let acc=0,i=0;for(;i<PH.length;i++){if(t<acc+PH[i][1])break;acc+=PH[i][1];}if(i>=PH.length)i=PH.length-1;const u=ss((t-acc)/PH[i][1]);
+ let x=0,y=yTop,th=0,carry=false;
+ switch(i){case 0:break;case 1:th=TH*u;break;case 2:th=TH;y=lerp(yTop,yBot,u);break;case 3:y=yBot;th=TH*(1-u);carry=u>0.85;break;
+ case 4:y=lerp(yBot,yDr,u);carry=true;break;case 5:y=yDr;carry=true;break;
+ case 6:{const a=ss(Math.min(1,u/0.4)),b=ss(Math.max(0,(u-0.3)/0.7));y=lerp(yDr,yTop,a);x=lerp(0,tx,b);carry=true;break;}
+ case 7:x=tx;y=lerp(yTop,yTr,u);carry=true;break;case 8:x=tx;y=yTr;th=TH*u;break;
+ case 9:{const a=ss(Math.min(1,u/0.5)),b=ss(Math.max(0,(u-0.3)/0.7));th=TH*(1-a);x=lerp(tx,0,b);y=lerp(yTr,yTop,ss(Math.min(1,u/0.45)));break;}}
+ return{x,y,th,carry,i};}
+function placeGrab(x,y){grab.position.set(x,y,gz);}
+/* UI refs */
+const jaw=document.getElementById('jaw'),jawv=document.getElementById('jawv'),capN=document.getElementById('capN'),capD=document.getElementById('capD'),tlEl=document.getElementById('tl'),bPlay=document.getElementById('bPlay');
+const segs=PH.map((p,i)=>{const b=document.createElement('button');b.type='button';b.className='seg';b.title=p[0];b.setAttribute('aria-label','Step '+(i+1)+': '+p[0]);b.innerHTML=`<span class="fb"></span><em>${i+1}</em>`;b.onclick=()=>jump(i);tlEl.appendChild(b);return b;});
+function applyCycle(){const p=cyclePose(tc);placeGrab(p.x,p.y);setPose(p.th);
+ if(p.i!==lastPh){lastPh=p.i;phaseEl.textContent=PH[p.i][0];capD.textContent=PH[p.i][2];capN.textContent='Step '+(p.i+1)+' of '+PH.length;segs.forEach((s,j)=>{s.classList.toggle('on',j===p.i);s.classList.toggle('done',j<p.i);});if(p.i===0)dumped=false;}
+ segs[p.i].style.setProperty('--p',Math.min(1,(tc-starts[p.i])/PH[p.i][1]).toFixed(3));
+ jaw.value=(p.th/DEG).toFixed(1);jawv.textContent=(p.th/DEG).toFixed(1)+'°';chunk.visible=p.carry;return p;}
+function jump(i){tc=starts[i]+0.001;if(i<8)dumped=false;fallChunk.visible=false;drips.forEach(d=>d.m.visible=false);lastPh=-1;applyCycle();}
+/* camera */
+let follow=true,focusMode='machine';const fv=new THREE.Vector3(),dv=new THREE.Vector3();
+const OFF={iso:[2.9,1.0,9.2],front:[0,0.3,10.2],jaws:[1.15,0.55,1.9],head:[1.3,0.45,2.2]};
+function focusPt(v){const g=grab.position;const dy=focusMode==='machine'?(Hm/1000+0.75)/2:focusMode==='head'?Hm/1000+0.35:0;return v.set(g.x,g.y+dy,g.z);}
+function setView(v){focusMode=(v==='jaws'||v==='head')?v:'machine';focusPt(fv);const o=OFF[v];cam.position.set(fv.x+o[0],fv.y+o[1],fv.z+o[2]);ctl.target.copy(fv);ctl.update();}
+function rebuild(){buildKettle();buildUpper();fillTables(D);tc=0;dumped=false;pileN=0;trayPile.scale.setScalar(0.001);fallChunk.visible=false;lastPh=-1;applyCycle();setView('iso');}
+D=2600;rebuild();
+/* controls */
+const IC={play:'<svg viewBox="0 0 24 24" width="24" height="24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>',pause:'<svg viewBox="0 0 24 24" width="24" height="24"><path d="M7 5h4v14H7zM13 5h4v14h-4z" fill="currentColor"/></svg>'};
+function setPlaying(v){playing=v;bPlay.innerHTML=v?IC.pause:IC.play;bPlay.setAttribute('aria-label',v?'Pause cycle':'Play cycle');if(v&&lastPh<0)applyCycle();}
+setPlaying(playing);
+bPlay.onclick=()=>setPlaying(!playing);
+document.getElementById('bPrev').onclick=()=>{jump(Math.max(0,(lastPh<0?0:lastPh)-1));};
+document.getElementById('bNext').onclick=()=>{jump(((lastPh<0?0:lastPh)+1)%PH.length);};
+document.getElementById('speed').onchange=e=>{spd=+e.target.value;};
+jaw.oninput=()=>{setPlaying(false);lastPh=-1;segs.forEach(s=>s.classList.remove('on','done'));setPose(+jaw.value*DEG);jawv.textContent=(+jaw.value).toFixed(1)+'°';capN.textContent='Manual';phaseEl.textContent='Jaw control';capD.textContent='Drag the slider to open and close the shells. Press play to resume the cycle.';};
+document.getElementById('depth').onchange=e=>{D=+e.target.value;rebuild();};
+function tog(id,fn){const b=document.getElementById(id);b.onclick=()=>{const v=b.getAttribute('aria-pressed')!=='true';b.setAttribute('aria-pressed',v);fn(v);};}
+tog('tZinc',v=>{zincG.visible=v;});tog('tKettle',v=>{ket.children.forEach(c=>{if(c!==zincG&&c!==trayPile)c.visible=v;});});tog('tFollow',v=>{follow=v;});
+let lblMode=window.innerWidth>760?2:1;const bL=document.getElementById('tLbl');
+function setLbl(m){lblMode=m;lblBox.hidden=m===0;lblBox.classList.toggle('names',m===2);bL.textContent='Labels: '+['off','numbers','names'][m];}
+setLbl(lblMode);bL.onclick=()=>setLbl((lblMode+1)%3);
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>setView(b.dataset.view));
+/* full screen */
+const stage=document.getElementById('stage'),bFs=document.getElementById('bFs');
+function setFs(on){stage.classList.toggle('fs',on);document.documentElement.style.overflow=on?'hidden':'';bFs.setAttribute('aria-pressed',on);bFs.querySelector('span').textContent=on?'Exit full screen':'Full screen';
+ if(on){if(window.innerWidth>760)setLbl(2);setPlaying(true);follow=true;document.getElementById('tFollow').setAttribute('aria-pressed','true');}
+ requestAnimationFrame(()=>{resize();setView('iso');});box.focus({preventScroll:true});}
+bFs.onclick=()=>{const on=!stage.classList.contains('fs');
+ if(on){try{const r=stage.requestFullscreen&&stage.requestFullscreen();if(r&&r.catch)r.catch(()=>{});}catch(e){}setFs(true);}
+ else{try{if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});}catch(e){}setFs(false);}};
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&stage.classList.contains('fs'))setFs(false);});
+box.addEventListener('keydown',e=>{if(e.key===' '){e.preventDefault();setPlaying(!playing);}else if(e.key==='f'||e.key==='F'){bFs.click();}
+ else if(e.key==='ArrowRight'){jump(((lastPh<0?0:lastPh)+1)%PH.length);}else if(e.key==='ArrowLeft'){jump(Math.max(0,(lastPh<0?0:lastPh)-1));}
+ else if(e.key==='Escape'&&stage.classList.contains('fs')&&!document.fullscreenElement){setFs(false);}});
+/* loop */
+const capEl=document.getElementById('cap'),ctrlEl=document.querySelector('.ctrl');
+function placeCap(){const narrow=window.innerWidth<=700;if(narrow&&capEl.parentNode!==ctrlEl){ctrlEl.insertBefore(capEl,ctrlEl.firstChild);capEl.classList.remove('inside');}else if(!narrow&&capEl.parentNode!==box){box.appendChild(capEl);capEl.classList.add('inside');}}
+window.addEventListener('resize',placeCap);placeCap();
+function resize(){const w=box.clientWidth,h=box.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();}
+new ResizeObserver(resize).observe(box);resize();
+let last=performance.now();
+function frame(now){const dt=Math.min(0.05,(now-last)/1000);last=now;
+ if(playing){tc=(tc+dt*spd)%TOT;const p=applyCycle();
+  if(p.i===8&&!dumped){dumped=true;chunk.updateMatrixWorld();chunk.getWorldPosition(tmpV);fallChunk.position.copy(tmpV);fallChunk.visible=true;fallV=0;}
+  if(p.i===5){drips.forEach(dp=>{if(!dp.m.visible&&Math.random()<0.12){dp.m.visible=true;dp.v=0;dp.m.position.set(grab.position.x+(Math.random()-0.5)*0.55,grab.position.y-0.30-Math.random()*0.04,gz+(Math.random()-0.5)*0.55);}});}
+ }
+ const sd=dt*(playing?spd:1);
+ drips.forEach(dp=>{if(dp.m.visible){dp.v+=9.8*sd;dp.m.position.y-=dp.v*sd;if(dp.m.position.y<D/1000-0.1)dp.m.visible=false;}});
+ if(fallChunk.visible){fallV+=9.8*sd;fallChunk.position.y-=fallV*sd;const fl=D/1000-0.9+0.03;if(fallChunk.position.y<fl){fallChunk.visible=false;pileN=Math.min(4,pileN+1);const s=0.18+pileN*0.05;trayPile.scale.set(s*1.5,0.04+pileN*0.025,s);if(pileN>=4)pileN=0;}}
+ const gt=playing?1:0;if(Math.abs(gt-ghost)>0.002){ghost+=(gt-ghost)*(1-Math.exp(-dt*3));applyGhost(ghost);}
+ if(follow){focusPt(fv);dv.subVectors(fv,ctl.target).multiplyScalar(1-Math.exp(-dt*4));ctl.target.add(dv);cam.position.add(dv);}
+ ctl.update();renderer.render(scene,cam);
+ if(lblMode){const w=box.clientWidth,h=box.clientHeight;LBL.forEach((l,i)=>{const o=A[l[2]],e=lblEls[i];if(!o){e.hidden=true;return;}o.getWorldPosition(tmpV);tmpV.project(cam);
+  if(tmpV.z>1||tmpV.x<-1.05||tmpV.x>1.05||tmpV.y<-1.05||tmpV.y>1.05){e.hidden=true;return;}e.hidden=false;e.style.transform=`translate(${(tmpV.x*0.5+0.5)*w-11}px,${(-tmpV.y*0.5+0.5)*h-11}px)`;});}
+ if(portA){portA.getWorldPosition(tmpV);hoseA=hose(hoseA,tmpV.clone());portB.getWorldPosition(tmpV);hoseB=hose(hoseB,tmpV.clone());}
+ requestAnimationFrame(frame);}
+requestAnimationFrame(frame);
+})();
+</script>
+
+</body></html>

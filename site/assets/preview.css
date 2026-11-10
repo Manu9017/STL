@@ -1,0 +1,44 @@
+/* SHIVAS previews: a small card with the machine's picture when a production-line segment is
+   hovered, focused with the keyboard or tapped. Light card on light pages, dark on dark. */
+:root{--spv-bg:#ffffff;--spv-fg:#13202c;--spv-muted:#566778;--spv-line:#d5dce3;--spv-acc:#0e7c86;--spv-acc-fg:#ffffff;
+ --spv-shadow:0 18px 40px -12px rgba(11,22,34,.35),0 2px 6px rgba(11,22,34,.12);--spv-bottom:10px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--spv-bg:#0f1d2c;--spv-fg:#e7edf3;--spv-muted:#97aabd;--spv-line:#2d4860;--spv-acc:#14949f;--spv-shadow:0 18px 40px -12px rgba(0,0,0,.75),0 2px 6px rgba(0,0,0,.4)}}
+:root[data-theme="dark"]{--spv-bg:#0f1d2c;--spv-fg:#e7edf3;--spv-muted:#97aabd;--spv-line:#2d4860;--spv-acc:#14949f;--spv-shadow:0 18px 40px -12px rgba(0,0,0,.75),0 2px 6px rgba(0,0,0,.4)}
+.spv{position:fixed;left:0;top:0;z-index:140;width:min(300px,calc(100vw - 16px));background:var(--spv-bg);color:var(--spv-fg);
+ border:1px solid var(--spv-line);border-radius:10px;box-shadow:var(--spv-shadow);overflow:hidden;
+ font:14px/1.45 "Archivo","Helvetica Neue",Arial,sans-serif;opacity:0;transform:translateY(4px);transition:opacity .14s ease,transform .14s ease}
+.spv.spv-in{opacity:1;transform:none}
+.spv[hidden]{display:none!important}
+.spv-fig{margin:0;position:relative;background:#ffffff;aspect-ratio:3/2;display:grid;place-items:center;border-bottom:1px solid var(--spv-line);overflow:hidden}
+.spv-fig img{width:100%;height:100%;object-fit:contain;display:block}
+.spv-fig.spv-drw img{width:80%;height:80%}
+.spv-fig.spv-load::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 0,rgba(14,124,134,.10) 50%,transparent 100%);background-size:200% 100%;animation:spvsh 1s linear infinite}
+@keyframes spvsh{from{background-position:200% 0}to{background-position:-200% 0}}
+@media (prefers-reduced-motion:reduce){.spv{transition:none}.spv-fig.spv-load::after{animation:none}}
+.spv-tag{position:absolute;left:8px;top:8px;font:500 10.5px/1.2 "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;
+ background:rgba(255,255,255,.94);color:#0b5f66;border:1px solid #cfe3e5;border-radius:4px;padding:3px 6px}
+.spv-body{padding:10px 12px 12px;min-width:0}
+.spv-n{display:block;font-weight:700;font-size:15px;line-height:1.25;padding-right:26px}
+.spv-c{display:block;color:var(--spv-acc);font-size:12.5px;line-height:1.35;margin-top:3px}
+.spv-c[hidden]{display:none}
+.spv-d{margin:6px 0 0;color:var(--spv-muted);font-size:13px;line-height:1.45}
+.spv-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.spv-a,.spv-2{font:600 13px/1 "Archivo","Helvetica Neue",Arial,sans-serif;padding:9px 12px;border-radius:6px;text-decoration:none;cursor:pointer;min-height:36px;display:inline-flex;align-items:center}
+.spv-a{background:var(--spv-acc);color:var(--spv-acc-fg)}
+.spv-2{background:transparent;color:var(--spv-fg);border:1px solid var(--spv-line)}
+.spv-a:focus-visible,.spv-2:focus-visible,.spv-x:focus-visible{outline:2px solid #e8a317;outline-offset:2px}
+.spv-x{position:absolute;right:8px;top:8px;z-index:2;width:32px;height:32px;border-radius:50%;border:1px solid var(--spv-line);background:var(--spv-bg);color:var(--spv-fg);
+ font-size:15px;line-height:1;cursor:pointer;display:none;align-items:center;justify-content:center}
+/* touch / small screens: a panel fixed to the bottom of the screen */
+.spv.spv-sheet{position:fixed;left:8px!important;right:8px;top:auto!important;bottom:calc(var(--spv-bottom) + env(safe-area-inset-bottom,0px));width:auto;max-width:560px;margin:0 auto;
+ display:grid;grid-template-columns:136px minmax(0,1fr)}
+.spv.spv-sheet .spv-fig{aspect-ratio:auto;height:100%;min-height:118px;border-bottom:0;border-right:1px solid var(--spv-line)}
+.spv.spv-sheet .spv-x{display:inline-flex}
+@media (max-width:359px){.spv.spv-sheet{grid-template-columns:1fr}.spv.spv-sheet .spv-fig{aspect-ratio:3/2;height:auto;border-right:0;border-bottom:1px solid var(--spv-line)}}
+/* the segment being previewed */
+.spv-on{outline:2px solid var(--spv-acc)!important;outline-offset:-2px}
+.xp-calls li:focus-visible,.ln-s:focus-visible,.mini:focus-visible{outline:2px solid #e8a317;outline-offset:2px}
+/* look-only card over a drawing: never blocks the machines underneath */
+.spv.spv-peek{pointer-events:none}
+.spv.spv-peek .spv-acts{display:none}
+.spv.spv-pin .spv-x{display:inline-flex}

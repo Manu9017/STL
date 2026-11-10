@@ -1,0 +1,234 @@
+/* V39: a calmer, traditional engineering-company look. Layout and content are unchanged.
+   - plain serif headings and a plain sans for text; no monospace labels
+   - square-ish buttons and chips instead of pills; no glows
+   - dark sections in deep SHIVAS navy instead of near-black
+   - the header hides while reading down and comes back on a small scroll up (v39.js) */
+:root{--f-body:"Source Sans 3","Segoe UI",Arial,sans-serif!important;--f-mono:"Source Sans 3","Segoe UI",Arial,sans-serif!important;
+  --f-display:"Source Serif 4",Georgia,"Times New Roman",serif!important;
+  --f:"Source Sans 3","Segoe UI",Arial,sans-serif!important;--m:"Source Sans 3","Segoe UI",Arial,sans-serif!important;
+  --v39-serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --blob1:transparent!important;--blob2:transparent!important;--blob3:transparent!important;--glow:none!important}
+body{font-family:"Source Sans 3","Segoe UI",Arial,sans-serif}
+body{-webkit-font-smoothing:antialiased}
+
+/* headings */
+h1:not(#v39a):not(#v39b),h2:not(#v39a):not(#v39b){font-family:var(--v39-serif)!important;font-weight:600!important;letter-spacing:-.005em!important;text-transform:none!important}
+h1{line-height:1.12!important}
+h2{line-height:1.18!important}
+h3{letter-spacing:0!important}
+.hero h1{font-size:clamp(32px,4vw,50px)!important}
+#app .v31h h1{font-size:clamp(32px,3.8vw,48px)!important}
+main h1,.pu h1{font-size:clamp(30px,3.6vw,46px)!important}
+h1 em,h2 em{font-style:normal}
+
+/* small labels: plain small capitals, no typewriter look */
+.k,.eyebrow,.crumbs,.kick,.v31-k{font-family:var(--f-body)!important;font-weight:600!important;letter-spacing:.07em!important}
+.crumbs{letter-spacing:0!important;font-weight:400!important;font-size:14px!important}
+.snav a,.onpage a,#nav .links a{font-family:var(--f-body)!important;text-transform:none!important;letter-spacing:0!important;font-size:15px!important;font-weight:500!important}
+.onpage a{font-size:14px!important}
+.menu-btn,.pill-cta,.btn,.ib,button.copy,.wa,.ghost,.qbtn{font-family:var(--f-body)!important;letter-spacing:0!important;text-transform:none!important}
+
+/* buttons, chips and cards: quieter shapes */
+.btn,.pill-cta,.pill-ghost,.v31-btn,.menu-btn,.wa,.ghost,.qbtn,.onpage a,.snav a,.links a,.chip,.tag,.tags span,.chips span,.chips li,.pills span,button.copy,.copy,.v36-mail,.v37-first em,.v37-calc em,.pglink,.filters button,.presets button,.seg button,.hc-var button,.rbig-tags button,.pa-play,.pa-shapes button,.m3-f span,.hall-play span,.o-line li,.who span,.howto li,.tstat,.gl,.cb-chips i{border-radius:6px!important}
+.ib,.thm,.srch-btn{border-radius:8px!important}
+.dsw,.bswitch{border-radius:8px!important}
+.dsw a,.dsw span,.bswitch a{border-radius:6px!important}
+.card,.pp,.person,.bcard,.ar,.grp a,.dv,.m3,.facts,.v37-first,.pu-ct,.q,form.q{border-radius:8px!important}
+.hero img,.hero figure,.hero .ph,.hero .pic{border-radius:8px!important}
+*{text-shadow:none!important}
+.pill-cta,.btn,.dv,.card,.bcard{box-shadow:none!important}
+.hero figure,.hero .ph,.hero .pic,.hero-img{box-shadow:0 2px 10px rgba(16,40,64,.12)!important}
+
+/* dark sections: deep SHIVAS navy, brand amber and teal only */
+.night{--ink:#12304d;--deep:#163a5c;--panel:#1b4266;--panel2:#204a72;--line:#2f5a82;--line2:#3d6890;--fg:#f3f6f9;--muted:#bccbd9;--dim:#8ea6bd;
+  --amber:#e8a317;--heat:#e0702f;--teal:#3fb3bb;--pink:#e8a317;--violet:#3fb3bb;--cyan:#7cc3d6;--lime:#a8c46e;--ok:#6cc59a;
+  --navbg:rgba(18,48,77,.97);--blob1:transparent;--blob2:transparent;--blob3:transparent;--shadow:0 8px 24px -16px rgba(0,0,0,.5);--grad-hot:#e8a317;--grad-cool:#0e7c86}
+html body .night{background:#12304d!important}
+.dip{background:#12304d!important}
+.pu-fig{background:#12304d!important}
+
+/* header: always solid; hides on the way down, back on the way up */
+header.top{position:sticky!important;top:0!important;transition:transform .25s ease!important}
+header.top.tuck{transform:translateY(-100%)!important}
+#app #nav,header#nav{position:fixed!important;top:0!important;transition:transform .25s ease!important}
+#nav.nav-hide{transform:translateY(-110%)!important}
+html{scroll-padding-top:calc(var(--hd-h,64px) + 12px)!important}
+#app section{scroll-margin-top:calc(var(--hd-h,64px) + 12px)!important}
+.gflt{top:var(--hd,0px)!important;transition:top .25s ease}
+.c-out,.ts-d,.cx-nav,.cx-out{top:calc(var(--hd,0px) + 12px)!important;transition:top .25s ease}
+.c-out{max-height:calc(100vh - var(--hd,0px) - 24px)!important}
+
+/* contact lines without names */
+.v39-lines{display:block;margin-top:4px;color:var(--muted,#5b6b7b);font-size:14px}
+.v39-lines a{color:inherit}
+.v39-mgmt{margin:18px 0 0;font-size:13.5px;color:var(--muted,#6b7785);line-height:1.5}
+.v39-mgmt b{font-weight:600}
+
+/* footers and the quote band in SHIVAS navy */
+footer.foot,footer.v31-foot{background:#163a5c!important}
+section.ask{background:#1F4E79!important}
+footer .v39-lines{color:rgba(255,255,255,.78)!important}
+.v39-lines a{white-space:nowrap}
+.byline .av{display:none!important}
+@media (max-width:640px){.snav a{font-size:14px!important;padding:6px 8px!important}}
+
+/* V40: section bar on the division pages (appears below the hero, marks where you are) */
+.v40-sb{position:fixed;left:0;right:0;top:var(--hd,0px);z-index:45;background:#fff;border-bottom:1px solid #d5dde6;box-shadow:0 2px 10px rgba(16,40,64,.08);transform:translateY(-130%);opacity:0;pointer-events:none;transition:transform .25s ease,top .25s ease,opacity .2s}
+.v40-sb.on{transform:none;opacity:1;pointer-events:auto}
+.v40-sb-in{max-width:1420px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding:6px 16px}
+.v40-sb-in::-webkit-scrollbar{display:none}
+.v40-sb a{flex:0 0 auto;padding:7px 12px;border-radius:6px;font:600 14.5px/1.2 var(--f-body);color:#3b4c5e;text-decoration:none;white-space:nowrap}
+.v40-sb a:hover{background:#eef3f8;color:#1F4E79}
+.v40-sb a.cur{background:#1F4E79;color:#fff}
+.v40-sb a.q{margin-left:auto;background:#e8a317;color:#111}
+[data-theme="dark"] .v40-sb{background:#10233a;border-color:#2b4866}
+[data-theme="dark"] .v40-sb a{color:#c6d4e1}
+[data-theme="dark"] .v40-sb a:hover{background:#1b3653;color:#fff}
+[data-theme="dark"] .v40-sb a.cur{background:#3f86c6;color:#fff}
+html{scroll-padding-top:calc(var(--hd-h,64px) + var(--sb,0px) + 12px)!important}
+#app section{scroll-margin-top:calc(var(--hd-h,64px) + var(--sb,0px) + 12px)!important}
+@media (max-width:640px){.v40-sb a{font-size:14px;padding:7px 10px}.v40-sb-in{padding:5px 10px}}
+@media print{.v40-sb{display:none}}
+.rel-l{list-style:none;padding:0;margin:8px 0 18px;display:grid;gap:8px}
+.rel-l a{display:block;padding:12px 16px;border:1px solid var(--line,#d5dde6);border-left:3px solid #0E7C86;border-radius:6px;text-decoration:none;font-weight:600;color:inherit}
+.rel-l a:hover{border-color:#1F4E79}
+/* V41: the author line is small */
+.byline b,.byline span b{font-size:14px!important;font-weight:600!important}
+.byline span{font-size:13.5px!important}
+.author b{font-size:15px!important;font-weight:600!important}
+.author span{font-size:13.5px!important}
+
+/* V41: SHIVAS Reinplast environment section: air, water and acid, each a complete system */
+#rein-loop .ws-g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:22px}
+#rein-loop .ws{display:grid;gap:10px;align-content:start;padding:20px 22px;border:1px solid var(--line,#d5dde6);border-top:4px solid var(--wc,#0E7C86);border-radius:8px;background:var(--panel,#fff)}
+#rein-loop .ws-air{--wc:#c9a227}#rein-loop .ws-water{--wc:#3f86c6}#rein-loop .ws-zld{--wc:#0E7C86}#rein-loop .ws-acid{--wc:#b5562a}
+#rein-loop .ws-h h3{margin:2px 0 2px;font-size:21px}
+#rein-loop .ws-h p{margin:0;color:var(--muted,#5b6b7b);font-size:14.5px}
+#rein-loop .ws-k{display:inline-block;font:700 12px/1 var(--f-body);letter-spacing:.07em;text-transform:uppercase;color:var(--wc)}
+#rein-loop .ws-sys{margin:4px 0 0;font-weight:700;font-size:16px;color:#1F4E79}
+[data-theme="dark"] #rein-loop .ws-sys{color:#9cc6ec}
+#rein-loop .ws-ch{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+#rein-loop .ws-st{display:inline-block;padding:7px 11px;border-radius:6px;background:color-mix(in srgb,var(--wc) 12%,transparent);border:1px solid color-mix(in srgb,var(--wc) 40%,transparent);font-size:14.5px;font-weight:600;color:inherit;text-decoration:none}
+#rein-loop a.ws-st:hover{border-color:var(--wc)}
+#rein-loop .ws-ar{font-style:normal;color:var(--wc);font-weight:700}
+#rein-loop .ws-r{margin:0;line-height:1.5;font-size:15px}
+#rein-loop .ws-f{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:14px;border-top:1px solid var(--line,#d5dde6);padding-top:10px}
+#rein-loop .ws-by{color:var(--muted,#5b6b7b)}
+#rein-loop .ws-f a{font-weight:600}
+#rein-loop .ws-tech{margin:18px 0 0;font-size:15px;color:var(--muted,#5b6b7b)}
+@media (max-width:760px){#rein-loop .ws-g{grid-template-columns:1fr}}
+
+/* V42: one clear, scrollable menu (division pages and the home page on phones) */
+.menu.v42m{top:var(--hd,var(--nav-h,60px))!important;max-height:calc(100vh - var(--hd,60px));max-height:calc(100dvh - var(--hd,60px));overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:0!important;display:block!important;background:#fff!important;border-bottom:1px solid #d5dde6;box-shadow:0 18px 40px -20px rgba(16,40,64,.45)}
+.menu.v42m[hidden],.mnav.v42m[hidden]{display:none!important}
+.mnav.v42m{max-height:calc(100vh - 70px);max-height:calc(100dvh - 70px);overflow-y:auto;overscroll-behavior:contain;background:#fff;border-top:1px solid #d5dde6}
+.v42m-in{max-width:1280px;margin:0 auto;padding:18px 20px 24px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px 28px}
+.v42m-h{margin:0 0 6px!important;font:700 12px/1.2 var(--f-body)!important;letter-spacing:.08em!important;text-transform:uppercase;color:#0E7C86!important}
+.v42m a{display:block!important;padding:8px 8px!important;margin:0 -8px!important;border:0!important;border-radius:6px;font:600 15.5px/1.3 var(--f-body)!important;letter-spacing:0!important;text-transform:none!important;color:#1b2b3c!important;text-decoration:none!important}
+.v42m a small{display:block;font-weight:400;font-size:12.5px;line-height:1.3;color:#5b6b7b}
+.v42m a span{display:none}
+.v42m a:hover,.v42m a:focus-visible{background:#eef3f8}
+.v42m-q{display:flex;gap:6px;margin-top:12px}
+.v42m-q a{margin:0!important;flex:1;text-align:center;border:1px solid #1F4E79!important;padding:9px 4px!important;font-size:14.5px!important}
+.v42m-q .q-call{background:#1F4E79;color:#fff!important}
+.v42m-q .q-wa{background:#1f9d55;border-color:#1f9d55!important;color:#fff!important}
+.v42m-q .q-ml{background:#fff;color:#1F4E79!important}
+[data-theme="dark"] .menu.v42m,[data-theme="dark"] .mnav.v42m{background:#10233a!important;border-color:#2b4866}
+[data-theme="dark"] .v42m a{color:#e3ebf3!important}[data-theme="dark"] .v42m a small{color:#9fb2c4}
+[data-theme="dark"] .v42m a:hover{background:#1b3653}
+[data-theme="dark"] .v42m-q .q-ml{background:transparent;color:#9cc6ec!important;border-color:#9cc6ec!important}
+@media (max-width:960px){.v42m-in{grid-template-columns:1fr 1fr}}
+@media (max-width:600px){.v42m-in{grid-template-columns:1fr;gap:14px;padding:14px 16px 22px}.v42m-g+.v42m-g{border-top:1px solid #e3e9ef;padding-top:12px}}
+html.v42-lock,html.v42-lock body{overflow:hidden}
+.v42-ml{display:inline-grid;place-items:center;color:#1F4E79}
+[data-theme="dark"] .v42-ml{color:#9cc6ec}
+@media (max-width:760px){.menu.v42m{max-height:calc(100dvh - var(--hd,60px) - 66px)}.mnav.v42m{max-height:calc(100dvh - 140px)}}
+html.v42-lock .to-top,html.v42-lock .bt{display:none!important}
+/* home header: room for About and the email button */
+@media (min-width:901px){header.top .nav{gap:0!important}header.top .nav a{padding:6px 8px!important;font-size:15px!important}header.top .top-act{gap:6px!important}}
+@media (min-width:901px) and (max-width:1320px){header.top .dsw small{display:none}header.top .dsw a,header.top .dsw span{padding-top:7px!important;padding-bottom:7px!important}}
+
+/* V42: extra margin toggle in the calculators: one compact line */
+.cx-mg,.v42-mg{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 4px;padding:0;border:0;background:none}
+.cx-mg-l,.v42-mg-l{font-size:13.5px;font-weight:600;color:var(--muted,#5b6b7b);cursor:help}
+.cx-mg .seg,.v42-mg .seg{display:inline-flex;gap:0;border:1px solid var(--line,#c9d3dd);border-radius:6px;overflow:hidden}
+.cx-mg .seg button,.v42-mg .seg button{min-height:30px;padding:0 10px;border:0;border-right:1px solid var(--line,#c9d3dd);border-radius:0!important;background:var(--bg,#fff);color:inherit;font:600 13px var(--f-body);cursor:pointer}
+.cx-mg .seg button:last-child,.v42-mg .seg button:last-child{border-right:0}
+.cx-mg .seg button[aria-pressed="true"],.v42-mg .seg button[aria-pressed="true"]{background:#1F4E79;color:#fff}
+.v42-mg{margin:4px 0 14px}
+/* V42: the same menu on every other page */
+.v42sub{position:fixed;left:0;right:0;z-index:60}
+.v42-mb{width:auto!important;padding:0 14px!important;font:600 14.5px var(--f-body)!important;border:1px solid var(--line,#c9d3dd)!important;background:var(--bg,#fff)!important;color:inherit!important;min-height:40px}
+@media (max-width:760px){.menu.v42m.v42sub{max-height:calc(100dvh - var(--hd,60px))}}
+.v42-wa{display:inline-grid;place-items:center;color:#1f9d55!important}
+[data-theme="dark"] .v42-wa{color:#4fd18b!important}
+nav.dock .v42-dml{color:#1F4E79}
+/* V42: phones: email sits beside WhatsApp; the header stays on one line */
+nav.dock[aria-label="Quick contact"]{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+nav.dock[aria-label="Quick contact"] a{min-width:0;white-space:nowrap}
+@media (max-width:520px){
+ header.top:has(.snav) .logo img{width:72px!important;height:auto!important}
+ header.top:has(.snav) .top-act{gap:4px!important}
+ header.top:has(.snav) .top-act .ib:not(.v42-mb){width:34px!important;height:34px!important;min-width:34px!important}
+ header.top:has(.snav) .top-act .v42-mb{min-height:34px!important;padding:0 9px!important;font-size:13.5px!important}
+ header.top:has(.snav) .top-act .btn.amber{min-height:34px!important;padding:0 10px!important;font-size:0!important}
+ header.top:has(.snav) .top-act .btn.amber::after{content:"Quote";font-size:13.5px;font-weight:600}
+ header.top:has(.snav) .top-act .gl{display:none!important}
+ header.top:not(:has(.snav)) .logo img{width:72px!important;height:auto!important}
+ header.top:not(:has(.snav)) .top-act{gap:4px!important}
+ header.top:not(:has(.snav)) .top-act .ib{width:34px!important;height:34px!important;min-width:34px!important}
+ header.top:not(:has(.snav)) .top-act .btn{min-height:34px!important;padding:0 10px!important;font-size:13px!important}
+}
+/* V46: mail choice, shown only when no mail app opened */
+.v46-ms{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);z-index:95;width:min(420px,calc(100vw - 24px));padding:12px 14px;border-radius:10px;background:#12304d;color:#fff;box-shadow:0 14px 40px -12px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
+.v46-ms.on{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
+.v46-ms p{margin:0 0 8px;font:600 14.5px var(--f-body)}
+.v46-ms div{display:flex;gap:8px}
+.v46-ms a{flex:1;display:grid;place-items:center;min-height:40px;border-radius:6px;background:#fff;color:#1F4E79;font:700 14.5px var(--f-body);text-decoration:none}
+.v46-ms a.v46-g{background:#e8a317;color:#111}
+.v46-ms button{width:40px;border-radius:6px;border:1px solid rgba(255,255,255,.4);background:transparent;color:#fff;font-size:16px;cursor:pointer}
+
+/* ===== V52 look: plain industrial ===== */
+:root{--f-body:"Noto Sans","Segoe UI",Arial,sans-serif!important;--f-mono:"Noto Sans","Segoe UI",Arial,sans-serif!important;--f-display:"Noto Sans","Segoe UI",Arial,sans-serif!important;--f:"Noto Sans","Segoe UI",Arial,sans-serif!important;--m:"Noto Sans","Segoe UI",Arial,sans-serif!important;--v39-serif:"Noto Sans","Segoe UI",Arial,sans-serif}
+body{font-family:"Noto Sans","Segoe UI",Arial,sans-serif!important;font-size:16px;line-height:1.6;-webkit-font-smoothing:auto}
+h1,h2,h3,h4,h1:not(#v39a):not(#v39b),h2:not(#v39a):not(#v39b),h3:not(#v39a):not(#v39b){font-family:"Noto Sans","Segoe UI",Arial,sans-serif!important;font-weight:700!important;letter-spacing:-.005em!important;font-style:normal!important}
+h1:not(#v39a):not(#v39b){font-size:clamp(28px,3.6vw,42px)!important;line-height:1.15!important}
+h2:not(#v39a):not(#v39b){font-size:clamp(23px,2.6vw,32px)!important;line-height:1.2!important}
+h3:not(#v39a):not(#v39b){line-height:1.25!important}
+h1 em,h2 em,h3 em,h1 i,h2 i,h3 i,.hero h1 span,h2 span.accent{font-style:normal!important;color:inherit!important;background:none!important;-webkit-text-fill-color:currentColor!important}
+.eyebrow,.k,.kick,.v31-k,.mono,.tblock,.tblock span,.stage-no,.v42m-h,.ws-k,.card-btn,.xp-more,.lbl-k,.sec-k,.hc-txt small,.m3-b .k,.byline,.coat-top .mono,.temp .mono,.v33-cap b,[class*="eyebrow"]{text-transform:none!important;letter-spacing:0!important;font-family:"Noto Sans","Segoe UI",Arial,sans-serif!important}
+.eyebrow,[class*="eyebrow"]{font-size:14px!important;font-weight:600!important}
+html body *:not(#v52x):not(svg):not(svg *){border-radius:2px!important;box-shadow:none!important}
+header.top .dsw small{text-transform:none!important;letter-spacing:0!important}
+.stage-temp,.tchip rect,[class*="dot"],.dots i,.lbl,.hc-play,.hall-play i,.av,input[type="radio"],input[type="range"]::-webkit-slider-thumb,.v52-ctl button{border-radius:2px!important}
+.btn,.ib,.pill-cta,.qbtn,.wa,.ghost,button{font-weight:600!important}
+:focus-visible{outline:2px solid #e8a317!important;outline-offset:2px!important}
+.dip{background:#12304d!important}
+.night{background-image:none!important}
+/* ===== V52 How galvanizing works: normal height, play / step / skip ===== */
+#dip.dip{height:auto!important}
+#dip .dip-sticky{position:relative!important;top:auto!important;height:auto!important;padding-top:28px!important;padding-bottom:20px!important}
+#dip .dip-stage{height:clamp(300px,50vh,520px);min-height:0}
+@media (max-width:760px){#dip .dip-stage{height:min(58svh,440px)}#dip .dip-foot{padding-bottom:12px!important}}
+.v52-w{width:100%;min-width:0;max-width:100%;box-sizing:border-box}#dip .dip-sticky>*{min-width:0}
+#dip .dots{display:none!important}
+#dip .dip-stage{position:relative}
+.v54-sw{position:absolute;inset:0;z-index:2;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;cursor:grab;touch-action:pan-x pan-y;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.v54-sw::-webkit-scrollbar{display:none}
+.v54-sw.drag{cursor:grabbing;user-select:none}
+.v54-sw>i{display:block;width:500%;height:1px}
+.v54-cue{position:absolute;z-index:3;bottom:12px;left:50%;transform:translateX(-50%);white-space:nowrap;padding:6px 14px;background:rgba(10,30,50,.82);border:1px solid rgba(255,255,255,.35);color:#fff;font:600 14px "Noto Sans",Arial,sans-serif;pointer-events:none;transition:opacity .4s}
+.v54-u .v54-cue{opacity:0}
+.v53-rail{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:4px;margin:10px 0 2px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.v53-rail::-webkit-scrollbar{display:none}
+.v53-rail button{display:grid;gap:1px;justify-items:start;min-width:0;padding:8px 10px;border:1px solid rgba(255,255,255,.22);border-top:3px solid rgba(255,255,255,.22);background:rgba(255,255,255,.04);color:#cfe0ee;text-align:left;cursor:pointer;font:500 14px "Noto Sans",Arial,sans-serif}
+.v53-rail button b{font-size:12px;color:#9fb4c7;font-weight:600}
+.v53-rail button span{font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.v53-rail button em{font-style:normal;font-size:13px;color:#9fb4c7}
+.v53-rail button.done{border-top-color:#0E7C86}
+.v53-rail button.on{border-color:#e8a317;border-top-color:#e8a317;background:rgba(232,163,23,.14)}
+.v53-rail button.on em{color:#f3c15a}
+.v53-hint{margin:4px 0 0;font-size:13.5px;color:#9fb4c7}
+@media (max-width:900px){.v53-rail{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(118px,1fr)}}
+label,dt,th,[class*="lab"],[class*="cap"] small,.stat small,.kv small,.read small,.tile small{text-transform:none!important;letter-spacing:0!important}
+@media (min-width:1101px) and (max-width:1500px){header.top .top-in{gap:10px!important}header.top .nav a{font-size:13.5px!important;padding-left:5px!important;padding-right:5px!important}header.top .dsw small{font-size:9.5px!important}header.top .dsw b{font-size:12.5px!important}header.top .dsw a{padding-left:7px!important;padding-right:7px!important}}
