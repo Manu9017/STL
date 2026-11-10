@@ -13,3 +13,8 @@
 - [ ] Office hours; enquiry reply-time promise
 - [ ] CIN, GSTIN
 - [ ] Photos: works, machines running, plants in operation, team
+
+## Photos still needed (added 10 Nov 2026)
+- [Photo: SHIVAS Products India pultrusion line in Ghaziabad] for the `pultrusion.html` hero. The animated drawing of the line stands in for it now.
+- [Photos: FRP pultruded profiles made by SHIVAS Products India (angles, channels, I-beams, gratings)]. The library has none; its FRP gratings photos are SHIVAS Reinplast fabrication (`items/r-frpfab.html`).
+- [Own photos, not supplied ones, of a complete SHIVAS galvanizing plant and a wire drawing line] for the division page heroes. They now use the best photos filed under the right products.

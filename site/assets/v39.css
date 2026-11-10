@@ -234,6 +234,45 @@ label,dt,th,[class*="lab"],[class*="cap"] small,.stat small,.kv small,.read smal
 @media (min-width:1101px) and (max-width:1500px){header.top .top-in{gap:10px!important}header.top .nav a{font-size:13.5px!important;padding-left:5px!important;padding-right:5px!important}header.top .dsw small{font-size:9.5px!important}header.top .dsw b{font-size:12.5px!important}header.top .dsw a{padding-left:7px!important;padding-right:7px!important}}
 
 /* ======================================================================================
+   TYPE LAYER (Nov 2026). Headings in Archivo (self-hosted, 600-800, 35 KB), body stays Noto Sans.
+   The extra :not(#v61) outranks the older heading rule above. Footer h4 labels keep their own style.
+   ====================================================================================== */
+h1:not(#v39a):not(#v39b):not(#v61),h2:not(#v39a):not(#v39b):not(#v61),h3:not(#v39a):not(#v39b):not(#v61){font-family:"Archivo","Noto Sans","Segoe UI",Arial,sans-serif!important;font-weight:800!important;letter-spacing:-.02em!important}
+h3:not(#v39a):not(#v39b):not(#v61){font-weight:700!important;letter-spacing:-.01em!important}
+.hproof b,.m3b b,.dv h3,.trust b,.steps b,.cl b,.ar b,.grp b{font-family:"Archivo","Noto Sans",Arial,sans-serif}
+.hero h1,.v31-hero h1{line-height:1.06!important}
+
+/* ======================================================================================
+   NAV LAYER (Nov 2026). Division pages (#nav): section links always on a second row from 900 px,
+   so laptops (1280-1439 px) see them too and wide screens no longer overflow. Same look as .snav.
+   ====================================================================================== */
+@media (min-width:900px){
+  #nav .nav-in{flex-wrap:wrap;row-gap:0;padding-block:8px 0}
+  #nav .nav-in>.dsw{margin-right:auto}
+  #nav .links{display:flex!important;order:30;flex:1 0 100%;margin:0;padding:2px 0 8px;gap:4px;overflow-x:auto;scrollbar-width:none}
+  #nav .links::-webkit-scrollbar{display:none}
+  #nav .links a{flex:0 0 auto;padding:7px 12px!important;border-radius:999px}
+  #nav .links a.on{color:var(--fg);background:var(--panel2);box-shadow:inset 0 0 0 1px var(--line,rgba(127,160,200,.3))}
+  #nav .nav-in>.menu-btn{margin-left:0!important}
+}
+@media (min-width:900px) and (max-width:1100px){#nav .nav-in>.v42-ml,#nav .nav-in>.gal-btn{display:none!important}}
+
+/* ======================================================================================
+   DIVISION HERO MOSAIC (Nov 2026): one main photo and two linked tiles, all from the image library,
+   captions from the library or the product the photo is filed under.
+   ====================================================================================== */
+.v61-hm{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-self:center}
+#app[data-page="hdg"] .v61-hm.pg-wire,#app[data-page="wire"] .v61-hm.pg-hdg{display:none}
+.v61-hm figure{grid-column:1/-1;margin:0;position:relative;border-radius:14px;overflow:hidden;background:#0b1622;aspect-ratio:3/2}
+.v61-hm img{width:100%;height:100%;object-fit:cover;display:block}
+.v61-hm .hm-s{position:relative;display:block;border-radius:12px;overflow:hidden;aspect-ratio:3/2;background:#0b1622}
+.v61-hm .hm-s img{transition:transform .5s}.v61-hm .hm-s:hover img{transform:scale(1.04)}
+.v61-hm figcaption,.v61-hm .hm-s span{position:absolute;left:8px;bottom:8px;right:auto;max-width:calc(100% - 16px);padding:4px 10px;border-radius:999px;background:rgba(8,18,30,.78);color:#fff;font:600 13px/1.3 "Noto Sans",Arial,sans-serif;text-shadow:none}
+@media (max-width:900px){.v61-hm{order:-1}}
+@media (max-width:600px){.v61-hm .hm-s span{font-size:11.5px;padding:3px 8px}}
+@media (prefers-reduced-motion:reduce){.v61-hm .hm-s img{transition:none}}
+
+/* ======================================================================================
    A11Y LAYER (Nov 2026). Brings text to WCAG AA contrast and touch targets to 24 px.
    Only text tones change: the brand colours stay for fills, borders and icons.
    Checked with tools/a11y.cjs (axe) on every page, light and dark.
@@ -288,3 +327,8 @@ label,dt,th,[class*="lab"],[class*="cap"] small,.stat small,.kv small,.read smal
 /* touch targets: small inline links in the footer and contact blocks, and the e-mail pills */
 a[href^="mailto:"]{padding-top:3px!important;padding-bottom:3px!important}
 footer p a,.foot p a,.v31-foot p a{display:inline-block;min-height:24px;padding-top:2px;padding-bottom:2px}
+/* pultrusion: the animated line is the hero visual until a photo of the SHIVAS Products India line is supplied */
+.pu-hero .pu-hfig{margin:6px 0 0}
+.pu-hero .pu-logo{width:200px;height:auto}
+/* buttons that are e-mail links keep the button shape (the e-mail pill style is for inline addresses) */
+a.btn[href^="mailto:"],a.v31-btn[href^="mailto:"]{display:inline-flex!important;align-items:center;justify-content:center;padding:0 20px!important;word-break:normal}
