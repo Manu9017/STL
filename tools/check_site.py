@@ -294,6 +294,25 @@ def main():
                 if actual[label] is not None and int(m.group(1)) != actual[label]:
                     warnings.append(f"index.html: '{m.group(0)}' but the site has {actual[label]} {label}")
 
+    # 301 redirects from the old site (site/_redirects) must land on real pages
+    rd = os.path.join(root, "_redirects")
+    if os.path.exists(rd):
+        for n, ln in enumerate(open(rd, encoding="utf-8"), 1):
+            ln = ln.strip()
+            if not ln or ln.startswith("#"):
+                continue
+            parts = ln.split()
+            if len(parts) < 2:
+                errors.append(f"_redirects:{n}: malformed line")
+                continue
+            tgt = parts[1].split("#")[0].lstrip("/") or "index.html"
+            if tgt.endswith("/"):
+                tgt += "index.html"
+            if tgt not in files:
+                errors.append(f"_redirects:{n}: {parts[0]} -> {parts[1]} has no page")
+            if parts[0].lstrip("/") in files:
+                warnings.append(f"_redirects:{n}: {parts[0]} still exists as a page, so the redirect never runs")
+
     # tracking state
     cfg = os.path.join(root, "assets", "config.js")
     if os.path.exists(cfg):

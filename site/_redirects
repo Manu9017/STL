@@ -1,0 +1,27 @@
+# 301 redirects from the 2019 site (Cloudflare Pages / Netlify format). Generated from docs/redirects.csv (site_path).
+# Pages that kept their address (index.html, contact.html) are not listed.
+/profile.html /about.html 301
+/enquiry.php /contact.html 301
+/resources.html /blog/ 301
+/wire-drawing-machine.html /wire-drawing.html 301
+/oto-type-wire-drawing-machine.html /items/oto.html 301
+/straight-line-wire-drawing-machine.html /items/slm.html 301
+/dead-block-coilers.html /items/dbc.html 301
+/horizontal-take-up-for-gi-wire-plant.html /items/htakeup.html 301
+/horizontal-take-up-for-strand-pickling.html /items/htakeup.html 301
+/spooler-for-wire-drawing-line.html /items/spooler.html 301
+/inverted-vertical-wire-drawing-machine.html /items/ivcoiler.html 301
+/payoff-stands.html /items/payoff.html 301
+/annealing-furnace.html /items/anneal.html 301
+/batch-pickling-system.html /items/r-wirepick.html 301
+/tunnel-pickling-system.html /items/r-wirepick.html 301
+/fumeless-pickling.html /items/line-fpl.html 301
+/electro-galvanized.html /items/egline.html 301
+/hot-dip-galvanizing-plant.html /galvanizing.html 301
+/galvanizing-furnaces.html /items/furnace.html 301
+/zinc-furnace.html /items/furnace.html 301
+/galvanizing-kettle.html /items/kettle.html 301
+/eot-crane.html /items/eot.html 301
+/hot-air-dryer.html /items/dryer.html 301
+/flux-heating-system.html /items/fluxheat.html 301
+/flux-regeneration.html /items/flux.html 301
