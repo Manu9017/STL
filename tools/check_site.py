@@ -276,6 +276,24 @@ def main():
             if diff > 150:
                 warnings.append(f"{other} differs from {DIVISION_PAGES[0]} on {diff} lines (about 71 and 103 is normal): did a shared edit reach all three division pages?")
 
+    # numbers quoted on the home page must match the site (they go stale when pages are added)
+    if "index.html" in parsed:
+        home = parsed["index.html"].src
+        actual = {
+            "products": len(set(re.findall(r'<a class="mini[^"]*" href="([a-z0-9-]+)\.html"', parsed["items/index.html"].src))) if "items/index.html" in parsed else None,
+            "3D models": len([f for f in files if f.startswith(VIEWER_DIR) and f.endswith(".html")]),
+            "articles": len([f for f in files if f.startswith("blog/") and f.endswith(".html") and f != "blog/index.html"]),
+            "photos": int((re.findall(r'data-div="" aria-pressed="true">All <i>(\d+)</i>', parsed["gallery.html"].src) or [0])[0]) if "gallery.html" in parsed else None,
+        }
+        for label, n in actual.items():
+            for m in re.finditer(r'<b>(\d+)</b><span>' + re.escape(label) + r'</span>', home):
+                if n is not None and int(m.group(1)) != n:
+                    warnings.append(f"index.html: proof strip says {m.group(1)} {label}, the site has {n}")
+        for pat, label in [(r'All (\d+) articles', "articles"), (r'See all (\d+) photos', "photos"), (r'All (\d+) 3D models', "3D models")]:
+            for m in re.finditer(pat, home):
+                if actual[label] is not None and int(m.group(1)) != actual[label]:
+                    warnings.append(f"index.html: '{m.group(0)}' but the site has {actual[label]} {label}")
+
     # tracking state
     cfg = os.path.join(root, "assets", "config.js")
     if os.path.exists(cfg):
