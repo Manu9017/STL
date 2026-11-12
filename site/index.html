@@ -62,7 +62,8 @@ footer a[href^="mailto:"]:hover{background:#3fd0da;color:#062126!important}
 
 /* BANNER SLIDESHOW (Nov 2026): the owner's banner, then six pictures; moves right on its own */
 .hbn{--H:min(33.34vw,640px);background:#eef4fb;border-bottom:1px solid var(--line,#dde5ee);padding:0!important;margin:0!important;position:relative}
-.hbn-t{display:flex;overflow:hidden;max-width:1920px;margin:0 auto;touch-action:pan-y}
+.hbn-t{display:flex;overflow-x:auto;scrollbar-width:none;max-width:1920px;margin:0 auto;overscroll-behavior-x:contain;cursor:grab}
+.hbn-t.drag{cursor:grabbing;user-select:none}
 .hbn-t::-webkit-scrollbar{display:none}
 .hbn-sl{flex:0 0 100%;height:var(--H);position:relative;overflow:hidden}
 .hbn-b{display:flex;justify-content:center}
@@ -447,20 +448,38 @@ form.q .btn{grid-column:1/-1;justify-self:start}
 </script>
 <script defer src="assets/site.js"></script>
 <script>
-/* Banner slideshow: moves right on its own every 5 s (on phones it pans across the wide banner first), then starts again.
-   No buttons and no swiping (owner's choice). It waits while the pointer is over it or a link in it has keyboard focus,
-   and while it is off screen or the tab is hidden. With reduced motion it changes slide without the sliding animation. */
+/* Banner slideshow: moves right on its own every 3 s (on phones it pans across the wide banner first), then starts again.
+   Visitors can also scroll it: swipe, trackpad, or drag with the mouse; it then settles on the next slide in that direction,
+   waits 4 s and carries on from there. It also waits while the pointer is over it, a link in it has keyboard focus, it is off screen
+   or the tab is hidden. With reduced motion it changes slide without the sliding animation. No buttons (owner's choice). */
 (function(){var r=document.querySelector('.hbn');if(!r)return;var t=r.querySelector('.hbn-t'),sl=[].slice.call(t.children);
-var rm=matchMedia('(prefers-reduced-motion: reduce)').matches,hold=0,vis=true,k=0,got=0;
+var rm=matchMedia('(prefers-reduced-motion: reduce)').matches,hold=0,vis=true,got=0,last=0,STEP=3000,WAIT=4000;
 function imgs(){if(got)return;got=1;[].forEach.call(t.querySelectorAll('img[data-src]'),function(i){i.srcset=i.dataset.srcset;i.src=i.dataset.src})}
 function stops(){var a=[],w=t.clientWidth,o=sl[0].offsetLeft;sl.forEach(function(s){var x=s.offsetLeft-o;a.push(x);if(s.offsetWidth>w+4)a.push(x+s.offsetWidth-w)});return a}
-function tick(){imgs();if(hold||!vis||document.hidden)return;var a=stops();k=(k+1)%a.length;t.scrollTo({left:a[k],behavior:(rm||k===0)?'auto':'smooth'})}
-setInterval(tick,5000);
+function at(a){var x=t.scrollLeft,i=0;a.forEach(function(v,j){if(v<=x+8)i=j});return i}
+function go(x,inst){t.scrollTo({left:x,behavior:(rm||inst)?'auto':'smooth'})}
+function user(){last=Date.now();imgs()}
+setInterval(function(){imgs();if(hold||!vis||document.hidden||Date.now()-last<WAIT)return;var a=stops(),k=(at(a)+1)%a.length;go(a[k],k===0)},STEP);
 r.addEventListener('mouseenter',function(){hold|=1});r.addEventListener('mouseleave',function(){hold&=~1});
-r.addEventListener('focusin',function(){hold|=2;var a=stops(),x=t.scrollLeft,i=0;a.forEach(function(v,j){if(v<=x+4)i=j});k=i});r.addEventListener('focusout',function(){hold&=~2});
+r.addEventListener('focusin',function(e){var f=e.target;try{if(f.matches(':focus-visible'))hold|=2}catch(x){}});r.addEventListener('focusout',function(){hold&=~2});
+/* manual scrolling: swipe, trackpad, mouse drag. When it stops, settle on the next slide in the direction moved. */
+var g=0,g0=0,idle=0;
+function begin(){user();if(!g){g=1;g0=t.scrollLeft}}
+function settle(){if(!g)return;g=0;var a=stops(),i=0,x=t.scrollLeft,d=x-g0;a.forEach(function(v,j){if(v<=g0+8)i=j});
+ if(d>40)while(i<a.length-1&&a[i]<=g0+8)i++;else if(d<-40){while(i>0&&a[i]>=g0-8)i--}
+ if(d>40)i=Math.min(i,a.length-1);go(a[i]);user()}
+t.addEventListener('touchstart',begin,{passive:true});
+t.addEventListener('touchend',function(){setTimeout(function(){if(g&&Math.abs(t.scrollLeft-g0)<2)g=0},350)},{passive:true});
+t.addEventListener('wheel',function(e){if(Math.abs(e.deltaX)>Math.abs(e.deltaY))begin()},{passive:true});
+t.addEventListener('scroll',function(){if(!g||dn)return;user();clearTimeout(idle);idle=setTimeout(settle,160)},{passive:true});
+var dn=0,sx=0,moved=0;
+t.addEventListener('pointerdown',function(e){if(e.pointerType!=='mouse'||e.button!==0)return;dn=1;moved=0;sx=e.clientX;begin()});
+addEventListener('pointermove',function(e){if(!dn)return;var dx=e.clientX-sx;if(!moved&&Math.abs(dx)>5){moved=1;t.classList.add('drag')}if(moved){t.scrollLeft=g0-dx;e.preventDefault()}});
+addEventListener('pointerup',function(){if(!dn)return;dn=0;t.classList.remove('drag');if(moved)settle();else g=0});
+t.addEventListener('click',function(e){if(moved){e.preventDefault();e.stopPropagation();moved=0}},true);
+t.addEventListener('dragstart',function(e){e.preventDefault()});
 if('IntersectionObserver'in window)new IntersectionObserver(function(e){vis=e[0].isIntersecting}).observe(r);
 addEventListener('load',function(){setTimeout(imgs,300)});
-addEventListener('resize',function(){var a=stops();k=Math.min(k,a.length-1);t.scrollTo({left:a[k]})});
 })();
 </script>
 </body>
