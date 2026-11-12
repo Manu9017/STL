@@ -5,7 +5,7 @@ description: Republish the SHIVAS website from site/ to its claude.ai artifact (
 
 # Publish site/ to the claude.ai artifact
 
-Artifact: **https://claude.ai/artifact/QbaMojD3TugfPsudMNCAXJ** (`index.html` is the page; 508 supporting files as of 12 Nov 2026, version 58; robots.txt and sitemap.xml are production only).
+Artifact: **https://claude.ai/artifact/QbaMojD3TugfPsudMNCAXJ** (`index.html` is the page; 508 supporting files as of 12 Nov 2026, version 59; robots.txt and sitemap.xml are production only).
 Anyone with the link sees an update straight away, so **publish only when the user asks**, and only after the `site-check` skill reports 0 errors.
 
 ## Steps
