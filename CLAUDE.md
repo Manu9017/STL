@@ -40,7 +40,7 @@ The company name is always written **SHIVAS** in capitals.
 Each page carries its own `<title>`, meta description, canonical link and JSON-LD (`Organization`, `Product`, `FAQPage`, `Article`). Keep them unique and valid.
 
 ## Look
-The home page hero is a mosaic of four SHIVAS own photos, a proof strip of counts taken from the site, and a 3D models section (`index.html`, `<style id="v60home">`).
+The home page opens with the owner's banner (`assets/brand/shivas-banner-*.webp`, full width; on phones it is 260 px tall and swipes sideways; its tiles link to the product pages, `.hbn` in `<style id="v60home">`). Below it, the hero is a mosaic of four SHIVAS own photos, a proof strip of counts taken from the site, and a 3D models section (`index.html`, `<style id="v60home">`).
 Current tokens (in each page's inline `:root`): navy `#1f4e79`, teal `#0e7c86` (Reinplast), amber `#e8a317` (primary buttons), ink `#13202c`, muted `#4f6275`, line `#dde5ee`, bg `#f6f8fb`. There is a dark mode under `[data-theme="dark"]`.
 **Fonts:** headings use Archivo 600–800 and body text uses Noto Sans. Both are self-hosted in `assets/fonts/`, preloaded, with an inline `@font-face` in `<style id="v52f">`. Headings are set in the TYPE LAYER of `assets/v39.css`.
 **Navigation:** inner pages share one site nav (`<nav class="snav">`): Home, Products, 3D models, Calculators, Photos, Articles, About, Contact, with `aria-current` on the current section. The home header shows Products, 3D models, Calculators, Articles, About, Contact. Division pages show their section links as a second row (NAV LAYER). The quote button always says **Get a quote**.

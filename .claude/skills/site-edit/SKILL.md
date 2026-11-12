@@ -63,7 +63,7 @@ Text colours that fail contrast are fixed in the A11Y LAYER at the end of `asset
 - **Gaps:** where no accurate photo exists (for example the pultrusion line), don't substitute a related one. Add the gap to `docs/content-checklist.md`.
 
 ## Home page (index.html)
-The sections are: hero (photo mosaic `.hmos`, buttons, proof strip `.hproof`), Start here, What we do, 3D models (`#models3d`), How we work, Calculators, Photos, Articles, About, Contact. Styles added in Nov 2026 live in `<style id="v60home">`. Mosaic photos use captions from `assets/library.js`. Use only `-own-` photos there.
+The sections are: banner (`.hbn`, the owner's banner image from `assets/brand/` with transparent links over each tile, positioned in % of the image; if the banner is replaced, re-measure them), hero (photo mosaic `.hmos`, buttons, proof strip `.hproof`), Start here, What we do, 3D models (`#models3d`), How we work, Calculators, Photos, Articles, About, Contact. Styles added in Nov 2026 live in `<style id="v60home">`. Mosaic photos use captions from `assets/library.js`. Use only `-own-` photos there.
 
 ## Enquiry form and tracking
 - The home page form (`#qForm`) builds a WhatsApp message. It doesn't post anywhere. A real form backend (Formspree / Web3Forms / Apps Script) must deliver to SHIVAS addresses only. Ask the user before adding one.

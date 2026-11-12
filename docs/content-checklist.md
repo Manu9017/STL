@@ -18,3 +18,6 @@
 - [Photo: SHIVAS Products India pultrusion line in Ghaziabad] for the `pultrusion.html` hero. The animated drawing of the line stands in for it now.
 - [Photos: FRP pultruded profiles made by SHIVAS Products India (angles, channels, I-beams, gratings)]. The library has none; its FRP gratings photos are SHIVAS Reinplast fabrication (`items/r-frpfab.html`).
 - [Own photos, not supplied ones, of a complete SHIVAS galvanizing plant and a wire drawing line] for the division page heroes. They now use the best photos filed under the right products.
+
+## Home page banner (added 12 Nov 2026)
+- [ ] Confirm the six pictures in the home banner (`site/assets/brand/shivas-banner-*.webp`) show SHIVAS equipment. If any are illustrations or renderings, say so and they can be labelled or swapped for own photos.
