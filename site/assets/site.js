@@ -76,6 +76,31 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initRails); else initRails();
   window.SHIVAS_SITE = { autoRail: autoRail, top: top };
 
+  // scroll reveal: below-the-fold cards and sections fade up once. Progressive: without JS nothing is hidden,
+  // and it is skipped for reduced motion and on the three division apps (they manage their own sections).
+  function reveal() {
+    if (MAIN || !('IntersectionObserver' in window)) return;
+    try { if (matchMedia('(prefers-reduced-motion: reduce)').matches) return; } catch (e) { return; }
+    var sel = '.dv,.m3c,.cl a,.ph,.ar,.grp a,.steps li,.trust>div,.v37-quick a,.mini,.bcard,.ab-co,.pp';
+    var els = [].slice.call(document.querySelectorAll(sel)).filter(function (el) {
+      return el.getBoundingClientRect().top > innerHeight * .92;
+    }).slice(0, 400);
+    if (!els.length) return;
+    var io = new IntersectionObserver(function (es) {
+      var k = 0;
+      es.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var el = en.target;
+        el.style.transitionDelay = (Math.min(k++, 4) * 70) + 'ms';
+        el.classList.add('rv-in');
+        el.addEventListener('transitionend', function () { el.style.transitionDelay = ''; }, { once: true });
+        io.unobserve(el);
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    els.forEach(function (el) { el.classList.add('rv'); io.observe(el); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', reveal); else reveal();
+
   // settings, then the visitor log (it does nothing until assets/config.js is filled in)
   if (ME && !window.SHIVAS_TRACK) {
     var base = ME.replace(/site\.js(\?.*)?$/, ''), c = document.createElement('script');

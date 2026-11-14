@@ -332,3 +332,10 @@ footer p a,.foot p a,.v31-foot p a{display:inline-block;min-height:24px;padding-
 .pu-hero .pu-logo{width:200px;height:auto}
 /* buttons that are e-mail links keep the button shape (the e-mail pill style is for inline addresses) */
 a.btn[href^="mailto:"],a.v31-btn[href^="mailto:"]{display:inline-flex!important;align-items:center;justify-content:center;padding:0 20px!important;word-break:normal}
+
+/* ==================== MOTION LAYER (14 Nov 2026) ====================
+   Scroll reveal. site.js adds .rv only when JS runs, the visitor allows motion,
+   and the page is not one of the three division apps. Without JS nothing is hidden. */
+.rv{opacity:0;transform:translateY(16px);transition:opacity .6s cubic-bezier(.2,.6,.2,1),transform .6s cubic-bezier(.2,.6,.2,1)}
+.rv-in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}

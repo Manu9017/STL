@@ -1503,7 +1503,7 @@ html{scroll-padding-top:calc(var(--nav-h,60px) + 12px)} /* V35 scroll-pad */
 }
 
 </style><link id="v39c" rel="stylesheet" href="assets/v39.css"><script id="v39j" defer src="assets/v39.js"></script>
-<script>(function(){var t=null;try{t=localStorage.getItem('shivas.mode')}catch(e){}document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light')})()</script>
+<script>(function(){var t=null;try{t=localStorage.getItem('shivas.mode')}catch(e){}if(t!=='dark'&&t!=='light'){try{t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}catch(e){}}document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light')})()</script>
 
 <a class="skip" href="#top">Skip to content</a>
 <div id="app" data-brand="tech" data-page="hdg">
