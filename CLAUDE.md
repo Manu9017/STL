@@ -35,6 +35,7 @@ The company name is always written **SHIVAS** in capitals.
 | `assets/fonts/` | Noto Sans latin woff2 (self-hosted; `@font-face` inline in each page as `<style id="v52f">`). |
 | `assets/resp/` | 480/960 px copies of large photos and WebP 3D previews, made by `tools/responsive_images.py`. |
 | `favicon.ico`, `apple-touch-icon.png` | Cut from the logo's S. |
+| `404.html`, `_redirects`, `_headers`, `assets/og/` | Production only, not on the artifact: the not-found page (absolute links, noindex), Cloudflare redirects and headers, and the 1200×630 link-preview images. Every page carries og/twitter tags; items and blog pages carry BreadcrumbList JSON-LD; every page has a theme-color meta. |
 | `sitemap.xml`, `robots.txt` | Base URL `https://www.shivastechnology.com/`. Add every new indexable page, viewers included, to the sitemap. |
 
 Each page carries its own `<title>`, meta description, canonical link and JSON-LD (`Organization`, `Product`, `FAQPage`, `Article`). Keep them unique and valid.
@@ -68,6 +69,7 @@ The logo-red palette in `docs/astro-rebuild-brief.md` belongs to the on-hold reb
 - `enquiry-reply`: draft replies to enquiries as **Gmail drafts** (Gmail and Calendar are connected). Never send without the owner, and never quote prices.
 - `write-article`: a new engineering article, from topic to sitemap.
 - `content-gaps`: the missing facts and photos, as questions for the owner, applied everywhere.
+- `ui-ux-pro-max` (design intelligence: searchable styles, palettes, font pairings, UX guidelines) and `banner-design`: adapted from nextlevelbuilder/ui-ux-pro-max-skill (MIT), with SHIVAS notes on top. The brand palette and the facts rules always win.
 - `page-cro`, `form-cro`, `analytics-tracking`, `lead-research-assistant`, `social-content` (draft-only LinkedIn and WhatsApp posts) and `schema-markup` (JSON-LD, with no invented prices or ratings): adapted from davila7/claude-code-templates (MIT), with SHIVAS notes on top.
 - **Agents** (`.claude/agents/`, from the same repository with SHIVAS notes): `seo-specialist` and `search-ai-optimization-expert` (audits and advice only, never invented rankings), and `sales-engineer` (technical offers and plant briefs; it pauses for owner sign-off on prices, guarantees and certificates).
 - **Installed plugins** (Sales, Marketing, Design, Copywriting, HarborRank, B2B Sales Enablement and others) add generic skills. Where they overlap, these project skills and the facts rules above take priority.

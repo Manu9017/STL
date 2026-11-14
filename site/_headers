@@ -1,0 +1,26 @@
+# Cloudflare Pages headers (production only; not part of the artifact preview).
+# Later rules override earlier ones for the same header on a matching path.
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# Long cache only for files whose names never change content silently
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+/assets/library/*
+  Cache-Control: public, max-age=31536000, immutable
+/assets/resp/*
+  Cache-Control: public, max-age=31536000, immutable
+/assets/brand/*
+  Cache-Control: public, max-age=2592000
+/assets/og/*
+  Cache-Control: public, max-age=604800
+/v/img/*
+  Cache-Control: public, max-age=2592000
+
+# The tracking switch must be able to change quickly
+/assets/config.js
+  Cache-Control: public, max-age=300

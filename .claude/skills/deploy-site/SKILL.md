@@ -37,3 +37,10 @@ The owner does the account and DNS steps in their browser. Claude can't log in t
 
 ## Before every production deploy
 Run `python3 tools/check_site.py`. It must show 0 errors and 0 warnings. If CSS, fonts or layout changed, also run the `site-audit` checks. Tracking stays off until `assets/config.js` is filled in (see `tracking-setup`).
+
+## Production-only files (14 Nov 2026)
+These deploy with `site/` but are left out of the artifact preview (see `tools/artifact_files.py`):
+- `_headers`: Cloudflare Pages security headers and cache lifetimes. Long immutable cache only on fonts/library/resp; `assets/config.js` is 5 minutes so tracking can be switched quickly.
+- `404.html`: the not-found page. All its links and assets use absolute paths (`/...`), because it is served at any missing URL. It is `noindex` and not in the sitemap.
+- `assets/og/`: 1200×630 JPG link-preview images (`og:image`). `og-default.jpg` is the branded card; items use their own photo (`items-<id>.jpg`). Regenerate an item's card by deleting it and re-running the og script in the repo history, or any 1200×630 JPG works.
+After go-live, paste a page URL into a WhatsApp chat and the preview card should appear; metatags.io also shows all the cards.
