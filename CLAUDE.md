@@ -24,8 +24,8 @@ The company name is always written **SHIVAS** in capitals.
 | `index.html` | Home page (gateway to the companies, calculators, photos, articles, enquiry form). |
 | `galvanizing.html`, `wire-drawing.html`, `reinplast.html` | **One shared app, three copies.** Each is about 800 KB with `<div id="app" data-page="hdg / wire / …">`. They differ only in the title, meta, `data-page` and a few self-links. **Any change to shared content must go into all three.** `tools/check_site.py` reports how far they have drifted. |
 | `items/*.html` | One page per product, line or plant (about 85). `items/index.html` lists them all. Shared styles in `assets/item.css`, script in `assets/item.js`. `items/r-frp.html` is a redirect stub. |
-| `blog/*.html` | 25 articles plus `blog/index.html`. |
-| `v/*.html` | 11 self-contained 3D model viewers (three.js from cdnjs), opened from `3d-models.html`. They are 0.07–2.4 MB each, so edit them surgically. Each loads `v/shivas-bar.js` (the SHIVAS button with the enquiry menu). See the `viewer-3d` skill. |
+| `blog/*.html` | 28 articles plus `blog/index.html`. |
+| `v/*.html` | 11 self-contained 3D model viewers (three.js from cdnjs), opened from `3d-models.html`. They are 0.07–2.4 MB each, so edit them surgically. Each loads `v/shivas-bar.js` (zoom, full screen, a controls hint, and the SHIVAS button with the enquiry menu and a switch-model list). See the `viewer-3d` skill. |
 | `calculator.html`, `calculators.html` | Plant calculator (`assets/calc.js`) and the other calculators (`assets/calcs.js`). |
 | `about`, `contact`, `careers`, `gallery`, `pultrusion`, `privacy`, `3d-models` `.html` | Other pages. |
 | `assets/library.js`, `assets/library/` | The image library: every approved picture (PREVIEW / THUMB / FULL webp) and `drawings.svg`. `library.js` is **generated** by the SHIVAS image-library tools, which are not in this repo, so don't hand-edit it. See `site/photos/README.md`. |

@@ -36,17 +36,18 @@ The README says it, and the site must say it too: these are **indicative general
   - Copy it from an existing viewer when adding one.
 - **Visitor log:** `shivas-bar.js` also loads the visitor log (no consent bar on viewers; see `tracking-setup`).
 
-`shivas-bar.js` adds one round SHIVAS button. It opens a menu with these links:
+`shivas-bar.js` adds one column of controls (added 14 Nov 2026): zoom in, zoom out, full screen and the round SHIVAS button. The zoom buttons send wheel events to the viewer's canvas, so they work in every viewer without touching it; held down, they repeat. The full-screen button hides itself where the browser has no requestFullscreen (iPhone). A hint pill ("Drag to turn · + / − or scroll to zoom") shows once per load and hides on the first touch. The SHIVAS button opens a menu:
 - Ask about this plant (WhatsApp, pre-filled with the name)
 - Call
 - Details and photos (`items/{item}.html`)
+- Switch 3D model (the other ten viewers, from the MODELS list at the top of shivas-bar.js — keep it in step when adding a viewer)
 - All 3D models
 - SHIVAS home
 
-Keys and clicks inside the menu don't reach the viewer.
+Keys and clicks inside the menu and controls don't reach the viewer. Playwright's own `click()` can hang on the viewers; drive buttons with scripted PointerEvents or `touchscreen.tap`.
 
 ## Placing the button (each viewer's UI is different)
-`data-d` applies at 760 px and wider; `data-p` applies below 760 px. Both are CSS for a `position:fixed` box, for example `top:70px;right:12px`. `left:50%` centres the button.
+`data-d` applies at 760 px and wider; `data-p` applies below 760 px. Both are CSS for a `position:fixed` box, for example `top:70px;right:12px`. `left:50%` centres it. The box is the whole control column (about 200 px tall); anchored to a top edge it grows downward, otherwise upward. hdg-plant's phone position moved to bottom:88px;right:12px for this (14 Nov 2026).
 
 To choose a position:
 1. Screenshot the viewer at 1440×900 and on an iPhone 13. Use a Playwright context with `--use-gl=swiftshader --enable-unsafe-swiftshader` so WebGL renders.
