@@ -45,12 +45,13 @@ Text colours that fail contrast are fixed in the A11Y LAYER at the end of `asset
 5. Technical claims must be standard practice or come from the user. Cite ISO 1461 / ASTM A123 / IS 2629 / IS 4759 where relevant.
 
 ## Navigation (keep it identical everywhere)
-- **Inner pages:** `<nav class="snav" aria-label="Site">` with Home, Products (`items/index.html`), 3D models, Calculators, Photos (`gallery.html`), Articles (`blog/index.html`), About and Contact, using paths relative to the page.
-  - Put `aria-current="page"` on the current section.
-  - Product pages mark Products; articles mark Articles; `calculator.html` marks Calculators.
-- **Home header:** Products, 3D models, Calculators, Articles, About, Contact. Seven links overflow at 1240–1440 px.
-- **Division pages:** in-page section links in `#nav .links`. The NAV LAYER in `v39.css` puts them on a second row from 900 px.
-- **Quote button:** always "Get a quote" (on phones the dock says "Quote").
+One navigation, `<nav class="gnav" aria-label="Main">`, sits in the header of every page (home, inner pages and the three division apps) since 16 Nov 2026. It replaced the boxed division switcher (`.dsw`), the home `.nav` and the inner `.snav`.
+- **Order:** the four product lines first (`class="gv"`: Galvanizing, Wire drawing, Tanks & scrubbers, FRP profiles), a hairline `<i class="gsep">`, then All products, 3D models, Calculators, Photos, Articles, About, Contact. All products, Photos and Contact carry `class="gx"`: they show only in the phone row (below 900 px); on wider screens they are in the menu and footer.
+- **Current section:** `aria-current` on one link. Product pages mark their product line (`aria-current="true"`), articles mark Articles, and a page that is the link target itself uses `aria-current="page"`. A new product page must mark its line.
+- **Layout** (GNAV LAYER at the end of `assets/v39.css`): one row with the logo and buttons from 1360 px; below that the nav is its own row, and on phones it swipes sideways (`site.js` scrolls the current link into view). The e-mail icon is hidden in the header; inner pages hide their Menu button from 1360 px.
+- **Division pages:** their in-page section links (`#nav .links`) stay as a second row from 1360 px and move into the Menu below that.
+- **Quote button:** always "Get a quote" (on phones the inner pages and the dock say "Quote").
+- To change a label or add a link, change it in every page: the markup is identical apart from the path prefix (`../` in `items/` and `blog/`) and `aria-current`. Use a script, then run `site-check`.
 
 ## Choosing hero and feature photos (accuracy)
 - **Where the meaning comes from:**
@@ -63,7 +64,7 @@ Text colours that fail contrast are fixed in the A11Y LAYER at the end of `asset
 - **Gaps:** where no accurate photo exists (for example the pultrusion line), don't substitute a related one. Add the gap to `docs/content-checklist.md`.
 
 ## Home page (index.html)
-The sections are: banner slideshow (`.hbn`: slide 1 is the owner's banner from `assets/brand/` with transparent links over each tile, positioned in % of the image, so re-measure them if the banner changes; slides 2–7 are `assets/brand/slide-*.webp` with a caption and product link. Their `data-src`/`data-srcset` are filled in by the script after page load, to keep the phone LCP fast. The owner asked for no buttons (12 Nov 2026): it moves on its own every 3 s and can be swiped or dragged; after a manual scroll it waits 4 s. It also waits on hover, keyboard focus and when off screen; don't add controls back unless asked), hero (photo mosaic `.hmos`, buttons, proof strip `.hproof`), Start here, What we do, 3D models (`#models3d`), How we work, Calculators, Photos, Articles, About, Contact. Styles added in Nov 2026 live in `<style id="v60home">`. Mosaic photos use captions from `assets/library.js`. Use only `-own-` photos there.
+The sections are: banner slideshow (`.hbn`: slide 1 is the owner's banner from `assets/brand/` with transparent links over each tile, positioned in % of the image, so re-measure them if the banner changes; slides 2–7 are `assets/brand/slide-*.webp` with a caption and product link. Their `data-src`/`data-srcset` are filled in by the script after page load, to keep the phone LCP fast. The owner asked for no buttons (12 Nov 2026): it moves on its own every 3 s and can be swiped or dragged; after a manual scroll it waits 4 s. It also waits on hover, keyboard focus and when off screen; don't add controls back unless asked), hero (the product-line chooser `.hmos.hmv`: four tiles, one per product line, then buttons and the proof strip `.hproof`), Start here, What we do, 3D models (`#models3d`), How we work, Calculators, Photos, Articles, About, Contact. Styles added in Nov 2026 live in `<style id="v60home">`. The chooser tiles use only `-own-` photos (and the FRP profiles drawing, because no pultrusion photo exists yet); each tile links to its product line and names its company.
 
 ## Enquiry form and tracking
 - The home page form (`#qForm`) builds a WhatsApp message. It doesn't post anywhere. A real form backend (Formspree / Web3Forms / Apps Script) must deliver to SHIVAS addresses only. Ask the user before adding one.
