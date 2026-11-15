@@ -76,14 +76,6 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initRails); else initRails();
   window.SHIVAS_SITE = { autoRail: autoRail, top: top };
 
-  // the main navigation (.gnav) scrolls sideways on narrow screens: bring the current section into view
-  function navView() {
-    var n = document.querySelector('.gnav'); if (!n) return;
-    var a = n.querySelector('[aria-current]');
-    if (a && n.scrollWidth > n.clientWidth + 4) n.scrollLeft = Math.max(0, a.offsetLeft - n.offsetLeft - 16);
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', navView); else navView();
-
   // scroll reveal: below-the-fold cards and sections fade up once. Progressive: without JS nothing is hidden,
   // and it is skipped for reduced motion and on the three division apps (they manage their own sections).
   function reveal() {
