@@ -339,3 +339,19 @@ a.btn[href^="mailto:"],a.v31-btn[href^="mailto:"]{display:inline-flex!important;
 .rv{opacity:0;transform:translateY(16px);transition:opacity .6s cubic-bezier(.2,.6,.2,1),transform .6s cubic-bezier(.2,.6,.2,1)}
 .rv-in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
+
+/* ==================== FILTER LAYER (15 Nov 2026) ====================
+   Phones: the product and article filters took the whole first screen (5+ rows), so no result was visible.
+   Now: search on its own row, the division / topic chips as one swipeable row, family + photos + count below. */
+@media (max-width:640px){
+ .flt{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center}
+ .flt input[type=search],.flt .seg,.flt .cnt{grid-column:1/-1}
+ .flt .seg{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -10px;padding:0 10px;
+   -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}
+ .flt .seg::-webkit-scrollbar{display:none}
+ .flt .seg::after{content:"";flex:0 0 18px}
+ .flt .seg button{flex:none;white-space:nowrap}
+ .flt select{width:100%;min-width:0}
+ .flt .chk{white-space:nowrap}
+ .flt .cnt{margin:0;width:auto}
+}
