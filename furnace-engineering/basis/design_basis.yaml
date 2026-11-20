@@ -1,0 +1,234 @@
+# =====================================================================================
+#  SHIVAS TECHNOLOGY LTD — HV pulse-fired galvanizing furnace + 4-position pit dryer
+#  DESIGN BASIS  ·  SHV-FUR-6700  ·  Rev A  ·  2026-11-20
+#
+#  Single source of truth. The calculations, the CAD model, the drawings and the 3D
+#  viewer all read this file; nothing downstream holds its own numbers.
+#
+#  Every leaf is:  [value, unit, source, status]  or  [value, unit, source, status, note]
+#    source  -> key in `sources` below
+#    status  -> C  confirmed in a SHIVAS source document
+#               D  decided in this design (see basis/decision_register.md)
+#               A  assumption, to be confirmed (see basis/open_items.md)
+#               O  open / conflicting in the sources (hold)
+#
+#  Coordinates (mm): origin = kettle centre on plan at FFL ±0.000
+#    X = east (process flow), Y = north, Z = up.   Kettle long axis = Y.
+#    HDG plant model (metres, x east / z south) maps as  X = 1000(x - 45.5), Y = -1000(z - 8.5)
+# =====================================================================================
+
+meta:
+  project: SHIVAS HV pulse-fired furnace and 4-position dryer, single line
+  doc_no: SHV-FUR-6700-DB
+  rev: A
+  date: 2026-11-20
+  scope: One furnace, one kettle, one dryer, one heat-recovery loop, one stack.
+
+sources:
+  RevK:  Kettle & furnace confirmed basis Rev K (as carried in the SHIVAS HDG Plant Model, 2026-10-19)
+  RevH:  Furnace & dryer heat-recovery loop Rev H, with SHIVAS design check of 12 Oct 2026
+  PID02: SH-PID-02 Rev M combustion P&ID (Eclipse PO STL/2026/206 gas & air scope; Bloom PO 1018 burners)
+  INS:   SH-INS-01..05 Rev B ceramic-fibre insulation set + consumption reconciliation (18-19 Nov 2026)
+  MB01:  SH-MB-01 Rev A mixing box, configuration S2
+  DMP02: STL-MB-DMP-02 Rev A fresh-air make-up damper
+  EF:    STL-EF Rev D design.py (electric furnace, same 8,200 x 2,750 envelope) - kettle support ring, casing structure, materials
+  RBR:   SH-RBR-01/02 rack & pinion drive for dryer doors
+  DRYN:  Dryer instrumentation notes
+  HDG:   SHIVAS HDG Plant Model layout proposal (2026-10-19) - relative positions of loop equipment
+  ZEN:   SHIVAS zinc fume enclosure annexure
+  CBA:   Crash-barrier plant annexure (pit fan)
+  THIS:  This design (SHV-FUR-6700 Rev A)
+
+# ------------------------------------------------------------------ process basis
+process:
+  bath_temp:            [450, degC, RevK, C, "445-455 operating band"]
+  bath_temp_max:        [460, degC, EF, C]
+  ambient:              [35, degC, EF, C]
+  steel_in_temp:        [35, degC, EF, C]
+  fuel:                 [natural gas (PNG), "-", PID02, C, "LPG alternative noted on PID02 header"]
+  gas_lhv:              [9.9, kWh/Nm3, RevH, C, "Rev H basis; equals pure methane 35.8 MJ/Nm3"]
+  fired_duty:           [1172, kW, RevH, C]
+  net_duty:             [626, kW, RevH, C]
+  gas_flow_full_fire:   [118, Nm3/h, RevH, C]
+  air_flow_rev_h:       [1132, Nm3/h, RevH, C, "near stoichiometric; see calc C-01"]
+  flue_flow:            [1296, Nm3/h, RevH, C]
+  flue_temp:            [800, degC, RevH, O, "temperature at the tap point unconfirmed"]
+  excess_air_design:    [12.5, "%", THIS, D, "pulse-firing practice 10-15 % (Rev H validation)"]
+  production_sustained: [6.0, t/h, RevK, C, "6.0-6.7 t/h sustainable; 10.8 t/h is the heat-input ceiling"]
+  production_upper:     [6.7, t/h, RevK, C]
+  wall_flux_limit:      [25, kW/m2, RevH, C, "kettle side-wall ceiling"]
+  zinc_density:         [6.62, t/m3, RevK, C]
+
+# ------------------------------------------------------------------ levels (Z, mm)
+levels:
+  FFL:                    [0, mm, RevK, C]
+  kettle_rim:             [300, mm, RevK, C]
+  zinc_surface:           [150, mm, RevK, C, "1,160 mm bath depth"]
+  casing_top:             [150, mm, RevK, C]
+  cap_beam_top:           [250, mm, THIS, D, "D-03"]
+  deck_top:               [256, mm, THIS, D, "6 mm chequered deck on the cap beam; rim stands 44 mm proud"]
+  casing_base:            [-1575, mm, RevK, C]
+  pad_underside:          [-2175, mm, RevK, C, "RCC pad 600 thick"]
+  burner_axis:            [-390, mm, RevK, C]
+  kettle_outer_bottom:    [-1060, mm, RevK, C, "rim 300 - 1,310 - 50"]
+  burner_pit_floor:       [-1750, mm, RevK, C]
+  burner_pit_slab_under:  [-1950, mm, HDG, C]
+  dryer_clear_floor:      [-1400, mm, RevH, C, "1,400 mm clear chamber depth"]
+  trench_clear_floor:     [-1000, mm, RevH, O, "Hold H1: R-02 foundation drawings show -1,400 / -1,000"]
+  mixing_box_floor:       [-1100, mm, MB01, C]
+  mixing_box_roof:        [1600, mm, MB01, C]
+  mixing_box_excavation:  [-1350, mm, MB01, C]
+  air_ring_centre:        [500, mm, PID02, C]
+  gas_skid_pipe_cl:       [1100, mm, HDG, C]
+  gas_header_cl:          [140, mm, PID02, C, "DN65 on sleepers at ground level"]
+  bleed_run_cl:           [4000, mm, HDG, C]
+  stack_top:              [12000, mm, RevH, C, "Ø400 x 12 m single line"]
+
+# ------------------------------------------------------------------ kettle
+kettle:
+  L_in:            [6700, mm, RevK, C]
+  W_in:            [1250, mm, RevK, C]
+  D_in:            [1310, mm, RevK, C]
+  plate:           [50, mm, RevK, C]
+  corner_r_in:     [250, mm, EF, D, "D-06 bent corners; SS shields curve round them"]
+  material:        [kettle-grade low-Si killed plate, "-", EF, C, "Si <= 0.03 %, P <= 0.02 %; UT + radiography (Rev K)"]
+  flange_w:        [120, mm, EF, D, "D-02 continuous rim flange"]
+  flange_t:        [40, mm, EF, D]
+  lip_w:           [50, mm, INS, C, "lip plate carrying the HD boards"]
+  lip_t:           [12, mm, INS, A]
+  lip_below_flange: [200, mm, INS, C, "top of lip 200 below the underside of the top plate"]
+  zinc_depth:      [1160, mm, RevK, C]
+  thermocouples:   [3 x duplex Type K in Ti Gr.2 tubes, "-", RevK, C, "hot parts 600 / 800 / 1,100; Ø300 expansion coil"]
+  tc_positions_Y:  [[-2400, 0, 2400], mm, HDG, C, "east inner edge"]
+
+# ------------------------------------------------------------------ casing & structure
+casing:
+  L:               [8200, mm, RevK, C]
+  W:               [2750, mm, RevK, C]
+  wall_plate:      [6, mm, EF, C, "IS 2062 E250 BR, continuously welded, gas-tight"]
+  floor_plate:     [10, mm, THIS, D]
+  stiffener:       [MS flat 100 x 10, "-", EF, C]
+  stiffener_pitch: [800, mm, HDG, C]
+  belt:            [MS flat 50 x 10 at 0.55 H, "-", EF, C]
+  cap_beam:        [fabricated box 300 x 100 x 10, "-", THIS, D, "D-03; EF used SHS 300 x 150 x 8 with a 150 mm lower rim datum"]
+  deck_plate:      [6 mm chequered, sectional, bolted, "-", EF, C]
+  alley_gap:       [450, mm, INS, C, "kettle wall to lining face; 700 casing-to-kettle less 250 lining"]
+
+support:
+  graphite_strip:  [8 x 100, mm, EF, C, "500 mm segments; lets the kettle grow along its length"]
+  bearing_ring:    [ISA 100 x 100 x 10, "-", EF, C]
+  rib:             [12 x 200, mm, EF, C]
+  rib_pitch:       [500, mm, EF, C]
+  rib_allowable:   [140, MPa, EF, C, "E250 at 250 degC, IS 800"]
+
+# ------------------------------------------------------------------ refractory & insulation
+lining:
+  wall_total:      [250, mm, INS, C]
+  wall_hot_face:   [200 mm folded module 128 kg/m3 1430 grade, Z-anchored, "-", THIS, D, "D-05; Rev K: 128 kg/m3 at the hot face, 230-250 mm"]
+  wall_backup:     [2 x 25 mm blanket 96 kg/m3 1260 grade, "-", THIS, D]
+  wall_rebate:     [50, mm, INS, C, "above the HD-board seat the lining is 200 thick"]
+  skin_target:     [55, degC, RevK, C, "casing skin 53-55 degC"]
+  floor_build_up:  [10 plate + 50 CaSi + 3 x 50 blanket 64 kg/m3 (A-B-A) + 25 HD board, "-", THIS, D, "D-04; INS case B3 (suspended kettle)"]
+  top_closure:     [lip plate + HD boards 25 + 3 x 50 blanket 64 kg/m3, "-", INS, C, "25 mm clear under the top plate"]
+  hd_board:        [500 x 1000 x 25, mm, INS, C]
+  band:            [305 x 50 blanket on kettle wall, "-", INS, C]
+  band_z:          [[-890, -585], mm, THIS, D, "same height relative to the corner shield as SH-INS-03"]
+  shield_plate:    [750 x 1500 developed, SS 310S 6 mm, "-", INS, C, "1 per burner; thickness and grade assumed (A)"]
+  shield_z:        [[-695, 55], mm, THIS, D, "stops 5 mm under the HD board, as SH-INS-03"]
+  shield_fibre:    [2 x 25 mm blanket, 610 wide, "-", INS, C]
+  shield_offset:   [50, mm, INS, C, "plate 50 off the kettle wall"]
+  blanket_density: [64, kg/m3, INS, C, "rolls 8,300 x 610 x 50 and 4,200 x 610 x 25"]
+
+# ------------------------------------------------------------------ foundation & pits
+civil:
+  pad:             [3000 x 8500 x 600 RCC M30, T16 @ 150 both ways, "-", RevK, C]
+  furnace_pit_wall: [200, mm, THIS, D, "D-08 retaining walls along the casing; 125 mm ventilated gap, grating at FFL"]
+  burner_pit:      ["3000 x 1800, floor -1750", mm, RevK, C]
+  burner_pit_wall: [200, mm, HDG, C]
+  leak_pit:        [700 x 700 x 600, mm, RevK, C, "each side; positions D-07"]
+  leak_pit_Y:      [[-2000, 2000], mm, THIS, D, "D-07"]
+  handrail:        [1000, mm, HDG, C, "top rail, mid rail 500, toe board; cat ladder in each pit"]
+
+# ------------------------------------------------------------------ combustion
+burners:
+  model:           [Bloom HV-400, cold air, gas only, "-", PID02, C, "2 per furnace (POs); an older note says 4"]
+  count:           [2, nos, PID02, C]
+  offset_X:        [946.5, mm, RevH, C, "axis 271.5 mm off the kettle plate: 23 + 150 + 98.5"]
+  flame_dia:       [197, mm, RevH, C]
+  arrangement:     [end faces, diagonally opposite, "-", RevH, C, "B1 north face firing south along the west alley; B2 south face firing north along the east alley"]
+  ignition:        [direct spark 3500-148, no pilot; DN15 ignition gas, "-", PID02, C]
+  bcu:             [Kromschroder BCU 370, one per burner, "-", PID02, C]
+  uv:              [UVS10D0G1, "-", PID02, C]
+  ign_transformer: [TZI8-12/100WE, "-", PID02, C]
+  envelope:        [Ø380 x 520 body + Ø460 x 170 mounting flange, "-", HDG, A, "replace with the Bloom HV-400 GA before fabrication"]
+  train_on_face:   [B4 ball 1½" -> B2 VAS240R/NW DN40 -> B1 GIK40R02-5B -> B3 GEH40R50, "-", PID02, C]
+
+gas_train:
+  items:
+    - [A1,  ball,   Ball valve 2" NPT,               9415NF205026]
+    - [A2,  filter, Gas filter DN50,                 GFK 50R40-6]
+    - [A3,  gauge,  Inlet pressure gauge,            RFM 4RB100]
+    - [A4,  cock,   Manual cock 1½",                 DH15R50]
+    - [A5,  reg,    Governor + SSOV + relief,        J125-S4]
+    - [A6,  sw,     Low gas pressure switch,         DG150U-3]
+    - [A7,  sw,     High gas pressure switch,        DG500U-3]
+    - [A8,  gauge,  Outlet pressure gauge,           KFM250RB100]
+    - [A9,  cock,   Manual cock 1½",                 DH15R50]
+    - [A10a, sol,   Double solenoid DN65 valve 1,    VAS665F05NW3E]
+    - [A10b, sol,   Double solenoid DN65 valve 2,    VAS665F05NW3E]
+    - [A11, ball,   Ball valve 2½",                  9411RF106526]
+  header:          [NG-65-001 DN65, "-", PID02, C]
+  main:            [NG-50 DN50 to both burner risers, "-", PID02, C]
+  vent:            [A5 relief vent rises continuously, no valve, no low pocket, "-", PID02, C]
+
+combustion_air:
+  blower:          [Mittal Blowers MBI-4040, "-", PID02, C, "supersedes AEP-VB-2.5"]
+  duty:            [1400 m3/h at 725 mmWC, VFD, "-", PID02, C]
+  discharge:       [8 inch round, flexible connector, "-", PID02, C]
+  venturi:         [8 inch inlet -> 150 x 150 throat, "-", RevH, C]
+  header:          [300 x 150, mm, PID02, C]
+  ring:            [150 x 150 closed ring, 750 clear of casing, mm, PID02, C]
+  branch:          [4 inch per burner, manual butterfly D2, "-", PID02, C]
+  proving:         [D4 DH15R50 -> D3 KFM160RB100 + D1 DG 10U-3 to BCU DL/7, "-", PID02, C]
+  pit_fans:        [2 x 3 HP, one per burner pit, extract at pit floor, "-", CBA, D, "D-09; source shows one 3 HP fan"]
+
+# ------------------------------------------------------------------ flue & heat-recovery loop
+flue:
+  casing_cutout:   [1000 x 600, mm, RevH, C, "west long face, south end"]
+  passage:         [700 x 300, mm, RevH, C, "0.21 m2, 6.7 m/s"]
+  duct:            [refractory-lined steel duct, 700 x 400 clear, in ventilated RCC trench, "-", THIS, D, "D-10 resolves Rev H RCC-face and cover-plate findings"]
+  trench_envelope: [1260 x 1410, mm, RevH, C]
+
+loop:
+  return_trench:     [900 x 1000, mm, RevH, C]
+  junction:          [900 + 700 -> 1000, radiused, "-", RevH, C]
+  suction_trench:    [1000 x 1000, mm, RevH, C]
+  discharge_trench:  [1100 x 1000, mm, RevH, C]
+  mixing_box:        [1500 x 1300 x 2700 internal (1100 pit + 1600 steel), mm, MB01, C]
+  mixing_box_loss:   [9.2, mmWC, MB01, C, "with R700 turning deflector"]
+  blower_cutout:     [1114, mm, MB01, C, "Ø at +0.90 m"]
+  straightener:      [cruciform 2 x 4 mm plates ~560 long in the outlet spool, "-", MB01, C, "mandatory"]
+  fresh_damper:      [350 x 350 opposed blade, GI, SS304 spindles, Belimo LM230A-S, "-", DMP02, C, "min stop ~15 % open; far face"]
+  fresh_air:         [3433, Nm3/h, RevH, C]
+  recirc_blower:     ["AEP-ZA-9.0, 48000 m3/h at 120 degC, 72 mmWC, 30 HP", "-", RevH, C]
+  recirc_inlet:      [900, mm, RevH, C, "Ø900"]
+  recirc_outlet:     [900 x 675, down, mm, RevH, C]
+  return_flow:       [28614, Nm3/h, RevH, C, "at 100 degC"]
+  bleed:             ["Ø400, 4729 Nm3/h, balancing damper BD-1", "-", RevH, C]
+  stack:             [Ø400 x 12 m, single line, "-", HDG, C, "two lines merge into Ø600"]
+  temps:             [{flue: 800, suction: 130, supply: 120, return: 100, fresh: 30}, degC, RevH, C]
+
+# ------------------------------------------------------------------ dryer
+dryer:
+  clear:           [6000 x 7500 x 1400, mm, THIS, D, "D-11: Rev H 6,000 x 7,000 x 1,400; 7,500 needed for the 7.4 m jig and 7.6 m doors"]
+  positions:       ["4 at 1500 pitch", "-", HDG, C]
+  conveyor:        [2-strand roller chain, saddles, 12T PCD 300 sprockets, "-", HDG, C]
+  drive:           [5.5 kW geared, timed pulses, hard stop at P4, "-", DRYN, C, "VFD or torque limiter open"]
+  doors:           [1400 x 7600 x 250 insulated, aluminium skinned, "-", RBR, C]
+  door_drive:      [rack m6 1500 x 60 x 60 EN8, pinion m6 16T PCD 96 EN19, BK50 1.1 kW 75.4:1, "-", RBR, C]
+  supply_box:      ["1300 x 350 x 7000 centre fed; face 7000 x 1000, Ø15 @ 37 staggered 60° (14.9 % open, ~5,890 holes)", "-", THIS, D, "D-12: centre feed per Rev H validation; 350 deep keeps the face 400 mm from the P1 centreline"]
+  extract_box:     ["1300 x 350 x 7000 centre drawn; face 7000 x 1000", "-", THIS, D, "D-12"]
+  air_temp:        [100-120, degC, RevH, C]
+  pit_lining:      [50 mm ceramic-fibre board + 1 mm aluminium liner, "-", THIS, D]
+  pit_wall:        [250, mm, HDG, C]
+  temperature:     [duplex Pt100 Class A, Ø8 SS316, 1000 insertion, "-", DRYN, C]

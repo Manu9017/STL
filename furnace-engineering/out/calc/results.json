@@ -1,0 +1,1547 @@
+{
+ "basis_rev": "A",
+ "calcs": [
+  {
+   "id": "C-01",
+   "title": "Combustion: air, flue and available heat (Cantera GRI-Mech 3.0)",
+   "method": [
+    "Fuel taken as methane, which reproduces the Rev H LHV of 9.9 kWh/Nm3. Dry air O2 + 3.76 N2.",
+    "Stoichiometric air = 2 \u00d7 4.76 = 9.52 Nm3/Nm3. Air = Q_fired / LHV \u00d7 9.52 \u00d7 \u03bb.",
+    "Adiabatic flame temperature: HP equilibrium of the reactants at 35 \u00b0C (Cantera).",
+    "Available heat AH = [H_reactants(35 \u00b0C) \u2212 H_products(800 \u00b0C)] / LHV, complete combustion."
+   ],
+   "results": {
+    "LHV_kWh_Nm3": 9.9461,
+    "gas_Nm3h": 118.3838,
+    "lambda_revH": 1.0044,
+    "cases": {
+     "Rev H air (\u03bb=1.004)": {
+      "lambda": 1.0044,
+      "air_Nm3h": 1132.0,
+      "air_m3h_amb": 1277.0485,
+      "flue_Nm3h": 1250.3838,
+      "CO2_wet": 9.4678,
+      "H2O_wet": 18.9356,
+      "O2_wet": 0.0838,
+      "O2_dry": 0.1033,
+      "T_ad": 1954.1878,
+      "AH": 0.6599
+     },
+     "design \u03bb=1.125": {
+      "lambda": 1.125,
+      "air_Nm3h": 1267.8909,
+      "air_m3h_amb": 1430.3518,
+      "flue_Nm3h": 1386.2747,
+      "CO2_wet": 8.5397,
+      "H2O_wet": 17.0794,
+      "O2_wet": 2.1349,
+      "O2_dry": 2.5747,
+      "T_ad": 1852.1933,
+      "AH": 0.6257
+     },
+     "\u03bb=1.15": {
+      "lambda": 1.15,
+      "air_Nm3h": 1296.0663,
+      "air_m3h_amb": 1462.1374,
+      "flue_Nm3h": 1414.4501,
+      "CO2_wet": 8.3696,
+      "H2O_wet": 16.7392,
+      "O2_wet": 2.5109,
+      "O2_dry": 3.0157,
+      "T_ad": 1827.3533,
+      "AH": 0.6187
+     }
+    },
+    "blower_Nm3h": 1240.9865,
+    "lam_max_full": 1.1011,
+    "Q_max_design_lam": 1147.1304
+   },
+   "checks": [
+    {
+     "name": "Cantera LHV of methane",
+     "value": 9.9461,
+     "unit": "kWh/Nm3",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "Rev H basis 9.9",
+     "ref": false
+    },
+    {
+     "name": "Gas at full fire",
+     "value": 118.3838,
+     "unit": "Nm3/h",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "Rev H 118",
+     "ref": false
+    },
+    {
+     "name": "Rev H air ratio \u03bb (as drawn)",
+     "value": 1.0044,
+     "unit": "-",
+     "limit": 1.05,
+     "kind": "min",
+     "status": "SUPERSEDED",
+     "note": "Rev H air is almost stoichiometric; design uses \u03bb 1.125",
+     "ref": true
+    },
+    {
+     "name": "Design air at full fire",
+     "value": 1430.3518,
+     "unit": "m3/h @35\u00b0C",
+     "limit": 1400.0,
+     "kind": "max",
+     "status": "MARGINAL",
+     "note": "MBI-4040 rated 1,400 m3/h",
+     "ref": false
+    },
+    {
+     "name": "Max \u03bb blower can give at 1,172 kW",
+     "value": 1.1011,
+     "unit": "-",
+     "limit": 1.125,
+     "kind": "min",
+     "status": "MARGINAL",
+     "note": "",
+     "ref": false
+    },
+    {
+     "name": "Max firing rate at design \u03bb",
+     "value": 1147.1304,
+     "unit": "kW",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "",
+     "ref": false
+    },
+    {
+     "name": "Adiabatic flame temperature (design \u03bb)",
+     "value": 1852.1933,
+     "unit": "degC",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "",
+     "ref": false
+    },
+    {
+     "name": "Available heat at 800 \u00b0C flue",
+     "value": 62.5737,
+     "unit": "%",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "",
+     "ref": false
+    },
+    {
+     "name": "Flue at design \u03bb",
+     "value": 1386.2747,
+     "unit": "Nm3/h",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "Rev H 1,296",
+     "ref": false
+    }
+   ],
+   "notes": [
+    "Rev H's 1,132 Nm3/h of air is \u03bb \u2248 1.01 at 1,172 kW. Pulse-fired HV burners are normally set at 10\u201315 % excess air, so full-fire air is \u22481,264 Nm3/h = \u22481,426 m3/h at 35 \u00b0C, just above the MBI-4040's 1,400 m3/h. Confirm the blower curve basis (actual vs normal m3/h) with Mittal.",
+    "At design \u03bb the blower supports \u22481147 kW fired, which is above the \u2248870 kW needed for sustained production (C-02), so the limit only bites at full fire on heat-up."
+   ]
+  },
+  {
+   "id": "C-02",
+   "title": "Heat balance, kettle wall flux and production capacity",
+   "method": [
+    "q_process = cp\u00b7(T_bath \u2212 T_in)\u00b7(1 + jig) + pickup\u00b7(cp_s\u00b7(419.5 \u2212 T_in) + L_f + cp_l\u00b7(T_bath \u2212 419.5))",
+    "cp = 0.52 kJ/kg K (mean 30\u2013455 \u00b0C, Rev H validation); jig fraction 0.12; zinc pickup 0.05 t/t (STL-EF basis).",
+    "Surface loss = [0.40 \u03c3 (T_b\u2074 \u2212 T_a\u2074) + 4.5 (T_b \u2212 T_a)] \u00d7 bath area 6.7 \u00d7 1.25 m\u00b2.",
+    "Side-wall flux = side share \u00d7 net / 2(L+W)\u00b7h_zinc on inside dimensions (Rev H convention, 18.44 m\u00b2)."
+   ],
+   "results": {
+    "q_t": 70.9963,
+    "P_surf_open": 65.8757,
+    "A_side": 18.444,
+    "A_base": 9.18,
+    "cases": {
+     "A  Rev H basis: sides only, cover open": {
+      "surf": 65.8757,
+      "base_share": 0.0,
+      "P_net_max": 461.1,
+      "tph_max": 5.5668,
+      "flux_6_0": 26.6674,
+      "flux_6_7": 29.3619
+     },
+     "B  sides only, enclosure covers closed between dips (surface loss \u00f7 2)": {
+      "surf": 32.9378,
+      "base_share": 0.0,
+      "P_net_max": 461.1,
+      "tph_max": 6.0308,
+      "flux_6_0": 24.8816,
+      "flux_6_7": 27.5761
+     },
+     "C  suspended kettle: hearth carries 10 % (D-01), covers managed": {
+      "surf": 32.9378,
+      "base_share": 0.1,
+      "P_net_max": 512.3333,
+      "tph_max": 6.7524,
+      "flux_6_0": 22.3934,
+      "flux_6_7": 24.8185
+     }
+    },
+    "eta_RevH": 0.5341,
+    "net_6_0": 458.9158,
+    "net_6_7": 508.6132
+   },
+   "checks": [
+    {
+     "name": "Process heat per tonne",
+     "value": 70.9963,
+     "unit": "kWh/t",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "steel + 12 % jigs + zinc make-up",
+     "ref": false
+    },
+    {
+     "name": "Bath surface loss, cover open",
+     "value": 65.8757,
+     "unit": "kW",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "",
+     "ref": false
+    },
+    {
+     "name": "Rev H 626 kW on the side walls",
+     "value": 33.9406,
+     "unit": "kW/m2",
+     "limit": 25,
+     "kind": "max",
+     "status": "SUPERSEDED",
+     "note": "Rev H validation finding",
+     "ref": true
+    },
+    {
+     "name": "Case A: capacity at 25 kW/m\u00b2",
+     "value": 5.5668,
+     "unit": "t/h",
+     "limit": 6.0,
+     "kind": "min",
+     "status": "SUPERSEDED",
+     "note": "Rev H convention, cover open",
+     "ref": true
+    },
+    {
+     "name": "Case B: flux at 6.0 t/h",
+     "value": 24.8816,
+     "unit": "kW/m2",
+     "limit": 25,
+     "kind": "max",
+     "status": "PASS",
+     "note": "Rev K lower production figure",
+     "ref": false
+    },
+    {
+     "name": "Case B: capacity at 25 kW/m\u00b2",
+     "value": 6.0308,
+     "unit": "t/h",
+     "limit": 6.0,
+     "kind": "min",
+     "status": "PASS",
+     "note": "",
+     "ref": false
+    },
+    {
+     "name": "Case C: flux at 6.7 t/h",
+     "value": 24.8185,
+     "unit": "kW/m2",
+     "limit": 25,
+     "kind": "max",
+     "status": "PASS",
+     "note": "Rev K upper production figure",
+     "ref": false
+    },
+    {
+     "name": "Case C: capacity at 25 kW/m\u00b2",
+     "value": 6.7524,
+     "unit": "t/h",
+     "limit": 6.7,
+     "kind": "min",
+     "status": "PASS",
+     "note": "",
+     "ref": false
+    },
+    {
+     "name": "Rev H furnace efficiency (net/fired)",
+     "value": 53.413,
+     "unit": "%",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "",
+     "ref": false
+    }
+   ],
+   "notes": [
+    "The kettle side walls, not the burners, set production. With the Rev H convention (sides only, cover open) the 25 kW/m\u00b2 ceiling allows \u22485.6 t/h. Keeping the enclosure covers shut between dips gives \u22486.0 t/h, and with the suspended kettle's hearth taking \u224810 % of the heat \u22486.8 t/h, which brackets Rev K's 6.0\u20136.7 t/h.",
+    "Firing 1,172 kW continuously would put \u224834 kW/m\u00b2 on the walls (Rev H finding). The PLC caps the pulse duty to the flux limit through the zinc and chamber thermocouples; full fire is for heat-up and recovery."
+   ]
+  },
+  {
+   "id": "C-04",
+   "title": "Linings: casing skin, hearth and foundation, flue duct and trench, dryer pit (1-D, k(T))",
+   "method": [
+    "Steady 1-D conduction through layers with k = a + b\u00b7T_mean, iterated to convergence.",
+    "Free surface: h = 1.42 (\u0394T/1.2)^0.25 + \u03b5 \u03c3 (Ts\u2074 \u2212 Ta\u2074)/\u0394T, \u03b5 = 0.85, Ta = 35 \u00b0C (STL-EF method).",
+    "Ventilated foundation: casing underside to 50 \u00b0C channel air, h = 12 W/m\u00b2K (convection + radiation); pad top from radiation in = convection (h 4) + conduction through 0.6 m RCC + ground (1.6 m\u00b2K/W).",
+    "Duct in trench: skin couples to trench air (h 4) and by radiation to the RCC; RCC passes it to air and ground.",
+    "Materials: module128: k = 0.055 + 0.000145\u00b7T (Ceramic fibre module 128 kg/m3, 1430 grade (STL-EF REF-01)); blanket96: k = 0.048 + 0.00016\u00b7T (Ceramic fibre blanket 96 kg/m3, 1260 grade (STL-EF REF-02)); blanket64: k = 0.02 + 0.00027\u00b7T (Ceramic fibre blanket 64 kg/m3, 1260 grade (typical data, A-03)); casi245: k = 0.062 + 7e-05\u00b7T (Calcium silicate board 245 kg/m3 (STL-EF REF-04)); microporous: k = 0.021 + 1.1e-05\u00b7T (Microporous board 320 kg/m3 (STL-EF REF-03)); hdboard: k = 0.06 + 0.00012\u00b7T (HD ceramic fibre board ~300 kg/m3 (assumed, A-04)); ifb: k = 0.14 + 0.00018\u00b7T (Insulating firebrick IS 8, ~800 kg/m3 (typical)); concrete: k = 1.7 + 0.0\u00b7T (RCC); soil: k = 1.2 + 0.0\u00b7T (Soil, moist (assumed)); fibreboard: k = 0.045 + 0.00012\u00b7T (Ceramic fibre board 260 kg/m3 (typical))"
+   ],
+   "results": {
+    "wall W1 900": {
+     "q": 410.697,
+     "T": [
+      900,
+      330.3922,
+      75.1115,
+      75.0568,
+      35
+     ]
+    },
+    "wall W3 900": {
+     "q": 247.9282,
+     "T": [
+      900,
+      639.6045,
+      150.5099,
+      61.2118,
+      61.1787,
+      35
+     ]
+    },
+    "wall W1 1000": {
+     "q": 486.0802,
+     "T": [
+      1000,
+      370.0801,
+      81.0605,
+      80.9957,
+      35
+     ]
+    },
+    "wall W3 1000": {
+     "q": 286.7419,
+     "T": [
+      1000,
+      720.8539,
+      166.9304,
+      64.6779,
+      64.6396,
+      35
+     ]
+    },
+    "wall W1 1100": {
+     "q": 567.2893,
+     "T": [
+      1100,
+      410.2611,
+      87.1887,
+      87.113,
+      35
+     ]
+    },
+    "wall W3 1100": {
+     "q": 327.3693,
+     "T": [
+      1100,
+      803.1267,
+      183.7634,
+      68.1973,
+      68.1537,
+      35
+     ]
+    },
+    "floor INS-B3 on pad (no ventilation)": {
+     "q": 327.9917,
+     "T": [
+      850,
+      798.3978,
+      555.8243,
+      555.7514,
+      439.9896,
+      30.0,
+      30
+     ]
+    },
+    "floor F2 ventilated": {
+     "q": 306.5071,
+     "T": [
+      850,
+      801.8405,
+      579.1203,
+      281.3386,
+      75.6104,
+      75.5423,
+      50
+     ]
+    },
+    "pad top ventilated": {
+     "q": 0,
+     "T": [
+      64.9647
+     ]
+    },
+    "flue RevH best": {
+     "q": 463.5856,
+     "T": [
+      800,
+      364.4411,
+      89.5395,
+      35.0,
+      35
+     ]
+    },
+    "flue RevH buried": {
+     "q": 337.9821,
+     "T": [
+      800,
+      497.2323,
+      351.4143,
+      311.6517,
+      30.0,
+      30
+     ]
+    },
+    "flue duct D-10": {
+     "q": 272.5655,
+     "T": [
+      800,
+      628.0726,
+      80.7159,
+      80.6795,
+      57.9049
+     ]
+    },
+    "cover RevH": {
+     "q": 871.8674,
+     "T": [
+      800,
+      549.937,
+      121.2788,
+      121.1625,
+      35
+     ]
+    },
+    "dryer 50": {
+     "q": 48.3882,
+     "T": [
+      120,
+      77.4395,
+      70.3235,
+      30.0,
+      30
+     ]
+    },
+    "dryer 100": {
+     "q": 32.5037,
+     "T": [
+      120,
+      61.8664,
+      57.0864,
+      30.0,
+      30
+     ]
+    },
+    "duct": {
+     "T_skin": 80.672,
+     "T_rcc": 64.3833,
+     "q_skin": 272.5655,
+     "T": [
+      800,
+      628.0726,
+      80.7159,
+      80.6795,
+      57.9049
+     ]
+    },
+    "W3_q1000": 286.7419
+   },
+   "checks": [
+    {
+     "name": "Casing skin, all-fibre 200 + 50, hot face 1,000 \u00b0C",
+     "value": 80.9957,
+     "unit": "degC",
+     "limit": 65,
+     "kind": "max",
+     "status": "SUPERSEDED",
+     "note": "why D-05 adds microporous",
+     "ref": true
+    },
+    {
+     "name": "Casing skin, D-05 wall, hot face 900 \u00b0C",
+     "value": 61.1787,
+     "unit": "degC",
+     "limit": 65,
+     "kind": "max",
+     "status": "PASS",
+     "note": "typical alley",
+     "ref": false
+    },
+    {
+     "name": "Casing skin, D-05 wall, hot face 1,000 \u00b0C",
+     "value": 64.6396,
+     "unit": "degC",
+     "limit": 65,
+     "kind": "max",
+     "status": "PASS",
+     "note": "design case; Rev K target 53\u201355 \u00b0C (O-08)",
+     "ref": false
+    },
+    {
+     "name": "Casing skin, D-05 wall, hot face 1,100 \u00b0C",
+     "value": 68.1537,
+     "unit": "degC",
+     "limit": 70,
+     "kind": "max",
+     "status": "PASS",
+     "note": "beside the burner blocks",
+     "ref": false
+    },
+    {
+     "name": "Microporous hot side at 1,100 \u00b0C",
+     "value": 803.1267,
+     "unit": "degC",
+     "limit": 950,
+     "kind": "max",
+     "status": "PASS",
+     "note": "microporous service limit",
+     "ref": false
+    },
+    {
+     "name": "Wall loss, D-05 at 1,000 \u00b0C",
+     "value": 286.7419,
+     "unit": "W/m2",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "",
+     "ref": false
+    },
+    {
+     "name": "Pad top, SH-INS B3 floor laid on the pad",
+     "value": 555.7514,
+     "unit": "degC",
+     "limit": 65,
+     "kind": "max",
+     "status": "SUPERSEDED",
+     "note": "why D-15 ventilates the foundation",
+     "ref": true
+    },
+    {
+     "name": "Casing floor plate, F2 + ventilated foundation",
+     "value": 75.5423,
+     "unit": "degC",
+     "limit": 100,
+     "kind": "max",
+     "status": "PASS",
+     "note": "",
+     "ref": false
+    },
+    {
+     "name": "Pad top under the ventilated channels",
+     "value": 64.9647,
+     "unit": "degC",
+     "limit": 65,
+     "kind": "max",
+     "status": "PASS",
+     "note": "ACI 349 App. E sustained 65 \u00b0C",
+     "ref": false
+    },
+    {
+     "name": "Rev H flue trench RCC face, ideal sink",
+     "value": 89.5395,
+     "unit": "degC",
+     "limit": 70,
+     "kind": "max",
+     "status": "SUPERSEDED",
+     "note": "Rev H target 60\u201370 \u00b0C",
+     "ref": true
+    },
+    {
+     "name": "Rev H flue trench RCC face, buried",
+     "value": 351.4143,
+     "unit": "degC",
+     "limit": 70,
+     "kind": "max",
+     "status": "SUPERSEDED",
+     "note": "",
+     "ref": true
+    },
+    {
+     "name": "D-10 lined flue duct skin",
+     "value": 80.672,
+     "unit": "degC",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "inside the vented trench, not accessible",
+     "ref": false
+    },
+    {
+     "name": "D-10 trench RCC face",
+     "value": 64.3833,
+     "unit": "degC",
+     "limit": 65,
+     "kind": "max",
+     "status": "PASS",
+     "note": "trench air 45 \u00b0C",
+     "ref": false
+    },
+    {
+     "name": "Rev H cover plate (75 tile + 50 fibre)",
+     "value": 121.1625,
+     "unit": "degC",
+     "limit": 60,
+     "kind": "max",
+     "status": "SUPERSEDED",
+     "note": "walk-on limit",
+     "ref": true
+    },
+    {
+     "name": "Dryer pit RCC behind 50 mm board",
+     "value": 77.4395,
+     "unit": "degC",
+     "limit": 65,
+     "kind": "max",
+     "status": "SUPERSEDED",
+     "note": "",
+     "ref": true
+    },
+    {
+     "name": "Dryer pit RCC behind 100 mm board (D-14)",
+     "value": 61.8664,
+     "unit": "degC",
+     "limit": 65,
+     "kind": "max",
+     "status": "PASS",
+     "note": "",
+     "ref": false
+    }
+   ],
+   "notes": [
+    "No 250 mm build-up reaches Rev K's 53\u201355 \u00b0C skin at a 900\u20131,000 \u00b0C hot face with these conductivities. D-05 (175 module + 50 microporous + 25 CaSi) gives 61\u201365 \u00b0C and cuts the wall loss by \u224840 % against all-fibre. The long faces sit inside the furnace pit; the end faces in the burner pits get a mesh guard.",
+    "A suspended kettle puts hot gas on the hearth, so the floor loses heat continuously. Laid straight on the pad (SH-INS B3), the RCC would run at several hundred \u00b0C in steady state. D-15 sets the casing on a ventilated steel grillage and adds microporous to the floor.",
+    "Rev H's lined trench cannot keep the RCC near 60\u201370 \u00b0C (12 Oct validation). D-10 carries the flue in an internally lined steel duct (700 \u00d7 400 clear, \u22485.4 m/s) inside a vented trench."
+   ]
+  },
+  {
+   "id": "C-05",
+   "title": "Combustion air: blower to burner pressure budget (fluids)",
+   "method": [
+    "Air at 35 \u00b0C, design \u03bb, both burners at full fire. Darcy friction (Colebrook via fluids.friction_factor).",
+    "Bend K from fluids.fittings.bend_rounded (Crane). Venturi unrecovered loss 15 % of throat VP."
+   ],
+   "results": {
+    "items": [
+     [
+      "8\" discharge, 6 m, 3 bends",
+      12.3124,
+      10.7305
+     ],
+     [
+      "Venturi 150 \u00d7 150 throat (15 % unrecovered)",
+      17.6587,
+      2.7325
+     ],
+     [
+      "Header 300 \u00d7 150, 4 m, transition + tee",
+      8.8293,
+      5.5691
+     ],
+     [
+      "Ring 150 \u00d7 150, 10 m per half, 2 corners + branch tee",
+      8.8293,
+      11.8941
+     ],
+     [
+      "4\" branch, 3.5 m, 3 bends, butterfly D2 open, outlet",
+      24.1696,
+      91.8083
+     ]
+    ],
+    "total_mmWC": 122.7345,
+    "available_mmWC": 602.2655,
+    "Q_m3s": 0.3973
+   },
+   "checks": [
+    {
+     "name": "System loss blower \u2192 burner",
+     "value": 122.7345,
+     "unit": "mmWC",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "",
+     "ref": false
+    },
+    {
+     "name": "4\" branch velocity",
+     "value": 24.1696,
+     "unit": "m/s",
+     "limit": 25,
+     "kind": "max",
+     "status": "PASS",
+     "note": "noise / loss",
+     "ref": false
+    },
+    {
+     "name": "Pressure left at the burner",
+     "value": 602.2655,
+     "unit": "mmWC",
+     "limit": 306.0,
+     "kind": "min",
+     "status": "PASS",
+     "note": "Rev H: 306 mmWC needed",
+     "ref": false
+    }
+   ],
+   "notes": [
+    "Blower static 725 mmWC leaves ample pressure at the burners; the ratio controller GIK40 and the D2 butterflies trim the split."
+   ]
+  },
+  {
+   "id": "C-06",
+   "title": "Gas piping: velocities and pressure loss at full fire",
+   "method": [
+    "Methane, \u03c1n = 0.717 kg/Nm\u00b3, regulated 100 mbar(g) assumed (A-05), 35 \u00b0C. Darcy\u2013Weisbach, fittings as K.",
+    "Run lengths are measured on the same pipe routes the CAD model draws (basis.Geo.gas_header / gas_main_N / gas_main_S)."
+   ],
+   "results": {
+    "rows": [
+     [
+      "DN65 header skid \u2192 tee (ID 62.7), 3.8 m",
+      10.9003,
+      1.3915,
+      3.84
+     ],
+     [
+      "DN50 main, north pit (ID 52.5), 18.2 m",
+      7.7737,
+      2.5185,
+      18.2205
+     ],
+     [
+      "DN50 main, south pit (ID 52.5), 5.3 m",
+      7.7737,
+      1.0911,
+      5.3275
+     ],
+     [
+      "DN40 burner train pipework (ID 40.9), 2.5 m",
+      12.8085,
+      2.0477,
+      2.5
+     ]
+    ],
+    "L": [
+     3.84,
+     18.2205,
+     5.3275
+    ]
+   },
+   "checks": [
+    {
+     "name": "DN65 header skid \u2192 tee (ID 62.7), 3.8 m velocity",
+     "value": 10.9003,
+     "unit": "m/s",
+     "limit": 20,
+     "kind": "max",
+     "status": "PASS",
+     "note": "gas line guideline",
+     "ref": false
+    },
+    {
+     "name": "DN50 main, north pit (ID 52.5), 18.2 m velocity",
+     "value": 7.7737,
+     "unit": "m/s",
+     "limit": 20,
+     "kind": "max",
+     "status": "PASS",
+     "note": "gas line guideline",
+     "ref": false
+    },
+    {
+     "name": "DN50 main, south pit (ID 52.5), 5.3 m velocity",
+     "value": 7.7737,
+     "unit": "m/s",
+     "limit": 20,
+     "kind": "max",
+     "status": "PASS",
+     "note": "gas line guideline",
+     "ref": false
+    },
+    {
+     "name": "DN40 burner train pipework (ID 40.9), 2.5 m velocity",
+     "value": 12.8085,
+     "unit": "m/s",
+     "limit": 20,
+     "kind": "max",
+     "status": "PASS",
+     "note": "gas line guideline",
+     "ref": false
+    },
+    {
+     "name": "Pipework loss skid \u2192 north burner train",
+     "value": 5.9578,
+     "unit": "mbar",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "set the J125-S4 outlet = GIK40 rated inlet + this + valve losses (O-06)",
+     "ref": false
+    }
+   ],
+   "notes": [
+    "Confirm the PNG supply pressure and the J125-S4 outlet set point; the burner train (GIK40 ratio controller) needs its rated inlet pressure from the Bloom data sheet."
+   ]
+  },
+  {
+   "id": "C-07",
+   "title": "Flue passage and lined flue duct",
+   "method": [
+    "Q = Nm\u00b3/h \u00d7 (T+273)/273 / 3600."
+   ],
+   "results": {
+    "rows": [
+     [
+      "Rev H flue",
+      1296,
+      1.4144,
+      6.7351,
+      5.0513,
+      2.0205
+     ],
+     [
+      "Design \u03bb flue",
+      1386.2747,
+      1.5129,
+      7.2042,
+      5.4032,
+      2.1613
+     ]
+    ]
+   },
+   "checks": [
+    {
+     "name": "Passage 700 \u00d7 300 velocity (design \u03bb)",
+     "value": 7.2042,
+     "unit": "m/s",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "Rev H 6.7 m/s",
+     "ref": false
+    },
+    {
+     "name": "D-10 duct 700 \u00d7 400 velocity",
+     "value": 5.4032,
+     "unit": "m/s",
+     "limit": 3.0,
+     "kind": "min",
+     "status": "PASS",
+     "note": "keeps the duct self-cleaning",
+     "ref": false
+    },
+    {
+     "name": "Rev H trench 700 \u00d7 1000 velocity",
+     "value": 2.1613,
+     "unit": "m/s",
+     "limit": 3.0,
+     "kind": "min",
+     "status": "SUPERSEDED",
+     "note": "too slow: ash settles",
+     "ref": true
+    }
+   ],
+   "notes": []
+  },
+  {
+   "id": "C-08",
+   "title": "Heat-recovery loop: mixing temperature and energy balance (Cantera enthalpies)",
+   "method": [
+    "Enthalpy balance flue (800 \u00b0C) + dryer return (100 \u00b0C) + fresh air (30 \u00b0C) \u2192 mix; bisection on T_mix.",
+    "Bleed = flue + fresh air (steady loop mass balance)."
+   ],
+   "results": {
+    "T_mix": 124.0005,
+    "suction_m3h": 48479.5553,
+    "blower_m3h_120": 47991.2153,
+    "bleed": 4729,
+    "dryer_Nm3h": 28614,
+    "duty_dryer": 208.6757,
+    "bleed_heat": 155.194,
+    "flue_heat": 369.6909
+   },
+   "checks": [
+    {
+     "name": "Adiabatic mix temperature at suction",
+     "value": 124.0005,
+     "unit": "degC",
+     "limit": 130,
+     "kind": "max",
+     "status": "PASS",
+     "note": "Rev H 130 \u00b0C; blower casing limit 120 \u00b0C after losses",
+     "ref": false
+    },
+    {
+     "name": "Suction volume at T_mix",
+     "value": 48479.5553,
+     "unit": "m3/h",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "",
+     "ref": false
+    },
+    {
+     "name": "Blower volume at 120 \u00b0C",
+     "value": 47991.2153,
+     "unit": "m3/h",
+     "limit": 48000,
+     "kind": "max",
+     "status": "PASS",
+     "note": "AEP-ZA-9.0 48,000 m3/h",
+     "ref": false
+    },
+    {
+     "name": "Bleed = flue + fresh (mass balance)",
+     "value": 4729,
+     "unit": "Nm3/h",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "Rev H 4,729",
+     "ref": false
+    },
+    {
+     "name": "Dryer duty (20 K across the loads)",
+     "value": 208.6757,
+     "unit": "kW",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "Rev H 205\u2013220 kW",
+     "ref": false
+    },
+    {
+     "name": "Heat in the bleed (to 30 \u00b0C)",
+     "value": 155.194,
+     "unit": "kW",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "Rev H \u2248150 kW",
+     "ref": false
+    },
+    {
+     "name": "Flue heat recovered 800\u2192120 \u00b0C",
+     "value": 369.6909,
+     "unit": "kW",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "",
+     "ref": false
+    }
+   ],
+   "notes": [
+    "The fresh-air damper's \u224815 % minimum stop (STL-MB-DMP-02) is what keeps the blower inlet at or below the 120 \u00b0C casing and bearing limit when the dryer return runs hot."
+   ]
+  },
+  {
+   "id": "C-09",
+   "title": "Heat-recovery loop pressure budget and perforated-box distribution",
+   "method": [
+    "Concrete trenches \u03b5 = 1.5 mm; radiused bends K = 0.35; air properties from CoolProp at the local temperature.",
+    "Perforated plate K = 2.7 on hole velocity (Idelchik, thin plate ~15 % open). Mixing box from SH-MB-01.",
+    "Distribution criterion: hole \u0394P \u2265 2 \u00d7 feed velocity pressure (static regain stays small)."
+   ],
+   "results": {
+    "rows": [
+     [
+      "Return trench 900 \u00d7 1000, 5.5 m, 2 radiused bends",
+      12.0667,
+      5.8314
+     ],
+     [
+      "Junction (radiused merge)",
+      12.27,
+      2.6879
+     ],
+     [
+      "Suction trench 1000 \u00d7 1000, 4 m",
+      12.27,
+      0.5971
+     ],
+     [
+      "Mixing box S2 with R700 deflector (SH-MB-01)",
+      null,
+      9.2
+     ],
+     [
+      "Inlet spool \u00d8900 + cruciform straightener",
+      19.2872,
+      4.3787
+     ],
+     [
+      "Discharge trench 1100 \u00d7 1000, 16 m, 2 bends",
+      12.1212,
+      8.9776
+     ],
+     [
+      "Bleed tee (run)",
+      10.4,
+      0.495
+     ],
+     [
+      "Supply transition 1000 \u00d7 700 through the wall",
+      16.3429,
+      6.1123
+     ],
+     [
+      "Supply box holes \u00d815 @ 37 stag. (14.9 % open)",
+      10.9645,
+      14.8567
+     ],
+     [
+      "Dryer chamber cross-flow + loads",
+      1.6343,
+      1.0
+     ],
+     [
+      "Extraction box holes",
+      10.4086,
+      14.1069
+     ],
+     [
+      "Return transition 1000 \u00d7 700",
+      15.5143,
+      5.8038
+     ]
+    ],
+    "total": 74.0472,
+    "feed_v": 12.5714,
+    "ratio": 2.0539,
+    "end_ratio": 0.3038,
+    "n_holes": 5904.4126,
+    "phi": 0.1491,
+    "fan_std_to_hot": 53.6572
+   },
+   "checks": [
+    {
+     "name": "Loop total (D-12 centre-fed boxes)",
+     "value": 74.0472,
+     "unit": "mmWC",
+     "limit": 72.0,
+     "kind": "max",
+     "status": "MARGINAL",
+     "note": "if 72 mmWC is rated at 120 \u00b0C",
+     "ref": false
+    },
+    {
+     "name": "Loop total vs fan if 72 mmWC is a 20 \u00b0C rating",
+     "value": 74.0472,
+     "unit": "mmWC",
+     "limit": 53.6572,
+     "kind": "max",
+     "status": "FAIL",
+     "note": "\u2192 confirm rating basis",
+     "ref": false
+    },
+    {
+     "name": "Hole \u0394P / feed VP, centre feed 1300 \u00d7 350",
+     "value": 2.0539,
+     "unit": "-",
+     "limit": 2.0,
+     "kind": "min",
+     "status": "PASS",
+     "note": "uniform discharge rule of thumb",
+     "ref": false
+    },
+    {
+     "name": "Hole \u0394P / feed VP, Rev H end feed 1000 \u00d7 350",
+     "value": 0.3038,
+     "unit": "-",
+     "limit": 2.0,
+     "kind": "min",
+     "status": "SUPERSEDED",
+     "note": "Rev H finding",
+     "ref": true
+    },
+    {
+     "name": "Holes per face",
+     "value": 5904.4126,
+     "unit": "nos",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "Rev H \u22485,890",
+     "ref": false
+    },
+    {
+     "name": "Hole velocity",
+     "value": 10.9645,
+     "unit": "m/s",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "",
+     "ref": false
+    }
+   ],
+   "notes": [
+    "With centre-fed 1,300 \u00d7 350 boxes the loop needs about the fan's 72 mmWC, provided that figure is the hot (120 \u00b0C) rating. If it is a standard-air rating the fan delivers \u224854 mmWC hot and the VFD must run it above 50 Hz, or the impeller be re-selected. Confirm with AEP."
+   ]
+  },
+  {
+   "id": "C-10",
+   "title": "Insulation quantities for one furnace (D-04/D-05 build-ups, SH-INS cutting rules)",
+   "method": [
+    "Areas from the derived geometry; strip layouts per SH-INS-01 Rev B (A\u2013B\u2013A, 25 mm compression per joint)."
+   ],
+   "results": {
+    "rows": [
+     [
+      "Folded module 300 \u00d7 300 \u00d7 175, 128 kg/m\u00b3 1430, Z-anchor SS310",
+      384.5162,
+      "nos",
+      "walls, +3 % cut"
+     ],
+     [
+      "Microporous panel 1000 \u00d7 500 \u00d7 25 (2 layers walls, 1 layer floor)",
+      175.4382,
+      "nos",
+      "+5 %"
+     ],
+     [
+      "Calcium silicate 1000 \u00d7 500 \u00d7 25 (walls 1 layer, floor 2 layers)",
+      139.2058,
+      "nos",
+      "+5 %"
+     ],
+     [
+      "Blanket 64 kg/m\u00b3 8,300 \u00d7 610 \u00d7 50 \u2014 hearth, 3 layers A\u2013B\u2013A",
+      12,
+      "rolls",
+      "4 strips 7,725 per layer, 4th ripped to 420"
+     ],
+     [
+      "Blanket 64 kg/m\u00b3 8,300 \u00d7 610 \u00d7 50 \u2014 top closure T1, 3 layers",
+      7,
+      "rolls",
+      "SH-INS 7 per location"
+     ],
+     [
+      "Blanket 64 kg/m\u00b3 8,300 \u00d7 610 \u00d7 50 \u2014 bottom band 305 \u00d7 50",
+      1,
+      "rolls",
+      "SH-INS: 1 per kettle, butt joints"
+     ],
+     [
+      "Blanket 64 kg/m\u00b3 4,200 \u00d7 610 \u00d7 25 \u2014 corner shields 2 \u00d7 25",
+      2,
+      "rolls",
+      "SH-INS: 1 per shield"
+     ],
+     [
+      "HD board 500 \u00d7 1,000 \u00d7 25 \u2014 top closure between ribs",
+      22,
+      "nos",
+      "35 bays of 488 + corners, 2 cuts per board, +2 spare"
+     ],
+     [
+      "HD board 500 \u00d7 1,000 \u00d7 25 \u2014 hearth wear face",
+      34.3245,
+      "nos",
+      "+5 %"
+     ],
+     [
+      "SS 310S plate 6 mm, 750 \u00d7 1,500 developed",
+      2,
+      "nos",
+      "1 per burner, rolled R350"
+     ]
+    ],
+    "A_wall": 33.5985,
+    "A_floor": 16.345
+   },
+   "checks": [
+    {
+     "name": "Wall lining area",
+     "value": 33.5985,
+     "unit": "m2",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "",
+     "ref": false
+    },
+    {
+     "name": "Hearth area inside the lining",
+     "value": 16.345,
+     "unit": "m2",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "",
+     "ref": false
+    },
+    {
+     "name": "50 mm rolls for one furnace",
+     "value": 20,
+     "unit": "rolls",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "SH-INS two-furnace stock: 67",
+     "ref": false
+    }
+   ],
+   "notes": []
+  },
+  {
+   "id": "C-11",
+   "title": "Fan power",
+   "method": [
+    "P_air = Q\u00b7\u0394p; shaft = P_air/\u03b7 (\u03b7 0.75 recirc, 0.60 combustion); cold start scales with \u03c1."
+   ],
+   "results": {
+    "rows": [
+     [
+      "Recirculation AEP-ZA-9.0",
+      9.4144,
+      12.5525,
+      16.2865,
+      22.0
+     ],
+     [
+      "Combustion MBI-4040",
+      2.7649,
+      4.6082,
+      4.6082,
+      5.5
+     ]
+    ],
+    "pit_vol": 9.45
+   },
+   "checks": [
+    {
+     "name": "Recirc fan cold-start shaft power",
+     "value": 16.2865,
+     "unit": "kW",
+     "limit": 22.0,
+     "kind": "max",
+     "status": "PASS",
+     "note": "30 HP = 22 kW",
+     "ref": false
+    },
+    {
+     "name": "Combustion blower shaft power",
+     "value": 4.6082,
+     "unit": "kW",
+     "limit": 5.5,
+     "kind": "max",
+     "status": "PASS",
+     "note": "motor rating not in the sources: 5.5 kW derived (A-06)",
+     "ref": false
+    },
+    {
+     "name": "Burner pit volume",
+     "value": 9.45,
+     "unit": "m3",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "",
+     "ref": false
+    },
+    {
+     "name": "Pit fan minimum flow at 20 ACH",
+     "value": 189.0,
+     "unit": "m3/h",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "set 3 HP fan duty \u2265 this",
+     "ref": false
+    }
+   ],
+   "notes": []
+  },
+  {
+   "id": "C-12",
+   "title": "Structure: kettle support ring, kettle wall, foundation",
+   "method": [
+    "Load path (STL-EF): flange \u2192 graphite strip \u2192 ISA 100 bearing ring \u2192 12 \u00d7 200 ribs @ 500 \u2192 cap beam \u2192 casing \u2192 pad.",
+    "Rib: cantilever M = P \u00d7 arm, \u03c3 = M/Z, Z = t h\u00b2/6.",
+    "Kettle wall: one-way vertical strip, simply supported flange-to-bottom, triangular load p0 = \u03c1 g h: M = p0 L\u00b2/(9\u221a3), \u03b4 = 0.00652 p0 L\u2074/(E I), E(450 \u00b0C) = 170 GPa."
+   ],
+   "results": {
+    "zinc_t": 64.3133,
+    "kettle_t": 12.9364,
+    "W_kN": 795.4384,
+    "n_ribs": 36,
+    "sigma": 99.706,
+    "grow": 39.474,
+    "sig_w": 19.897,
+    "defl": 0.8166,
+    "q_found": 48.981,
+    "arm": 0.361
+   },
+   "checks": [
+    {
+     "name": "Zinc in the kettle",
+     "value": 64.3133,
+     "unit": "t",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "Rev K 64.3 t",
+     "ref": false
+    },
+    {
+     "name": "Kettle steel (walls, bottom, flange)",
+     "value": 12.9364,
+     "unit": "t",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "Rev H \u224812 t",
+     "ref": false
+    },
+    {
+     "name": "Suspended load incl. 5 % jig",
+     "value": 795.4384,
+     "unit": "kN",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "",
+     "ref": false
+    },
+    {
+     "name": "Ribs on the support ring",
+     "value": 36,
+     "unit": "nos",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "",
+     "ref": false
+    },
+    {
+     "name": "Rib cantilever stress 12 \u00d7 200",
+     "value": 99.706,
+     "unit": "MPa",
+     "limit": 140,
+     "kind": "max",
+     "status": "PASS",
+     "note": "E250 at 250 \u00b0C (IS 800), STL-EF",
+     "ref": false
+    },
+    {
+     "name": "Kettle growth along its length 20\u2192450 \u00b0C",
+     "value": 39.474,
+     "unit": "mm",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "slides on the graphite strip",
+     "ref": false
+    },
+    {
+     "name": "Kettle wall bending, hydrostatic (indicative)",
+     "value": 19.897,
+     "unit": "MPa",
+     "limit": 25,
+     "kind": "max",
+     "status": "PASS",
+     "note": "creep-governed; kettle maker to confirm",
+     "ref": false
+    },
+    {
+     "name": "Kettle wall elastic deflection (indicative)",
+     "value": 0.8166,
+     "unit": "mm",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "",
+     "ref": false
+    },
+    {
+     "name": "Foundation bearing pressure",
+     "value": 48.981,
+     "unit": "kN/m2",
+     "limit": 150.0,
+     "kind": "max",
+     "status": "PASS",
+     "note": "SBC 150 kN/m\u00b2 assumed (A-07)",
+     "ref": false
+    }
+   ],
+   "notes": [
+    "The kettle wall figure is a sanity check only. Kettle wall design (creep at 450 \u00b0C, corner stresses, bulge allowance) belongs to the kettle maker's calculation."
+   ]
+  },
+  {
+   "id": "C-13",
+   "title": "Bleed stack",
+   "method": [
+    "Draft = g H (\u03c1_amb \u2212 \u03c1_gas)."
+   ],
+   "results": {
+    "v": 15.0458,
+    "draft": 29.1954
+   },
+   "checks": [
+    {
+     "name": "Stack exit velocity \u00d8400",
+     "value": 15.0458,
+     "unit": "m/s",
+     "limit": 20,
+     "kind": "max",
+     "status": "PASS",
+     "note": "Rev H 15 m/s",
+     "ref": false
+    },
+    {
+     "name": "Stack exit velocity \u00d8400 (min)",
+     "value": 15.0458,
+     "unit": "m/s",
+     "limit": 6,
+     "kind": "min",
+     "status": "PASS",
+     "note": "plume rise",
+     "ref": false
+    },
+    {
+     "name": "Natural draft 12 m",
+     "value": 2.9771,
+     "unit": "mmWC",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "",
+     "ref": false
+    },
+    {
+     "name": "Stack height",
+     "value": 12.0,
+     "unit": "m",
+     "limit": 11,
+     "kind": "min",
+     "status": "PASS",
+     "note": "confirm against the SPCB consent (O-05)",
+     "ref": false
+    }
+   ],
+   "notes": []
+  },
+  {
+   "id": "C-14",
+   "title": "Firing rate and gas consumption at production",
+   "method": [
+    "Fired = (net + casing loss) / available heat (C-01, flue 800 \u00b0C, design \u03bb). Casing loss = D-05 wall flux \u00d7 casing area."
+   ],
+   "results": {
+    "rows": [
+     [
+      6.0,
+      458.9158,
+      761.045,
+      76.8732,
+      12.8122,
+      126.8408
+     ],
+     [
+      6.7,
+      508.6132,
+      840.4672,
+      84.8957,
+      12.671,
+      125.4429
+     ]
+    ],
+    "P_lining": 17.2984
+   },
+   "checks": [
+    {
+     "name": "Casing + floor loss (D-05 / D-15)",
+     "value": 17.2984,
+     "unit": "kW",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "",
+     "ref": false
+    },
+    {
+     "name": "Fired duty at 6.0 t/h",
+     "value": 761.045,
+     "unit": "kW",
+     "limit": 1172,
+     "kind": "max",
+     "status": "PASS",
+     "note": "",
+     "ref": false
+    },
+    {
+     "name": "Fired duty at 6.7 t/h",
+     "value": 840.4672,
+     "unit": "kW",
+     "limit": 1172,
+     "kind": "max",
+     "status": "PASS",
+     "note": "",
+     "ref": false
+    },
+    {
+     "name": "Gas per tonne at 6.0 t/h",
+     "value": 12.8122,
+     "unit": "Nm3/t",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "",
+     "ref": false
+    },
+    {
+     "name": "Furnace efficiency at 6.0 t/h",
+     "value": 60.3007,
+     "unit": "%",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "Rev H 53.4 % at 1,172 kW",
+     "ref": false
+    }
+   ],
+   "notes": []
+  }
+ ],
+ "counts": {
+  "INFO": 36,
+  "SUPERSEDED": 11,
+  "MARGINAL": 3,
+  "PASS": 32,
+  "FAIL": 1
+ }
+}

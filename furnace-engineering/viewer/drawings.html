@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SHV-FUR-6700 Drawings</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a sheet register (thumbnail grid) over a dark ground; a sheet opens full screen with pan and zoom. */
+:root{--bg:#0A1120;--panel:#111D35;--line:#22355A;--text:#E7EDF9;--muted:#93A4C4;--red:#E3000F;--red2:#FF4655;--gold:#FFB400;--blue:#43A6E8;
+  --f-ui:"Archivo","Helvetica Neue",Arial,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;color-scheme:dark}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 var(--f-ui)}
+.wrap{max-width:1280px;margin:0 auto;padding-block:24px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{border-bottom:3px solid transparent;border-image:linear-gradient(90deg,var(--red) 0 33.3%,var(--gold) 33.3% 66.6%,var(--blue) 66.6%) 1;padding-bottom:14px;margin-bottom:20px;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:flex-end}
+header b{display:block;color:var(--red2);font-weight:800;font-stretch:118%;letter-spacing:.06em;font-size:13px}
+h1{margin:2px 0 0;font-size:26px;font-weight:800;font-stretch:96%;text-wrap:balance}
+header p{margin:0;color:var(--muted);max-width:70ch;font-size:14px}
+header a{margin-left:auto;color:var(--gold);font-weight:600;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,370px),1fr));gap:16px}
+.sh{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:10px;display:flex;flex-direction:column;gap:8px;text-align:left;color:inherit;font:inherit;cursor:zoom-in}
+.sh:hover{border-color:var(--gold)}
+.sh:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.sh img{width:100%;aspect-ratio:841/594;object-fit:contain;background:#fff;border-radius:2px;display:block}
+.sh .no{font:600 12px var(--f-mono);color:var(--gold)}
+.sh .t{font-weight:700;font-size:15px}
+.sh .d{font-size:13px;color:var(--muted)}
+.files{margin-top:28px;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:14px 16px;font-size:14px}
+.files h2{margin:0 0 6px;font-size:16px}
+.files code{font-family:var(--f-mono);font-size:12.5px;color:var(--gold)}
+.files li{margin:3px 0}
+#modal{position:fixed;inset:0;z-index:10;background:rgba(5,9,18,.96);display:flex;flex-direction:column}
+#mbar{display:flex;gap:8px;align-items:center;padding-block:calc(8px + env(safe-area-inset-top,0px)) 8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));border-bottom:1px solid var(--line)}
+#mbar span{font:600 13px var(--f-mono);color:var(--gold);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#mbar button{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:4px;padding:6px 11px;font:600 13px var(--f-ui);cursor:pointer}
+#stage{flex:1;overflow:hidden;position:relative;touch-action:none;cursor:grab;background:#3a4252}
+#stage img{position:absolute;left:0;top:0;transform-origin:0 0;background:#fff;user-select:none;-webkit-user-drag:none;max-width:none}
+</style></head>
+<body><div class="wrap">
+<header><div><b>SHIVAS</b><h1>SHV-FUR-6700 general arrangement drawings</h1></div>
+<p>Six A1 sheets generated from the 3D model: hidden-line views, cut faces filled by material, true dimensions and levels from FFL ±0.000. Preliminary, not for construction.</p>
+<a href="index.html">Back to the 3D model</a></header>
+<div class="grid" id="grid"></div>
+<div class="files"><h2>Where the files are</h2>
+<ul><li>DXF for every sheet (layers FRAME, VISIBLE, CUT, FILL, DIM, LEVEL, CALLOUT): <code>furnace-engineering/out/drawings/*.dxf</code></li>
+<li>All six sheets as one PDF: <code>out/drawings/SHV-FUR-6700-GA-set.pdf</code></li>
+<li>3D master geometry, STEP AP214 with the full assembly tree: <code>out/cad/SHV-FUR-6700.step</code></li>
+<li>Bill of materials: <code>out/cad/bom.csv</code> · calculation report: <code>out/calc/SHV-FUR-6700-CR.html</code></li></ul>
+<p class="d" style="color:var(--muted);margin:6px 0 0">The files live in the project repository on GitHub, branch <code>claude/wonderful-bohr-a5k85k</code>; this page cannot hand out downloads.</p></div>
+</div>
+<div id="modal" hidden role="dialog" aria-modal="true" aria-label="Drawing sheet">
+  <div id="mbar"><span id="mt"></span><button type="button" id="zin" aria-label="Zoom in">+</button><button type="button" id="zout" aria-label="Zoom out">−</button><button type="button" id="zfit">Fit</button><button type="button" id="mx">Close</button></div>
+  <div id="stage"><img id="mi" alt=""></div>
+</div>
+<script>
+(function(){
+const S=[
+ ['001','General arrangement','Plan at 1:75 and elevation looking north at 1:100: furnace, dryer, loop, blowers, gas train, stack.'],
+ ['002','Furnace plan at burner axis','Section at −0.390, 1:25: alleys, lining, burner pits and trains, flue port; NW corner shield at 1:10.'],
+ ['003','Furnace cross section A–A','Section mid-bay between ribs, 1:15, with all levels; kettle support and top closure at 1:5.'],
+ ['004','Long section B–B and burner pit','Section on the burner-1 axis, 1:25; north burner pit elevation at 1:15.'],
+ ['005','Dryer and heat-recovery loop','Section C–C through the dryer at 1:40 and plan of the trenches at −0.200, 1:75.'],
+ ['006','Schedules','Bill of materials, levels schedule and design data.']];
+const g=document.getElementById('grid');
+S.forEach(([n,t,d])=>{const b=document.createElement('button');b.type='button';b.className='sh';
+  b.innerHTML=`<img loading="lazy" src="drawings/SHV-FUR-6700-GA-${n}.png" alt="Sheet GA-${n}: ${t}"><span class="no">SHV-FUR-6700-GA-${n} · Rev A · A1</span><span class="t">${t}</span><span class="d">${d}</span>`;
+  b.onclick=()=>open(n,t);g.appendChild(b);});
+const M=document.getElementById('modal'),st=document.getElementById('stage'),im=document.getElementById('mi');
+let z=1,x=0,y=0,drag=null,last=null;
+function apply(){im.style.transform=`translate(${x}px,${y}px) scale(${z})`;}
+function fit(){const W=st.clientWidth,H=st.clientHeight,iw=im.naturalWidth||3641,ih=im.naturalHeight||2572;z=Math.min(W/iw,H/ih);x=(W-iw*z)/2;y=(H-ih*z)/2;apply();}
+function open(n,t){last=document.activeElement;document.getElementById('mt').textContent=`SHV-FUR-6700-GA-${n} · ${t}`;im.alt=`Sheet GA-${n}: ${t}`;
+  im.onload=fit;im.onerror=()=>{im.onerror=null;im.src=`drawings/SHV-FUR-6700-GA-${n}.png`;};im.src=`drawings/SHV-FUR-6700-GA-${n}.svg`;M.hidden=false;document.getElementById('mx').focus();}
+function zoom(f,cx,cy){cx=cx??st.clientWidth/2;cy=cy??st.clientHeight/2;x=cx-(cx-x)*f;y=cy-(cy-y)*f;z*=f;apply();}
+st.addEventListener('wheel',e=>{e.preventDefault();const r=st.getBoundingClientRect();zoom(e.deltaY<0?1.15:1/1.15,e.clientX-r.left,e.clientY-r.top);},{passive:false});
+const P=new Map();
+st.addEventListener('pointerdown',e=>{st.setPointerCapture(e.pointerId);P.set(e.pointerId,[e.clientX,e.clientY]);drag=P.size===1?[e.clientX,e.clientY,x,y]:null;});
+st.addEventListener('pointermove',e=>{if(!P.has(e.pointerId))return;const prev=P.get(e.pointerId);P.set(e.pointerId,[e.clientX,e.clientY]);
+  if(P.size===2){const [a,b]=[...P.values()];const others=[...P.entries()].find(([k])=>k!==e.pointerId)[1];
+    const d0=Math.hypot(prev[0]-others[0],prev[1]-others[1]),d1=Math.hypot(a[0]-b[0],a[1]-b[1]);const r=st.getBoundingClientRect();
+    if(d0>0)zoom(d1/d0,(a[0]+b[0])/2-r.left,(a[1]+b[1])/2-r.top);}
+  else if(drag){x=drag[2]+e.clientX-drag[0];y=drag[3]+e.clientY-drag[1];apply();}});
+['pointerup','pointercancel'].forEach(t=>st.addEventListener(t,e=>{P.delete(e.pointerId);drag=null;}));
+document.getElementById('zin').onclick=()=>zoom(1.4);document.getElementById('zout').onclick=()=>zoom(1/1.4);document.getElementById('zfit').onclick=fit;
+function close(){M.hidden=true;if(last)last.focus();}
+document.getElementById('mx').onclick=close;
+document.addEventListener('keydown',e=>{if(!M.hidden&&e.key==='Escape')close();});
+addEventListener('resize',()=>{if(!M.hidden)fit();});
+})();
+</script>
+</body></html>

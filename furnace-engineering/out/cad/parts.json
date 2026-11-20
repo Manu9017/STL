@@ -1,0 +1,2648 @@
+{
+ "doc": "SHV-FUR-6700",
+ "rev": "A",
+ "units": "mm",
+ "up": "Z (GLB is Y-up, metres\u00d71000)",
+ "systems": {
+  "civil": "Civil: foundation, pits, trenches",
+  "casing": "Furnace casing and structure",
+  "lining": "Refractory lining and insulation",
+  "kettle": "Kettle, zinc and support ring",
+  "topclose": "Top closure, band and corner shields",
+  "burner": "Burners and burner blocks",
+  "gas": "Gas train and piping",
+  "air": "Combustion air",
+  "pitvent": "Burner pits: fans, rails, ladders",
+  "instr": "Instruments and controls",
+  "flue": "Flue duct",
+  "loop": "Heat-recovery loop",
+  "dryer": "Four-position dryer",
+  "stack": "Bleed and stack",
+  "load": "Sample loads (jigs)",
+  "enclosure": "Zinc enclosure (optional)"
+ },
+ "parts": {
+  "CIV-01 Furnace foundation pad": {
+   "tag": "CIV-01",
+   "title": "Furnace foundation pad",
+   "system": "civil",
+   "spec": "RCC M30, 3,000 \u00d7 8,500 \u00d7 600, T16 @ 150 both ways; top \u22121.725, underside \u22122.325; thickened 1,300 sq. under each leak pit",
+   "material": "RCC M30",
+   "src": "Rev K \u00b7 D-15 \u00b7 D-07",
+   "status": "D",
+   "note": "Rev K pad kept, set 150 mm lower for the ventilated grillage.",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.62,
+    0.64,
+    0.66
+   ]
+  },
+  "CIV-02 Zinc leak pits": {
+   "tag": "CIV-02",
+   "title": "Zinc leak pits (2)",
+   "system": "civil",
+   "spec": "700 \u00d7 700 \u00d7 600 clear, 75 mm dense castable liner, at Y \u00b12,000 on the kettle centreline",
+   "material": "",
+   "src": "Rev K (size) \u00b7 D-07 (position)",
+   "status": "D",
+   "note": "Reached from the hearth through 700 \u00d7 700 openings with a sacrificial 25 mm board and a steel chute through the grillage.",
+   "qty": "2",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.66,
+    0.55,
+    0.45
+   ]
+  },
+  "CIV-03 Furnace and burner pit walls": {
+   "tag": "CIV-03",
+   "title": "Furnace pit and burner pit walls",
+   "system": "civil",
+   "spec": "RCC 200, furnace pit 3,000 wide; burner pits 3,000 \u00d7 1,800 clear, floor \u22121.750",
+   "material": "",
+   "src": "Rev K \u00b7 HDG \u00b7 D-08",
+   "status": "D",
+   "note": "119 mm ventilated gap between the casing and the pit walls; grating at FFL.",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.58,
+    0.6,
+    0.63
+   ]
+  },
+  "CIV-04 Burner pit floor slabs": {
+   "tag": "CIV-04",
+   "title": "Burner pit floor slabs",
+   "system": "civil",
+   "spec": "RCC 200, top \u22121.750, underside \u22121.950",
+   "material": "",
+   "src": "Rev K \u00b7 HDG",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.52,
+    0.54,
+    0.56
+   ]
+  },
+  "CIV-05 Gap gratings": {
+   "tag": "CIV-05",
+   "title": "Ventilated-gap gratings at FFL",
+   "system": "civil",
+   "spec": "Serrated grating 115 \u00d7 40, both long sides of the casing",
+   "material": "",
+   "src": "D-08",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.55,
+    0.58,
+    0.62
+   ]
+  },
+  "STR-01 Ventilated grillage": {
+   "tag": "STR-01",
+   "title": "Ventilated foundation grillage",
+   "system": "casing",
+   "spec": "ISMB 150 transverse @ 600 c/c (14 nos), 2,762 long, on the pad; air channels open to both pit gaps",
+   "material": "IS 2062 E250",
+   "src": "D-15",
+   "status": "D",
+   "note": "",
+   "qty": "14",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.38,
+    0.43,
+    0.5
+   ]
+  },
+  "STR-02 Leak-pit chutes": {
+   "tag": "STR-02",
+   "title": "Leak-pit chutes through the grillage",
+   "system": "casing",
+   "spec": "6 mm plate, 712 \u00d7 712 \u00d7 150",
+   "material": "",
+   "src": "D-07",
+   "status": "D",
+   "note": "",
+   "qty": "2",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.29,
+    0.33,
+    0.39
+   ]
+  },
+  "CAS-01 Casing shell": {
+   "tag": "CAS-01",
+   "title": "Furnace casing shell",
+   "system": "casing",
+   "spec": "8,200 \u00d7 2,750 inside, 6 mm walls, 10 mm floor; base \u22121.575, top +0.150; flue cut-out 1,000 \u00d7 600; burner holes \u00d8250",
+   "material": "IS 2062 E250 BR, continuously welded, gas-tight",
+   "src": "Rev K \u00b7 STL-EF \u00b7 D-17",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.29,
+    0.33,
+    0.39
+   ]
+  },
+  "CAS-02 Stiffeners and belts": {
+   "tag": "CAS-02",
+   "title": "Casing stiffeners and belts",
+   "system": "casing",
+   "spec": "Vertical MS flat 100 \u00d7 10 @ 800 c/c; horizontal belt MS flat 50 \u00d7 10 at 0.55 H",
+   "material": "IS 2062 E250",
+   "src": "STL-EF \u00b7 HDG",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.38,
+    0.43,
+    0.5
+   ]
+  },
+  "STR-10 Cap beam": {
+   "tag": "STR-10",
+   "title": "Cap beam (perimeter)",
+   "system": "casing",
+   "spec": "Fabricated box 300 \u00d7 100 \u00d7 10 on the casing top, +0.150 \u2192 +0.250",
+   "material": "IS 2062 E250",
+   "src": "D-03 (after STL-EF SHS 300 \u00d7 150)",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.29,
+    0.33,
+    0.39
+   ]
+  },
+  "STR-11 Chequered deck": {
+   "tag": "STR-11",
+   "title": "Sectional chequered deck plate",
+   "system": "casing",
+   "spec": "6 mm chequered, bolted panels \u22481,000 long, +0.250 \u2192 +0.256; rim stands 44 mm proud",
+   "material": "",
+   "src": "STL-EF \u00b7 D-03",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.45,
+    0.49,
+    0.54
+   ]
+  },
+  "LIN-03 Calcium silicate backing 25": {
+   "tag": "LIN-03",
+   "title": "Calcium silicate backing 25",
+   "system": "lining",
+   "spec": "Calcium silicate board 245 kg/m\u00b3, 25 mm; walls \u22121.565 \u2192 +0.150",
+   "material": "",
+   "src": "D-05 (Rev K 128 kg/m\u00b3 hot face; SH-INS 250 mm)",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.8,
+    0.84,
+    0.86
+   ]
+  },
+  "LIN-02 Microporous 50": {
+   "tag": "LIN-02",
+   "title": "Microporous 50",
+   "system": "lining",
+   "spec": "Microporous board 320 kg/m\u00b3, 2 \u00d7 25 mm; walls \u22121.565 \u2192 +0.150",
+   "material": "",
+   "src": "D-05 (Rev K 128 kg/m\u00b3 hot face; SH-INS 250 mm)",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.93,
+    0.93,
+    0.88
+   ]
+  },
+  "LIN-01 Folded module hot face 175": {
+   "tag": "LIN-01",
+   "title": "Folded module hot face 175",
+   "system": "lining",
+   "spec": "Folded ceramic-fibre module 128 kg/m\u00b3, 1430 grade, 175 mm, Z-anchored SS310; walls \u22121.565 \u2192 +0.150",
+   "material": "",
+   "src": "D-05 (Rev K 128 kg/m\u00b3 hot face; SH-INS 250 mm)",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.85,
+    0.8,
+    0.7
+   ]
+  },
+  "LIN-05 Burner blocks": {
+   "tag": "LIN-05",
+   "title": "Burner blocks (quarls)",
+   "system": "burner",
+   "spec": "Dense castable 1600 \u00b0C, 400 \u00d7 400 \u00d7 250 with \u00d8200 port",
+   "material": "",
+   "src": "D-05",
+   "status": "D",
+   "note": "",
+   "qty": "2",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.66,
+    0.55,
+    0.45
+   ]
+  },
+  "LIN-06 Flue port block": {
+   "tag": "LIN-06",
+   "title": "Flue port block",
+   "system": "flue",
+   "spec": "Dense castable frame 1,000 \u00d7 600 \u00d7 250, passage 700 \u00d7 300 = 0.21 m\u00b2",
+   "material": "",
+   "src": "Rev H",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.66,
+    0.55,
+    0.45
+   ]
+  },
+  "LIN-10 Hearth calcium silicate": {
+   "tag": "LIN-10",
+   "title": "Hearth calcium silicate 2 \u00d7 25",
+   "system": "lining",
+   "spec": "245 kg/m\u00b3, 7,700 \u00d7 2,250",
+   "material": "",
+   "src": "D-04",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.8,
+    0.84,
+    0.86
+   ]
+  },
+  "LIN-11 Hearth microporous": {
+   "tag": "LIN-11",
+   "title": "Hearth microporous 25",
+   "system": "lining",
+   "spec": "320 kg/m\u00b3",
+   "material": "",
+   "src": "D-04",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.93,
+    0.93,
+    0.88
+   ]
+  },
+  "LIN-12 Hearth blanket layer 1": {
+   "tag": "LIN-12",
+   "title": "Hearth blanket layer 1 (layout A)",
+   "system": "lining",
+   "spec": "64 kg/m\u00b3 1260 grade, 50 mm, strips 610 \u00d7 7,725 (7,700 + 25 compression); layer 2 shifted 305 so no joint runs through",
+   "material": "",
+   "src": "SH-INS-01 Rev B (B3 case) \u00b7 D-04",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.03,
+    0.39,
+    0.43
+   ]
+  },
+  "LIN-13 Hearth blanket layer 2": {
+   "tag": "LIN-13",
+   "title": "Hearth blanket layer 2 (layout B)",
+   "system": "lining",
+   "spec": "64 kg/m\u00b3 1260 grade, 50 mm, strips 610 \u00d7 7,725 (7,700 + 25 compression); layer 2 shifted 305 so no joint runs through",
+   "material": "",
+   "src": "SH-INS-01 Rev B (B3 case) \u00b7 D-04",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.06,
+    0.64,
+    0.69
+   ]
+  },
+  "LIN-14 Hearth blanket layer 3": {
+   "tag": "LIN-14",
+   "title": "Hearth blanket layer 3 (layout A)",
+   "system": "lining",
+   "spec": "64 kg/m\u00b3 1260 grade, 50 mm, strips 610 \u00d7 7,725 (7,700 + 25 compression); layer 2 shifted 305 so no joint runs through",
+   "material": "",
+   "src": "SH-INS-01 Rev B (B3 case) \u00b7 D-04",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.36,
+    0.88,
+    0.91
+   ]
+  },
+  "LIN-15 Hearth HD board wear face": {
+   "tag": "LIN-15",
+   "title": "Hearth HD board wear face",
+   "system": "lining",
+   "spec": "HD board 500 \u00d7 1,000 \u00d7 25; hearth surface \u22121.315; 255 mm under the kettle",
+   "material": "",
+   "src": "D-04",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.61,
+    0.88,
+    0.36
+   ]
+  },
+  "LIN-16 Leak-pit sacrificial covers": {
+   "tag": "LIN-16",
+   "title": "Leak-pit sacrificial covers",
+   "system": "lining",
+   "spec": "25 mm board over the 700 \u00d7 700 hearth openings; molten zinc breaks through",
+   "material": "",
+   "src": "D-07",
+   "status": "D",
+   "note": "",
+   "qty": "2",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.85,
+    0.87,
+    0.89
+   ]
+  },
+  "KET-01 Kettle": {
+   "tag": "KET-01",
+   "title": "Zinc kettle",
+   "system": "kettle",
+   "spec": "6,700 \u00d7 1,250 \u00d7 1,310 inside, 50 mm plate, corners R250 inside; rim +0.300, outer bottom \u22121.060",
+   "material": "Kettle-grade low-Si killed plate, Si \u2264 0.03 %, P \u2264 0.02 %, UT + RT",
+   "src": "Rev K \u00b7 STL-EF \u00b7 D-06",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.18,
+    0.42,
+    0.66
+   ]
+  },
+  "KET-02 Rim flange": {
+   "tag": "KET-02",
+   "title": "Kettle rim flange",
+   "system": "kettle",
+   "spec": "120 wide \u00d7 40 thick, continuous; the load path: flange \u2192 graphite strip \u2192 bearing ring \u2192 ribs \u2192 cap beam",
+   "material": "",
+   "src": "STL-EF Rev D \u00b7 D-02",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.18,
+    0.42,
+    0.66
+   ]
+  },
+  "PRC-01 Molten zinc": {
+   "tag": "PRC-01",
+   "title": "Molten zinc bath",
+   "system": "kettle",
+   "spec": "9.72 m\u00b3 \u00d7 6.62 t/m\u00b3 = 64.3 t at 445\u2013455 \u00b0C; surface +0.150 (1,160 deep)",
+   "material": "",
+   "src": "Rev K",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.8,
+    0.85,
+    0.9
+   ]
+  },
+  "SUP-01 Graphite bearing strip": {
+   "tag": "SUP-01",
+   "title": "Graphite bearing strip",
+   "system": "kettle",
+   "spec": "8 \u00d7 100, 500 mm segments; lets the kettle grow \u224839 mm along its length",
+   "material": "",
+   "src": "STL-EF",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.12,
+    0.12,
+    0.13
+   ]
+  },
+  "SUP-02 Bearing ring": {
+   "tag": "SUP-02",
+   "title": "Bearing ring",
+   "system": "kettle",
+   "spec": "ISA 100 \u00d7 100 \u00d7 10, mitred and welded, perimeter only",
+   "material": "IS 2062 E250",
+   "src": "STL-EF",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.5,
+    0.66,
+    0.82
+   ]
+  },
+  "SUP-03 Radial ribs": {
+   "tag": "SUP-03",
+   "title": "Radial support ribs",
+   "system": "kettle",
+   "spec": "12 \u00d7 200 @ 500 c/c, 36 nos, cantilevered from the cap beam; \u03c3 \u2248 100 MPa vs 140 allowable (C-12)",
+   "material": "IS 2062 E250",
+   "src": "STL-EF \u00b7 C-12",
+   "status": "C",
+   "note": "",
+   "qty": "36",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.5,
+    0.66,
+    0.82
+   ]
+  },
+  "TOP-01 Lip plate": {
+   "tag": "TOP-01",
+   "title": "Lip plate (HD-board seat)",
+   "system": "topclose",
+   "spec": "50 wide \u00d7 12, welded round the kettle; top 200 below the flange underside (+0.060)",
+   "material": "",
+   "src": "SH-INS-01 Rev B",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.22,
+    0.25,
+    0.32
+   ]
+  },
+  "TOP-02 HD boards": {
+   "tag": "TOP-02",
+   "title": "HD boards, top closure",
+   "system": "topclose",
+   "spec": "500 \u00d7 1,000 \u00d7 25, cut to 488 between ribs; bear 50 on the lip and 50 on the lining rebate",
+   "material": "",
+   "src": "SH-INS-01 Rev B",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.61,
+    0.88,
+    0.36
+   ]
+  },
+  "TOP-03 Top blanket layer 1": {
+   "tag": "TOP-03",
+   "title": "Top closure blanket layer 1",
+   "system": "topclose",
+   "spec": "64 kg/m\u00b3, 50 mm, compressed 610 \u2192 500 and tucked flat (no upturn); 25 mm clear under the deck",
+   "material": "",
+   "src": "SH-INS-01 Rev B",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.88,
+    0.54,
+    0.0
+   ]
+  },
+  "TOP-04 Top blanket layer 2": {
+   "tag": "TOP-04",
+   "title": "Top closure blanket layer 2",
+   "system": "topclose",
+   "spec": "64 kg/m\u00b3, 50 mm, compressed 610 \u2192 500 and tucked flat (no upturn); 25 mm clear under the deck",
+   "material": "",
+   "src": "SH-INS-01 Rev B",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    1.0,
+    0.7,
+    0.0
+   ]
+  },
+  "TOP-05 Top blanket layer 3": {
+   "tag": "TOP-05",
+   "title": "Top closure blanket layer 3",
+   "system": "topclose",
+   "spec": "64 kg/m\u00b3, 50 mm, compressed 610 \u2192 500 and tucked flat (no upturn); 25 mm clear under the deck",
+   "material": "",
+   "src": "SH-INS-01 Rev B",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    1.0,
+    0.85,
+    0.35
+   ]
+  },
+  "TOP-06 Bottom band": {
+   "tag": "TOP-06",
+   "title": "Bottom band 305 \u00d7 50",
+   "system": "topclose",
+   "spec": "64 kg/m\u00b3 blanket ripped 2 \u00d7 8,300 \u00d7 305, compressed butt joints at mid-length of the long sides; \u22120.890 \u2192 \u22120.585",
+   "material": "",
+   "src": "SH-INS (1 roll per kettle) \u00b7 D-04",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.91,
+    0.25,
+    0.17
+   ]
+  },
+  "TOP-07 Corner shield NW": {
+   "tag": "TOP-07",
+   "title": "Curved SS corner shield, north-west, beside burner 1",
+   "system": "topclose",
+   "spec": "750 high \u00d7 1,500 developed (725 + R350 quarter + 225); 50 mm off the kettle; \u22120.695 \u2192 +0.055",
+   "material": "SS 310S 6 mm (assumed, O-10)",
+   "src": "SH-INS-03 Rev B (19 Nov) \u00b7 D-06",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.79,
+    0.82,
+    0.86
+   ]
+  },
+  "TOP-08 Shield fibre NW": {
+   "tag": "TOP-08",
+   "title": "Shield backing fibre, north-west, beside burner 1",
+   "system": "topclose",
+   "spec": "2 \u00d7 25 mm blanket 4,200 \u00d7 610, one roll per shield, no joints; \u22120.570 \u2192 +0.040",
+   "material": "",
+   "src": "SH-INS-03 Rev B",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.61,
+    0.3,
+    0.79
+   ]
+  },
+  "TOP-07 Corner shield SE": {
+   "tag": "TOP-07",
+   "title": "Curved SS corner shield, south-east, beside burner 2",
+   "system": "topclose",
+   "spec": "750 high \u00d7 1,500 developed (725 + R350 quarter + 225); 50 mm off the kettle; \u22120.695 \u2192 +0.055",
+   "material": "SS 310S 6 mm (assumed, O-10)",
+   "src": "SH-INS-03 Rev B (19 Nov) \u00b7 D-06",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.79,
+    0.82,
+    0.86
+   ]
+  },
+  "TOP-08 Shield fibre SE": {
+   "tag": "TOP-08",
+   "title": "Shield backing fibre, south-east, beside burner 2",
+   "system": "topclose",
+   "spec": "2 \u00d7 25 mm blanket 4,200 \u00d7 610, one roll per shield, no joints; \u22120.570 \u2192 +0.040",
+   "material": "",
+   "src": "SH-INS-03 Rev B",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.61,
+    0.3,
+    0.79
+   ]
+  },
+  "BUR-01 Burner 1": {
+   "tag": "BUR-01",
+   "title": "Burner 1: Bloom HV-400, north face, fires south along the west alley",
+   "system": "burner",
+   "spec": "Bloom HV-400 high-velocity, cold air, gas only; axis \u22120.390, 946.5 off centre (271.5 off the kettle plate); flame \u00d8197; pulse fired",
+   "material": "",
+   "src": "SH-PID-02 Rev M \u00b7 Rev H \u00b7 Rev K",
+   "status": "C",
+   "note": "Body is an envelope (O-03): replace with the Bloom GA before fabrication.",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.8,
+    0.1,
+    0.12
+   ]
+  },
+  "BUR-11 Burner 1 mounting": {
+   "tag": "BUR-11",
+   "title": "Burner 1 mounting plate",
+   "system": "burner",
+   "spec": "600 \u00d7 600 \u00d7 12 on the casing end plate, 8 \u00d7 M16",
+   "material": "",
+   "src": "HDG",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.38,
+    0.43,
+    0.5
+   ]
+  },
+  "BUR-21 Burner 1 UV and ignitor": {
+   "tag": "BUR-21",
+   "title": "Burner 1 UV scanner + spark ignitor",
+   "system": "instr",
+   "spec": "UV scanner UVS10D0G1; direct spark ignitor 3500-148 (no pilot); ignition transformer TZI8-12/100WE",
+   "material": "",
+   "src": "SH-PID-02 Rev M",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.06,
+    0.06,
+    0.07
+   ]
+  },
+  "BUR-02 Burner 2": {
+   "tag": "BUR-02",
+   "title": "Burner 2: Bloom HV-400, south face, fires north along the east alley",
+   "system": "burner",
+   "spec": "Bloom HV-400 high-velocity, cold air, gas only; axis \u22120.390, 946.5 off centre (271.5 off the kettle plate); flame \u00d8197; pulse fired",
+   "material": "",
+   "src": "SH-PID-02 Rev M \u00b7 Rev H \u00b7 Rev K",
+   "status": "C",
+   "note": "Body is an envelope (O-03): replace with the Bloom GA before fabrication.",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.8,
+    0.1,
+    0.12
+   ]
+  },
+  "BUR-12 Burner 2 mounting": {
+   "tag": "BUR-12",
+   "title": "Burner 2 mounting plate",
+   "system": "burner",
+   "spec": "600 \u00d7 600 \u00d7 12 on the casing end plate, 8 \u00d7 M16",
+   "material": "",
+   "src": "HDG",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.38,
+    0.43,
+    0.5
+   ]
+  },
+  "BUR-22 Burner 2 UV and ignitor": {
+   "tag": "BUR-22",
+   "title": "Burner 2 UV scanner + spark ignitor",
+   "system": "instr",
+   "spec": "UV scanner UVS10D0G1; direct spark ignitor 3500-148 (no pilot); ignition transformer TZI8-12/100WE",
+   "material": "",
+   "src": "SH-PID-02 Rev M",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.06,
+    0.06,
+    0.07
+   ]
+  },
+  "INS-01 Bath thermocouples": {
+   "tag": "INS-01",
+   "title": "Bath thermocouples (3)",
+   "system": "instr",
+   "spec": "Duplex Type K in Ti Gr.2 tubes, hot parts 600 / 800 / 1,100 mm, \u00d8300 expansion coil; east inner edge at Y \u22122,400 / 0 / +2,400",
+   "material": "",
+   "src": "Rev K thermocouple schedule",
+   "status": "C",
+   "note": "",
+   "qty": "3",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.7,
+    0.73,
+    0.76
+   ]
+  },
+  "INS-02 Chamber thermocouples": {
+   "tag": "INS-02",
+   "title": "Chamber thermocouples (2)",
+   "system": "instr",
+   "spec": "Type N, Inconel 600 MI \u00d88, U = 450, through the long walls at \u22120.400 (west Y +2,000, east Y \u22122,000)",
+   "material": "",
+   "src": "Rev K (type) \u00b7 this design (positions)",
+   "status": "D",
+   "note": "",
+   "qty": "2",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.7,
+    0.73,
+    0.76
+   ]
+  },
+  "GAS-01 Gas train skid frame": {
+   "tag": "GAS-01",
+   "title": "Common gas train skid frame",
+   "system": "gas",
+   "spec": "MS frame 8020 \u00d7 640 on 6 legs; pipe centreline +1.100",
+   "material": "",
+   "src": "HDG \u00b7 D-13",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.38,
+    0.43,
+    0.5
+   ]
+  },
+  "GAS-02 Gas train A1\u2013A11": {
+   "tag": "GAS-02",
+   "title": "Common gas train A1 \u2192 A11",
+   "system": "gas",
+   "spec": "A1 Ball valve 2\" NPT (9415NF205026); A2 Gas filter DN50 (GFK 50R40-6); A3 Inlet pressure gauge (RFM 4RB100); A4 Manual cock 1\u00bd\" (DH15R50); A5 Governor + SSOV + relief (J125-S4); A6 Low gas pressure switch (DG150U-3); A7 High gas pressure switch (DG500U-3); A8 Outlet pressure gauge (KFM250RB100); A9 Manual cock 1\u00bd\" (DH15R50); A10a Double solenoid DN65 valve 1 (VAS665F05NW3E); A10b Double solenoid DN65 valve 2 (VAS665F05NW3E); A11 Ball valve 2\u00bd\" (9411RF106526). Gas enters at A1 (east); A6/A7 trip every BCU; A10 leak-proved before each start.",
+   "material": "",
+   "src": "SH-PID-02 Rev M (Eclipse PO STL/2026/206) \u00b7 D-18",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.85,
+    0.12,
+    0.12
+   ]
+  },
+  "GAS-03 Gas header DN65": {
+   "tag": "GAS-03",
+   "title": "Gas header NG-65-001 DN65",
+   "system": "gas",
+   "spec": "DN65 sch 40 on sleepers at +0.140; 3.8 m skid \u2192 tee",
+   "material": "ASTM A106 Gr B, canary yellow (IS 2379)",
+   "src": "SH-PID-02 Rev M \u00b7 C-06",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    1.0,
+    0.82,
+    0.0
+   ]
+  },
+  "GAS-04 Gas mains DN50": {
+   "tag": "GAS-04",
+   "title": "Furnace gas mains NG-50 DN50 to both burner pits",
+   "system": "gas",
+   "spec": "DN50 sch 40; north 18.2 m, south 5.3 m; drops into the pits to \u22120.940",
+   "material": "",
+   "src": "SH-PID-02 Rev M \u00b7 C-06",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    1.0,
+    0.82,
+    0.0
+   ]
+  },
+  "GAS-05 Pipe sleepers": {
+   "tag": "GAS-05",
+   "title": "Pipe sleepers",
+   "system": "gas",
+   "spec": "RCC 240 \u00d7 200 \u00d7 90 @ 1.5 m",
+   "material": "",
+   "src": "SH-PID-02",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.52,
+    0.54,
+    0.56
+   ]
+  },
+  "GAS-06 Relief vent": {
+   "tag": "GAS-06",
+   "title": "A5 relief vent",
+   "system": "gas",
+   "spec": "Rises continuously to a safe place; no valve, no low pocket; rain cap",
+   "material": "",
+   "src": "SH-PID-02 Rev M",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    1.0,
+    0.82,
+    0.0
+   ]
+  },
+  "GAS-11 Burner 1 gas train": {
+   "tag": "GAS-11",
+   "title": "Burner 1 gas train on the face",
+   "system": "gas",
+   "spec": "B4 ball valve 1\u00bd\" \u2192 B2 double solenoid VAS240R/NW DN40 \u2192 B1 air/gas ratio controller GIK40R02-5B (impulse line to the air plenum) \u2192 B3 flow-adjusting cock GEH40R50; DN15 ignition gas to the spark ignitor",
+   "material": "",
+   "src": "SH-PID-02 Rev M \u00b7 burner valve GA",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.85,
+    0.12,
+    0.12
+   ]
+  },
+  "GAS-21 Burner 1 ignition gas": {
+   "tag": "GAS-21",
+   "title": "Burner 1 DN15 ignition gas line",
+   "system": "gas",
+   "spec": "DN15 from the main ahead of B4 to the ignitor (no pilot burner)",
+   "material": "",
+   "src": "SH-PID-02 Rev M",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    1.0,
+    0.82,
+    0.0
+   ]
+  },
+  "GAS-12 Burner 2 gas train": {
+   "tag": "GAS-12",
+   "title": "Burner 2 gas train on the face",
+   "system": "gas",
+   "spec": "B4 ball valve 1\u00bd\" \u2192 B2 double solenoid VAS240R/NW DN40 \u2192 B1 air/gas ratio controller GIK40R02-5B (impulse line to the air plenum) \u2192 B3 flow-adjusting cock GEH40R50; DN15 ignition gas to the spark ignitor",
+   "material": "",
+   "src": "SH-PID-02 Rev M \u00b7 burner valve GA",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.85,
+    0.12,
+    0.12
+   ]
+  },
+  "GAS-22 Burner 2 ignition gas": {
+   "tag": "GAS-22",
+   "title": "Burner 2 DN15 ignition gas line",
+   "system": "gas",
+   "spec": "DN15 from the main ahead of B4 to the ignitor (no pilot burner)",
+   "material": "",
+   "src": "SH-PID-02 Rev M",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    1.0,
+    0.82,
+    0.0
+   ]
+  },
+  "AIR-01 Blower plinth and frame": {
+   "tag": "AIR-01",
+   "title": "Combustion blower plinth, base frame and AVMs",
+   "system": "air",
+   "spec": "RCC plinth 1,200 \u00d7 1,400 \u00d7 150; ISMC 100 base frame on 4 anti-vibration mounts; M16 anchors",
+   "material": "",
+   "src": "D-13",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.52,
+    0.54,
+    0.56
+   ]
+  },
+  "AIR-02 Combustion air blower": {
+   "tag": "AIR-02",
+   "title": "Combustion air blower Mittal MBI-4040",
+   "system": "air",
+   "spec": "1,400 m\u00b3/h at 725 mmWC, VFD with modulating air damper; 8\" discharge with flexible connector",
+   "material": "",
+   "src": "SH-PID-02 Rev M",
+   "status": "C",
+   "note": "At \u03bb 1.125 full fire needs \u22481,430 m\u00b3/h at 35 \u00b0C (C-01, O-04).",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.14,
+    0.45,
+    0.7
+   ]
+  },
+  "AIR-03 Blower motor": {
+   "tag": "AIR-03",
+   "title": "Combustion blower motor",
+   "system": "air",
+   "spec": "5.5 kW (derived, A-06), VFD",
+   "material": "",
+   "src": "C-11",
+   "status": "A",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.13,
+    0.36,
+    0.6
+   ]
+  },
+  "AIR-04 Inlet filter-silencer": {
+   "tag": "AIR-04",
+   "title": "Inlet filter-silencer",
+   "system": "air",
+   "spec": "\u00d8400 \u00d7 400, washable filter + absorptive silencer",
+   "material": "",
+   "src": "this design",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.7,
+    0.73,
+    0.76
+   ]
+  },
+  "AIR-05 8\" discharge and flexible": {
+   "tag": "AIR-05",
+   "title": "8\" discharge with flexible connector",
+   "system": "air",
+   "spec": "8\" ERW, flexible connector at the blower",
+   "material": "",
+   "src": "SH-PID-02 Rev M",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.53,
+    0.75,
+    0.93
+   ]
+  },
+  "AIR-06 Combustion venturi": {
+   "tag": "AIR-06",
+   "title": "Combustion-air venturi",
+   "system": "air",
+   "spec": "8\" inlet \u2192 150 \u00d7 150 throat (16 m/s); flow measurement",
+   "material": "",
+   "src": "Rev H",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.38,
+    0.43,
+    0.5
+   ]
+  },
+  "AIR-07 Air header 300 \u00d7 150": {
+   "tag": "AIR-07",
+   "title": "Air header 300 \u00d7 150",
+   "system": "air",
+   "spec": "Joins the ring on its east side",
+   "material": "",
+   "src": "SH-PID-02 Rev M",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.53,
+    0.75,
+    0.93
+   ]
+  },
+  "AIR-08 Air ring 150 \u00d7 150": {
+   "tag": "AIR-08",
+   "title": "Closed air ring 150 \u00d7 150",
+   "system": "air",
+   "spec": "750 clear of the casing at +0.500; supports from the pit walls and deck",
+   "material": "",
+   "src": "SH-PID-02 Rev M",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.53,
+    0.75,
+    0.93
+   ]
+  },
+  "AIR-09 Air proving": {
+   "tag": "AIR-09",
+   "title": "Air proving set",
+   "system": "instr",
+   "spec": "D4 cock DH15R50 \u2192 D3 gauge KFM160RB100 + D1 air pressure switch DG 10U-3 to BCU terminal DL/7; must make before any gas valve opens",
+   "material": "",
+   "src": "SH-PID-02 Rev M",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.85,
+    0.87,
+    0.89
+   ]
+  },
+  "AIR-11 Burner 1 air branch": {
+   "tag": "AIR-11",
+   "title": "Burner 1 4\" air branch with butterfly D2",
+   "system": "air",
+   "spec": "4\" ERW from the ring into the pit to the burner air plenum; manual butterfly D2 for balancing",
+   "material": "",
+   "src": "SH-PID-02 Rev M \u00b7 C-05",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.4,
+    0.69,
+    0.9
+   ]
+  },
+  "AIR-12 Burner 2 air branch": {
+   "tag": "AIR-12",
+   "title": "Burner 2 4\" air branch with butterfly D2",
+   "system": "air",
+   "spec": "4\" ERW from the ring into the pit to the burner air plenum; manual butterfly D2 for balancing",
+   "material": "",
+   "src": "SH-PID-02 Rev M \u00b7 C-05",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.4,
+    0.69,
+    0.9
+   ]
+  },
+  "VEN-PF-N Pit fan": {
+   "tag": "VEN-PF-N",
+   "title": "Burner pit fan north (3 HP)",
+   "system": "pitvent",
+   "spec": "3 HP centrifugal; extracts at 300 above the pit floor (LPG is heavier than air); discharges at +3.0 m to atmosphere; \u2265 189 m\u00b3/h (20 ACH)",
+   "material": "",
+   "src": "Crash-barrier annexure (pit fan) \u00b7 D-09 \u00b7 C-11",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.14,
+    0.45,
+    0.7
+   ]
+  },
+  "VEN-PF-N Suction duct": {
+   "tag": "VEN-PF-Nd",
+   "title": "Pit fan suction duct north",
+   "system": "pitvent",
+   "spec": "\u00d8280 GI, over the pit wall, down to \u22121.450",
+   "material": "",
+   "src": "D-09",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.7,
+    0.73,
+    0.76
+   ]
+  },
+  "PIT-N1 Handrails": {
+   "tag": "PIT-N1",
+   "title": "Burner pit handrails (north)",
+   "system": "pitvent",
+   "spec": "1,000 top rail, 500 mid rail, 100 toe board, posts \u2264 900",
+   "material": "",
+   "src": "HDG",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    1.0,
+    0.76,
+    0.0
+   ]
+  },
+  "PIT-N2 Cat ladder": {
+   "tag": "PIT-N2",
+   "title": "Cat ladder (north pit)",
+   "system": "pitvent",
+   "spec": "GI stringers 50 \u00d7 20, \u00d820 rungs @ 280",
+   "material": "",
+   "src": "HDG",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.7,
+    0.73,
+    0.76
+   ]
+  },
+  "BMS-N Burner control": {
+   "tag": "BMS-N",
+   "title": "Burner control unit + ignition transformer (burner 1)",
+   "system": "instr",
+   "spec": "Kromschr\u00f6der BCU 370 (air proof \u2192 purge \u2192 spark \u2192 UV proof \u2192 main; lockout on fault) + TZI8-12/100WE, on the pit end wall",
+   "material": "",
+   "src": "SH-PID-02 Rev M",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.85,
+    0.87,
+    0.89
+   ]
+  },
+  "VEN-PF-S Pit fan": {
+   "tag": "VEN-PF-S",
+   "title": "Burner pit fan south (3 HP)",
+   "system": "pitvent",
+   "spec": "3 HP centrifugal; extracts at 300 above the pit floor (LPG is heavier than air); discharges at +3.0 m to atmosphere; \u2265 189 m\u00b3/h (20 ACH)",
+   "material": "",
+   "src": "Crash-barrier annexure (pit fan) \u00b7 D-09 \u00b7 C-11",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.14,
+    0.45,
+    0.7
+   ]
+  },
+  "VEN-PF-S Suction duct": {
+   "tag": "VEN-PF-Sd",
+   "title": "Pit fan suction duct south",
+   "system": "pitvent",
+   "spec": "\u00d8280 GI, over the pit wall, down to \u22121.450",
+   "material": "",
+   "src": "D-09",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.7,
+    0.73,
+    0.76
+   ]
+  },
+  "PIT-S1 Handrails": {
+   "tag": "PIT-S1",
+   "title": "Burner pit handrails (south)",
+   "system": "pitvent",
+   "spec": "1,000 top rail, 500 mid rail, 100 toe board, posts \u2264 900",
+   "material": "",
+   "src": "HDG",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    1.0,
+    0.76,
+    0.0
+   ]
+  },
+  "PIT-S2 Cat ladder": {
+   "tag": "PIT-S2",
+   "title": "Cat ladder (south pit)",
+   "system": "pitvent",
+   "spec": "GI stringers 50 \u00d7 20, \u00d820 rungs @ 280",
+   "material": "",
+   "src": "HDG",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.7,
+    0.73,
+    0.76
+   ]
+  },
+  "BMS-S Burner control": {
+   "tag": "BMS-S",
+   "title": "Burner control unit + ignition transformer (burner 2)",
+   "system": "instr",
+   "spec": "Kromschr\u00f6der BCU 370 (air proof \u2192 purge \u2192 spark \u2192 UV proof \u2192 main; lockout on fault) + TZI8-12/100WE, on the pit end wall",
+   "material": "",
+   "src": "SH-PID-02 Rev M",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.85,
+    0.87,
+    0.89
+   ]
+  },
+  "FLU-01 Lined flue duct": {
+   "tag": "FLU-01",
+   "title": "Lined flue duct (D-10)",
+   "system": "flue",
+   "spec": "700 \u00d7 400 clear (0.28 m\u00b2, \u22485.4 m/s at 800 \u00b0C), 6 mm steel, casing flange over the 1,000 \u00d7 600 cut-out; on stools in a vented RCC trench",
+   "material": "",
+   "src": "D-10 (replaces the Rev H refractory-lined trench)",
+   "status": "D",
+   "note": "Skin \u224881 \u00b0C, trench RCC \u224864 \u00b0C with 45 \u00b0C trench air (C-04).",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.35,
+    0.22,
+    0.2
+   ]
+  },
+  "FLU-02 Flue duct lining": {
+   "tag": "FLU-02",
+   "title": "Flue duct lining",
+   "system": "flue",
+   "spec": "100 mm folded module 128 kg/m\u00b3 + 50 mm microporous",
+   "material": "",
+   "src": "D-10 \u00b7 C-04",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.85,
+    0.8,
+    0.7
+   ]
+  },
+  "FLU-03 Duct stools": {
+   "tag": "FLU-03",
+   "title": "Flue duct support stools",
+   "system": "flue",
+   "spec": "Fabricated, sliding plates (expansion)",
+   "material": "",
+   "src": "D-10",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.38,
+    0.43,
+    0.5
+   ]
+  },
+  "FLOW-flue Flue gas": {
+   "tag": "FLOW",
+   "title": "Flue gas 800 \u00b0C",
+   "system": "flue",
+   "spec": "1,386 Nm\u00b3/h at design \u03bb (Rev H 1,296), 1.54 m\u00b3/s",
+   "material": "",
+   "src": "C-01 \u00b7 C-07",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 0.45,
+   "layer": "flow",
+   "color": [
+    0.55,
+    0.12,
+    0.1
+   ]
+  },
+  "CIV-10 Loop trenches and mixing-box pit": {
+   "tag": "CIV-10",
+   "title": "Heat-recovery trenches and mixing-box pit (RCC)",
+   "system": "civil",
+   "spec": "RCC 200 walls and floor, waterproofed; clear depth 1,000 (Hold H1); mixing-box pit 1,500 \u00d7 1,300, floor \u22121.100, 250 walls, excavation \u22121.350",
+   "material": "",
+   "src": "Rev H \u00b7 SH-MB-01 Rev A \u00b7 HDG",
+   "status": "O",
+   "note": "Hold H1: R-02 foundation drawings show \u22121,400 / \u22121,000 (O-01).",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.52,
+    0.54,
+    0.56
+   ]
+  },
+  "CIV-11 Trench cover plates": {
+   "tag": "CIV-11",
+   "title": "Trench cover plates",
+   "system": "civil",
+   "spec": "8 mm chequered plate in 1 m removable sections on embedded angles",
+   "material": "",
+   "src": "Rev H \u00b7 HDG",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.45,
+    0.49,
+    0.54
+   ]
+  },
+  "CIV-12 Flue trench grating": {
+   "tag": "CIV-12",
+   "title": "Flue trench vented grating",
+   "system": "civil",
+   "spec": "Grating so the trench breathes (D-10); the duct inside is lined",
+   "material": "",
+   "src": "D-10",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.55,
+    0.58,
+    0.62
+   ]
+  },
+  "FLOW-HRL-02a Return trench 900 \u00d7 1,000 (from the dryer)": {
+   "tag": "HRL-02a",
+   "title": "Return trench 900 \u00d7 1,000 (from the dryer)",
+   "system": "loop",
+   "spec": "28,614 Nm\u00b3/h at 100 \u00b0C = 10.86 m\u00b3/s, 12.1 m/s",
+   "material": "",
+   "src": "Rev H heat-recovery loop \u00b7 C-08 \u00b7 C-09",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 0.35,
+   "layer": "flow",
+   "color": [
+    0.91,
+    0.77,
+    0.42
+   ]
+  },
+  "FLOW-HRL-02b Return trench 900 \u00d7 1,000 (to the junction)": {
+   "tag": "HRL-02b",
+   "title": "Return trench 900 \u00d7 1,000 (to the junction)",
+   "system": "loop",
+   "spec": "28,614 Nm\u00b3/h at 100 \u00b0C, 12.1 m/s",
+   "material": "",
+   "src": "Rev H heat-recovery loop \u00b7 C-08 \u00b7 C-09",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 0.35,
+   "layer": "flow",
+   "color": [
+    0.91,
+    0.77,
+    0.42
+   ]
+  },
+  "FLOW-HRL-03 Three-way junction 1,000 \u00d7 1,000 (return + flue \u2192 suction)": {
+   "tag": "HRL-03",
+   "title": "Three-way junction 1,000 \u00d7 1,000 (return + flue \u2192 suction)",
+   "system": "loop",
+   "spec": "10.86 + 1.41 = 12.27 m\u00b3/s, radiused merge",
+   "material": "",
+   "src": "Rev H heat-recovery loop \u00b7 C-08 \u00b7 C-09",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 0.35,
+   "layer": "flow",
+   "color": [
+    0.91,
+    0.45,
+    0.23
+   ]
+  },
+  "FLOW-HRL-04 Suction trench 1,000 \u00d7 1,000": {
+   "tag": "HRL-04",
+   "title": "Suction trench 1,000 \u00d7 1,000",
+   "system": "loop",
+   "spec": "12.27 m\u00b3/s at \u2248124\u2013130 \u00b0C, 12.3 m/s",
+   "material": "",
+   "src": "Rev H heat-recovery loop \u00b7 C-08 \u00b7 C-09",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 0.35,
+   "layer": "flow",
+   "color": [
+    0.91,
+    0.45,
+    0.23
+   ]
+  },
+  "FLOW-HRL-08a Discharge trench 1,100 \u00d7 1,000 (under the blower)": {
+   "tag": "HRL-08a",
+   "title": "Discharge trench 1,100 \u00d7 1,000 (under the blower)",
+   "system": "loop",
+   "spec": "48,000 m\u00b3/h at 120 \u00b0C = 13.33 m\u00b3/s, 12.1 m/s",
+   "material": "",
+   "src": "Rev H heat-recovery loop \u00b7 C-08 \u00b7 C-09",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 0.35,
+   "layer": "flow",
+   "color": [
+    0.95,
+    0.65,
+    0.25
+   ]
+  },
+  "FLOW-HRL-08b Discharge trench 1,100 \u00d7 1,000 (to the supply box)": {
+   "tag": "HRL-08b",
+   "title": "Discharge trench 1,100 \u00d7 1,000 (to the supply box)",
+   "system": "loop",
+   "spec": "dryer flow 11.44 m\u00b3/s at 120 \u00b0C after the bleed",
+   "material": "",
+   "src": "Rev H heat-recovery loop \u00b7 C-08 \u00b7 C-09",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 0.35,
+   "layer": "flow",
+   "color": [
+    0.95,
+    0.65,
+    0.25
+   ]
+  },
+  "HRL-05 Mixing box S2": {
+   "tag": "HRL-05",
+   "title": "Mixing box, configuration S2",
+   "system": "loop",
+   "spec": "1,500 \u00d7 1,300 \u00d7 2,700 internal (1,100 pit + 1,600 steel); floor \u22121.100, roof +1.600; 5.27 m\u00b3; rise 6.84 m/s, 0.40 s; blower cut-out \u00d81,114 at +0.900 (west face)",
+   "material": "",
+   "src": "SH-MB-01 Rev A",
+   "status": "C",
+   "note": "Blower cut-out face differs between Rev N and SH-MB-01 (O-09); the model follows SH-MB-01.",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.38,
+    0.43,
+    0.5
+   ]
+  },
+  "HRL-05a Turning deflector R700": {
+   "tag": "HRL-05a",
+   "title": "Turning deflector R700",
+   "system": "loop",
+   "spec": "6 mm plate; cuts the turn loss from K 1.2 to 0.40 (9.2 mmWC)",
+   "material": "",
+   "src": "SH-MB-01 Rev A",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.7,
+    0.73,
+    0.76
+   ]
+  },
+  "HRL-06 Fresh-air make-up damper": {
+   "tag": "HRL-06",
+   "title": "Fresh-air make-up damper STL-MB-DMP-02",
+   "system": "loop",
+   "spec": "350 \u00d7 350 opposed blade, GI, SS304 spindles, 1.6 mm blades with 10 mm hem; sleeve 500 at 30\u00b0 below horizontal; cowl + bird mesh; min stop \u224815 % open; 3,433 Nm\u00b3/h",
+   "material": "",
+   "src": "STL-MB-DMP-02 Rev A \u00b7 Rev H",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.7,
+    0.73,
+    0.76
+   ]
+  },
+  "HRL-06a Damper actuator": {
+   "tag": "HRL-06a",
+   "title": "Belimo LM230A-S actuator",
+   "system": "instr",
+   "spec": "5 N\u00b7m on/off, PLC DO \u2192 relay",
+   "material": "",
+   "src": "STL-MB-DMP-02 Rev A",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.85,
+    0.87,
+    0.89
+   ]
+  },
+  "FLOW-mix Mixing zone": {
+   "tag": "FLOW",
+   "title": "Mixed gas \u2248124 \u00b0C",
+   "system": "loop",
+   "spec": "flue + return + fresh air (C-08 adiabatic mix 124 \u00b0C)",
+   "material": "",
+   "src": "C-08",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 0.3,
+   "layer": "flow",
+   "color": [
+    0.91,
+    0.45,
+    0.23
+   ]
+  },
+  "HRL-07a Blower pedestals": {
+   "tag": "HRL-07a",
+   "title": "Recirculation blower pedestals",
+   "system": "civil",
+   "spec": "RCC, either side of the discharge trench",
+   "material": "",
+   "src": "D-19",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.52,
+    0.54,
+    0.56
+   ]
+  },
+  "HRL-07b Blower base frame": {
+   "tag": "HRL-07b",
+   "title": "Blower base frame",
+   "system": "loop",
+   "spec": "ISMC 200 grid bridging the discharge trench; outlet drops between the beams",
+   "material": "",
+   "src": "D-19",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.29,
+    0.33,
+    0.39
+   ]
+  },
+  "HRL-07 Recirculation blower": {
+   "tag": "HRL-07",
+   "title": "Recirculation blower AEP-ZA-9.0",
+   "system": "loop",
+   "spec": "48,000 m\u00b3/h at 120 \u00b0C, 72 mmWC, 30 HP; \u00d8900 inlet, 900 \u00d7 675 outlet down into the 1,100 \u00d7 1,000 trench; casing and bearings limit 120 \u00b0C",
+   "material": "",
+   "src": "Rev H \u00b7 HDG",
+   "status": "C",
+   "note": "Confirm whether 72 mmWC is a 20 \u00b0C or 120 \u00b0C rating (O-07); loop needs \u224874 mmWC hot (C-09).",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.14,
+    0.45,
+    0.7
+   ]
+  },
+  "HRL-07c Inlet spool \u00d8900": {
+   "tag": "HRL-07c",
+   "title": "Inlet spool \u00d8900 (offset)",
+   "system": "loop",
+   "spec": "From the \u00d81,114 cut-out at +0.900 to the fan eye at +1.170, cruciform straightener 2 \u00d7 4 mm \u2248560 long (mandatory)",
+   "material": "",
+   "src": "SH-MB-01 Rev A \u00b7 D-19",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.7,
+    0.73,
+    0.76
+   ]
+  },
+  "HRL-07d Inlet flexible connector": {
+   "tag": "HRL-07d",
+   "title": "Inlet flexible connector",
+   "system": "loop",
+   "spec": "High-temperature fabric, 150 \u00b0C",
+   "material": "",
+   "src": "this design",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.1,
+    0.1,
+    0.1
+   ]
+  },
+  "HRL-07e Cruciform straightener": {
+   "tag": "HRL-07e",
+   "title": "Cruciform straightener",
+   "system": "loop",
+   "spec": "2 \u00d7 4 mm plates \u2248560 long; kills the swirl from two bends (\u224811\u00b0 and \u22488\u00b0)",
+   "material": "",
+   "src": "SH-MB-01 Rev A",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.38,
+    0.43,
+    0.5
+   ]
+  },
+  "HRL-07f Fan shaft and bearings": {
+   "tag": "HRL-07f",
+   "title": "Fan shaft and plummer blocks",
+   "system": "loop",
+   "spec": "Shaft \u00d8100, 2 \u00d7 plummer blocks",
+   "material": "",
+   "src": "HDG",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.55,
+    0.57,
+    0.6
+   ]
+  },
+  "HRL-07g Belt guard": {
+   "tag": "HRL-07g",
+   "title": "Belt guard",
+   "system": "loop",
+   "spec": "Expanded mesh, yellow",
+   "material": "",
+   "src": "HDG",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    1.0,
+    0.76,
+    0.0
+   ]
+  },
+  "HRL-07h Blower motor 30 HP": {
+   "tag": "HRL-07h",
+   "title": "Recirculation blower motor 30 HP (22 kW), VFD",
+   "system": "loop",
+   "spec": "Cold start \u224816 kW shaft (C-11)",
+   "material": "",
+   "src": "Rev H \u00b7 C-11",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.13,
+    0.36,
+    0.6
+   ]
+  },
+  "CIV-20 Dryer pit": {
+   "tag": "CIV-20",
+   "title": "Dryer pit (RCC)",
+   "system": "civil",
+   "spec": "RCC 250 walls, 250 slab; inside RCC 6200 \u00d7 7700, clear chamber 6,000 \u00d7 7,500 \u00d7 1,400 after the 100 mm lining",
+   "material": "",
+   "src": "Rev H \u00b7 HDG \u00b7 D-11 \u00b7 D-14",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.58,
+    0.6,
+    0.63
+   ]
+  },
+  "CIV-21 Chain-drive pocket": {
+   "tag": "CIV-21",
+   "title": "Chain-drive pocket",
+   "system": "civil",
+   "spec": "800 \u00d7 800 \u00d7 1,000 clear, chequered lid; the 5.5 kW gearmotor stays out of the hot air",
+   "material": "",
+   "src": "this design",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.58,
+    0.6,
+    0.63
+   ]
+  },
+  "DRY-10 Pit lining": {
+   "tag": "DRY-10",
+   "title": "Dryer pit lining",
+   "system": "dryer",
+   "spec": "100 mm ceramic-fibre board + 1 mm aluminium liner; RCC face \u224862 \u00b0C (C-04)",
+   "material": "",
+   "src": "D-14",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.82,
+    0.84,
+    0.86
+   ]
+  },
+  "DRY-11 Top deck and fixed cover": {
+   "tag": "DRY-11",
+   "title": "Insulated top deck with fixed cover over P2\u2013P3",
+   "system": "dryer",
+   "spec": "250 mm insulated steel-framed deck; openings P1 (X \u221210.35\u2026\u22129.15) and P4 (X \u22125.85\u2026\u22124.65), 1,200 \u00d7 7,500",
+   "material": "",
+   "src": "D-16 \u00b7 HDG",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.92,
+    0.88,
+    0.78
+   ]
+  },
+  "DRY-12 Door rails": {
+   "tag": "DRY-12",
+   "title": "Door rails",
+   "system": "dryer",
+   "spec": "Flat bar 50 \u00d7 20 on the deck",
+   "material": "",
+   "src": "SH-RBR-01/02",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.29,
+    0.33,
+    0.39
+   ]
+  },
+  "DRY-02 Dryer door P1": {
+   "tag": "DRY-02",
+   "title": "Dryer door P1, entry; slides east",
+   "system": "dryer",
+   "spec": "1,400 \u00d7 7,600 \u00d7 250 insulated, aluminium skinned; travel 1,450; interlocked with the chain (no index with a door open)",
+   "material": "",
+   "src": "SH-RBR-01/02 \u00b7 HDG",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.82,
+    0.84,
+    0.86
+   ]
+  },
+  "DRY-02r Door rack and drive": {
+   "tag": "DRY-02r",
+   "title": "Door rack & pinion drive (P1)",
+   "system": "dryer",
+   "spec": "Rack m6 1,500 \u00d7 60 \u00d7 60 EN8 (45\u201350 HRC); pinion m6 16T PCD 96 EN19; BK50 bevel 1.1 kW 4-pole 75.4:1, 19 rpm, 550 N\u00b7m; 2 eccentric backing rollers; Omron D4A-4516N-F limits",
+   "material": "",
+   "src": "SH-RBR-01/02",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.55,
+    0.57,
+    0.6
+   ]
+  },
+  "DRY-03 Dryer door P4": {
+   "tag": "DRY-03",
+   "title": "Dryer door P4, exit; slides west",
+   "system": "dryer",
+   "spec": "1,400 \u00d7 7,600 \u00d7 250 insulated, aluminium skinned; travel 1,450; interlocked with the chain (no index with a door open)",
+   "material": "",
+   "src": "SH-RBR-01/02 \u00b7 HDG",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.82,
+    0.84,
+    0.86
+   ]
+  },
+  "DRY-03r Door rack and drive": {
+   "tag": "DRY-03r",
+   "title": "Door rack & pinion drive (P4)",
+   "system": "dryer",
+   "spec": "Rack m6 1,500 \u00d7 60 \u00d7 60 EN8 (45\u201350 HRC); pinion m6 16T PCD 96 EN19; BK50 bevel 1.1 kW 4-pole 75.4:1, 19 rpm, 550 N\u00b7m; 2 eccentric backing rollers; Omron D4A-4516N-F limits",
+   "material": "",
+   "src": "SH-RBR-01/02",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.55,
+    0.57,
+    0.6
+   ]
+  },
+  "DRY-04 Perforated supply box": {
+   "tag": "DRY-04",
+   "title": "Perforated supply box",
+   "system": "dryer",
+   "spec": "1,300 \u00d7 350 \u00d7 7,000; face 7,000 \u00d7 1,000 perforated \u00d815 @ 37 staggered 60\u00b0 (14.9 % open, \u22485,900 holes); centre fed through 1,000 \u00d7 700 from the discharge trench; feed 12.6 m/s, hole \u0394P / feed VP = 2.05 (C-09)",
+   "material": "GI 2 mm, CNC turret punched, 4 sections of 1,750",
+   "src": "D-12 \u00b7 Rev H",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.7,
+    0.73,
+    0.76
+   ]
+  },
+  "DRY-04p Perforated supply box face": {
+   "tag": "DRY-04p",
+   "title": "Perforated supply box: perforated face",
+   "system": "dryer",
+   "spec": "\u00d815 holes, 37 mm staggered pitch, 7,000 \u00d7 1,000",
+   "material": "",
+   "src": "D-12",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "perf",
+   "color": [
+    0.95,
+    0.65,
+    0.25
+   ]
+  },
+  "DRY-05 Perforated extraction box": {
+   "tag": "DRY-05",
+   "title": "Perforated extraction box",
+   "system": "dryer",
+   "spec": "1,300 \u00d7 350 \u00d7 7,000; face 7,000 \u00d7 1,000 perforated \u00d815 @ 37 staggered 60\u00b0 (14.9 % open, \u22485,900 holes); centre drawn into the 900 \u00d7 1,000 return trench",
+   "material": "GI 2 mm, CNC turret punched, 4 sections of 1,750",
+   "src": "D-12 \u00b7 Rev H",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.7,
+    0.73,
+    0.76
+   ]
+  },
+  "DRY-05p Perforated extraction box face": {
+   "tag": "DRY-05p",
+   "title": "Perforated extraction box: perforated face",
+   "system": "dryer",
+   "spec": "\u00d815 holes, 37 mm staggered pitch, 7,000 \u00d7 1,000",
+   "material": "",
+   "src": "D-12",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "perf",
+   "color": [
+    0.91,
+    0.77,
+    0.42
+   ]
+  },
+  "DRY-06 Wall transitions": {
+   "tag": "DRY-06",
+   "title": "Supply and return transitions through the pit walls",
+   "system": "dryer",
+   "spec": "Supply 1,000 \u00d7 700; return 900 \u00d7 700; GI with flexible seal",
+   "material": "",
+   "src": "D-12",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.7,
+    0.73,
+    0.76
+   ]
+  },
+  "DRY-07 Chain conveyor": {
+   "tag": "DRY-07",
+   "title": "Two-strand chain conveyor",
+   "system": "dryer",
+   "spec": "Roller chain, 2 strands at Y \u00b13,550, head/tail at X \u22125.0 / \u221210.0 m; indexes one position (1,500) per pulse; hard stop at P4",
+   "material": "",
+   "src": "HDG \u00b7 dryer instrumentation notes",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.1,
+    0.1,
+    0.11
+   ]
+  },
+  "DRY-08 Sprockets and shafts": {
+   "tag": "DRY-08",
+   "title": "Sprockets 12T PCD 300 and shafts",
+   "system": "dryer",
+   "spec": "12T PCD 300 keyed; shafts \u00d870; head shaft runs through the north wall to the drive pocket",
+   "material": "",
+   "src": "HDG",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.55,
+    0.57,
+    0.6
+   ]
+  },
+  "DRY-09 Chain guides": {
+   "tag": "DRY-09",
+   "title": "Chain guide rails and return shoes",
+   "system": "dryer",
+   "spec": "UHMW wear strip on angle; posts @ 1,200",
+   "material": "",
+   "src": "HDG",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.29,
+    0.33,
+    0.39
+   ]
+  },
+  "DRY-13 Saddles": {
+   "tag": "DRY-13",
+   "title": "Chain saddles (jig ends ride on them)",
+   "system": "dryer",
+   "spec": "4 pairs at P1\u2013P4, 1,500 pitch",
+   "material": "",
+   "src": "HDG",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.29,
+    0.33,
+    0.39
+   ]
+  },
+  "DRY-14 Chain drive": {
+   "tag": "DRY-14",
+   "title": "Chain drive 5.5 kW geared motor",
+   "system": "dryer",
+   "spec": "5.5 kW, timed pulses from the PLC, one position per index; VFD or torque limiter open (O-14)",
+   "material": "",
+   "src": "Dryer instrumentation notes",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.13,
+    0.36,
+    0.6
+   ]
+  },
+  "DRY-15 Dryer Pt100": {
+   "tag": "DRY-15",
+   "title": "Dryer temperature Pt100",
+   "system": "instr",
+   "spec": "Duplex Pt100 Class A, \u00d88 SS316, 1,000 insertion, through the fixed cover",
+   "material": "",
+   "src": "Dryer instrumentation notes",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.7,
+    0.73,
+    0.76
+   ]
+  },
+  "DRY-16 P1 LOADED station and P4 trip arm": {
+   "tag": "DRY-16",
+   "title": "P1 LOADED pushbutton + P4 trip-arm limit switch",
+   "system": "instr",
+   "spec": "Switches stay in ambient air; P4 detector is a steel trip arm through the insulated wall",
+   "material": "",
+   "src": "Dryer instrumentation notes",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    1.0,
+    0.76,
+    0.0
+   ]
+  },
+  "FLOW-dryer Dryer air": {
+   "tag": "FLOW",
+   "title": "Drying air 120 \u2192 100 \u00b0C",
+   "system": "dryer",
+   "spec": "11.44 m\u00b3/s cross-flow \u22481.6 m/s through all four loads; \u2248209 kW (C-08)",
+   "material": "",
+   "src": "Rev H \u00b7 C-08",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 0.18,
+   "layer": "flow",
+   "color": [
+    0.95,
+    0.65,
+    0.25
+   ]
+  },
+  "HRL-09 Bleed duct \u00d8400": {
+   "tag": "HRL-09",
+   "title": "Bleed duct \u00d8400",
+   "system": "stack",
+   "spec": "4,729 Nm\u00b3/h = flue + fresh air (C-08), 15 m/s; open to the stack by geometry, never by a control action",
+   "material": "",
+   "src": "Rev H \u00b7 HDG",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.54,
+    0.56,
+    0.6
+   ]
+  },
+  "HRL-09a Balancing damper BD-1": {
+   "tag": "HRL-09a",
+   "title": "Balancing damper BD-1",
+   "system": "stack",
+   "spec": "\u00d8400 butterfly, 6 mm disc, locking quadrant, 120 \u00b0C",
+   "material": "",
+   "src": "Rev H \u00b7 BD-1/BD-2 notes",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.8,
+    0.1,
+    0.1
+   ]
+  },
+  "HRL-10 Flue-gas heat exchanger": {
+   "tag": "HRL-10",
+   "title": "Flue-gas heat exchanger (hot water to flux and degreasing tanks)",
+   "system": "stack",
+   "spec": "\u2248150 kW available in the bleed (C-08); closed hot-water loop with 3-way valve; optional in this scope",
+   "material": "",
+   "src": "Rev H \u00b7 SHIVAS flux tank heating",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.38,
+    0.43,
+    0.5
+   ]
+  },
+  "HRL-11 Bleed duct supports": {
+   "tag": "HRL-11",
+   "title": "Goal-post supports for the bleed duct",
+   "system": "stack",
+   "spec": "ISMB 100, at 3.7 m",
+   "material": "",
+   "src": "this design",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.29,
+    0.33,
+    0.39
+   ]
+  },
+  "STK-01 Stack \u00d8400 \u00d7 12 m": {
+   "tag": "STK-01",
+   "title": "Bleed stack \u00d8400 \u00d7 12 m",
+   "system": "stack",
+   "spec": "6 mm MS, top +12.0; exit 15 m/s; draft \u22483 mmWC; lightning conductor; height to be confirmed against the SPCB consent (O-05)",
+   "material": "",
+   "src": "HDG (single line) \u00b7 Rev H (two lines \u2192 \u00d8600) \u00b7 C-13",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.54,
+    0.56,
+    0.6
+   ]
+  },
+  "STK-02 Stack base": {
+   "tag": "STK-02",
+   "title": "Stack foundation and base plate",
+   "system": "stack",
+   "spec": "RCC 1,200 sq.; base plate \u00d8720 \u00d7 20 with 8 gussets",
+   "material": "",
+   "src": "this design",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.52,
+    0.54,
+    0.56
+   ]
+  },
+  "STK-03 Sampling port and platform": {
+   "tag": "STK-03",
+   "title": "Sampling port, platform and ladder",
+   "system": "stack",
+   "spec": "\u00d8100 port at +8.0 m; ring platform at +7.7 m with handrail; ladder",
+   "material": "",
+   "src": "this design (CPCB practice)",
+   "status": "D",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.7,
+    0.73,
+    0.76
+   ]
+  },
+  "FLOW-bleed Bleed gas": {
+   "tag": "FLOW",
+   "title": "Bleed 120 \u00b0C",
+   "system": "stack",
+   "spec": "4,729 Nm\u00b3/h",
+   "material": "",
+   "src": "C-08",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 0.35,
+   "layer": "flow",
+   "color": [
+    0.54,
+    0.56,
+    0.6
+   ]
+  },
+  "ZEN-01 Zinc enclosure": {
+   "tag": "ZEN-01",
+   "title": "Zinc fume enclosure over the kettle",
+   "system": "enclosure",
+   "spec": "8.2 \u00d7 2.75 \u00d7 4.72 m on the casing deck; 2 sliding roof covers (0.5 HP, VFD); skimming doors both sides on chain hoists; 4 \u00d7 600 \u00d7 600 windows per side; lateral suction to the ZFE",
+   "material": "",
+   "src": "SHIVAS zinc fume enclosure annexure \u00b7 HDG",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": true,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.38,
+    0.43,
+    0.5
+   ]
+  },
+  "JIG-01 Jigs in the dryer": {
+   "tag": "JIG-01",
+   "title": "Jigs at P1\u2013P4 (sample loads)",
+   "system": "load",
+   "spec": "Jig beam 7.4 m ISMB 200, lugs at \u00b11.6 m; work hung \u22481.05 m below the beam",
+   "material": "",
+   "src": "HDG jig",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    0.35,
+    0.37,
+    0.4
+   ]
+  },
+  "REF-01 Scale figures 1.75 m": {
+   "tag": "REF-01",
+   "title": "Scale figures (1.75 m)",
+   "system": "load",
+   "spec": "For scale only",
+   "material": "",
+   "src": "\u2014",
+   "status": "C",
+   "note": "",
+   "qty": "1",
+   "hidden": false,
+   "alpha": 1.0,
+   "layer": "",
+   "color": [
+    1.0,
+    0.76,
+    0.0
+   ]
+  }
+ }
+}
