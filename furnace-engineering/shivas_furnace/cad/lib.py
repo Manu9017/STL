@@ -134,8 +134,9 @@ SYSTEMS = {
     "kettle": ("Kettle, zinc and support ring", 4),
     "topclose": ("Top closure, band and corner shields", 5),
     "burner": ("Burners and burner blocks", 6),
-    "gas": ("Gas train and piping", 7),
-    "air": ("Combustion air", 8),
+    "gas": ("Gas train A and gas mains", 7),
+    "bc": ("Burner gas and ignition trains B / C", 7.5),
+    "air": ("Combustion air D", 8),
     "pitvent": ("Burner pits: fans, rails, ladders", 9),
     "instr": ("Instruments and controls", 10),
     "flue": ("Flue duct", 11),
@@ -143,7 +144,7 @@ SYSTEMS = {
     "dryer": ("Four-position dryer", 13),
     "stack": ("Bleed and stack", 14),
     "load": ("Sample loads (jigs)", 15),
-    "enclosure": ("Zinc enclosure (optional)", 16),
+    "enclosure": ("Zinc fume enclosure", 16),
 }
 
 COL = {  # RGB 0-1; palette continues the SH-INS 3D viewer where the part is the same
@@ -161,6 +162,8 @@ COL = {  # RGB 0-1; palette continues the SH-INS 3D viewer where the part is the
     "supp": (0.95, 0.65, 0.25), "fresh": (0.16, 0.62, 0.96), "bleed": (0.54, 0.56, 0.60), "alu": (0.82, 0.84, 0.86),
     "insul": (0.92, 0.88, 0.78), "chain": (0.10, 0.10, 0.11), "gear": (0.55, 0.57, 0.60), "red": (0.80, 0.10, 0.10),
     "work": (0.35, 0.37, 0.40), "glass": (0.70, 0.85, 0.95), "grating": (0.55, 0.58, 0.62),
+    "ign": (0.58, 0.33, 0.80), "copper": (0.80, 0.50, 0.25), "uvair": (0.35, 0.80, 0.55), "valveb": (0.12, 0.30, 0.65),
+    "zen": (0.30, 0.42, 0.55), "zenframe": (0.20, 0.27, 0.36), "lamp": (1.0, 0.95, 0.70),
 }
 
 
@@ -181,6 +184,9 @@ class Part:
     hidden: bool = False
     alpha: float = 1.0
     layer: str = ""
+    pid: str = ""           # P&ID tag (SH-PID-02A Rev U) or line number
+    pidgroup: str = ""      # A / D / burner 1 / burner 2 / lines
+    anim: str = ""          # viewer motion group: roofW / roofE / doorW / doorE / chain
 
 
 @dataclass
@@ -211,4 +217,5 @@ class Registry:
     def meta(self):
         return {p.name: {"tag": p.tag, "title": p.title or p.name, "system": p.system, "spec": p.spec,
                          "material": p.material, "src": p.src, "status": p.status, "note": p.note, "qty": p.qty,
-                         "hidden": p.hidden, "alpha": p.alpha, "layer": p.layer, "color": COL[p.color]} for p in self.parts}
+                         "hidden": p.hidden, "alpha": p.alpha, "layer": p.layer, "pid": p.pid, "pidgroup": p.pidgroup, "anim": p.anim,
+                         "color": COL[p.color]} for p in self.parts}

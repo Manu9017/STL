@@ -37,11 +37,15 @@ def build():
                            "limit": ch["limit"], "kind": ch["kind"], "status": ch["status"], "note": ch["note"]})
     dec = _tables((ROOT / "basis" / "decision_register.md").read_text())[0]
     op = _tables((ROOT / "basis" / "open_items.md").read_text())
+    t_open = next(t for t in op if t["head"][1] == "Item" and t["head"][0] == "#")
+    t_hold = next((t for t in op if t["head"][0] == "Hold"), {"rows": []})
+    t_ass = next(t for t in op if t["head"][1] == "Assumption")
     data = {"doc": "SHV-FUR-6700", "rev": B.meta["rev"], "date": str(B.meta["date"]), "counts": res["counts"], "checks": checks,
             "decisions": [{"id": r[0], "what": _plain(r[1]), "why": _plain(r[2]), "src": _plain(r[3]), "ev": _plain(r[4])} for r in dec["rows"]],
-            "open": [{"id": r[0], "what": _plain(r[1]), "owner": _plain(r[2]), "effect": _plain(r[3])} for r in op[0]["rows"]],
-            "assumptions": [{"id": r[0], "what": _plain(r[1]), "cons": _plain(r[2])} for r in op[1]["rows"]],
-            "sources": B.sources}
+            "open": [{"id": r[0], "what": _plain(r[1]), "owner": _plain(r[2]), "effect": _plain(r[3])} for r in t_open["rows"]],
+            "holds": [{"id": r[0], "what": _plain(r[1]), "where": _plain(r[2])} for r in t_hold["rows"]],
+            "assumptions": [{"id": r[0], "what": _plain(r[1]), "cons": _plain(r[2])} for r in t_ass["rows"]],
+            "sources": B.sources, "n_basis": len(B.leaves)}
     out = ROOT / "out" / "cad" / "viewer_data.json"
     out.write_text(json.dumps(data, indent=1))
     return out

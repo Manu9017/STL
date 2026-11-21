@@ -262,19 +262,15 @@ def build_burners(R):
         body = cyl((x, y(12), g.bZ), (x, y(532), g.bZ), 190)
         plen = cyl((x, y(532), g.bZ), (x, y(702), g.bZ), 230)
         air_in = cyl((x, y(617), g.bZ + 200), (x, y(617), g.bZ + 330), 57)
-        gas_in = cyl((x + s * 0 + (190 if s < 0 else -190) * 0, y(300), g.bZ), (x + (220 if x > 0 else -220) * -1, y(300), g.bZ), 24)
-        uv = cyl((x, y(702), g.bZ + 100), (x, y(842), g.bZ + 100), 25)
-        ign = cyl((x + 90, y(702), g.bZ - 60), (x + 90, y(800), g.bZ - 60), 15)
+        gas_in = cyl((x, y(702), g.bZ), (x, y(794), g.bZ), 30)                       # axial 2" gas inlet (H1)
         flange_bolts = [cyl((x + 255 * math.cos(a), y(12), g.bZ + 255 * math.sin(a)), (x + 255 * math.cos(a), y(30), g.bZ + 255 * math.sin(a)), 9)
                         for a in [k * math.pi / 4 for k in range(8)]]
         R.add(f"BUR-0{i} Burner {i}", merge(body, plen, air_in, gas_in), "burner", "burner", tag=f"BUR-0{i}",
               title=f"Burner {i}: Bloom HV-400, {'north face, fires south along the west alley' if s > 0 else 'south face, fires north along the east alley'}",
-              spec="Bloom HV-400 high-velocity, cold air, gas only; axis −0.390, 946.5 off centre (271.5 off the kettle plate); flame Ø197; pulse fired",
-              src="SH-PID-02 Rev M · Rev H · Rev K", status="C", note="Body is an envelope (O-03): replace with the Bloom GA before fabrication.")
+              spec="Bloom HV-400 high-velocity, cold air, gas only, 586 kW (gas 59 Nm³/h, air 566 Nm³/h); axis −0.390, 946.5 off centre (271.5 off the kettle plate); flame Ø197; single 2\" gas inlet at the rear (H1)",
+              src="SH-PID-02A Rev U · Rev H · Rev K", status="C", note="Body is an envelope (O-03): replace with the Bloom GA before fabrication.", pid=f"BURNER {i}", pidgroup=f"Burner {i}")
         R.add(f"BUR-1{i} Burner {i} mounting", compound(mp, *flange_bolts), "burner", "steel2", tag=f"BUR-1{i}", title=f"Burner {i} mounting plate",
               spec="600 × 600 × 12 on the casing end plate, 8 × M16", src="HDG", status="C")
-        R.add(f"BUR-2{i} Burner {i} UV and ignitor", compound(uv, ign), "instr", "black", tag=f"BUR-2{i}", title=f"Burner {i} UV scanner + spark ignitor",
-              spec="UV scanner UVS10D0G1; direct spark ignitor 3500-148 (no pilot); ignition transformer TZI8-12/100WE", src="SH-PID-02 Rev M", status="C")
 
 
 def build_instruments(R):

@@ -1,5 +1,5 @@
 """Flue duct, heat-recovery loop (trenches, mixing box, recirculation blower), 4-position dryer, bleed & stack,
-zinc enclosure (optional), sample loads, scale figures."""
+zinc fume enclosure, sample loads, scale figures."""
 from __future__ import annotations
 
 import math
@@ -7,13 +7,13 @@ import math
 from ..basis import B, G
 from .lib import box, compound, cyl, duct, frame, ibeam, merge, pipe, quarter_ring, sph, tube
 
-FLOWCOL = {"HRL-02a": "retn", "HRL-02b": "retn", "HRL-03": "suct", "HRL-04": "suct", "HRL-08a": "supp", "HRL-08b": "supp"}
+FLOWCOL = {"HRL-02a": "retn", "HRL-02b": "retn", "HRL-03": "suct", "HRL-04": "suct", "HRL-08": "supp"}
 FLOWNAME = {"HRL-02a": "Return trench 900 × 1,000 (from the dryer)", "HRL-02b": "Return trench 900 × 1,000 (to the junction)",
             "HRL-03": "Three-way junction 1,000 × 1,000 (return + flue → suction)", "HRL-04": "Suction trench 1,000 × 1,000",
-            "HRL-08a": "Discharge trench 1,100 × 1,000 (under the blower)", "HRL-08b": "Discharge trench 1,100 × 1,000 (to the supply box)"}
+            "HRL-08": "Discharge trench 1,100 × 1,000 (blower at the SW corner → supply box)"}
 FLOWSPEC = {"HRL-02a": "28,614 Nm³/h at 100 °C = 10.86 m³/s, 12.1 m/s", "HRL-02b": "28,614 Nm³/h at 100 °C, 12.1 m/s",
             "HRL-03": "10.86 + 1.41 = 12.27 m³/s, radiused merge", "HRL-04": "12.27 m³/s at ≈124–130 °C, 12.3 m/s",
-            "HRL-08a": "48,000 m³/h at 120 °C = 13.33 m³/s, 12.1 m/s", "HRL-08b": "dryer flow 11.44 m³/s at 120 °C after the bleed"}
+            "HRL-08": "48,000 m³/h at 120 °C = 13.33 m³/s from the blower, 11.44 m³/s after the bleed; 12.1 m/s"}
 
 
 def build_flue(R):
@@ -58,9 +58,9 @@ def build_trenches(R):
     covers = []
     for k, (x0, x1, y0, y1) in g.trenches.items():
         c = box(x0 - 100, x1 + 100, y0 - 100, y1 + 100, -8, 0)
-        if k == "HRL-08a":
+        if k == "HRL-08":
             c = c.cut(cyl((g.bleed[0], g.bleed[1], -20), (g.bleed[0], g.bleed[1], 20), 210))
-            c = c.cut(box(g.rb_axis[0], g.rb_axis[0] + 675, g.rb_axis[2] - 950, g.rb_axis[2] - 50, -20, 20))
+            c = c.cut(box(g.rb_axis[0] - 101, g.rb_axis[1] + 50, g.rb_axis[2] - 1000, g.rb_axis[2] + 1000, -20, 20))
         for x in range(int(x0), int(x1), 1000):
             c = c.cut(box(x - 2, x + 2, y0 - 101, y1 + 101, -9, 1)) if (x1 - x0) > (y1 - y0) else c
         covers.append(c)
@@ -108,40 +108,56 @@ def build_mixing_box(R):
 
 
 def build_blower(R):
+    """Recirculation blower at the SW corner where the discharge turns north into the dryer (D-22, user instruction).
+    Fan axis at +0.90 on the mixing-box cut-out, so the long suction duct runs straight; outlet drops into HRL-08."""
     g = G
     sx0, sx1, yc, zc = g.rb_axis
     r = g.rb_r
-    x0 = g.mb[0]
-    # pedestals both sides of the discharge trench + base frame
-    ped = compound(box(-7100, -4250, -7350, -6950, 0, 300), box(-7100, -4250, -9150, -8850, 0, 300))
-    frm = compound(*[box(x - 50, x + 50, -9150, -6950, 300, 500) for x in (-7000, -6100, -5250, -4350)],
-                   box(-7100, -4250, -7450, -7350, 300, 500), box(-7100, -4250, -8850, -8750, 300, 500))
-    R.add("HRL-07a Blower pedestals", ped, "civil", "concrete2", tag="HRL-07a", title="Recirculation blower pedestals", spec="RCC, either side of the discharge trench", src="D-19", status="D")
-    R.add("HRL-07b Blower base frame", frm, "loop", "steel", tag="HRL-07b", title="Blower base frame", spec="ISMC 200 grid bridging the discharge trench; outlet drops between the beams", src="D-19", status="D")
+    dx0, dx1, _yd, _zd, rd = g.suction                 # Ø1100 duct from the mixing box (dx0) to the reducer (dx1)
+    ped = compound(box(-14100, -12150, -8800, -6400, 0, 300), box(-10650, -10050, -8800, -6400, 0, 300))
+    frm = compound(*[box(-14000, -10100, y - 50, y + 50, 300, 500) for y in (-8750, -6450)],
+                   *[box(x - 50, x + 50, -8800, -6400, 300, 500) for x in (-13950, -12250)], box(-10650, -10550, -8800, -6400, 300, 400))
+    lugs = compound(box(sx0 + 60, sx1 - 60, -8750, -8550, 500, zc), box(sx0 + 60, sx1 - 60, -6650, -6450, 500, zc))
+    R.add("HRL-07a Blower pedestals", ped, "civil", "concrete2", tag="HRL-07a", title="Recirculation blower pedestals",
+          spec="RCC, west and east of the discharge trench at the SW corner", src="D-22", status="D")
+    R.add("HRL-07b Blower base frame", merge(frm), "loop", "steel", tag="HRL-07b", title="Blower base frame",
+          spec="ISMC 200 frame bridging the trench (east cross member lowered under the straightener spool); scroll on side lugs, outlet drops straight into HRL-08", src="D-22", status="D")
     scroll = cyl((sx0, yc, zc), (sx1, yc, zc), r)
-    outlet = box(sx0, sx0 + 675, yc - 950, yc - 50, 0, zc - r + 40)
-    saddles = compound(box(sx0 + 50, sx1 - 50, yc - 500, yc - 400, 500, zc - r + 60), box(sx0 + 50, sx1 - 50, yc + 400, yc + 500, 500, zc - r + 60))
-    R.add("HRL-07 Recirculation blower", merge(scroll, outlet, saddles), "loop", "fan", tag="HRL-07", title="Recirculation blower AEP-ZA-9.0",
-          spec="48,000 m³/h at 120 °C, 72 mmWC, 30 HP; Ø900 inlet, 900 × 675 outlet down into the 1,100 × 1,000 trench; casing and bearings limit 120 °C",
-          src="Rev H · HDG", status="C", note="Confirm whether 72 mmWC is a 20 °C or 120 °C rating (O-07); loop needs ≈74 mmWC hot (C-09).")
-    # offset inlet spool: cut-out Ø1114 at +0.900 -> fan inlet at +1.170, cruciform straightener in the straight part
-    p = [(x0, (g.mb[2] + g.mb[3]) / 2, 900), (x0 - 150, yc, 900), (x0 - 450, yc, zc), (sx1 + 100, yc, zc)]
-    spool = pipe(p, 450)
-    flex = cyl((sx1 + 100, yc, zc), (sx1, yc, zc), 480)
-    cross = compound(box(sx1 + 110, x0 - 460, yc - 440, yc + 440, zc - 2, zc + 2), box(sx1 + 110, x0 - 460, yc - 2, yc + 2, zc - 440, zc + 440))
-    R.add("HRL-07c Inlet spool Ø900", merge(spool), "loop", "galv", tag="HRL-07c", title="Inlet spool Ø900 (offset)",
-          spec="From the Ø1,114 cut-out at +0.900 to the fan eye at +1.170, cruciform straightener 2 × 4 mm ≈560 long (mandatory)", src="SH-MB-01 Rev A · D-19", status="D")
+    outlet = box(sx0, sx0 + 675, yc - 950, yc - 50, -400, zc - r + 40)
+    R.add("HRL-07 Recirculation blower", merge(scroll, outlet, lugs), "loop", "fan", tag="HRL-07", title="Recirculation blower AEP-ZA-9.0 (SW corner)",
+          spec="48,000 m³/h at 120 °C, 72 mmWC, 30 HP; Ø900 inlet facing east on the axis +0.900; 900 × 675 outlet straight down into the 1,100 × 1,000 trench where it turns north to the dryer",
+          src="Rev H · user instruction 21 Nov · D-22", status="C", note="Confirm whether 72 mmWC is a 20 °C or 120 °C rating (O-07).")
+    clad = 600
+    duct = cyl((dx0, yc, zc), (dx1, yc, zc), clad).cut(cyl((dx0 - 1, yc, zc), (dx1 + 1, yc, zc), rd - 3))
+    flange = tube((dx0 - 20, yc, zc), (dx0, yc, zc), 640, rd)
+    red = __import__("cadquery").Workplane().add(__import__("cadquery").Solid.makeCone(rd + 50, 450 + 50, 400, __import__("cadquery").Vector(dx1, yc, zc),
+                                                                                     __import__("cadquery").Vector(-1, 0, 0)))
+    spool = tube((dx1 - 400, yc, zc), (sx1 + 150, yc, zc), 456, 450)
+    flex = cyl((sx1 + 150, yc, zc), (sx1, yc, zc), 480)
+    cross = compound(box(sx1 + 170, sx1 + 730, yc - 445, yc + 445, zc - 2, zc + 2), box(sx1 + 170, sx1 + 730, yc - 2, yc + 2, zc - 445, zc + 445))
+    stools = compound(*[merge(box(x - 75, x + 75, yc - 450, yc + 450, 0, zc - clad - 60), box(x - 120, x + 120, yc - 420, yc + 420, zc - clad - 60, zc - clad - 1)) for x in (-9200, -6900, -4600)])
+    L = (dx0 - dx1) / 1000
+    R.add("HRL-12 Suction duct Ø1100", merge(duct, flange), "loop", "alu", tag="HRL-12", title="Suction duct Ø1100, mixing box → blower",
+          spec=f"Ø1100 × 3 mm MS, {L:.2f} m straight at +0.900 from the Ø1,114 cut-out on the mixing-box west face; 50 mm mineral wool + 0.8 mm aluminium cladding (Ø1,200 over cladding); ≈12.9 m/s",
+          src="user instruction 21 Nov · D-22 · SH-MB-01 Rev A", status="D", note="Lengthened when the blower moved to the SW corner; Ø1100 keeps the added loss ≈2 mmWC (C-09).")
+    R.add("HRL-12a Reducer Ø1100 → Ø900", red, "loop", "galv", tag="HRL-12a", title="Concentric reducer Ø1100 → Ø900", spec="400 long, 3 mm MS", src="D-22", status="D")
+    R.add("HRL-07c Straightener spool Ø900", spool, "loop", "galv", tag="HRL-07c", title="Straightener spool Ø900 at the fan inlet",
+          spec="600 long; holds the cruciform straightener immediately ahead of the fan eye", src="SH-MB-01 Rev A · D-22", status="D")
     R.add("HRL-07d Inlet flexible connector", flex, "loop", "rubber", tag="HRL-07d", title="Inlet flexible connector", spec="High-temperature fabric, 150 °C", src="this design", status="D")
-    R.add("HRL-07e Cruciform straightener", cross, "loop", "steel2", tag="HRL-07e", title="Cruciform straightener", spec="2 × 4 mm plates ≈560 long; kills the swirl from two bends (≈11° and ≈8°)", src="SH-MB-01 Rev A", status="C")
-    shaft = cyl((sx0, yc, zc), (-6100, yc, zc), 50)
-    pb = compound(*[box(x - 120, x + 120, yc - 180, yc + 180, 500, zc - 60) for x in (-5450, -5850)])
-    guard = box(-6250, -6000, yc - 180, yc + 180, 450, zc + 250)
-    motor = cyl((-7050, yc, 760), (-6300, yc, 760), 260)
-    mbase = box(-7050, -6300, yc - 260, yc + 260, 500, 520)
+    R.add("HRL-07e Cruciform straightener", cross, "loop", "steel2", tag="HRL-07e", title="Cruciform straightener",
+          spec="2 × 4 mm plates ≈560 long (mandatory per SH-MB-01)", src="SH-MB-01 Rev A", status="C")
+    R.add("HRL-12b Duct stools", stools, "loop", "steel2", tag="HRL-12b", title="Suction duct support stools", spec="3 stools with sliding saddles; fixed point at the fan end", src="D-22", status="D")
+    shaft = cyl((sx0, yc, zc), (-13050, yc, zc), 50)
+    pb = compound(*[box(x - 120, x + 120, yc - 180, yc + 180, 500, zc - 60) for x in (-12350, -12750)])
+    guard = box(-13250, -12950, yc - 180, yc + 180, 450, zc + 300)
+    motor = cyl((-14000, yc, 760), (-13300, yc, 760), 260)
+    mbase = box(-14000, -13300, yc - 260, yc + 260, 500, 520)
     R.add("HRL-07f Fan shaft and bearings", merge(shaft, pb), "loop", "gear", tag="HRL-07f", title="Fan shaft and plummer blocks", spec="Shaft Ø100, 2 × plummer blocks", src="HDG", status="C")
     R.add("HRL-07g Belt guard", guard, "loop", "yellow", tag="HRL-07g", title="Belt guard", spec="Expanded mesh, yellow", src="HDG", status="C")
     R.add("HRL-07h Blower motor 30 HP", merge(motor, mbase), "loop", "motor", tag="HRL-07h", title="Recirculation blower motor 30 HP (22 kW), VFD",
           spec="Cold start ≈16 kW shaft (C-11)", src="Rev H · C-11", status="C")
+    R.add("FLOW-suction Suction duct gas", cyl((dx0 - 20, yc, zc), (sx1 + 160, yc, zc), 430), "loop", "suct", tag="FLOW", title="Mixed gas ≈124 °C to the blower",
+          spec="12.27 m³/s", src="C-08", status="C", alpha=0.3, layer="flow")
 
 
 def build_dryer(R):
@@ -241,15 +257,19 @@ def build_stack(R):
     g = G
     bx, by = g.bleed
     sx, sy = g.stack
-    riser = pipe([(bx, by, -500), (bx, by, 4000), (bx, sy + 300, 4000), (sx, sy + 200, 4000)], 203)
+    riser = pipe(g.bleed_route, 203)
     bd = merge(cyl((bx, by, 1940), (bx, by, 2060), 245), box(bx + 245, bx + 400, by - 40, by + 40, 1950, 2050))
     R.add("HRL-09 Bleed duct Ø400", riser, "stack", "bleed", tag="HRL-09", title="Bleed duct Ø400",
-          spec="4,729 Nm³/h = flue + fresh air (C-08), 15 m/s; open to the stack by geometry, never by a control action", src="Rev H · HDG", status="C")
+          spec="Out of the discharge trench just downstream of the blower; 4,729 Nm³/h = flue + fresh air (C-08), 15 m/s; open to the stack by geometry, never by a control action",
+          src="Rev H · D-22 (route)", status="C")
     R.add("HRL-09a Balancing damper BD-1", bd, "stack", "red", tag="HRL-09a", title="Balancing damper BD-1", spec="Ø400 butterfly, 6 mm disc, locking quadrant, 120 °C", src="Rev H · BD-1/BD-2 notes", status="C")
-    hx = merge(box(bx - 550, bx + 550, -11800, -10600, 3450, 4550), cyl((bx + 550, -11000, 3700), (bx + 800, -11000, 3700), 45), cyl((bx + 550, -11400, 4300), (bx + 800, -11400, 4300), 45))
+    hxx = sx
+    hx = merge(box(hxx - 550, hxx + 550, -11800, -10600, 3450, 4550), cyl((hxx + 550, -11000, 3700), (hxx + 800, -11000, 3700), 45), cyl((hxx + 550, -11400, 4300), (hxx + 800, -11400, 4300), 45))
     R.add("HRL-10 Flue-gas heat exchanger", hx, "stack", "steel2", tag="HRL-10", title="Flue-gas heat exchanger (hot water to flux and degreasing tanks)",
           spec="≈150 kW available in the bleed (C-08); closed hot-water loop with 3-way valve; optional in this scope", src="Rev H · SHIVAS flux tank heating", status="C")
-    posts = compound(*[merge(box(bx - 700, bx - 600, y - 50, y + 50, 0, 3790), box(bx + 600, bx + 700, y - 50, y + 50, 0, 3790), box(bx - 700, bx + 700, y - 60, y + 60, 3690, 3790)) for y in (-9600, -13300)])
+    gp = lambda x, y, along_x: merge(box(x - 700, x - 600, y - 50, y + 50, 0, 3790), box(x + 600, x + 700, y - 50, y + 50, 0, 3790), box(x - 700, x + 700, y - 60, y + 60, 3690, 3790)) if not along_x else \
+        merge(box(x - 50, x + 50, y - 700, y - 600, 0, 3790), box(x - 50, x + 50, y + 600, y + 700, 0, 3790), box(x - 60, x + 60, y - 700, y + 700, 3690, 3790))
+    posts = compound(gp(-9500, -6100, True), gp(sx, -9000, False), gp(sx, -13300, False))
     R.add("HRL-11 Bleed duct supports", posts, "stack", "steel", tag="HRL-11", title="Goal-post supports for the bleed duct", spec="ISMB 100, at 3.7 m", src="this design", status="D")
     st = tube((sx, sy, 350), (sx, sy, 12000), 206, 200)
     base = merge(box(sx - 600, sx + 600, sy - 600, sy + 600, -500, 350), cyl((sx, sy, 350), (sx, sy, 370), 360))
@@ -268,24 +288,193 @@ def build_stack(R):
     R.add("FLOW-bleed Bleed gas", cyl((bx, by, -480), (bx, by, 3900), 150), "stack", "bleed", tag="FLOW", title="Bleed 120 °C", spec="4,729 Nm³/h", src="C-08", status="C", alpha=0.35, layer="flow")
 
 
+def _shs(x0, x1, y0, y1, z0, z1, t=6):
+    """Square hollow section along Z."""
+    o = box(x0, x1, y0, y1, z0, z1)
+    return o.cut(box(min(x0, x1) + t, max(x0, x1) - t, min(y0, y1) + t, max(y0, y1) - t, z0 - 1, z1 + 1))
+
+
+def _hollow(x0, x1, y0, y1, z0, z1, t=3, open_ends=""):
+    """Sheet-metal box duct; open_ends in 'xXyY' leaves those faces open."""
+    x0, x1 = sorted((x0, x1)); y0, y1 = sorted((y0, y1)); z0, z1 = sorted((z0, z1))
+    ix0 = x0 - 1 if "x" in open_ends else x0 + t
+    ix1 = x1 + 1 if "X" in open_ends else x1 - t
+    iy0 = y0 - 1 if "y" in open_ends else y0 + t
+    iy1 = y1 + 1 if "Y" in open_ends else y1 - t
+    return box(x0, x1, y0, y1, z0, z1).cut(box(ix0, ix1, iy0, iy1, z0 + t, z1 - t))
+
+
 def build_enclosure(R):
+    """Zinc fume enclosure on the casing deck (SHIVAS ZEN annexure; D-24 frame and wall plane, D-25 door lift).
+
+    Wall plane = casing outer face. Corner posts stand on the deck over the casing walls; both long sides open full length
+    from the deck to the door-head girt and close with vertical-lift skimming doors outside the wall plane. Two roof covers
+    split on the kettle centreline with a 200 mm rope slot and slide outward on end-wall rails. Lateral slot ducts inside
+    both top edges collect into a header outside the north end wall and leave as Ø700 to the bag filter."""
     g = G
-    x0, x1, y0, y1 = -g.cXo, g.cXo, -g.cYo, g.cYo
-    yb, yt = g.deck, g.deck + 4720
-    posts = [box(x - 60, x + 60, y - 60, y + 60, yb, yt) for x in (x0, x1) for y in [y0 + k * (y1 - y0) / 4 for k in range(5)]]
-    tops = [box(x - 70, x + 70, y0, y1, yt - 120, yt) for x in (x0, x1)] + [box(x0, x1, y - 70, y + 70, yt - 120, yt) for y in (y0, y1)]
-    sides = []
-    for x in (x0, x1):
-        s = box(x - 25, x + 25, y0, y1, 2400, yt - 120)
-        for i in range(4):
-            yy = y0 + 900 + i * 2130
-            s = s.cut(box(x - 30, x + 30, yy, yy + 600, 3000, 3600))
-        sides.append(s)
-    ends = [box(x0, x1, y - 25, y + 25, yb, yt - 120) for y in (y0, y1)]
-    roof = [box(g.kWo / 2 * 0 + x0 + 100 if s < 0 else 100, -100 if s < 0 else x1 - 100, y0, y1, yt + 80, yt + 220) for s in (-1, 1)]
-    R.add("ZEN-01 Zinc enclosure", compound(*posts, *tops, *sides, *ends, *roof), "enclosure", "steel2", tag="ZEN-01", title="Zinc fume enclosure over the kettle",
-          spec="8.2 × 2.75 × 4.72 m on the casing deck; 2 sliding roof covers (0.5 HP, VFD); skimming doors both sides on chain hoists; 4 × 600 × 600 windows per side; lateral suction to the ZFE",
-          src="SHIVAS zinc fume enclosure annexure · HDG", status="C", hidden=True)
+    xo, yo = g.cXo, g.cYo
+    zb = g.deck
+    zt = zb + B.v("enclosure.height")                 # +4.976 top of the top beams
+    zg = zb + 2200                                     # door-head girt underside +2.456
+    slot = B.v("enclosure.rope_slot")
+    lift = B.v("enclosure.door_lift")
+    travel = B.v("enclosure.cover_travel")
+    sill = B.v("enclosure.window_sill")
+    S = (-1, 1)
+    # ---------------------------------------------------------------- frame
+    corner = [_shs(sx * (xo - 120), sx * xo, sy * (yo - 120), sy * yo, zb + 16, zt - 150) for sx in S for sy in S]
+    inter = [_shs(sx * (xo - 120), sx * xo, y - 60, y + 60, zg + 300, zt - 150) for sx in S for y in (-2050, 0, 2050)]
+    plates = [box(sx * (xo - 200), sx * xo, sy * (yo - 200), sy * yo, zb, zb + 16) for sx in S for sy in S]
+    R.add("ZEN-01 Enclosure posts", compound(*corner, *inter, *plates), "enclosure", "zenframe", tag="ZEN-01",
+          title="Enclosure posts SHS 120 × 120 × 6",
+          spec="4 corner posts on 200 × 200 × 16 base plates on the deck over the casing walls; 6 intermediate posts above the door-head girts",
+          src="ZEN annexure · D-24", status="A", note="Member sizes to be confirmed by a structural check.")
+    girts = [ibeam((sx * (xo - 70), -(yo - 120), zg + 150), (sx * (xo - 70), yo - 120, zg + 150), h=300, b=140, tw=7.5, tf=12.4) for sx in S]
+    def chan_y(sx):      # ISMC 150 along Y, web on the wall plane, toes inward
+        return merge(box(sx * (xo - 5.4), sx * xo, -yo, yo, zt - 150, zt), box(sx * (xo - 75), sx * xo, -yo, yo, zt - 9, zt),
+                     box(sx * (xo - 75), sx * xo, -yo, yo, zt - 150, zt - 141))
+    def chan_x(sy):
+        return merge(box(-xo, xo, sy * (yo - 5.4), sy * yo, zt - 150, zt), box(-xo, xo, sy * (yo - 75), sy * yo, zt - 9, zt),
+                     box(-xo, xo, sy * (yo - 75), sy * yo, zt - 150, zt - 141))
+    R.add("ZEN-02 Door-head girts ISMB 300", compound(*girts), "enclosure", "zenframe", tag="ZEN-02", title="Door-head girts ISMB 300",
+          spec=f"Both long sides at +{(zg)/1000:.3f}, spanning the corner posts (7.97 m) so the skimming openings are clear full length; carry the upper wall and the lateral duct",
+          src="D-24", status="A", note="Deflection to be checked with the duct and wall loads.")
+    R.add("ZEN-03 Top beams ISMC 150", compound(*[chan_y(sx) for sx in S], *[chan_x(sy) for sy in S]), "enclosure", "zenframe", tag="ZEN-03",
+          title="Top ring beams ISMC 150", spec="Ring at +4.826 → +4.976; the end beams carry the roof-cover rails", src="ZEN annexure", status="A")
+    # ---------------------------------------------------------------- sheeting and stiffeners
+    upper = [box(sx * xo, sx * (xo + 3), -yo, yo, zg, zt) for sx in S]
+    ends = []
+    for sy in S:
+        e = box(-(xo + 3), xo + 3, sy * yo, sy * (yo + 3), zb, zt)
+        if sy > 0:
+            for sx in S:
+                e = e.cut(box(sx * 761, sx * 1261, yo - 10, yo + 20, 4126, 4826))
+        ends.append(e)
+    st = []
+    for sx in S:
+        for z in (3300, 4100):
+            st += [box(sx * (xo + 3), sx * (xo + 53), -3980, 3980, z, z + 6), box(sx * (xo + 47), sx * (xo + 53), -3980, 3980, z - 50, z)]
+    for sy in S:
+        for z in (1100, 1900, 2700, 3500):
+            st += [box(-(xo - 120), xo - 120, sy * (yo + 3), sy * (yo + 53), z, z + 6), box(-(xo - 120), xo - 120, sy * (yo + 47), sy * (yo + 53), z - 50, z)]
+    R.add("ZEN-04 Wall sheeting", compound(*upper, *ends), "enclosure", "zen", tag="ZEN-04", title="Wall sheeting 3 mm MS",
+          spec="End walls full height; long sides above the door head; sheet flush with the casing outer face; north wall cut for the two lateral ducts",
+          src="ZEN annexure · D-24", status="C")
+    R.add("ZEN-04a Sheet stiffeners", compound(*st), "enclosure", "zenframe", tag="ZEN-04a", title="Sheet stiffeners L 50 × 50 × 6",
+          spec="Horizontal at ≈800 pitch on the outside faces", src="ZEN annexure", status="A")
+    # ---------------------------------------------------------------- skimming doors (vertical lift, outside the wall plane)
+    guides = []
+    for sx in S:
+        for sy in S:
+            gd = box(sx * (xo + 3), sx * 1530, sy * 3995, sy * yo, 150, zt - 150)
+            guides.append(gd.cut(box(sx * 1452, sx * 1518, sy * 3980, sy * 4050, 140, zt)))
+    R.add("ZEN-06 Door guides", compound(*guides), "enclosure", "zenframe", tag="ZEN-06", title="Skimming-door guide channels",
+          spec="On the corner posts, outside the wall plane, +0.150 → +4.826", src="D-24", status="D")
+    zd0, zd1 = 200, zg + 50
+    wins = [(yc, sill, sill + 600) for yc in (-3000, -1000, 1000, 3000)]
+    for sx, nm in ((-1, "west"), (1, "east")):
+        a0, a1 = sx * 1460, sx * 1510
+        skin = merge(box(a0, sx * 1463, -4040, 4040, zd0, zd1), box(sx * 1507, a1, -4040, 4040, zd0, zd1))
+        edge = _hollow(a0, a1, -4040, 4040, zd0, zd1, t=50, open_ends="xX")
+        ribs = [box(sx * 1463, sx * 1507, y - 20, y + 20, zd0, zd1) for y in (-2000, 0, 2000)]
+        rails = [box(sx * 1463, sx * 1507, -4040, 4040, z - 20, z + 20) for z in (sill - 60, sill + 660)]
+        door = merge(skin, edge)
+        for (yc, z0, z1) in wins:
+            door = door.cut(box(a0 - 1, a1 + 1, yc - 300, yc + 300, z0, z1))
+        frames = [box(sx * 1510, sx * 1525, yc - 350, yc + 350, z0 - 50, z1 + 50).cut(box(sx * 1505, sx * 1530, yc - 300, yc + 300, z0, z1)) for (yc, z0, z1) in wins]
+        lugs = [box(sx * 1470, sx * 1500, y - 40, y + 40, zd1, zd1 + 80).cut(cyl((sx * 1460, y, zd1 + 45), (sx * 1510, y, zd1 + 45), 15)) for y in (-3000, 3000)]
+        R.add(f"ZEN-07{'a' if sx < 0 else 'b'} Skimming door {nm}", compound(door, *ribs, *rails, *frames, *lugs), "enclosure", "zen",
+              tag=f"ZEN-07{'a' if sx < 0 else 'b'}", title=f"Skimming door, {nm} side (vertical lift)",
+              spec=f"7,970 × 2,306 × 50 framed panel, 3 mm skins; 4 × 600 × 600 toughened-glass windows in removable frames, sill +{sill/1000:.3f}; lift {lift:.0f} full, {B.v('enclosure.skim_stop'):.0f} skimming stop",
+              src="ZEN annexure · D-24 · D-25", status="D", anim=f"door{'W' if sx < 0 else 'E'}")
+        glass = compound(*[box(sx * 1482, sx * 1490, yc - 300, yc + 300, z0, z1) for (yc, z0, z1) in wins])
+        R.add(f"ZEN-07{'a' if sx < 0 else 'b'}G Door windows {nm}", glass, "enclosure", "glass", tag=f"ZEN-07{'a' if sx < 0 else 'b'}G",
+              title=f"Door windows, {nm} (4 × 600 × 600 toughened glass)", spec="8 mm toughened glass in removable frames", src="ZEN annexure", status="C",
+              alpha=0.35, anim=f"door{'W' if sx < 0 else 'E'}")
+        zh = zt - 176
+        hb = []
+        for y in (-3000, 3000):
+            hb += [box(sx * (xo + 3), sx * 1600, y - 60, y + 60, zt - 40, zt), box(sx * 1400, sx * 1570, y - 120, y + 120, zh, zt - 40),
+                   cyl((sx * 1485, y, zh - 60), (sx * 1485, y, zh), 30)]
+        prox = [box(sx * 1530, sx * 1560, sy * 4020, sy * 4060, z, z + 40) for sy in (1,) for z in (zd0 + 20, zd0 + 20 + B.v("enclosure.skim_stop"), zd0 + 20 + lift)]
+        R.add(f"ZEN-08{'a' if sx < 0 else 'b'} Door hoists {nm}", compound(*hb, *prox), "enclosure", "motor", tag=f"ZEN-08{'a' if sx < 0 else 'b'}",
+              title=f"Door chain hoists, {nm} (2 × electric, synchronised)", spec="2 electric chain hoists at 8 m/min on brackets off the top beam; proximity limits closed / skimming stop / full lift",
+              src="ZEN annexure", status="C")
+        top_ch = zh - 60
+        ch = compound(*[cyl((sx * 1485, y, zd1 + 45), (sx * 1485, y, top_ch), 8) for y in (-3000, 3000)])
+        R.add(f"ZEN-08{'a' if sx < 0 else 'b'}C Hoist chains {nm}", ch, "enclosure", "chain", tag=f"ZEN-08{'a' if sx < 0 else 'b'}C",
+              title=f"Hoist load chains, {nm}", spec="Shown at the closed position", src="ZEN annexure", status="C", anim=f"chain{'W' if sx < 0 else 'E'}:{top_ch:.0f}")
+    # ---------------------------------------------------------------- roof covers (split on the centreline, slide outward)
+    yr0, yr1 = yo - 75, yo - 40                      # rail on the end-beam top flange
+    rails, outr = [], []
+    for sy in S:
+        rails += [box(-3000, 3000, sy * yr0, sy * yr1, zt, zt + 30), box(-3000, 3000, sy * (yo - 32), sy * (yo - 2), zt, zt + 40)]
+        for sx in S:
+            outr += [merge(box(sx * (xo + 3), sx * 3000, sy * (yo - 5.4), sy * yo, zt - 150, zt), box(sx * (xo + 3), sx * 3000, sy * (yo - 75), sy * yo, zt - 9, zt),
+                           box(sx * (xo + 3), sx * 3000, sy * (yo - 75), sy * yo, zt - 150, zt - 141)),
+                     cyl((sx * 1531, sy * (yo - 40), zt - 1000), (sx * 2500, sy * (yo - 40), zt - 151), 40)]
+    lim = [box(sx * x - 30, sx * x + 30, sy * (yo + 5), sy * (yo + 45), zt - 60, zt) for sx in S for sy in (1,) for x in (1330, 2950)]
+    R.add("ZEN-05 Cover rails and outriggers", compound(*rails, *outr), "enclosure", "zenframe", tag="ZEN-05", title="Roof-cover rails, racks and outriggers",
+          spec=f"Rail 35 × 30 and m4 rack on both end beams, extended on ISMC 150 outriggers with Ø80 knee braces to X ±3.0 m; travel {travel:.0f} per cover",
+          src="ZEN annexure · D-24", status="D")
+    R.add("ZEN-05a Cover limit switches", compound(*lim), "enclosure", "yellow", tag="ZEN-05a", title="Roof-cover limit switches (2 per cover)",
+          spec="Closed and open positions, on the north rail", src="ZEN annexure", status="C")
+    zc0 = zt + 150
+    for sx, nm in ((-1, "west"), (1, "east")):
+        xa, xb = sx * slot / 2, sx * (xo + 100)
+        fr = box(xa, xb, -(yo + 100), yo + 100, zc0, zc0 + 100).cut(box(sx * (slot / 2 + 50), sx * (xo + 50), -(yo + 50), yo + 50, zc0 - 1, zc0 + 101))
+        cross = [box(xa, xb, y - 25, y + 25, zc0, zc0 + 100) for y in (-2700, -1350, 0, 1350, 2700)]
+        sheet = box(xa, xb, -(yo + 100), yo + 100, zc0 + 100, zc0 + 103)
+        seal = box(sx * slot / 2, sx * (slot / 2 + 25), -(yo + 100), yo + 100, zt + 60, zc0)
+        carr, wh = [], []
+        for sy in S:
+            carr.append(box(sx * 250, sx * 1350, sy * (yo - 120), sy * (yo + 10), zt + 100, zc0))
+            wh += [cyl((sx * x, sy * (yo - 77.5), zt + 80), (sx * x, sy * (yo - 37.5), zt + 80), 50) for x in (400, 1200)]
+            wh.append(cyl((sx * 850, sy * (yo - 32), zt + 82), (sx * 850, sy * (yo - 2), zt + 82), 42))      # pinion on the rack
+        shaft = cyl((sx * 850, -(yo - 2), zt + 82), (sx * 850, yo - 2, zt + 82), 25)
+        pb = [box(sx * 800, sx * 900, y - 50, y + 50, zt + 60, zt + 100) for y in (-2700, 0, 2700)]
+        motor = merge(box(sx * 760, sx * 940, yo + 10, yo + 260, zt + 30, zt + 230), cyl((sx * 850, yo - 2, zt + 82), (sx * 850, yo + 10, zt + 82), 25))
+        R.add(f"ZEN-09{'a' if sx < 0 else 'b'} Roof cover {nm}", compound(fr, *cross, sheet, seal, *carr, *wh, shaft, *pb), "enclosure", "zen",
+              tag=f"ZEN-09{'a' if sx < 0 else 'b'}", title=f"Sliding roof cover, {nm}",
+              spec=f"{abs(xb - xa):,.0f} × {2 * (yo + 100):,.0f} ISMC 100 frame, 3 mm sheet; end carriages with 4 wheels; line shaft with pinions on both racks; brush seal on the {slot:.0f} mm rope slot",
+              src="ZEN annexure · D-24", status="C", anim=f"roof{'W' if sx < 0 else 'E'}")
+        R.add(f"ZEN-09{'a' if sx < 0 else 'b'}M Cover drive {nm}", motor, "enclosure", "motor", tag=f"ZEN-09{'a' if sx < 0 else 'b'}M",
+              title=f"Roof-cover drive, {nm}: 0.5 HP geared motor, VFD", spec="On the north carriage, driving the line shaft", src="ZEN annexure", status="C",
+              anim=f"roof{'W' if sx < 0 else 'E'}")
+    # ---------------------------------------------------------------- lighting
+    lamps, lens = [], []
+    for sy in S:
+        for x in (-500, 500):
+            lamps += [box(x - 150, x + 150, sy * (yo - 200), sy * (yo - 60), zt - 760, zt - 540), box(x - 30, x + 30, sy * (yo - 60), sy * yo, zt - 680, zt - 620)]
+            lens.append(box(x - 130, x + 130, sy * (yo - 206), sy * (yo - 200), zt - 740, zt - 560))
+    R.add("ZEN-10 LED floods", compound(*lamps), "enclosure", "black", tag="ZEN-10", title="LED floodlights 4 × 200 W", spec="Two on each end wall, inside, aimed at the bath",
+          src="ZEN annexure", status="C")
+    R.add("ZEN-10a LED flood lenses", compound(*lens), "enclosure", "lamp", tag="ZEN-10a", title="LED flood lenses", spec="IP66", src="ZEN annexure", status="C")
+    # ---------------------------------------------------------------- lateral suction ducts, header, outlet
+    zd_a, zd_b = 4126, 4826
+    lat = []
+    for sx in S:
+        d = _hollow(sx * 761, sx * 1261, -4050, yo + 3, zd_a, zd_b, open_ends="Y")
+        for yc in range(-3500, 3501, 1000):
+            d = d.cut(box(sx * 755, sx * 767, yc - 350, yc + 350, zd_a + 60, zd_a + 90))
+        lat.append(d)
+    R.add("ZEN-11 Lateral slot ducts", compound(*lat), "enclosure", "galv", tag="ZEN-11", title="Lateral slot plenums 500 × 700",
+          spec="Inside both top edges, 3 mm MS; 8 slots 700 × 30 per side on the inner face (≈16.5 m/s) with sliding shutters; 10,000 m³/h per side, plenum 7.9 m/s at the north end (under half the slot velocity, C-15); cleaning doors",
+          src="ZEN annexure · C-15", status="D")
+    hdr = _hollow(-1261, 1261, yo + 3, yo + 603, zd_a, zd_b).cut(cyl((0, yo + 590, 4476), (0, yo + 610, 4476), 350))
+    for sx in S:
+        hdr = hdr.cut(box(sx * 764, sx * 1258, yo, yo + 8, zd_a + 3, zd_b - 3))
+    yo2 = 5300
+    zo = 4476
+    out = pipe([(0, yo + 603, zo), (0, yo2, zo), (4600, yo2, zo)], 350).cut(pipe([(0, yo + 590, zo), (0, yo2, zo), (4620, yo2, zo)], 347))
+    fl = tube((4600, yo2, zo), (4620, yo2, zo), 420, 347)
+    col = merge(box(3925, 4075, yo2 - 75, yo2 + 75, 0, zo - 400), box(3800, 4200, yo2 - 400, yo2 + 400, zo - 400, zo - 350), box(3800, 4200, yo2 - 200, yo2 + 200, 0, 20))
+    R.add("ZEN-12 Suction header", hdr, "enclosure", "galv", tag="ZEN-12", title="Suction header 600 × 700 outside the north end wall",
+          spec="Joins both slot plenums; Ø700 outlet on the north face; 13.2 m/s", src="ZEN annexure · D-24", status="D")
+    R.add("ZEN-13 Outlet duct Ø700", merge(out, fl), "enclosure", "galv", tag="ZEN-13", title="Outlet duct Ø700 to the zinc-fume bag filter",
+          spec="20,000 m³/h, 14.4 m/s; north then east at +4.476 to a flanged stub at X +4.6 m", src="HDG · ZEN annexure", status="A",
+          note="Bag-filter (ZFE) location and fan are open (O-16).")
+    R.add("ZEN-13a Outlet duct support", col, "enclosure", "zenframe", tag="ZEN-13a", title="Outlet duct support column", spec="ISHB 150 with saddle", src="this design", status="D")
 
 
 def build_loads(R):

@@ -3,10 +3,10 @@
  "rev": "A",
  "date": "2026-11-20",
  "counts": {
-  "INFO": 36,
-  "SUPERSEDED": 11,
-  "MARGINAL": 3,
-  "PASS": 32,
+  "INFO": 42,
+  "SUPERSEDED": 12,
+  "MARGINAL": 2,
+  "PASS": 39,
   "FAIL": 1
  },
  "checks": [
@@ -52,7 +52,18 @@
    "limit": 1400.0,
    "kind": "max",
    "status": "MARGINAL",
-   "note": "MBI-4040 rated 1,400 m3/h"
+   "note": "AEP-VB-2.5 duty 1,400 m3/h (Rev H; P&ID Rev U)"
+  },
+  {
+   "calc": "C-01",
+   "title": "Combustion: air, flue and available heat (Cantera GRI-Mech 3.0)",
+   "name": "SH-PID-02A air ratio per burner (566 / 59 Nm3/h)",
+   "value": 1.0077,
+   "unit": "-",
+   "limit": null,
+   "kind": "info",
+   "status": "INFO",
+   "note": "P&ID sizing is \u03bb \u2248 1.01, same as Rev H"
   },
   {
    "calc": "C-01",
@@ -431,7 +442,7 @@
   {
    "calc": "C-06",
    "title": "Gas piping: velocities and pressure loss at full fire",
-   "name": "DN50 main, north pit (ID 52.5), 18.2 m velocity",
+   "name": "DN50 main, north pit (ID 52.5), 17.5 m velocity",
    "value": 7.7737,
    "unit": "m/s",
    "limit": 20,
@@ -442,7 +453,7 @@
   {
    "calc": "C-06",
    "title": "Gas piping: velocities and pressure loss at full fire",
-   "name": "DN50 main, south pit (ID 52.5), 5.3 m velocity",
+   "name": "DN50 main, south pit (ID 52.5), 4.6 m velocity",
    "value": 7.7737,
    "unit": "m/s",
    "limit": 20,
@@ -465,7 +476,7 @@
    "calc": "C-06",
    "title": "Gas piping: velocities and pressure loss at full fire",
    "name": "Pipework loss skid \u2192 north burner train",
-   "value": 5.9578,
+   "value": 5.8858,
    "unit": "mbar",
    "limit": null,
    "kind": "info",
@@ -586,18 +597,18 @@
    "calc": "C-09",
    "title": "Heat-recovery loop pressure budget and perforated-box distribution",
    "name": "Loop total (D-12 centre-fed boxes)",
-   "value": 74.0472,
+   "value": 70.9314,
    "unit": "mmWC",
    "limit": 72.0,
    "kind": "max",
-   "status": "MARGINAL",
+   "status": "PASS",
    "note": "if 72 mmWC is rated at 120 \u00b0C"
   },
   {
    "calc": "C-09",
    "title": "Heat-recovery loop pressure budget and perforated-box distribution",
    "name": "Loop total vs fan if 72 mmWC is a 20 \u00b0C rating",
-   "value": 74.0472,
+   "value": 70.9314,
    "unit": "mmWC",
    "limit": 53.6572,
    "kind": "max",
@@ -701,7 +712,7 @@
    "limit": 5.5,
    "kind": "max",
    "status": "PASS",
-   "note": "motor rating not in the sources: 5.5 kW derived (A-06)"
+   "note": "7.5 HP = 5.5 kW motor (SH-PID-02A Rev U)"
   },
   {
    "calc": "C-11",
@@ -922,6 +933,138 @@
    "kind": "info",
    "status": "INFO",
    "note": "Rev H 53.4 % at 1,172 kW"
+  },
+  {
+   "calc": "C-15",
+   "title": "Zinc fume enclosure: capture, open-face velocities and hood losses",
+   "name": "Capture flow vs requirement",
+   "value": 20000.0,
+   "unit": "m3/h",
+   "limit": 16750.0,
+   "kind": "min",
+   "status": "PASS",
+   "note": "max of 2 volume changes/min and 2,000 m3/h per m2 of bath"
+  },
+  {
+   "calc": "C-15",
+   "title": "Zinc fume enclosure: capture, open-face velocities and hood losses",
+   "name": "Volume changes",
+   "value": 3.1136,
+   "unit": "per min",
+   "limit": null,
+   "kind": "info",
+   "status": "INFO",
+   "note": "enclosure 107.1 m3 to the sheeting (annexure 106.4)"
+  },
+  {
+   "calc": "C-15",
+   "title": "Zinc fume enclosure: capture, open-face velocities and hood losses",
+   "name": "Rope-slot inflow, doors and roof closed",
+   "value": 3.3826,
+   "unit": "m/s",
+   "limit": 1.0,
+   "kind": "min",
+   "status": "PASS",
+   "note": "slot 200 \u00d7 8,212; seal leakage ignored (lowers it)"
+  },
+  {
+   "calc": "C-15",
+   "title": "Zinc fume enclosure: capture, open-face velocities and hood losses",
+   "name": "Open-face velocity, one door at the skimming stop",
+   "value": 0.6061,
+   "unit": "m/s",
+   "limit": 0.5,
+   "kind": "min",
+   "status": "PASS",
+   "note": "ACGIH enclosing hood, hot process; D-25"
+  },
+  {
+   "calc": "C-15",
+   "title": "Zinc fume enclosure: capture, open-face velocities and hood losses",
+   "name": "Open-face velocity, both doors at the skimming stop",
+   "value": 0.3329,
+   "unit": "m/s",
+   "limit": 0.5,
+   "kind": "min",
+   "status": "SUPERSEDED",
+   "note": "prevented by the one-door-at-a-time interlock (D-25)"
+  },
+  {
+   "calc": "C-15",
+   "title": "Zinc fume enclosure: capture, open-face velocities and hood losses",
+   "name": "Open-face velocity, one door at full lift",
+   "value": 0.3031,
+   "unit": "m/s",
+   "limit": null,
+   "kind": "info",
+   "status": "INFO",
+   "note": "maintenance only, burners at low fire (D-25)"
+  },
+  {
+   "calc": "C-15",
+   "title": "Zinc fume enclosure: capture, open-face velocities and hood losses",
+   "name": "Roof fully open (jig going in or out)",
+   "value": 0.2449,
+   "unit": "m/s",
+   "limit": null,
+   "kind": "info",
+   "status": "INFO",
+   "note": "uncaptured interval: covers close on the ropes once the jig is down"
+  },
+  {
+   "calc": "C-15",
+   "title": "Zinc fume enclosure: capture, open-face velocities and hood losses",
+   "name": "Slot velocity",
+   "value": 16.5344,
+   "unit": "m/s",
+   "limit": null,
+   "kind": "info",
+   "status": "INFO",
+   "note": "8 \u00d7 700 \u00d7 30 per side"
+  },
+  {
+   "calc": "C-15",
+   "title": "Zinc fume enclosure: capture, open-face velocities and hood losses",
+   "name": "Plenum / slot velocity ratio",
+   "value": 0.48,
+   "unit": "-",
+   "limit": 0.5,
+   "kind": "max",
+   "status": "PASS",
+   "note": "uniform slot flow rule (ACGIH)"
+  },
+  {
+   "calc": "C-15",
+   "title": "Zinc fume enclosure: capture, open-face velocities and hood losses",
+   "name": "Header velocity",
+   "value": 13.2275,
+   "unit": "m/s",
+   "limit": 10.0,
+   "kind": "min",
+   "status": "PASS",
+   "note": "fume transport"
+  },
+  {
+   "calc": "C-15",
+   "title": "Zinc fume enclosure: capture, open-face velocities and hood losses",
+   "name": "Outlet \u00d8700 velocity",
+   "value": 14.4358,
+   "unit": "m/s",
+   "limit": 10.0,
+   "kind": "min",
+   "status": "PASS",
+   "note": "fume transport"
+  },
+  {
+   "calc": "C-15",
+   "title": "Zinc fume enclosure: capture, open-face velocities and hood losses",
+   "name": "Hood static pressure at the outlet flange",
+   "value": 51.6481,
+   "unit": "mmWC",
+   "limit": null,
+   "kind": "info",
+   "status": "INFO",
+   "note": "ZFE fan and bag filter add their own losses (O-16)"
   }
  ],
  "decisions": [
@@ -1053,15 +1196,15 @@
   },
   {
    "id": "D-19",
-   "what": "The recirculation blower is 250 mm further west than in the HDG model.",
-   "why": "The inlet spool must hold the 560 mm cruciform straightener (SH-MB-01: mandatory).",
+   "what": "*Superseded by D-22.* The recirculation blower was 250 mm further west than in the HDG model, to fit the straightener spool.",
+   "why": "\u2014",
    "src": "SH-MB-01",
    "ev": "\u2014"
   },
   {
    "id": "D-20",
-   "what": "The discharge trench sits at Y \u22127.55\u2026\u22128.65 m.",
-   "why": "The 900 \u00d7 675 blower outlet then drops fully into it.",
+   "what": "*Superseded by D-22.* The discharge trench ran west along Y \u22127.55\u2026\u22128.65 m under the blower.",
+   "why": "\u2014",
    "src": "Rev H, HDG",
    "ev": "\u2014"
   },
@@ -1071,6 +1214,34 @@
    "why": "Rev H's 1,132 Nm\u00b3/h is \u03bb \u2248 1.00, too lean for pulse-fired HV burners. Full fire at \u03bb 1.125 needs \u22481,430 m\u00b3/h at 35 \u00b0C (O-04).",
    "src": "Rev H validation",
    "ev": "C-01"
+  },
+  {
+   "id": "D-22",
+   "what": "The recirculation blower sits at the SW corner, where the discharge trench turns north into the dryer (owner's instruction, 21 Nov 2026). The fan axis stays at +0.900 on the mixing-box cut-out, so a straight \u00d81100 duct, \u22486.6 m, runs from the mixing box to a 1100 \u2192 900 reducer, the straightener spool and the inlet flexible. The 900 \u00d7 675 outlet drops straight into the corner of the 1,100 \u00d7 1,000 trench. Only the suction duct gets longer; the discharge trench is now one straight run north. The bleed riser moves to just downstream of the blower and runs overhead at +4.0 to the stack.",
+   "why": "Owner's instruction. \u00d81100 keeps the suction duct at \u224812.9 m/s and adds \u22481 mmWC; the shorter discharge removes \u22488 m of trench and two bends, so the loop total falls to \u224871 mmWC.",
+   "src": "Owner, Rev H, SH-MB-01",
+   "ev": "C-09"
+  },
+  {
+   "id": "D-23",
+   "what": "SH-PID-02A Rev U governs the combustion hardware. The model follows its bill of material tag for tag: train A1\u2013A11, per-burner main legs B4 \u2192 B2 + B2 \u2192 B1 \u2192 B3 \u2192 B5 and ignition legs C3 \u2192 C1 \u2192 C2 + C2 \u2192 C4 \u2192 C19, the merge tee and single 2\" inlet, C12 direct-spark ignitor (no pilot), C6 UV with \u00bd\" cooling air, C7/C8 close to the burner, C5 BCU 370, and the air side D1\u2013D9 on the AEP-VB-2.5 7.5 HP blower. The Mittal MBI-4040 named in the HDG plant model and the Rev H venturi arrangement are not used.",
+   "why": "Rev U is the as-ordered P&ID (Eclipse PO STL/2026/206, Bloom PO 1018).",
+   "src": "SH-PID-02A Rev U, SH-PID-02 Rev M, HDG",
+   "ev": "C-01, C-06, C-11"
+  },
+  {
+   "id": "D-24",
+   "what": "Zinc fume enclosure: the wall plane is the casing outer face. Corner posts SHS 120 stand on the deck over the casing walls; ISMB 300 door-head girts at +2.456 span the corner posts, so both long sides open full length for skimming. Vertical-lift skimming doors run in guides outside the wall plane, with the 4 windows each at eye level from FFL. Two roof covers split on the centreline with the 200 mm rope slot and slide 1.4 m outward on rails carried on outriggers at both end walls. Slot plenums 500 \u00d7 700 inside both top edges collect into a 600 \u00d7 700 header outside the north end wall; the \u00d8700 outlet leaves north then east.",
+   "why": "The annexure's 8,200 \u00d7 2,750 equals the casing inside; standing the posts over the casing walls is the only way to put the enclosure \"on the casing deck\" without loading the top closure. Inside to the sheeting is 8,212 \u00d7 2,762.",
+   "src": "ZEN annexure, HDG, SH-INS",
+   "ev": "C-15"
+  },
+  {
+   "id": "D-25",
+   "what": "Skimming doors stop at a 1,000 mm lift for skimming, and only one side can be open at a time. Full lift (2,150) is for maintenance.",
+   "why": "One door at the skimming stop keeps the open-face velocity at 0.61 m/s, above the 0.5 m/s minimum for an enclosing hood on a hot process. Both doors, or one at full lift, drop it to 0.30\u20130.33 m/s.",
+   "src": "ZEN annexure, ACGIH practice",
+   "ev": "C-15"
   }
  ],
  "open": [
@@ -1094,8 +1265,8 @@
   },
   {
    "id": "O-04",
-   "what": "Mittal MBI-4040 rating basis (actual or normal m\u00b3/h) and motor kW. Full fire at \u03bb 1.125 needs \u22481,430 m\u00b3/h at 35 \u00b0C, against 1,400 rated. At \u03bb 1.125 the blower supports \u22481,147 kW. Production needs \u2248760\u2013840 kW, so the limit only applies at full fire.",
-   "owner": "Mittal",
+   "what": "AEP-VB-2.5 rating basis (actual or normal m\u00b3/h). SH-PID-02A Rev U fixes the blower and its 7.5 HP motor; the 1,400 m\u00b3/h at 725 mmWC duty comes from Rev H. Full fire at \u03bb 1.125 needs \u22481,430 m\u00b3/h at 35 \u00b0C. At \u03bb 1.125 the blower supports \u22481,147 kW. Production needs \u2248760\u2013840 kW, so the limit only applies at full fire.",
+   "owner": "AEP",
    "effect": "C-01, C-11"
   },
   {
@@ -1112,7 +1283,7 @@
   },
   {
    "id": "O-07",
-   "what": "AEP-ZA-9.0: is 72 mmWC rated at 20 \u00b0C or at 120 \u00b0C? The loop needs \u224874 mmWC hot with centre-fed boxes. A 20 \u00b0C rating gives only \u224854 mmWC hot.",
+   "what": "AEP-ZA-9.0: is 72 mmWC rated at 20 \u00b0C or at 120 \u00b0C? The loop needs \u224871 mmWC hot with centre-fed boxes and the corner blower (D-22). A 20 \u00b0C rating gives only \u224854 mmWC hot.",
    "owner": "AEP",
    "effect": "C-09"
   },
@@ -1130,9 +1301,9 @@
   },
   {
    "id": "O-10",
-   "what": "Burner count. The POs and SH-PID-02 give 2 HV-400 per furnace; an older note says 4. Modelled as 2.",
-   "owner": "SHIVAS",
-   "effect": "Firing"
+   "what": "*Closed.* Burner count: SH-PID-02A Rev U and Bloom PO 1018 give 4 HV-400 for two furnaces, 2 per furnace.",
+   "owner": "\u2014",
+   "effect": "\u2014"
   },
   {
    "id": "O-11",
@@ -1163,6 +1334,62 @@
    "what": "Pit fan duty. Each fan needs \u2265 189 m\u00b3/h (20 air changes per hour of a 9.45 m\u00b3 pit). Confirm the 3 HP fan's curve.",
    "owner": "Supplier",
    "effect": "C-11"
+  },
+  {
+   "id": "O-16",
+   "what": "Zinc-fume bag filter (ZFE) location, fan and duct route beyond the flanged stub. The model stops the \u00d8700 at X +4.6 m, north of the furnace. The fan must cover \u224852 mmWC hood loss plus the filter and duct.",
+   "owner": "SHIVAS",
+   "effect": "C-15"
+  },
+  {
+   "id": "O-17",
+   "what": "Enclosure structure: posts, girts, outriggers and the deck connection over the casing walls (D-24), and wind on the 4.7 m walls.",
+   "owner": "Structural engineer",
+   "effect": "Enclosure"
+  },
+  {
+   "id": "O-18",
+   "what": "Door interlock: only one skimming door open at a time, and the skimming stop at 1,000 mm (D-25), to be written into the enclosure control logic.",
+   "owner": "SHIVAS",
+   "effect": "C-15"
+  },
+  {
+   "id": "O-19",
+   "what": "SH-PID-02A Rev U start-up sequence text still says \"PILOT: C2 opens, C7 sparks at C18, C6 must prove the pilot\" and lists trip C17. Neither C17 nor C18 is on the bill of material, and note 2 says direct spark through C12 with no pilot. Correct the sequence to: ignition gas C2 opens, C7 sparks at C12, C6 proves the ignition flame.",
+   "owner": "SHIVAS / Eclipse",
+   "effect": "BMS"
+  }
+ ],
+ "holds": [
+  {
+   "id": "H1",
+   "what": "Does the HV-400 take a single gas inlet with the ignition gas merged? Confirm with Bloom before the pipework is fixed.",
+   "where": "NG-50-1x3 merge tee and 2\" inlet, status open"
+  },
+  {
+   "id": "H2",
+   "what": "D1 is tapped on the blower discharge, so a shut D2 at a burner is not detected.",
+   "where": "D1 on the 7\" line"
+  },
+  {
+   "id": "H3",
+   "what": "Parasitic circulation in the closed ring. Allow for it when the purge time is set.",
+   "where": "CA-150-103 ring"
+  },
+  {
+   "id": "H6",
+   "what": "A10 command authority undefined: one train, four burners, nobody assigned. A10 must close on any burner lockout and on emergency stop.",
+   "where": "A10 on the skid"
+  },
+  {
+   "id": "H8",
+   "what": "Air impulse to B1: 1\" per the valve GA, \u00bc\" tube on the P&ID. Measure on site.",
+   "where": "IMP-1, IMP-2"
+  },
+  {
+   "id": "H21",
+   "what": "D2, D6, C19 and the UV cooling air items are on neither purchase order. Raise them or the burners cannot be balanced or isolated.",
+   "where": "D2, C19, C9, C11, CA-15-101 marked \"to order\""
   }
  ],
  "assumptions": [
@@ -1193,7 +1420,17 @@
   },
   {
    "id": "A-06",
-   "what": "Combustion blower motor 5.5 kW. Derived as 2.77 kW air power \u00f7 0.60; it is not in the sources.",
+   "what": "*Closed.* Combustion blower motor 7.5 HP = 5.5 kW, now in SH-PID-02A Rev U.",
+   "cons": "\u2014"
+  },
+  {
+   "id": "A-12",
+   "what": "Enclosure air 50 \u00b0C for the extraction losses (C-15).",
+   "cons": "Neutral"
+  },
+  {
+   "id": "A-13",
+   "what": "Skimming-door windows sit in the doors at a +1.300 sill (eye level from FFL); the annexure does not place them.",
    "cons": "\u2014"
   },
   {
@@ -1225,7 +1462,9 @@
  "sources": {
   "RevK": "Kettle & furnace confirmed basis Rev K (as carried in the SHIVAS HDG Plant Model, 2026-10-19)",
   "RevH": "Furnace & dryer heat-recovery loop Rev H, with SHIVAS design check of 12 Oct 2026",
-  "PID02": "SH-PID-02 Rev M combustion P&ID (Eclipse PO STL/2026/206 gas & air scope; Bloom PO 1018 burners)",
+  "PID02": "SH-PID-02A Rev U combustion gas and air P&ID, 09-09-2026, sheets 1-2 (Eclipse PO STL/2026/206; Bloom PO 1018). Supersedes Rev M",
+  "ZEN": "SHIVAS zinc fume enclosure annexure (as carried in the HDG plant model)",
+  "USER": "Instruction from the SHIVAS owner, 21 Nov 2026",
   "INS": "SH-INS-01..05 Rev B ceramic-fibre insulation set + consumption reconciliation (18-19 Nov 2026)",
   "MB01": "SH-MB-01 Rev A mixing box, configuration S2",
   "DMP02": "STL-MB-DMP-02 Rev A fresh-air make-up damper",
@@ -1233,8 +1472,8 @@
   "RBR": "SH-RBR-01/02 rack & pinion drive for dryer doors",
   "DRYN": "Dryer instrumentation notes",
   "HDG": "SHIVAS HDG Plant Model layout proposal (2026-10-19) - relative positions of loop equipment",
-  "ZEN": "SHIVAS zinc fume enclosure annexure",
   "CBA": "Crash-barrier plant annexure (pit fan)",
   "THIS": "This design (SHV-FUR-6700 Rev A)"
- }
+ },
+ "n_basis": 171
 }

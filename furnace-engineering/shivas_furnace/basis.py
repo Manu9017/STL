@@ -168,32 +168,41 @@ class Geo:
             "HRL-02b": (-3100, -2200, -2000, -450),    # return, down to the junction
             "HRL-03":  (-3150, -2150, -3000, -2000),   # three-way junction
             "HRL-04":  (-3150, -2150, -6950, -3000),   # suction to the mixing box
-            "HRL-08a": (-11950, -3900, -8650, -7550),  # discharge, under the blower and west
-            "HRL-08b": (-11950, -10850, -7550, 500),   # discharge, north along the dryer (RCC outer face -10850)
+            "HRL-08": (-11950, -10850, -8650, 500),    # discharge: from the blower at the SW corner north to the supply box (D-22)
         }
         g.flue_trench = (-2150, -g.pitX - g.pitw, g.flueY - 630, g.flueY + 630)   # 1260 wide envelope
         # mixing box S2
         g.mb = (-3400, -1900, -8250, -6950, -1100, 1600)
         # recirculation blower
-        g.rb_axis = (-5150, -4400, -7600, 1170)      # scroll x0, x1, y, z (D-19: offset spool from the +0.90 cut-out)
+        g.rb_axis = (-11950, -11200, -7600, 900)     # scroll x0, x1, y, z: SW corner, axis on the Ø1,114 cut-out at +0.90 (D-22)
+        g.suction = (g.mb[0] - 60, -10050, -7600, 900, 550)   # from the mixing-box outlet flange  # Ø1100 duct x0 -> x1 along Y -7600 at +0.90
         g.rb_r = 950
         # stack + bleed
-        g.bleed = (-7600, -8350)
+        g.bleed = (-11400, -6100)                    # riser out of the discharge trench just downstream of the blower
         g.stack = (-7600, -14900)
+        g.bleed_route = [(-11400, -6100, -500), (-11400, -6100, 4000), (-7600, -6100, 4000), (-7600, -14700, 4000), (-7600, -14900, 4000)]
         # combustion air
         g.ring = (2125, 4850, 500)                   # half X, half Y, Z
         g.cb = (2700, 4100, -5700, -4500)            # blower plinth x0,x1,y0,y1
         g.pf = {"PF-N": (2600, 3200, 5200, 5800), "PF-S": (2600, 3200, -6800, -6200)}
         g.skid_y, g.skid_x_a11, g.skid_pitch = -7600, 4180, 620
         g.gas_hdr_x = 1900
-        # gas routes (pipe centrelines, mm). PID-02: DN65 header on sleepers, DN50 mains to both burner pits.
-        gz, yg = B.v("levels.gas_header_cl"), g.bZ - 550                 # +140 ; train row -940 under each burner
+        # gas routes (pipe centrelines, mm) per SH-PID-02A Rev U:
+        # NG-65-001 header on sleepers at +0.140 (with a capped tee for furnace 2) -> NG-50-101 furnace main to both pits,
+        # ending in each pit at a high-level manifold at -0.150 from which the DN40 main leg and the DN15 ignition leg drop.
+        gz = B.v("levels.gas_header_cl")
+        g.pit_manifold_z = -150
+        g.leg_main = (-700, g.cYo + 1044)        # north burner: main leg X, Y (5150); south is the point reflection
+        g.leg_ign = (-450, g.cYo + 1044)
+        g.merge_z = -1450
         g.gas_header = [(g.skid_x_a11 - 400, g.skid_y, 1100), (g.skid_x_a11 - 400, g.skid_y, gz),
                         (g.gas_hdr_x, g.skid_y, gz), (g.gas_hdr_x, -6600, gz)]
+        g.gas_f2 = [(2600, g.skid_y, gz), (2600, g.skid_y - 900, gz)]           # capped branch: furnace 2 main NG-50-201
+        my = g.leg_main[1]
         g.gas_main_N = [(g.gas_hdr_x, -6600, gz), (g.gas_hdr_x, 6600, gz), (153.5, 6600, gz), (153.5, 5800, gz),
-                        (153.5, 5800, yg), (153.5, g.cYo + 300, yg)]
-        g.gas_main_S = [(g.gas_hdr_x, -6600, gz), (-153.5, -6600, gz), (-153.5, -5800, gz), (-153.5, -5800, yg),
-                        (-153.5, -(g.cYo + 300), yg)]
+                        (153.5, 5800, g.pit_manifold_z), (153.5, my, g.pit_manifold_z), (g.leg_main[0], my, g.pit_manifold_z)]
+        g.gas_main_S = [(g.gas_hdr_x, -6600, gz), (-153.5, -6600, gz), (-153.5, -5800, gz), (-153.5, -5800, g.pit_manifold_z),
+                        (-153.5, -my, g.pit_manifold_z), (-g.leg_main[0], -my, g.pit_manifold_z)]
         g.gas_vent = [(g.skid_x_a11 + 7 * g.skid_pitch, g.skid_y, 1400), (g.skid_x_a11 + 7 * g.skid_pitch, g.skid_y, 12500)]
 
     @staticmethod

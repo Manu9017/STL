@@ -27,7 +27,9 @@ meta:
 sources:
   RevK:  Kettle & furnace confirmed basis Rev K (as carried in the SHIVAS HDG Plant Model, 2026-10-19)
   RevH:  Furnace & dryer heat-recovery loop Rev H, with SHIVAS design check of 12 Oct 2026
-  PID02: SH-PID-02 Rev M combustion P&ID (Eclipse PO STL/2026/206 gas & air scope; Bloom PO 1018 burners)
+  PID02: SH-PID-02A Rev U combustion gas and air P&ID, 09-09-2026, sheets 1-2 (Eclipse PO STL/2026/206; Bloom PO 1018). Supersedes Rev M
+  ZEN:   SHIVAS zinc fume enclosure annexure (as carried in the HDG plant model)
+  USER:  Instruction from the SHIVAS owner, 21 Nov 2026
   INS:   SH-INS-01..05 Rev B ceramic-fibre insulation set + consumption reconciliation (18-19 Nov 2026)
   MB01:  SH-MB-01 Rev A mixing box, configuration S2
   DMP02: STL-MB-DMP-02 Rev A fresh-air make-up damper
@@ -35,7 +37,6 @@ sources:
   RBR:   SH-RBR-01/02 rack & pinion drive for dryer doors
   DRYN:  Dryer instrumentation notes
   HDG:   SHIVAS HDG Plant Model layout proposal (2026-10-19) - relative positions of loop equipment
-  ZEN:   SHIVAS zinc fume enclosure annexure
   CBA:   Crash-barrier plant annexure (pit fan)
   THIS:  This design (SHV-FUR-6700 Rev A)
 
@@ -151,46 +152,111 @@ civil:
 
 # ------------------------------------------------------------------ combustion
 burners:
-  model:           [Bloom HV-400, cold air, gas only, "-", PID02, C, "2 per furnace (POs); an older note says 4"]
+  model:           ["Bloom HV-400 cold air, gas only, with mounting plate and high-velocity refractory quarl", "-", PID02, C, "4 for two furnaces (PO 1018); 2 per furnace"]
   count:           [2, nos, PID02, C]
+  rating:          [586, kW, PID02, C, "per burner; gas 59 Nm3/h, air 566 Nm3/h"]
   offset_X:        [946.5, mm, RevH, C, "axis 271.5 mm off the kettle plate: 23 + 150 + 98.5"]
   flame_dia:       [197, mm, RevH, C]
-  arrangement:     [end faces, diagonally opposite, "-", RevH, C, "B1 north face firing south along the west alley; B2 south face firing north along the east alley"]
-  ignition:        [direct spark 3500-148, no pilot; DN15 ignition gas, "-", PID02, C]
-  bcu:             [Kromschroder BCU 370, one per burner, "-", PID02, C]
-  uv:              [UVS10D0G1, "-", PID02, C]
-  ign_transformer: [TZI8-12/100WE, "-", PID02, C]
-  envelope:        [Ø380 x 520 body + Ø460 x 170 mounting flange, "-", HDG, A, "replace with the Bloom HV-400 GA before fabrication"]
-  train_on_face:   [B4 ball 1½" -> B2 VAS240R/NW DN40 -> B1 GIK40R02-5B -> B3 GEH40R50, "-", PID02, C]
+  arrangement:     ["burners on the width faces, diagonally opposite; B1 north face firing south along the west alley, B2 south face firing north along the east alley", "-", PID02, C]
+  ignition:        ["direct spark Bloom 3500-148 non air-assisted (C12); no pilot burner, no pilot air", "-", PID02, C]
+  gas_inlet:       ["single 2 inch inlet NG-50-xx3 from the merge tee below the burner", "-", PID02, O, "Hold H1: confirm with Bloom that the HV-400 takes one gas inlet with the ignition gas merged"]
+  envelope:        ["Ø380 x 520 body + Ø460 x 170 air plenum; gas inlet axial at the rear", "-", HDG, A, "replace with the Bloom HV-400 GA before fabrication"]
+
+# P&ID SH-PID-02A Rev U, sheet 2 bill of material: [tag, description, make, model, qty for 2 furnaces]
+pid:
+  A:
+    - [A1, "Ball valve 2 inch NPT", Eclipse, 9415NF205026TVVN-LO1XX, 1]
+    - [A2, "Gas filter DN50", Eclipse, GFK 50R40-6, 1]
+    - [A3, "Inlet pressure gauge", Eclipse, RFM 4RB100, 1]
+    - [A4, "Manual cock 1½ inch", Eclipse, DH 15R50, 1]
+    - [A5, "Gas governor with integral SSOV and relief 1½ inch", Eclipse, J125-S4, 1]
+    - [A6, "Low gas pressure switch (PSL)", Eclipse, DG 150U-3, 1]
+    - [A7, "High gas pressure switch (PSH)", Eclipse, DG 500U-3, 1]
+    - [A8, "Outlet pressure gauge", Eclipse, KFM 250RB100, 1]
+    - [A9, "Manual cock 1½ inch", Eclipse, DH 15R50, 1]
+    - [A10, "Double solenoid valve DN65", Eclipse, VAS 665F05NW3E, 1]
+    - [A11, "Ball valve 2½ inch", Eclipse, 9411RF106526TFFFN-LO2XX, 1]
+  B:
+    - [B4, "Ball valve 1½ inch NPT", Eclipse, 9415NF204026TVVN-LO1XX, 4]
+    - [B2, "Gas solenoid valve DN40 (double block: 2 per burner)", Eclipse, VAS 240R/NW, 8]
+    - [B1, "Air/gas ratio controller DN40, 1:1", Eclipse, GIK 40R02-5B, 4]
+    - [B3, "Flow adjusting cock DN40", Eclipse, GEH 40R50, 4]
+    - [B5, "Ball valve 1½ inch, gas leg before the merge (NEW)", TO ORDER, site supply, 4]
+  C:
+    - [C3, "Ball valve ½ inch NPT, ignition gas", Eclipse, 9415NF201526TVVN-LO1XX, 4]
+    - [C1, "Gas governor DN15, ignition gas", Eclipse, GDJ 15R04-4Z, 4]
+    - [C2, "Gas solenoid valve DN15 (double block: 2 per burner)", Eclipse, VAS 115R/NW, 8]
+    - [C4, "Flow adjusting cock DN15", Eclipse, GEH 15R10, 4]
+    - [C19, "Ball valve ½ inch, ignition leg before the merge (NEW)", TO ORDER, not in the Eclipse PO, 4]
+    - [C5, "Burner control unit", Eclipse, BCU 370WFEU0D1, 4]
+    - [C6, "UV flame detector", Eclipse, UVS 10D0G1, 4]
+    - [C7, "Ignition transformer", Eclipse, TZI 8-12/100WE, 4]
+    - [C8, "HT ignition cable 7 mm, 10 m total (2.5 m per burner)", Lapp, ÖLFLEX FZLSi, 1]
+    - [C9, "½ inch cock, UV cooling air", TO ORDER, site supply, 4]
+    - [C11, "Flexible connector, UV cooling air", TO ORDER, site supply, 4]
+    - [C12, "Direct spark ignitor, non air-assisted", Bloom, 3500-148, 4]
+  D:
+    - [D1, "Air pressure switch (PSL)", Eclipse, DG 10U-3, 2]
+    - [D3, "Air pressure gauge", Eclipse, KFM 160RB100 (P/N 3200124), 2]
+    - [D4, "Manual cock", Eclipse, DH 15R50 (P/N 3152149), 2]
+    - [BLW, "Combustion air blower 7.5 HP", SHIVAS, AEP-VB-2.5, 2]
+    - [D7, "Blower inlet filter", SHIVAS, "-", 2]
+    - [D8, "Flexible connection at blower", SHIVAS, "-", 2]
+    - [D9, "Ball valve in the 7 inch blower discharge (NEW)", TO ORDER, not in either PO, 2]
+    - [D2, "Butterfly valve, manual, burner air", TO ORDER, not in either PO, 4]
+  lines:
+    - [NG-65-001, "DN65 (2½ inch)", Natural gas, A11 outlet, both furnace mains]
+    - [NG-50-101, "DN50 (2 inch)", Natural gas, main gas header, 2 burner branches]
+    - [NG-40-1x1, "DN40 (1½ inch)", Natural gas, furnace main, merge tee downstream of B3]
+    - [NG-15-1x2, "DN15 (½ inch)", Ignition gas, tap upstream of B4, merge tee downstream of C4]
+    - [NG-50-1x3, "2 inch", Gas + ignition gas, merge tee at the burner, burner gas inlet]
+    - [CA-200-101, "7 inch round", Combustion air, blower discharge, 300 x 150 header]
+    - [CA-150-103, "150 x 150", Combustion air, 300 x 150 header, closed ring]
+    - [CA-100-1xx, "4 inch branch", Combustion air, 150 x 150 ring, burner via D2]
+    - [CA-15-101, "½ inch", UV cooling air, 7 inch blower discharge, C6 UV head]
 
 gas_train:
-  items:
-    - [A1,  ball,   Ball valve 2" NPT,               9415NF205026]
-    - [A2,  filter, Gas filter DN50,                 GFK 50R40-6]
-    - [A3,  gauge,  Inlet pressure gauge,            RFM 4RB100]
-    - [A4,  cock,   Manual cock 1½",                 DH15R50]
-    - [A5,  reg,    Governor + SSOV + relief,        J125-S4]
-    - [A6,  sw,     Low gas pressure switch,         DG150U-3]
-    - [A7,  sw,     High gas pressure switch,        DG500U-3]
-    - [A8,  gauge,  Outlet pressure gauge,           KFM250RB100]
-    - [A9,  cock,   Manual cock 1½",                 DH15R50]
-    - [A10a, sol,   Double solenoid DN65 valve 1,    VAS665F05NW3E]
-    - [A10b, sol,   Double solenoid DN65 valve 2,    VAS665F05NW3E]
-    - [A11, ball,   Ball valve 2½",                  9411RF106526]
-  header:          [NG-65-001 DN65, "-", PID02, C]
-  main:            [NG-50 DN50 to both burner risers, "-", PID02, C]
-  vent:            [A5 relief vent rises continuously, no valve, no low pocket, "-", PID02, C]
+  header:          [NG-65-001 DN65 on sleepers at +0.140, "-", PID02, C]
+  main:            [NG-50-101 DN50 furnace main to both burner branches, "-", PID02, C]
+  vent:            [A5 relief and SSOV vent rises continuously to a safe outdoor place; no valve, no low pocket, "-", PID02, C]
+  furnace2:        [capped tee on NG-65-001 for furnace 2 main NG-50-201, "-", PID02, C, "the common train A serves both furnaces"]
 
 combustion_air:
-  blower:          [Mittal Blowers MBI-4040, "-", PID02, C, "supersedes AEP-VB-2.5"]
-  duty:            [1400 m3/h at 725 mmWC, VFD, "-", PID02, C]
-  discharge:       [8 inch round, flexible connector, "-", PID02, C]
-  venturi:         [8 inch inlet -> 150 x 150 throat, "-", RevH, C]
+  blower:          [AEP-VB-2.5 7.5 HP, "-", PID02, C, "the HDG plant model named Mittal MBI-4040; the P&ID governs (D-23)"]
+  duty:            [1400 m3/h at 725 mmWC, "-", RevH, C]
+  discharge:       [7 inch round with D8 flexible at the blower and D9 ball valve, "-", PID02, C]
+  proving:         ["two short branches off the 7 inch line just after D9: D1 on one, D4 cock and D3 gauge in series on the other", "-", PID02, C]
   header:          [300 x 150, mm, PID02, C]
-  ring:            [150 x 150 closed ring, 750 clear of casing, mm, PID02, C]
-  branch:          [4 inch per burner, manual butterfly D2, "-", PID02, C]
-  proving:         [D4 DH15R50 -> D3 KFM160RB100 + D1 DG 10U-3 to BCU DL/7, "-", PID02, C]
+  ring:            [150 x 150 closed ring, 750 clear of the casing at +0.500, mm, PID02, C, "parasitic circulation, H3"]
+  branch:          [4 inch per burner with manual butterfly D2; D6 deleted, "-", PID02, C]
+  impulse:         [¼ inch Cu air impulse from the branch after D2 to B1, "-", PID02, C, "H8: 1 inch per the valve GA, measure on site"]
+  uv_cooling:      [½ inch from the 7 inch discharge to each C6 head via C9 cock and C11 flexible, "-", PID02, C]
   pit_fans:        [2 x 3 HP, one per burner pit, extract at pit floor, "-", CBA, D, "D-09; source shows one 3 HP fan"]
+
+enclosure:
+  inside:          [8200 x 2750 x 4720 on the casing deck, mm, ZEN, C, "volume 106.4 m3"]
+  roof:            [2 sliding covers, 0.5 HP geared motors with VFD, rack and pinion on the end carriages, 2 limit switches each, "-", ZEN, C]
+  rope_slot:       [200, mm, ZEN, A, "gap between the closed covers for the crane ropes"]
+  doors:           [skimming doors both long sides, 2 electric chain hoists per door at 8 m/min, synchronised pairs, proximity limits, "-", ZEN, C]
+  windows:         [4 x 600 x 600 toughened glass each side, removable frames, "-", ZEN, C]
+  lighting:        [4 x 200 W LED floods at the ends, "-", ZEN, C]
+  suction:         [MS 3 mm lateral ducts on both top edges to the ZFE, "-", ZEN, C]
+  capture:         [20000, m3/h, HDG, C, "max of 2 volume changes per minute (12,770) and 2,000 m3/h per m2 of bath (16,750)"]
+  outlet:          [Ø700 duct to the pulse-jet bag filter, "-", HDG, C]
+  frame:           [SHS 120 x 120 x 6 posts, ISMC 150 top beams, 3 mm MS sheet with 50 x 50 x 6 angle stiffeners, "-", THIS, A, "member sizes to be confirmed by structural check"]
+  height:          [4720, mm, ZEN, C, "deck +0.256 to the top beams +4.976"]
+  wall_plane:      [sheeting flush with the casing outer face; posts stand on the deck over the casing walls, "-", THIS, D, "D-24: inside 8,212 x 2,762 to the sheeting vs 8,200 x 2,750 in the annexure (the casing inside)"]
+  door_head:       [ISMB 300 girt at +2.456 spanning the corner posts; opening deck to +2.456 full length, "-", THIS, D, "D-24"]
+  door:            [7970 x 2306 x 50 framed panel in guides on the corner posts, outside the wall plane, "-", THIS, D, "D-24"]
+  door_lift:       [2150, mm, THIS, D, "full lift for maintenance; D-25"]
+  skim_stop:       [1000, mm, THIS, D, "intermediate proximity stop for skimming, keeps the open-face velocity at or above 0.5 m/s (C-15); D-25"]
+  window_sill:     [1300, mm, THIS, A, "windows in the doors at eye level from FFL"]
+  cover_travel:    [1400, mm, THIS, D, "each cover opens outward; rails and racks on outriggers to ±3.0 m at both end walls"]
+  lateral_duct:    [500 x 700 slot plenum, mm, THIS, D, "inside both top edges below the top beams; plenum velocity under half the slot velocity (C-15); cleaning doors"]
+  slots:           [8 x 700 x 30 per side on the inner face, "-", THIS, D, "0.168 m2 per side, ≈16.5 m/s; sliding shutters for balancing"]
+  header:          [600 x 700 outside the north end wall, "-", THIS, D, "≈13.2 m/s at the outlet"]
+  air_temp:        [50, degC, THIS, A, "A-12: enclosure air for the extraction losses"]
+  outlet_route:    [north from the header then east at +4.476 to a flanged stub at X +4.6 m, "-", THIS, A, "bag-filter location open (O-16)"]
 
 # ------------------------------------------------------------------ flue & heat-recovery loop
 flue:
@@ -212,6 +278,8 @@ loop:
   fresh_air:         [3433, Nm3/h, RevH, C]
   recirc_blower:     ["AEP-ZA-9.0, 48000 m3/h at 120 degC, 72 mmWC, 30 HP", "-", RevH, C]
   recirc_inlet:      [900, mm, RevH, C, "Ø900"]
+  recirc_position:   ["at the SW corner of the discharge trench, where it turns north into the dryer", "-", USER, C, "D-22"]
+  suction_duct:      ["Ø1100 straight from the Ø1114 mixing-box cut-out at +0.90 to the fan, ≈7 m; 1100 → 900 reducer, cruciform straightener and flexible at the fan", "-", THIS, D, "D-22"]
   recirc_outlet:     [900 x 675, down, mm, RevH, C]
   return_flow:       [28614, Nm3/h, RevH, C, "at 100 degC"]
   bleed:             ["Ø400, 4729 Nm3/h, balancing damper BD-1", "-", RevH, C]

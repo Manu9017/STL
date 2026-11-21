@@ -111,12 +111,14 @@ def c01_combustion():
     blower_m3h = 1400.0
     blower_Nm3h = blower_m3h * 273.15 / (T_AMB + 273.15)
     lam_max_full = blower_Nm3h / (gas * stoich_air)
+    pid_lam = 566.0 / (59.0 * stoich_air)
     Q_at_design_lam = blower_Nm3h / (stoich_air * lam_d) * B.v("process.gas_lhv")
     checks = [
         check("Cantera LHV of methane", lhv_kwh, "kWh/Nm3", None, "info", "Rev H basis 9.9"),
         check("Gas at full fire", gas, "Nm3/h", None, "info", "Rev H 118"),
         check("Rev H air ratio λ (as drawn)", lam_revH, "-", 1.05, "min", "Rev H air is almost stoichiometric; design uses λ 1.125", ref=True),
-        check("Design air at full fire", d["air_m3h_amb"], "m3/h @35°C", blower_m3h, "max", "MBI-4040 rated 1,400 m3/h"),
+        check("Design air at full fire", d["air_m3h_amb"], "m3/h @35°C", blower_m3h, "max", "AEP-VB-2.5 duty 1,400 m3/h (Rev H; P&ID Rev U)"),
+        check("SH-PID-02A air ratio per burner (566 / 59 Nm3/h)", pid_lam, "-", None, "info", "P&ID sizing is λ ≈ 1.01, same as Rev H"),
         check("Max λ blower can give at 1,172 kW", lam_max_full, "-", lam_d, "min"),
         check("Max firing rate at design λ", Q_at_design_lam, "kW", None, "info"),
         check("Adiabatic flame temperature (design λ)", d["T_ad"], "degC", None, "info"),
@@ -133,7 +135,8 @@ def c01_combustion():
             "checks": checks,
             "notes": ["Rev H's 1,132 Nm3/h of air is λ ≈ 1.01 at 1,172 kW. Pulse-fired HV burners are normally set at "
                       "10–15 % excess air, so full-fire air is ≈1,264 Nm3/h = ≈1,426 m3/h at 35 °C, just above the "
-                      "MBI-4040's 1,400 m3/h. Confirm the blower curve basis (actual vs normal m3/h) with Mittal.",
+                      "AEP-VB-2.5's 1,400 m3/h duty. Confirm the blower curve basis (actual vs normal m3/h) with AEP (O-04).",
+                      "SH-PID-02A Rev U sizes each burner for 586 kW with 59 Nm3/h gas and 566 Nm3/h air, the same λ ≈ 1.01 as Rev H.",
                       "At design λ the blower supports ≈%.0f kW fired, which is above the ≈%s kW needed for sustained "
                       "production (C-02), so the limit only bites at full fire on heat-up." % (Q_at_design_lam, "870")]}
 
@@ -515,8 +518,12 @@ def c09_loop_dp():
     add("Junction (radiused merge)", duct_dp(Qs, Tsuc, 1.0, 1.0, K=0.4))
     add("Suction trench 1000 × 1000, 4 m", duct_dp(Qs, Tsuc, 1.0, 1.0, L=4.0, rough=1.5e-3))
     rows.append(("Mixing box S2 with R700 deflector (SH-MB-01)", None, B.v("loop.mixing_box_loss")))
-    add("Inlet spool Ø900 + cruciform straightener", duct_dp(Qs, Tsuc, 0, d=0.9, L=0.6, K=0.25))
-    add("Discharge trench 1100 × 1000, 16 m, 2 bends", duct_dp(Qb, Tsup, 1.1, 1.0, L=16, K=2 * 0.35 + 0.3, rough=1.5e-3))
+    g = G
+    L_suc = (g.suction[0] - g.suction[1]) / 1000
+    add(f"Suction duct Ø1100, {L_suc:.1f} m straight (D-22)", duct_dp(Qs, Tsuc, 0, d=1.1, L=L_suc, rough=0.05e-3))
+    add("Reducer 1100 → 900, spool, cruciform straightener", duct_dp(Qs, Tsuc, 0, d=0.9, L=0.6, K=0.05 + 0.25, rough=0.05e-3))
+    L_dis = (0 - (g.rb_axis[2] - 500)) / 1000
+    add(f"Discharge: outlet drop-in turn + trench 1100 × 1000, {L_dis:.1f} m north", duct_dp(Qb, Tsup, 1.1, 1.0, L=L_dis, K=0.5, rough=1.5e-3))
     add("Bleed tee (run)", duct_dp(Qd, Tsup, 1.1, 1.0, K=0.1))
     add("Supply transition 1000 × 700 through the wall", duct_dp(Qd, Tsup, 1.0, 0.7, K=0.5))
     # perforated faces: Ø15 holes in 2 mm plate, staggered 60° at 37 pitch
@@ -554,7 +561,10 @@ def c09_loop_dp():
             "results": {"rows": rows, "total": total, "feed_v": feed_v, "ratio": ratio, "end_ratio": end_ratio,
                         "n_holes": n_holes, "phi": phi, "fan_std_to_hot": fan_std_to_hot},
             "checks": checks,
-            "notes": ["With centre-fed 1,300 × 350 boxes the loop needs about the fan's 72 mmWC, provided that figure is the "
+            "notes": ["D-22 puts the blower at the SW corner, where the discharge turns north into the dryer. The suction "
+                      "side gains a straight Ø1100 duct from the mixing box; the discharge loses ≈8 m of trench and two bends, "
+                      "so the loop total falls slightly.",
+                      "With centre-fed 1,300 × 350 boxes the loop needs about the fan's 72 mmWC, provided that figure is the "
                       "hot (120 °C) rating. If it is a standard-air rating the fan delivers ≈54 mmWC hot and the VFD must run "
                       "it above 50 Hz, or the impeller be re-selected. Confirm with AEP."]}
 
@@ -569,11 +579,11 @@ def c11_fans():
     rows.append(("Recirculation AEP-ZA-9.0", air_kw, shaft, cold, 22.0))
     Qc, dpc = 1400 / 3600, 725 * MMWC
     air_c = Qc * dpc / 1000
-    rows.append(("Combustion MBI-4040", air_c, air_c / 0.60, air_c / 0.60, 5.5))
+    rows.append(("Combustion AEP-VB-2.5 (7.5 HP)", air_c, air_c / 0.60, air_c / 0.60, 5.5))
     pit_vol = 3.0 * 1.8 * (0 - G.bpit_floor) / 1000
     ach_req = 20
     checks = [check("Recirc fan cold-start shaft power", cold, "kW", 22.0, "max", "30 HP = 22 kW"),
-              check("Combustion blower shaft power", air_c / 0.60, "kW", 5.5, "max", "motor rating not in the sources: 5.5 kW derived (A-06)"),
+              check("Combustion blower shaft power", air_c / 0.60, "kW", 5.5, "max", "7.5 HP = 5.5 kW motor (SH-PID-02A Rev U)"),
               check("Burner pit volume", pit_vol, "m3", None, "info"),
               check("Pit fan minimum flow at 20 ACH", pit_vol * ach_req, "m3/h", None, "info", "set 3 HP fan duty ≥ this")]
     return {"id": "C-11", "title": "Fan power", "method": ["P_air = Q·Δp; shaft = P_air/η (η 0.75 recirc, 0.60 combustion); cold start scales with ρ."],
@@ -695,6 +705,74 @@ def c10_quantities():
             "method": ["Areas from the derived geometry; strip layouts per SH-INS-01 Rev B (A–B–A, 25 mm compression per joint)."],
             "results": {"rows": rows, "A_wall": A_wall, "A_floor": A_floor}, "checks": checks, "notes": []}
 
+# =========================================================================== C-15 zinc fume enclosure extraction
+def c15_enclosure():
+    g = G
+    T = B.v("enclosure.air_temp")                        # A-12
+    rho = rho_air(T)
+    Q = B.v("enclosure.capture") / 3600
+    L, W, H = 2 * g.cYo / 1000, 2 * g.cXo / 1000, B.v("enclosure.height") / 1000     # D-24 wall plane = casing outer face
+    V = L * W * H
+    V_ann = 8.2 * 2.75 * 4.72
+    A_bath = B.v("kettle.L_in") * B.v("kettle.W_in") / 1e6
+    q_req = max(2 * V_ann * 60, 2000 * A_bath)
+    slot = B.v("enclosure.rope_slot") / 1000
+    A_slot = slot * L
+    door_len = 7.97
+    deck = g.deck / 1000
+    z_skim = (200 + B.v("enclosure.skim_stop")) / 1000 - deck          # door bottom above the deck at the skimming stop
+    z_full = (200 + B.v("enclosure.door_lift")) / 1000 - deck
+    A_skim, A_full = door_len * z_skim, door_len * z_full
+    v_closed = Q / A_slot
+    v_skim1 = Q / (A_slot + A_skim)
+    v_skim2 = Q / (A_slot + 2 * A_skim)
+    v_full = Q / (A_slot + A_full)
+    v_roof = Q / (L * W)
+    q_side = Q / 2
+    a_slot_side = 8 * 0.70 * 0.030
+    v_slot = q_side / a_slot_side
+    v_plen = q_side / (0.5 * 0.7)
+    v_hdr = Q / (0.6 * 0.7)
+    v_out = Q / (math.pi * 0.7 ** 2 / 4)
+    rows = []
+    vp = lambda v: 0.5 * rho * v * v
+    rows.append(("Slot entry, 1.78 VP (ACGIH)", v_slot, 1.78 * vp(v_slot) / MMWC))
+    d_pl = duct_dp(q_side, T, 0.5, 0.7, L=8.2, K=0.0)
+    rows.append(("Slot plenum 500 × 700, 8.2 m (half-length average)", d_pl["v"], 0.5 * d_pl["dp"] / MMWC))
+    d_h = duct_dp(Q, T, 0.6, 0.7, L=1.3, K=1.0)
+    rows.append(("Plenum → header turn + header 600 × 700", d_h["v"], d_h["dp"] / MMWC))
+    d_o = duct_dp(Q, T, 0, d=0.7, L=6.0, K=0.5 + 2 * 0.25)
+    rows.append(("Ø700 outlet, 6 m, entry + 2 bends to the flange", d_o["v"], d_o["dp"] / MMWC))
+    total = sum(r[2] for r in rows)
+    checks = [
+        check("Capture flow vs requirement", Q * 3600, "m3/h", q_req, "min", "max of 2 volume changes/min and 2,000 m3/h per m2 of bath"),
+        check("Volume changes", Q * 60 / V, "per min", None, "info", f"enclosure {V:.1f} m3 to the sheeting (annexure {V_ann:.1f})"),
+        check("Rope-slot inflow, doors and roof closed", v_closed, "m/s", 1.0, "min", "slot 200 × 8,212; seal leakage ignored (lowers it)"),
+        check("Open-face velocity, one door at the skimming stop", v_skim1, "m/s", 0.5, "min", "ACGIH enclosing hood, hot process; D-25"),
+        check("Open-face velocity, both doors at the skimming stop", v_skim2, "m/s", 0.5, "min", "prevented by the one-door-at-a-time interlock (D-25)", ref=True),
+        check("Open-face velocity, one door at full lift", v_full, "m/s", None, "info", "maintenance only, burners at low fire (D-25)"),
+        check("Roof fully open (jig going in or out)", v_roof, "m/s", None, "info", "uncaptured interval: covers close on the ropes once the jig is down"),
+        check("Slot velocity", v_slot, "m/s", None, "info", "8 × 700 × 30 per side"),
+        check("Plenum / slot velocity ratio", v_plen / v_slot, "-", 0.5, "max", "uniform slot flow rule (ACGIH)"),
+        check("Header velocity", v_hdr, "m/s", 10.0, "min", "fume transport"),
+        check("Outlet Ø700 velocity", v_out, "m/s", 10.0, "min", "fume transport"),
+        check("Hood static pressure at the outlet flange", total, "mmWC", None, "info", "ZFE fan and bag filter add their own losses (O-16)"),
+    ]
+    return {"id": "C-15", "title": "Zinc fume enclosure: capture, open-face velocities and hood losses",
+            "method": ["Enclosure air taken at 50 °C (A). Wall plane = casing outer face (D-24).",
+                       "Requirement: the larger of two volume changes per minute and 2,000 m3/h per m2 of bath (SHIVAS HDG practice).",
+                       "Open-face velocity = capture flow / (rope slot + door openings); 0.5 m/s minimum for an enclosing hood over a hot process (ACGIH).",
+                       "Slot entry loss 1.78 VP; plenum friction over half its length; duct friction from fluids (Colebrook)."],
+            "results": {"rows": rows, "total": total, "V": V, "A_bath": A_bath, "q_req": q_req, "v_slot": v_slot, "v_plen": v_plen},
+            "checks": checks,
+            "notes": ["The skimming doors stop at a 1,000 mm lift for skimming. At that opening, one side open, the face "
+                      "velocity stays above 0.5 m/s. Opening both sides together, or one side to full lift, drops it well "
+                      "below. The door controls therefore let only one side open at a time; full lift is for maintenance (D-25).",
+                      "The roof is open only while a jig goes in or comes out. The covers close on the crane ropes, which run in the "
+                      "200 mm slot, before the jig is dipped.",
+                      "Each slot plenum doubles as a settling chamber: the velocity in it is below fume transport velocity by "
+                      "design, so it has cleaning doors. The header and the Ø700 outlet run at transport velocity."]}
+
 
 def run_all():
     c01 = c01_combustion()
@@ -710,7 +788,8 @@ def run_all():
     c13 = c13_stack(c08)
     c14 = c14_energy(c01, c02, c04)
     c10 = c10_quantities()
-    return [c01, c02, c04, c05, c06, c07, c08, c09, c10, c11, c12, c13, c14]
+    c15 = c15_enclosure()
+    return [c01, c02, c04, c05, c06, c07, c08, c09, c10, c11, c12, c13, c14, c15]
 
 
 if __name__ == "__main__":

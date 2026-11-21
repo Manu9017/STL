@@ -94,7 +94,17 @@
      "limit": 1400.0,
      "kind": "max",
      "status": "MARGINAL",
-     "note": "MBI-4040 rated 1,400 m3/h",
+     "note": "AEP-VB-2.5 duty 1,400 m3/h (Rev H; P&ID Rev U)",
+     "ref": false
+    },
+    {
+     "name": "SH-PID-02A air ratio per burner (566 / 59 Nm3/h)",
+     "value": 1.0077,
+     "unit": "-",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "P&ID sizing is \u03bb \u2248 1.01, same as Rev H",
      "ref": false
     },
     {
@@ -149,7 +159,8 @@
     }
    ],
    "notes": [
-    "Rev H's 1,132 Nm3/h of air is \u03bb \u2248 1.01 at 1,172 kW. Pulse-fired HV burners are normally set at 10\u201315 % excess air, so full-fire air is \u22481,264 Nm3/h = \u22481,426 m3/h at 35 \u00b0C, just above the MBI-4040's 1,400 m3/h. Confirm the blower curve basis (actual vs normal m3/h) with Mittal.",
+    "Rev H's 1,132 Nm3/h of air is \u03bb \u2248 1.01 at 1,172 kW. Pulse-fired HV burners are normally set at 10\u201315 % excess air, so full-fire air is \u22481,264 Nm3/h = \u22481,426 m3/h at 35 \u00b0C, just above the AEP-VB-2.5's 1,400 m3/h duty. Confirm the blower curve basis (actual vs normal m3/h) with AEP (O-04).",
+    "SH-PID-02A Rev U sizes each burner for 586 kW with 59 Nm3/h gas and 566 Nm3/h air, the same \u03bb \u2248 1.01 as Rev H.",
     "At design \u03bb the blower supports \u22481147 kW fired, which is above the \u2248870 kW needed for sustained production (C-02), so the limit only bites at full fire on heat-up."
    ]
   },
@@ -732,16 +743,16 @@
       3.84
      ],
      [
-      "DN50 main, north pit (ID 52.5), 18.2 m",
+      "DN50 main, north pit (ID 52.5), 17.5 m",
       7.7737,
-      2.5185,
-      18.2205
+      2.4465,
+      17.54
      ],
      [
-      "DN50 main, south pit (ID 52.5), 5.3 m",
+      "DN50 main, south pit (ID 52.5), 4.6 m",
       7.7737,
-      1.0911,
-      5.3275
+      1.0191,
+      4.647
      ],
      [
       "DN40 burner train pipework (ID 40.9), 2.5 m",
@@ -752,8 +763,8 @@
     ],
     "L": [
      3.84,
-     18.2205,
-     5.3275
+     17.54,
+     4.647
     ]
    },
    "checks": [
@@ -768,7 +779,7 @@
      "ref": false
     },
     {
-     "name": "DN50 main, north pit (ID 52.5), 18.2 m velocity",
+     "name": "DN50 main, north pit (ID 52.5), 17.5 m velocity",
      "value": 7.7737,
      "unit": "m/s",
      "limit": 20,
@@ -778,7 +789,7 @@
      "ref": false
     },
     {
-     "name": "DN50 main, south pit (ID 52.5), 5.3 m velocity",
+     "name": "DN50 main, south pit (ID 52.5), 4.6 m velocity",
      "value": 7.7737,
      "unit": "m/s",
      "limit": 20,
@@ -799,7 +810,7 @@
     },
     {
      "name": "Pipework loss skid \u2192 north burner train",
-     "value": 5.9578,
+     "value": 5.8858,
      "unit": "mbar",
      "limit": null,
      "kind": "info",
@@ -996,14 +1007,19 @@
       9.2
      ],
      [
-      "Inlet spool \u00d8900 + cruciform straightener",
-      19.2872,
-      4.3787
+      "Suction duct \u00d81100, 6.6 m straight (D-22)",
+      12.9113,
+      0.6081
      ],
      [
-      "Discharge trench 1100 \u00d7 1000, 16 m, 2 bends",
+      "Reducer 1100 \u2192 900, spool, cruciform straightener",
+      19.2872,
+      5.1295
+     ],
+     [
+      "Discharge: outlet drop-in turn + trench 1100 \u00d7 1000, 8.1 m north",
       12.1212,
-      8.9776
+      4.5029
      ],
      [
       "Bleed tee (run)",
@@ -1036,7 +1052,7 @@
       5.8038
      ]
     ],
-    "total": 74.0472,
+    "total": 70.9314,
     "feed_v": 12.5714,
     "ratio": 2.0539,
     "end_ratio": 0.3038,
@@ -1047,17 +1063,17 @@
    "checks": [
     {
      "name": "Loop total (D-12 centre-fed boxes)",
-     "value": 74.0472,
+     "value": 70.9314,
      "unit": "mmWC",
      "limit": 72.0,
      "kind": "max",
-     "status": "MARGINAL",
+     "status": "PASS",
      "note": "if 72 mmWC is rated at 120 \u00b0C",
      "ref": false
     },
     {
      "name": "Loop total vs fan if 72 mmWC is a 20 \u00b0C rating",
-     "value": 74.0472,
+     "value": 70.9314,
      "unit": "mmWC",
      "limit": 53.6572,
      "kind": "max",
@@ -1107,6 +1123,7 @@
     }
    ],
    "notes": [
+    "D-22 puts the blower at the SW corner, where the discharge turns north into the dryer. The suction side gains a straight \u00d81100 duct from the mixing box; the discharge loses \u22488 m of trench and two bends, so the loop total falls slightly.",
     "With centre-fed 1,300 \u00d7 350 boxes the loop needs about the fan's 72 mmWC, provided that figure is the hot (120 \u00b0C) rating. If it is a standard-air rating the fan delivers \u224854 mmWC hot and the VFD must run it above 50 Hz, or the impeller be re-selected. Confirm with AEP."
    ]
   },
@@ -1232,7 +1249,7 @@
       22.0
      ],
      [
-      "Combustion MBI-4040",
+      "Combustion AEP-VB-2.5 (7.5 HP)",
       2.7649,
       4.6082,
       4.6082,
@@ -1259,7 +1276,7 @@
      "limit": 5.5,
      "kind": "max",
      "status": "PASS",
-     "note": "motor rating not in the sources: 5.5 kW derived (A-06)",
+     "note": "7.5 HP = 5.5 kW motor (SH-PID-02A Rev U)",
      "ref": false
     },
     {
@@ -1535,13 +1552,180 @@
     }
    ],
    "notes": []
+  },
+  {
+   "id": "C-15",
+   "title": "Zinc fume enclosure: capture, open-face velocities and hood losses",
+   "method": [
+    "Enclosure air taken at 50 \u00b0C (A). Wall plane = casing outer face (D-24).",
+    "Requirement: the larger of two volume changes per minute and 2,000 m3/h per m2 of bath (SHIVAS HDG practice).",
+    "Open-face velocity = capture flow / (rope slot + door openings); 0.5 m/s minimum for an enclosing hood over a hot process (ACGIH).",
+    "Slot entry loss 1.78 VP; plenum friction over half its length; duct friction from fluids (Colebrook)."
+   ],
+   "results": {
+    "rows": [
+     [
+      "Slot entry, 1.78 VP (ACGIH)",
+      16.5344,
+      27.1057
+     ],
+     [
+      "Slot plenum 500 \u00d7 700, 8.2 m (half-length average)",
+      7.9365,
+      0.5737
+     ],
+     [
+      "Plenum \u2192 header turn + header 600 \u00d7 700",
+      13.2275,
+      10.1844
+     ],
+     [
+      "\u00d8700 outlet, 6 m, entry + 2 bends to the flange",
+      14.4358,
+      13.7842
+     ]
+    ],
+    "total": 51.6481,
+    "V": 107.0569,
+    "A_bath": 8.375,
+    "q_req": 16750.0,
+    "v_slot": 16.5344,
+    "v_plen": 7.9365
+   },
+   "checks": [
+    {
+     "name": "Capture flow vs requirement",
+     "value": 20000.0,
+     "unit": "m3/h",
+     "limit": 16750.0,
+     "kind": "min",
+     "status": "PASS",
+     "note": "max of 2 volume changes/min and 2,000 m3/h per m2 of bath",
+     "ref": false
+    },
+    {
+     "name": "Volume changes",
+     "value": 3.1136,
+     "unit": "per min",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "enclosure 107.1 m3 to the sheeting (annexure 106.4)",
+     "ref": false
+    },
+    {
+     "name": "Rope-slot inflow, doors and roof closed",
+     "value": 3.3826,
+     "unit": "m/s",
+     "limit": 1.0,
+     "kind": "min",
+     "status": "PASS",
+     "note": "slot 200 \u00d7 8,212; seal leakage ignored (lowers it)",
+     "ref": false
+    },
+    {
+     "name": "Open-face velocity, one door at the skimming stop",
+     "value": 0.6061,
+     "unit": "m/s",
+     "limit": 0.5,
+     "kind": "min",
+     "status": "PASS",
+     "note": "ACGIH enclosing hood, hot process; D-25",
+     "ref": false
+    },
+    {
+     "name": "Open-face velocity, both doors at the skimming stop",
+     "value": 0.3329,
+     "unit": "m/s",
+     "limit": 0.5,
+     "kind": "min",
+     "status": "SUPERSEDED",
+     "note": "prevented by the one-door-at-a-time interlock (D-25)",
+     "ref": true
+    },
+    {
+     "name": "Open-face velocity, one door at full lift",
+     "value": 0.3031,
+     "unit": "m/s",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "maintenance only, burners at low fire (D-25)",
+     "ref": false
+    },
+    {
+     "name": "Roof fully open (jig going in or out)",
+     "value": 0.2449,
+     "unit": "m/s",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "uncaptured interval: covers close on the ropes once the jig is down",
+     "ref": false
+    },
+    {
+     "name": "Slot velocity",
+     "value": 16.5344,
+     "unit": "m/s",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "8 \u00d7 700 \u00d7 30 per side",
+     "ref": false
+    },
+    {
+     "name": "Plenum / slot velocity ratio",
+     "value": 0.48,
+     "unit": "-",
+     "limit": 0.5,
+     "kind": "max",
+     "status": "PASS",
+     "note": "uniform slot flow rule (ACGIH)",
+     "ref": false
+    },
+    {
+     "name": "Header velocity",
+     "value": 13.2275,
+     "unit": "m/s",
+     "limit": 10.0,
+     "kind": "min",
+     "status": "PASS",
+     "note": "fume transport",
+     "ref": false
+    },
+    {
+     "name": "Outlet \u00d8700 velocity",
+     "value": 14.4358,
+     "unit": "m/s",
+     "limit": 10.0,
+     "kind": "min",
+     "status": "PASS",
+     "note": "fume transport",
+     "ref": false
+    },
+    {
+     "name": "Hood static pressure at the outlet flange",
+     "value": 51.6481,
+     "unit": "mmWC",
+     "limit": null,
+     "kind": "info",
+     "status": "INFO",
+     "note": "ZFE fan and bag filter add their own losses (O-16)",
+     "ref": false
+    }
+   ],
+   "notes": [
+    "The skimming doors stop at a 1,000 mm lift for skimming. At that opening, one side open, the face velocity stays above 0.5 m/s. Opening both sides together, or one side to full lift, drops it well below. The door controls therefore let only one side open at a time; full lift is for maintenance (D-25).",
+    "The roof is open only while a jig goes in or comes out. The covers close on the crane ropes, which run in the 200 mm slot, before the jig is dipped.",
+    "Each slot plenum doubles as a settling chamber: the velocity in it is below fume transport velocity by design, so it has cleaning doors. The header and the \u00d8700 outlet run at transport velocity."
+   ]
   }
  ],
  "counts": {
-  "INFO": 36,
-  "SUPERSEDED": 11,
-  "MARGINAL": 3,
-  "PASS": 32,
+  "INFO": 42,
+  "SUPERSEDED": 12,
+  "MARGINAL": 2,
+  "PASS": 39,
   "FAIL": 1
  }
 }

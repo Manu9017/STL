@@ -245,7 +245,7 @@ class Sheet:
             self.text(f"{i + 1}. {s}", (x, y + 4.5 * (len(lines) - 1 - i)), 2.1)
 
     # -- views
-    def view(self, title, view, origin, scale, cut=None, include=None, bbox=None, exclude=("load", "enclosure"), clip=None):
+    def view(self, title, view, origin, scale, cut=None, include=None, bbox=None, exclude=("load", "enclosure"), clip=None, title_dy=12):
         """Project parts. origin: paper point for model (u=0, v=0). clip: (umin, umax, vmin, vmax) model limits."""
         ps = parts(include=include, bbox=bbox, exclude=exclude)
         cp = cut_parts(ps, cut)
@@ -303,8 +303,8 @@ class Sheet:
                 umin, umax, vmin, vmax = min(umin, u), max(umax, u), min(vmin, v), max(vmax, v)
             self.msp.add_lwpolyline([T(*q) for q in pts], dxfattribs={"layer": "VISIBLE"})
         tx, ty = T(umin, vmax)
-        self.text(title, (tx, ty + 12), 4.0)
-        self.text(f"SCALE 1:{scale:g}", (tx, ty + 7.5), 2.4)
+        self.text(title, (tx, ty + title_dy), 4.0)
+        self.text(f"SCALE 1:{scale:g}", (tx, ty + title_dy - 4.5), 2.4)
         self.extent = (umin, umax, vmin, vmax)
         return T
 

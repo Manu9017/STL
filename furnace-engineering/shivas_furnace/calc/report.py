@@ -166,7 +166,7 @@ def build():
             body = "".join(f"<tr><td>{html.escape(k)}</td><td class='n'>{v['surf']:.1f}</td><td class='n'>{v['P_net_max']:.0f}</td><td class='n'>{v['tph_max']:.2f}</td>"
                            f"<td class='n'>{v['flux_6_0']:.1f}</td><td class='n'>{v['flux_6_7']:.1f}</td></tr>" for k, v in r["cases"].items())
             parts.append(f"<div class='tw'><table>{hdr}{body}</table></div>")
-        if c["id"] in ("C-05", "C-09"):
+        if c["id"] in ("C-05", "C-09", "C-15"):
             rows = r["items"] if c["id"] == "C-05" else r["rows"]
             body = "".join(f"<tr><td>{html.escape(n)}</td><td class='n'>{'—' if v is None else f'{v:.1f}'}</td><td class='n'>{d:.1f}</td></tr>" for n, v, d in rows)
             tot = r["total_mmWC"] if c["id"] == "C-05" else r["total"]
