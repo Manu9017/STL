@@ -296,6 +296,24 @@ h3:not(#v39a):not(#v39b):not(#v61){font-weight:700!important;letter-spacing:-.01
 .cx-nav a[aria-current="true"] small,.cx-nav a[aria-current="true"] span{color:#fff!important}
 /* calculator drop-downs take the full width of the form, so long choices are not cut off */
 .cx-in .fld.fsel{grid-column:1/-1}
+/* a long typical-value item may wrap on a phone instead of widening the page */
+@media (max-width:640px){.cx-assume i{white-space:normal}}
+/* ETP and ZLD process flow diagram (calculators): scrolls sideways on phones, colours follow the theme */
+.zfd{overflow-x:auto;min-width:0;max-width:100%;border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:8px}
+.zfd svg{display:block;min-width:760px;width:100%;height:auto;font-family:"Noto Sans","Segoe UI",Arial,sans-serif}
+.zfd rect{fill:var(--soft);stroke:var(--line);stroke-width:1.2}
+.zfd .t{font-size:14px;font-weight:700;fill:var(--fg)}
+.zfd .v{font-size:12.5px;fill:var(--muted)}
+.zfd .o{font-size:12px;font-weight:600;fill:var(--muted)}
+.zfd .ar{fill:none;stroke:var(--muted);stroke-width:1.6;marker-end:url(#zar)}
+.zfd .mk{fill:var(--muted)}
+.zfd .ar.w{stroke:#0a6e78;marker-end:url(#zarw)}.zfd .mkw,.zfd .o.w{fill:#0a6e78}
+.zfd .ar.s{stroke:#945400;marker-end:url(#zars)}.zfd .mks,.zfd .o.s{fill:#945400}
+.zfd .sl rect{stroke:#945400;stroke-width:1.8}
+.zfd .off{opacity:.55}
+:root[data-theme="dark"] .zfd .ar.w{stroke:#5fe0e8}:root[data-theme="dark"] .zfd :is(.mkw,.o.w){fill:#5fe0e8}
+:root[data-theme="dark"] .zfd .ar.s{stroke:#ffc35a}:root[data-theme="dark"] .zfd :is(.mks,.o.s){fill:#ffc35a}
+:root[data-theme="dark"] .zfd .sl rect{stroke:#ffc35a}
 .mx label>span i,.xp-prog span{opacity:1!important}
 /* water-system keys and the Reinplast line scope list (light cards) */
 :root:not([data-theme="dark"]) .ws-air .ws-k{color:#7a5c00!important}

@@ -434,8 +434,149 @@
     }
   });
 
+  /* ---------------- 12. ETP + ZLD: neutralisation, sludge, RO, MEE or MVR, crystallizer, ATFD ---------------- */
+  var NEUT = { lime: 'Hydrated lime', naoh: 'Caustic soda', soda: 'Lime, then soda ash' };
+  var TRAIN = { mee: 'MEE, then ATFD', meec: 'MEE with crystallizer, then ATFD', mvr: 'MVR, then ATFD', mvrc: 'MVR with crystallizer, then ATFD', atfd: 'No evaporator: ATFD takes the RO reject' };
+  var ECON = { 3: 2.5, 4: 3.2, 5: 3.9 };   // typical kg of water evaporated per kg of steam for 3, 4 and 5 effects
+  function zldSvg(top, bot) {   // two rows of boxes: top left to right, bottom right to left, joined at the right end
+    var W = 140, H = 66, G = 22, X = function (i) { return 10 + i * (W + G); }, y1 = 22, y2 = 196, s = '';
+    var box = function (x, y, b) {
+      return '<g class="' + (b.c || '') + '"><rect x="' + x + '" y="' + y + '" width="' + W + '" height="' + H + '" rx="9"/>' +
+        '<text x="' + (x + 10) + '" y="' + (y + 22) + '" class="t">' + b.t + '</text>' +
+        '<text x="' + (x + 10) + '" y="' + (y + 41) + '" class="v">' + b.s + '</text>' + (b.s2 ? '<text x="' + (x + 10) + '" y="' + (y + 57) + '" class="v">' + b.s2 + '</text>' : '') + '</g>' +
+        (b.o ? '<path class="ar ' + (b.oc || '') + '" d="M' + (x + W / 2) + ' ' + (y + H) + 'v20"/><text x="' + (x + W / 2) + '" y="' + (y + H + 34) + '" class="o ' + (b.oc || '') + '" text-anchor="middle">' + b.o + '</text>' : '');
+    };
+    top.forEach(function (b, i) { s += box(X(i), y1, b); if (i) s += '<path class="ar" d="M' + (X(i) - G + 2) + ' ' + (y1 + H / 2) + 'h' + (G - 6) + '"/>'; });
+    var r = top.length - 1;
+    s += '<path class="ar" d="M' + (X(r) + W / 2) + ' ' + (y1 + H + 44) + 'V' + (y2 - 4) + '"/>';
+    bot.forEach(function (b, i) { var x = X(r - i); s += box(x, y2, b); if (i) s += '<path class="ar" d="M' + (x + W + G - 2) + ' ' + (y2 + H / 2) + 'h-' + (G - 6) + '"/>'; });
+    return '<svg viewBox="0 0 ' + (X(r) + W + 10) + ' ' + (y2 + H + 44) + '" role="img" aria-label="Process flow of the ETP and ZLD plant, with the flows worked out above">' +
+      '<defs>' + ['', 'w', 's'].map(function (k) { return '<marker id="zar' + k + '" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="mk' + k + '" d="M0 0L8 4L0 8z"/></marker>'; }).join('') + '</defs>' + s + '</svg>';
+  }
+  CALCS.push({
+    id: 'zld', div: 'rein', t: 'ETP and ZLD plant', s: 'Neutraliser, sludge, RO, MEE or MVR, ATFD, steam and power',
+    lead: 'Size the whole effluent plant for a pickling, galvanizing or wire shop, from the acidic effluent to dry salt: the neutraliser and the filter cake, the tanks and clarifier, how much water reverse osmosis gives back, the evaporator (multiple-effect or MVR) with its steam or power, the crystallizer if you want one, and the agitated thin film dryer (ATFD) that turns the last brine into dry salt.',
+    inputs: [
+      { k: 'q', l: 'Dilute effluent: rinses, scrubber bleed, floor wash', u: 'm³/day', v: 88, step: 1, min: 0 },
+      { k: 'hq', l: 'Free acid in it', u: 'g/L HCl', v: 1.5, step: 0.1, min: 0, max: 50, hint: 'from a composite sample' },
+      { k: 'fq', l: 'Iron in it', u: 'g/L', v: 0.8, step: 0.1, min: 0, max: 50 },
+      { k: 'sa', l: 'Spent acid neutralised in the ETP', u: 'm³/day', v: 2, step: 0.1, min: 0, hint: '0 if it is regenerated or sold' },
+      { k: 'neut', l: 'Neutraliser', type: 'sel', opts: Object.keys(NEUT).map(function (k) { return [k, NEUT[k]]; }), v: 'lime' },
+      { k: 'train', l: 'Evaporation and drying', type: 'sel', opts: Object.keys(TRAIN).map(function (k) { return [k, TRAIN[k]]; }), v: 'mee' },
+      { k: 'nef', l: 'Effects in the MEE', type: 'sel', opts: [['3', '3 effects'], ['4', '4 effects'], ['5', '5 effects']], v: '4' },
+      { k: 'safe', adv: 1, l: 'Iron in the spent acid', u: 'g/L', v: 130, step: 5, min: 0, max: 220 },
+      { k: 'sahcl', adv: 1, l: 'Free acid in the spent acid', u: '% HCl', v: 3, step: 0.5, min: 0, max: 20 },
+      { k: 'sasg', adv: 1, l: 'Density of the spent acid', u: 'kg/L', v: 1.25, step: 0.01, min: 1, max: 1.6 },
+      { k: 'zn', adv: 1, l: 'Zinc in the spent acid', u: 'g/L', v: 0, step: 5, min: 0, max: 250 },
+      { k: 'tds0', adv: 1, l: 'Other dissolved salts in the dilute effluent', u: 'mg/L', v: 1500, step: 100, min: 0 },
+      { k: 'hrs', adv: 1, l: 'ETP running hours', u: 'h/day', v: 20, step: 1, min: 4, max: 24 },
+      { k: 'pur', adv: 1, l: 'Lime purity', u: '% Ca(OH)₂', v: 90, step: 1, min: 50, max: 100 },
+      { k: 'ex', adv: 1, l: 'Reagent excess', u: '%', v: 10, step: 1, min: 0, max: 50 },
+      { k: 'cake', adv: 1, l: 'Solids in the filter cake', u: '%', v: 35, step: 1, min: 15, max: 70 },
+      { k: 'eqh', adv: 1, l: 'Equalisation, hours of average flow', u: 'h', v: 12, step: 1, min: 2, max: 48 },
+      { k: 'sor', adv: 1, l: 'Clarifier surface loading', u: 'm³/m²·h', v: 1, step: 0.1, min: 0.3, max: 3 },
+      { k: 'ote', adv: 1, l: 'Oxygen transfer of the aeration', u: '%', v: 10, step: 1, min: 3, max: 40, hint: 'coarse bubble, shallow tank ≈ 5 to 10' },
+      { k: 'rorec', adv: 1, l: 'RO recovery wanted', u: '%', v: 75, step: 1, min: 0, max: 95 },
+      { k: 'rotds', adv: 1, l: 'Highest salt in the RO reject', u: 'mg/L', v: 60000, step: 1000, min: 10000, max: 90000, hint: 'sets the highest recovery' },
+      { k: 'rorej', adv: 1, l: 'RO salt rejection', u: '%', v: 98, step: 0.5, min: 80, max: 99.8 },
+      { k: 'econ', adv: 1, l: 'MEE steam economy, if your supplier gives one', u: 'kg/kg', v: 0, step: 0.1, min: 0, max: 8, hint: '0 = typical for the effects', auto: 'typical for the effects' },
+      { k: 'mvrk', adv: 1, l: 'MVR power per m³ evaporated', u: 'kWh', v: 30, step: 1, min: 8, max: 80, hint: 'typically about 20 to 50' },
+      { k: 'evx', adv: 1, l: 'Solids in the evaporator concentrate', u: '%', v: 0, step: 1, min: 0, max: 70, hint: '0 = near saturation for the salt', auto: 'near saturation' },
+      { k: 'cry', adv: 1, l: 'Salt the crystallizer takes out', u: '%', v: 85, step: 1, min: 0, max: 98, hint: 'of the salt it can crystallize' },
+      { k: 'adry', adv: 1, l: 'Dryness of the ATFD product', u: '% solids', v: 95, step: 1, min: 70, max: 99 },
+      { k: 'asteam', adv: 1, l: 'ATFD steam per kg of water', u: 'kg/kg', v: 1.25, step: 0.05, min: 1, max: 2 },
+      { k: 'zh', adv: 1, l: 'Evaporator and ATFD running hours', u: 'h/day', v: 24, step: 1, min: 8, max: 24 },
+      { k: 'ps', adv: 1, l: 'Steam price (yours)', u: '₹/t', v: 2500, step: 100, min: 0 },
+      { k: 'pe', adv: 1, l: 'Power price (yours)', u: '₹/kWh', v: 8, step: 0.5, min: 0 }
+    ],
+    run: function (v) {
+      var Fin = v.q + v.sa, warn = [], n = +v.nef || 4;
+      if (!(Fin > 0)) return { warn: ['Enter the effluent flow.'] };
+      /* acid load, kg a day */
+      var hcl = v.q * v.hq + v.sa * 1000 * v.sasg * v.sahcl / 100, fe = v.q * v.fq + v.sa * v.safe, zn = v.sa * v.zn;
+      var eq = hcl / 36.461 + 2 * fe / 55.845 + 2 * zn / 65.38;                                   // kmol of acid to neutralise (chloride equivalents)
+      /* neutraliser, salt left in the water, sludge, reagent water */
+      var X = 1 + v.ex / 100, caoh = eq / 2 * 74.093, lime = 0, naoh = 0, soda = 0, salt, saltN, resid = 0, caco3 = 0, rw = 0, extraDS = 0;
+      if (v.neut === 'naoh') { naoh = eq * 39.997 * X; salt = eq * 58.443; saltN = 'sodium chloride'; extraDS = eq * 39.997 * (X - 1); rw = naoh * 0.52 / 0.48; }
+      else {
+        lime = caoh * X / (v.pur / 100); resid = lime - caoh; rw = lime * 9;                      // dosed as a 10 % slurry
+        if (v.neut === 'soda') { soda = eq / 2 * 105.988 * X; caco3 = eq / 2 * 100.087; salt = eq * 58.443; saltN = 'sodium chloride'; extraDS = eq / 2 * 105.988 * (X - 1); rw += soda * 9; }
+        else { salt = eq / 2 * 110.98; saltN = 'calcium chloride'; }
+      }
+      var dry = fe * 1.9136 + zn * 1.5202 + resid + caco3, cake = dry / (v.cake / 100), cakeW = cake - dry;
+      var Wtot = Fin + rw / 1000, Ft = Wtot - cakeW / 1000, bg = v.q * v.tds0 / 1000, DS = salt + bg + extraDS, tdsF = DS / Ft * 1000;   // m³/day, kg/day, mg/L
+      /* reverse osmosis */
+      var r = 0, tdsP = 0, tdsR = tdsF, P = 0, roKwh = 0;
+      if (v.rorec > 0 && tdsF < 0.9 * v.rotds) {
+        r = Math.min(v.rorec / 100, 1 - tdsF / v.rotds);
+        if (r < 0.2) r = 0;
+      }
+      if (r > 0) {
+        var avg = tdsF * Math.log(1 / (1 - r)) / r; tdsP = (1 - v.rorej / 100) * avg; tdsR = (tdsF - r * tdsP) / (1 - r);
+        P = Math.max(8, 0.78 * tdsR / 1000 + 5); roKwh = Ft * P * 0.037;
+      } else warn.push('The treated water carries ' + fx(tdsF) + ' mg/L of salt, too much for reverse osmosis at the reject limit you set, so all of it goes to the evaporator. Less spent acid in the ETP, or acid regeneration, changes that.');
+      var perm = r * Ft, Qe = Ft - perm, Se = DS - perm * tdsP / 1000, We = Qe * (1000 - 0.3 * tdsR / 1000);   // evaporator feed: m³, kg solids, kg water a day
+      /* evaporator, crystallizer, ATFD */
+      var hasEv = v.train !== 'atfd', hasCr = v.train === 'meec' || v.train === 'mvrc', mvr = v.train === 'mvr' || v.train === 'mvrc';
+      var evx = v.evx > 0 ? v.evx : (saltN === 'calcium chloride' ? 40 : 26);
+      var cryst = 0, crW = 0;
+      if (hasCr) { cryst = (saltN === 'sodium chloride' ? salt + bg : bg) * v.cry / 100; crW = cryst * 5 / 95; }
+      var Sml = Se - cryst, Mml = Sml / (evx / 100), Wml = Mml - Sml, Ev = 0;
+      if (hasEv) { Ev = We - Wml - crW; if (Ev < 0) { Ev = 0; Wml = We; } } else Wml = We;
+      Mml = Sml + Wml;                                                                    // brine the ATFD receives
+      var prod = Sml / (v.adry / 100), Ea = Math.max(0, Wml - (prod - Sml));
+      var econ = v.econ > 0 ? v.econ : ECON[n], stEv = hasEv && !mvr ? Ev / econ : 0, kwEv = hasEv && mvr ? Ev / 1000 * v.mvrk : 0, stA = Ea * v.asteam;
+      var steam = (stEv + stA) / 1000, power = kwEv + roKwh, cost = steam * v.ps + power * v.pe;
+      var cool = ((hasEv && !mvr ? Ev / n : 0) + Ea) * 2350 / (v.zh * 3600);        // kW to the cooling tower from the last effect and the ATFD condenser
+      var rec = perm + Ev / 1000 + Ea / 1000, recP = rec / Wtot * 100;
+      /* ETP sizes */
+      var qh = Fin / v.hrs, eqV = Fin / 24 * v.eqh, cA = qh / v.sor, cD = Math.sqrt(4 * cA / Math.PI);
+      var air = fe * 0.14325 / (0.232 * 1.293) / (v.ote / 100) / v.hrs, press = cake / 1300 / 2 * 1000;
+      if (tdsF > 0 && r > 0 && fe > 0) warn.push('Iron fouls RO membranes: the clarified water must be filtered (sand, then carbon or cartridge) and the iron kept very low before the RO.');
+      if (mvr && saltN === 'calcium chloride' && evx > 30) warn.push('Calcium chloride raises the boiling point steeply as it concentrates, which an MVR fan or compressor cannot follow far. With lime, an MVR usually takes the brine part of the way, and steam-heated effects or the ATFD finish it.');
+      if (hasCr && saltN === 'calcium chloride') warn.push('With lime the salt is calcium chloride. It stays dissolved to very high strength, so a crystallizer takes out only the other salts and most of the solids still go to the ATFD. Caustic soda, or lime followed by soda ash, gives sodium chloride, which crystallizes.');
+      if (saltN === 'calcium chloride') warn.push('The dry product is mainly calcium chloride, which draws moisture from the air. Bag it hot in lined bags and store it dry.');
+      if (hasEv && Ev / 1000 < 3 && v.train !== 'atfd') warn.push('Less than 3 m³ a day reaches the evaporator. At this size an ATFD alone, without an evaporator, is often the simpler plant.');
+      var NL = v.neut === 'naoh' ? 'Caustic soda' : v.neut === 'soda' ? 'Lime + soda ash' : 'Hydrated lime';
+      var dose = v.neut === 'naoh' ? naoh : lime + soda;
+      var evName = !hasEv ? 'No evaporator' : mvr ? 'MVR' : n + '-effect MEE';
+      var rows = [['Acid load', fx(hcl) + ' kg HCl, ' + fx(fe) + ' kg iron' + (zn > 0 ? ', ' + fx(zn) + ' kg zinc' : '') + ' a day'],
+        [v.neut === 'naoh' ? 'Caustic soda' : 'Hydrated lime', v.neut === 'naoh' ? fx(naoh) + ' kg/day (100 %), about ' + fx(naoh / 0.48 / 1.51) + ' L of 48 % lye' : fx(lime) + ' kg/day, ' + fx(lime * 10 / 1000, 1) + ' m³ of 10 % slurry'],
+      ].concat(soda ? [['Soda ash', fx(soda) + ' kg/day, swaps the calcium for sodium']] : []).concat([
+        ['Equalisation tank', fx(eqV) + ' m³'], ['Neutralisation tanks', '2 × ' + fx(qh * 0.5, 1) + ' m³ (30 minutes each)'], ['Oxidation tank and air', fx(qh, 1) + ' m³, about ' + fx(air) + ' Nm³/h of air'],
+        ['Clarifier', fx(cA, 1) + ' m², Ø ' + fx(cD, 1) + ' m'], ['Filter press', fx(cake / 1300, 2) + ' m³ of cake a day, about ' + fx(press) + ' L of chambers at two cycles'],
+        ['Salt left in the treated water', fx(DS) + ' kg/day, ' + fx(tdsF) + ' mg/L, mainly ' + saltN],
+        ['RO', r > 0 ? fx(r * 100) + ' % recovery, reject ' + fx(tdsR) + ' mg/L, feed ≈ ' + fx(P) + ' bar, ' + fx(roKwh) + ' kWh/day' : 'bypassed'],
+        ['Evaporator', hasEv ? evName + ', ' + fx(Ev / v.zh) + ' kg/h of water' + (mvr ? ', ' + fx(kwEv) + ' kWh/day' : ', steam ' + fx(stEv / 1000, 2) + ' t/day at economy ' + fx(econ, 1)) : 'none']]).concat(hasCr ? [['Crystallizer and centrifuge', fx(cryst / 1000, 2) + ' t/day of salt crystals']] : []).concat([
+        ['ATFD', fx(Wml / v.zh) + ' kg/h of water in, ' + fx(Ea / v.zh) + ' kg/h evaporated, steam ' + fx(stA / 1000, 2) + ' t/day'],
+        ['Cooling tower load', fx(cool) + ' kW (' + (mvr || !hasEv ? 'ATFD condenser' : 'last effect and ATFD condenser') + ')'],
+        ['Energy cost', '₹' + fx(cost) + ' a day, ₹' + fx(cost / Fin) + ' per m³ of effluent']]);
+      var trows = [['Dilute effluent', fx(v.q, 1), fx(v.hq, 1) + ' g/L HCl, ' + fx(v.fq, 1) + ' g/L Fe', 'Equalisation'], ['Spent acid', fx(v.sa, 1), fx(v.safe) + ' g/L Fe', 'Neutralisation'],
+        ['Reagent water', fx(rw / 1000, 1), NL, 'Neutralisation'], ['Filter cake', fx(cake / 1000, 2) + ' t', v.cake + ' % solids', 'Disposal'], ['Treated water', fx(Ft, 1), fx(tdsF) + ' mg/L', r > 0 ? 'RO' : hasEv ? 'Evaporator' : 'ATFD']
+      ].concat(r > 0 ? [['RO permeate', fx(perm, 1), fx(tdsP) + ' mg/L', 'Reuse'], ['RO reject', fx(Qe, 1), fx(tdsR) + ' mg/L', hasEv ? 'Evaporator' : 'ATFD']] : [])
+        .concat(hasEv ? [['Evaporator condensate', fx(Ev / 1000, 1), 'low salt', 'Reuse']] : []).concat(hasCr ? [['Salt crystals', fx(cryst / 1000, 2) + ' t', '95 % solids', 'Bagging']] : [])
+        .concat([['Brine to the ATFD', fx(Mml / 1000, 2) + ' t', fx(Sml / Mml * 100) + ' % solids', 'ATFD'], ['ATFD condensate', fx(Ea / 1000, 2), 'low salt', 'Reuse'], ['Dry salt', fx(prod / 1000, 2) + ' t', v.adry + ' % solids', 'Bagging']]);
+      var top = [{ t: 'Effluent', s: fx(Fin) + ' m³/day', s2: fx(hcl) + ' kg HCl/day' }, { t: 'Equalisation', s: fx(eqV) + ' m³' },
+        { t: 'Neutralise, aerate', s: NL.toLowerCase(), s2: fx(dose) + ' kg/day' }, { t: 'Clarifier', s: 'Ø ' + fx(cD, 1) + ' m', o: 'cake ' + fx(cake / 1000, 1) + ' t/day', oc: 's' },
+        { t: 'Filters', s: 'sand, carbon', s2: fx(Ft, 1) + ' m³/day' }, { t: 'RO', s: r > 0 ? fx(r * 100) + ' % recovery' : 'bypassed', s2: r > 0 ? fx(P) + ' bar' : '', o: r > 0 ? fx(perm, 1) + ' m³/day water' : '', oc: 'w', c: r > 0 ? '' : 'off' }];
+      var bot = [{ t: hasEv ? evName : 'Evaporator', s: hasEv ? fx(Ev / 1000, 1) + ' m³/day off' : 'not used', s2: hasEv ? (mvr ? fx(kwEv) + ' kWh/day' : fx(stEv / 1000, 1) + ' t steam/day') : '', o: hasEv ? 'condensate to reuse' : '', oc: 'w', c: hasEv ? '' : 'off' }]
+        .concat(hasCr ? [{ t: 'Crystallizer', s: 'and centrifuge', s2: fx(cryst / 1000, 2) + ' t/day salt', o: 'crystals', oc: 's' }] : [])
+        .concat([{ t: 'ATFD', s: fx(Ea / 1000, 1) + ' m³/day off', s2: fx(stA / 1000, 1) + ' t steam/day', o: 'condensate to reuse', oc: 'w' }, { t: 'Dry salt', s: fx(prod / 1000, 2) + ' t/day', s2: saltN, c: 'sl' }]);
+      return {
+        key: [['ETP design flow', fx(qh, 1) + ' m³/h', fx(Fin) + ' m³/day in ' + v.hrs + ' h'], [NL, fx(dose) + ' kg/day', 'filter cake ' + fx(cake / 1000, 1) + ' t/day'],
+          ['RO water back', r > 0 ? fx(perm, 1) + ' m³/day' : 'bypassed', r > 0 ? fx(r * 100) + ' % recovery' : 'feed too salty for RO'], ['Evaporator', hasEv ? fx(Ev / 1000, 1) + ' m³/day' : 'none', hasEv ? evName + (mvr ? ', ' + fx(kwEv) + ' kWh/day' : ', ' + fx(stEv / 1000, 1) + ' t steam/day') : 'ATFD only'],
+          ['ATFD dry salt', fx(prod / 1000, 2) + ' t/day', 'steam ' + fx(stA / 1000, 1) + ' t/day'], ['Water recovered', fx(recP, 1) + ' %', fx(rec, 1) + ' m³/day for reuse']],
+        rows: rows,
+        table: { title: 'Stream table', head: ['Stream', 'm³ or t a day', 'Strength', 'Goes to'], rows: trows },
+        svg: zldSvg(top, bot),
+        warn: warn,
+        note: 'Neutraliser from the chloride the acid carries: 1.02 kg of lime per kg of HCl and 1.33 kg per kg of iron, or 1.10 and 1.43 kg of caustic soda; aeration turns the iron into Fe(OH)₃. RO recovery is the lower of what you ask and what keeps the reject under your limit; feed pressure is estimated from the reject strength. Evaporation uses typical steam economies of 2.5, 3.2 and 3.9 for 3, 4 and 5 effects, or the MVR power you set, and the ATFD dries the last brine to a powder. ETP pumps, agitators and blowers are not included. A first sizing for budgets and layouts: SHIVAS Reinplast confirms it on your effluent analysis, with jar and pilot tests.'
+      };
+    }
+  });
+
   /* Most used and most important first; the plant calculator (its own page) leads the list */
-  var ORDER = ['wire', 'burner', 'coating', 'wireweight', 'scrubber', 'acid', 'neutralise', 'bagfilter', 'fan', 'rectifier', 'frp'];
+  var ORDER = ['wire', 'burner', 'zld', 'coating', 'wireweight', 'scrubber', 'acid', 'neutralise', 'bagfilter', 'fan', 'rectifier', 'frp'];
   CALCS.sort(function (a, b) { return ORDER.indexOf(a.id) - ORDER.indexOf(b.id); });
 
   window.SHIVAS_CALCS = CALCS;
@@ -483,7 +624,7 @@
     p.innerHTML = '<span>Typical values used:</span> ' + cur.inputs.filter(function (f) { return f.adv; }).map(function (f) {
       var v = st[cur.id][f.k]; if (f.type === 'sel') v = f.opts.filter(function (o) { return o[0] === v; })[0][1];
       var auto = !v && f.hint && f.hint.indexOf('0 =') === 0;
-      return '<i>' + f.l.replace(/ \(.*\)$/, '').replace(/, if you (already have one|know it)$/, '') + ' ' + (auto ? (f.auto || (f.k === 'nb' ? 'auto' : 'from the article')) : v) + (f.u && f.type !== 'sel' && !auto ? '\u00a0' + f.u : '') + '</i>';
+      return '<i>' + f.l.replace(/ \(.*\)$/, '').replace(/, if (you already have one|you know it|your supplier gives one)$/, '') + ' ' + (auto ? (f.auto || (f.k === 'nb' ? 'auto' : 'from the article')) : v) + (f.u && f.type !== 'sel' && !auto ? '\u00a0' + f.u : '') + '</i>';
     }).join(' ');
   }
   /* "Ask our engineer": the visitor's own details and this calculation, sent to SHIVAS (visitor log when set up, else WhatsApp) */
@@ -534,7 +675,7 @@
       (cur.mg ? '\nExtra margin on the selected size: ' + (MG ? '+' + MG + ' %' : 'none') : '') + '\n\nResults\n' + (r.key || []).map(function (k) { return k[0] + ': ' + k[1] + (k[2] ? ' (' + k[2] + ')' : ''); }).join('\n');
     lastSum = sum;
     h += '<div class="cx-act"><a class="btn line" target="_blank" rel="noopener" href="https://wa.me/919810920468?text=' + encodeURIComponent(sum) + '">WhatsApp it</a><button type="button" class="btn line cx-copy">Copy</button></div>';
-    o.innerHTML = h; $('.cx-wide', pane).innerHTML = tw;
+    o.innerHTML = h; $('.cx-wide', pane).innerHTML = (r.svg ? '<p class="k cx-tt">Process flow</p><div class="zfd" tabindex="0" role="region" aria-label="Process flow diagram">' + r.svg + '</div>' : '') + tw;
     $('.cx-copy', o).addEventListener('click', function () { try { navigator.clipboard.writeText(sum); this.textContent = 'Copied'; } catch (e) {} });
   }
   nav.addEventListener('click', function (e) { var a = e.target.closest('a[data-id]'); if (!a) return; e.preventDefault(); open(a.getAttribute('data-id'), true); if (innerWidth < 900) pane.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
