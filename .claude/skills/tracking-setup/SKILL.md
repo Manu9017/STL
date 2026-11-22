@@ -23,16 +23,20 @@ window.SHIVAS_CONFIG = { sheetUrl: '', ga4: '', companyScript: '' };
   Pages, Daily, Viewers and Companies are `QUERY` formulas over Visits, written by `setup()`.
 - **Emails:**
   - Each lead, straight away, to ALERT_TECH or ALERT_REIN.
+  - A visit alert (`visitAlert_`, added 22 Nov 2026): one email per visit, on its first page (track.js sends `landing: 1`, a yes/no flag kept in the tab), at most `VISIT_ALERTS_PER_DAY` (25) a day; `VISIT_ALERTS = false` turns it off. It never names a person; city and company appear only for visitors who pressed OK.
   - `dailyDigest` at 08:00 IST (yesterday) and `weeklyDigest` on Mondays at 08:30 (last 7 days). Both contain every page viewed, the 3D models opened, each consented visitor with the pages they viewed, companies, taps, calculators and a link to the Sheet.
 - **Report recipients** (`recipients_()`): DIGEST_TO, plus the Google account that runs the script (`Session.getEffectiveUser()`), plus the script property `REPORT_TO` (comma-separated). Never write a personal address into `Code.gs`: it is served publicly under `site/setup/`.
 - **Test run:** `sendTestReport()` sends today's report so far.
 - **3D viewers:** `v/shivas-bar.js` loads `config.js` and `track.js` with `window.SHIVAS_NOBAR = true`. There is no consent bar there (it would cover the viewer's controls). A visitor's earlier choice applies; without one, only the plain page view is sent.
 
+## The claude.ai preview never records visits
+`tools/artifact_files.py` leaves `assets/config.js` and `assets/track.js` out of the artifact and switches off their loader in the preview copies of `site.js` and `v/shivas-bar.js`. Visit alerts and reports come only from the real site once it is live on the domain. Say so when the owner asks why opening the artifact link sends no email.
+
 ## Testing it here
-- `track.js` stays silent for automation (`navigator.webdriver`). To test it:
+- `track.js` stays silent for automation (`navigator.webdriver`, and a user agent containing "Headless"). To test it, give the Playwright context a normal Chrome `userAgent`, serve `site/` over http (routes do not see `file://` pages), set `navigator.sendBeacon = undefined` in an init script so the fallback `fetch` is routable, and:
   - launch Chromium with `--disable-blink-features=AutomationControlled` and override `navigator.webdriver` in an init script;
   - route `assets/config.js` to a test `sheetUrl`, and route `script.google.com` to capture the POST bodies.
-- `Code.gs` can be run in Node against small stand-ins for SpreadsheetApp, MailApp, Utilities, Session, PropertiesService and ScriptApp, to check the formulas, recipients and email HTML before the owner pastes it in. A run like this was last done in Nov 2026.
+- `Code.gs` can be run in Node against small stand-ins for SpreadsheetApp, MailApp, Utilities, Session, PropertiesService and ScriptApp, to check the formulas, recipients and email HTML before the owner pastes it in. `node tools/test_visitor_log.cjs` does this (visit alerts, the daily cap, a failing MailApp, enquiries); last run 22 Nov 2026.
 
 ## What only the owner can do
 These steps run in the owner's Google account. Claude can't do them from here, so send the user these steps (from `site/setup/visitor-log/README.txt`):

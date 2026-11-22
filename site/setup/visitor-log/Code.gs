@@ -14,6 +14,8 @@ var ALERT_TECH = { to: 'info@shivastechnology.com', cc: 'shivastechnology@gmail.
 var ALERT_REIN = { to: 'info@shivasasia.com', cc: 'shivasasia@gmail.com' };               // SHIVAS Reinplast
 var DIGEST_TO = 'info@shivastechnology.com';                                              // morning summary
 var KEEP_DAYS = 730;                                                                      // visit rows older than this are deleted (privacy notice says 24 months)
+var VISIT_ALERTS = true;                                                                   // email the report recipients when someone opens the site (once per visit)
+var VISIT_ALERTS_PER_DAY = 25;                                                             // at most this many a day; the daily report still lists every visit
 
 // ---------------- columns ----------------
 var VISIT_COLS = [
@@ -61,6 +63,7 @@ function doPost(e) {
       alert_(d);
     }
     visits.appendRow(row_(VISIT_COLS, d));
+    if (d.type === 'view' && +d.landing === 1) visitAlert_(d);
     return reply('ok');
   } finally { try { lock.releaseLock(); } catch (err) {} }
 }
@@ -121,6 +124,29 @@ function alert_(d) {
     (d.seen ? '<p><b>What this visitor looked at</b></p><pre style="white-space:pre-wrap;font:13px/1.45 monospace">' + esc(d.seen) + '</pre>' : '') +
     '<p style="color:#566778">Reply directly to the customer. All enquiries are in the Leads tab of the visitor log.</p></div>';
   MailApp.sendEmail({ to: who.to, cc: who.cc, subject: 'Website enquiry: ' + [d.name, d.company].filter(Boolean).join(' · ') + ' — ' + (d.product || d.source), htmlBody: html, name: 'SHIVAS website' });
+}
+// an email when someone opens the site: the first page of each visit, at most VISIT_ALERTS_PER_DAY a day.
+// Without the visitor's OK it can only say the page, device, language and where they came from; city and
+// company network appear for visitors who pressed OK. It never names a person.
+function visitAlert_(d) {
+  if (!VISIT_ALERTS) return;
+  try {
+    var props = PropertiesService.getScriptProperties(), key = 'VA_' + day_(0), n = +(props.getProperty(key) || 0);
+    if (n >= VISIT_ALERTS_PER_DAY) return;
+    props.setProperty(key, String(n + 1));
+    var y = 'VA_' + day_(-2); if (props.getProperty(y) !== null) props.deleteProperty(y);   // tidy old counters
+    var line = function (k, v) { return v ? '<tr><td style="padding:3px 12px 3px 0;color:#566778">' + k + '</td><td style="padding:3px 0"><b>' + esc(v) + '</b></td></tr>' : ''; };
+    var where = [d.city, d.region, d.country].filter(Boolean).join(', ');
+    var html = '<div style="font:14px/1.5 Arial,sans-serif;color:#13202c">' +
+      '<p style="font-size:16px"><b>Someone opened the SHIVAS website</b></p><table>' +
+      line('First page', (d.title || '') + (d.page ? ' (' + d.page + ')' : '')) + line('Came from', d.ref || 'Typed the address or a saved link') + line('Campaign', d.utm) +
+      line('Device', [d.device, d.model, d.os, d.browser].filter(Boolean).join(' · ')) + line('Language / time zone', [d.lang, d.tz].filter(Boolean).join(' · ')) +
+      line('Location', where) + line('Network / company', d.org ? d.org + ' (' + d.nettype + ')' : '') + line('Visit no.', d.visit ? String(d.visit) : '') + '</table>' +
+      '<p style="color:#566778">' + (where ? '' : 'Location and company network show only for visitors who pressed OK on the privacy bar. ') +
+      'Alert ' + (n + 1) + ' of ' + VISIT_ALERTS_PER_DAY + ' today; every visit is in the Visits tab and in the morning report. ' +
+      'To stop these emails, set VISIT_ALERTS to false in the script.</p></div>';
+    MailApp.sendEmail({ to: recipients_(), subject: 'SHIVAS website: someone opened ' + (d.title || d.page || 'the site') + (where ? ' · ' + where : ''), htmlBody: html, name: 'SHIVAS website' });
+  } catch (err) { /* an alert must never stop the visit being logged */ }
 }
 function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }); }
 

@@ -129,7 +129,9 @@
 
   /* ---------- page view, time on page, clicks that matter, enquiry form ---------- */
   if (consent === 'yes') { ready = lookup(); extras(); }
-  send('view', {});
+  // first page of this visit (a yes/no flag kept in this browser tab only): the visitor log emails the owner once per visit
+  var landing = !ss('shivas.landed'); ss('shivas.landed', '1');
+  send('view', landing ? { landing: 1 } : {});
   // SHIVAS_NOBAR (set by the 3D viewers): no consent bar, it would cover the viewer's controls. A visitor's earlier
   // choice on the main site still applies; without one only the plain page view is sent (no location, no visitor number).
   if (!consent && !window.SHIVAS_NOBAR) { if (document.body) ask(); else document.addEventListener('DOMContentLoaded', ask); }

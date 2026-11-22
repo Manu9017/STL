@@ -26,7 +26,10 @@ REPO = os.path.dirname(HERE)
 SITE = os.path.join(REPO, "site")
 OUT = os.path.join(REPO, "preview", "artifact-batches")
 EXCLUDE_TOP = {"README.md", ".nojekyll", "photos", "setup", "CNAME", "_redirects", "_headers", "robots.txt", "sitemap.xml", "404.html"}  # robots/sitemap: production only
-EXCLUDE_PREFIX = ("assets/resp/", "assets/og/", "items/r-frp.html")   # resp: speed copies; r-frp: redirect stub for an old URL — both production only (artifact file limit)
+EXCLUDE_PREFIX = ("assets/resp/", "assets/og/", "items/r-frp.html", "assets/config.js", "assets/track.js")
+# config.js / track.js: the visitor log only works on the real domain (claude.ai cannot report visitors), so the
+# preview leaves both out and artifact_source() switches off the loader in site.js and v/shivas-bar.js.
+NO_TRACK = {"assets/site.js": "if (ME && !window.SHIVAS_TRACK) {", "v/shivas-bar.js": "if (!window.SHIVAS_TRACK) {"}   # resp: speed copies; r-frp: redirect stub for an old URL — both production only (artifact file limit)
 BUILD = os.path.join(REPO, "preview", "artifact-build")
 MAX_ARTIFACT_FILES = 511
 MAX_FILES, MAX_BYTES = 250, 60 * 1024 * 1024
@@ -66,6 +69,13 @@ def changed_files():
 def artifact_source(rel):
     """Path to publish for rel: the file itself, or a rewritten copy without assets/resp/ references."""
     src = os.path.join(SITE, rel)
+    if rel in NO_TRACK:
+        text = open(src, encoding="utf-8").read()
+        assert text.count(NO_TRACK[rel]) == 1, f"{rel}: tracker loader not found"
+        out = os.path.join(BUILD, rel)
+        os.makedirs(os.path.dirname(out), exist_ok=True)
+        open(out, "w", encoding="utf-8").write(text.replace(NO_TRACK[rel], "if (false) {  /* artifact preview: no visitor log */"))
+        return out
     if not rel.endswith(".html"):
         return src
     text = open(src, encoding="utf-8").read()

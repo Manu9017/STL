@@ -5,6 +5,9 @@ What you get
   network or company name, time on page, where the visitor came from.
 - A row and an email for every enquiry and every "Ask our engineer" request from the calculators,
   with what that visitor looked at before getting in touch.
+- An email when someone opens the site (once per visit, at most 25 a day): the first page, device,
+  where they came from, and city / company network for visitors who pressed OK. Same recipients as
+  the morning report. To stop them, set VISIT_ALERTS to false at the top of the script.
 - A report by email every morning at 8:00 (India time) for yesterday, and every Monday at 8:30 for
   the last 7 days: every page viewed (views, visitors, average time), the 3D models opened, each
   visitor who pressed OK with where they came from and the pages they looked at, companies,
@@ -18,6 +21,9 @@ What you get
   a choice made on the main site applies there, otherwise only the plain page view is recorded.
 
 What it cannot do
+- Report visits to the claude.ai preview link. The preview is built without the visitor log (claude.ai
+  pages are not set up to send data to your Sheet). Alerts come from the real site
+  (www.shivastechnology.com) once it is live.
 - Name a person who has not sent you their details. A name comes only from the enquiry form,
   the calculators or a WhatsApp message.
 - Name the company of a visitor on home broadband or mobile data (Jio, Airtel ...). Companies are named
