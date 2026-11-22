@@ -5,7 +5,7 @@ description: Republish the SHIVAS website from site/ to its claude.ai artifact (
 
 # Publish site/ to the claude.ai artifact
 
-Artifact: **https://claude.ai/artifact/QbaMojD3TugfPsudMNCAXJ** (`index.html` is the page; 510 supporting files as of 16 Nov 2026, version 63; robots.txt, sitemap.xml, 404.html, _headers, assets/og/ and the items/r-frp.html stub are production only).
+Artifact: **https://claude.ai/artifact/QbaMojD3TugfPsudMNCAXJ** (`index.html` is the page; 510 supporting files as of 22 Nov 2026, version 64; robots.txt, sitemap.xml, 404.html, _headers, assets/og/, the items/r-frp.html stub, and the visitor log (assets/config.js, assets/track.js; the preview copies of site.js and v/shivas-bar.js have its loader switched off) are production only).
 Anyone with the link sees an update straight away, so **publish only when the user asks**, and only after the `site-check` skill reports 0 errors.
 
 ## Steps
@@ -16,7 +16,7 @@ Anyone with the link sees an update straight away, so **publish only when the us
    - pages that reference it are rewritten into `preview/artifact-build/`, with those `srcset` candidates removed and the home page's 3D previews pointed at `v/img/*.jpg`.
 
    `tools/artifact_files.py` does all of this and prints `artifact total N of 511`. If a new feature pushes the total over, add another production-only prefix to `EXCLUDE_PREFIX` in that script, and give the pages a fallback that works without it.
-3. **Make the batches:**
+3. **Make the batches.** `--changed` lists files changed in `site/` since the marker. It does not list the preview-only rewrites of `assets/site.js` and `v/shivas-bar.js` unless those files changed, and it clears `preview/artifact-build/` first; regenerate any rewritten file you need with `artifact_source()` after running it:
    ```bash
    python3 tools/artifact_files.py            # everything (first publish from a new session)
    python3 tools/artifact_files.py --changed  # only files changed since the last publish
