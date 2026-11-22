@@ -4,7 +4,7 @@
 (function () {
   'use strict';
   var $ = function (s, r) { return (r || document).querySelector(s); };
-  var fx = function (v, d) { if (!isFinite(v)) return '—'; return (+v).toLocaleString('en-IN', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); };
+  var fx = function (v, d) { if (!isFinite(v)) return 'n/a'; return (+v).toLocaleString('en-IN', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); };
   var up = function (v, list) { for (var i = 0; i < list.length; i++) if (list[i] >= v - 1e-9) return list[i]; return list[list.length - 1]; };
   var KW = [0.37, 0.55, 0.75, 1.1, 1.5, 2.2, 3.7, 5.5, 7.5, 11, 15, 18.5, 22, 30, 37, 45, 55, 75, 90, 110, 132, 160, 200, 250, 315, 355, 400];
   var HP = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7.5, 10, 12.5, 15, 20, 25, 30, 40, 50, 60, 75, 100, 125, 150, 180, 200, 250, 300, 350, 400, 500];
@@ -266,17 +266,189 @@
     }
   });
 
+  /* ---------------- 8. Hot-dip galvanized coating against ISO 1461 ---------------- */
+  // ISO 1461 minimum [local, mean] in µm, and the standard's own g/m² for each (nominal 7.2 g/m² per µm)
+  var ISO_G = { 20: 145, 25: 180, 35: 250, 40: 285, 45: 325, 50: 360, 55: 395, 60: 430, 70: 505, 80: 575, 85: 610 };
+  var ART = {
+    st: ['Steel sections and plate', function (t) { return t > 6 ? [70, 85, 'over 6 mm thick'] : t > 3 ? [55, 70, 'over 3 mm up to 6 mm'] : t >= 1.5 ? [45, 55, '1.5 mm up to 3 mm'] : [35, 45, 'under 1.5 mm']; }],
+    ca: ['Castings', function (t) { return t >= 6 ? [70, 80, '6 mm and over'] : [60, 70, 'under 6 mm']; }],
+    thr: ['Centrifuged: bolts, studs and nuts', function (t) { return t > 6 ? [40, 50, 'thread over 6 mm Ø'] : [20, 25, 'thread 6 mm Ø and under']; }],
+    oth: ['Centrifuged: other small parts', function (t) { return t >= 3 ? [45, 55, '3 mm and over'] : [35, 45, 'under 3 mm']; }]
+  };
+  CALCS.push({
+    id: 'coating', div: 'hdg', t: 'Coating thickness check', s: 'ISO 1461 minimums, g/m², zinc per tonne',
+    lead: 'Check a hot-dip galvanized coating against the ISO 1461 minimums for your steel. Enter the mean of your gauge readings and the lowest local value: see whether each one passes, the coating mass in g/m² and the zinc the coating puts on each tonne of steel.',
+    inputs: [
+      { k: 'kind', l: 'Article', type: 'sel', opts: Object.keys(ART).map(function (k) { return [k, ART[k][0]]; }), v: 'st' },
+      { k: 'tk', l: 'Steel thickness (thread Ø for bolts)', u: 'mm', v: 8, step: 0.5, min: 0.3 },
+      { k: 'mean', l: 'Mean of all readings', u: 'µm', v: 95, step: 1, min: 0 },
+      { k: 'low', l: 'Lowest local value', u: 'µm', v: 78, step: 1, min: 0, hint: 'the average in one reference area' },
+      { k: 'area', adv: 1, l: 'Surface per tonne, if you know it', u: 'm²/t', v: 0, step: 1, min: 0, hint: '0 = worked out from the thickness', auto: 'from the thickness' }
+    ],
+    run: function (v) {
+      if (!(v.tk > 0)) return { warn: ['Enter the steel thickness.'] };
+      var A = ART[v.kind], m = A[1](v.tk), loc = m[0], mean = m[1];
+      var area = v.area > 0 ? v.area : (v.kind === 'thr' ? 4000 : 2000) / (7.85 * v.tk);   // m² per tonne: flat steel (both faces) or a round bar
+      var mass = v.mean * 7.2, kgt = mass * area / 1000, extra = Math.max(0, v.mean - mean) * 7.2 * area / 1000;
+      var okM = v.mean >= mean, okL = v.low >= loc, warn = [];
+      if (v.low > v.mean) warn.push('The lowest local value cannot be higher than the mean of all readings. Check the two entries.');
+      if (!okM || !okL) warn.push('Below the ISO 1461 minimum. Before you decide, check the gauge on bare steel of the same thickness and measure away from edges, corners, holes and flame-cut faces.');
+      if (v.mean > 200) warn.push('A mean over 200 µm usually comes from reactive steel (silicon or phosphorus) or a long dip. Such coatings use more zinc and flake more easily on impact. See <a href="blog/silicon-and-the-sandelin-effect.html">silicon and the Sandelin effect</a>.');
+      return {
+        key: [['Mean', fx(v.mean) + ' µm', okM ? 'passes: minimum ' + mean + ' µm' : 'below the ' + mean + ' µm minimum'],
+          ['Lowest local', fx(v.low) + ' µm', okL ? 'passes: minimum ' + loc + ' µm' : 'below the ' + loc + ' µm minimum'],
+          ['Coating mass', fx(mass) + ' g/m²', 'from the mean'],
+          ['Zinc on the steel', fx(kgt, 1) + ' kg/t', fx(area, 1) + ' m² per tonne']],
+        rows: [['ISO 1461 class', A[0] + ', ' + m[2]], ['Minimum local', loc + ' µm (' + ISO_G[loc] + ' g/m²)'], ['Minimum mean', mean + ' µm (' + ISO_G[mean] + ' g/m²)'],
+          ['Zinc at the minimum mean', fx(mean * 7.2 * area / 1000, 1) + ' kg per tonne of steel'], ['Zinc above the minimum', fx(extra, 1) + ' kg per tonne of steel']],
+        warn: warn,
+        note: 'Minimums from ISO 1461 for articles that are not centrifuged and for centrifuged ones, with coating mass at the standard\'s nominal 7.2 g/m² per µm. A local value is the average of the gauge readings in one reference area; the mean is the average over all the reference areas on the article or sample. Surface per tonne is estimated from the thickness (flat steel 254.8 ÷ t, bolts 509.6 ÷ Ø); zinc lost to dross and ash comes on top. If your order names ASTM A123 or IS 4759, check against that standard\'s own table.'
+      };
+    }
+  });
+
+  /* ---------------- 9. Wire weight, length, coil and zinc on galvanized wire ---------------- */
+  CALCS.push({
+    id: 'wireweight', div: 'wire', t: 'Wire weight and length', s: 'kg per km, metres per coil, output, zinc',
+    lead: 'From the wire size: the weight per metre and per kilometre, how many metres a coil or spool holds and how long it takes to fill, what the machine makes in an hour and a day, and the zinc a galvanized coating puts on each tonne of wire.',
+    inputs: [
+      { k: 'd', l: 'Wire Ø', u: 'mm', v: 2.5, step: 0.01, min: 0.05 },
+      { k: 'coil', l: 'Coil or spool weight', u: 'kg', v: 1000, step: 10, min: 1 },
+      { k: 'v', l: 'Line speed', u: 'm/s', v: 10, step: 0.5, min: 0.05, max: 40 },
+      { k: 'g', l: 'Zinc coating, if galvanized', u: 'g/m²', v: 0, step: 5, min: 0, hint: '0 = black wire' },
+      { k: 'n', adv: 1, l: 'Strands or machines running', u: 'no.', v: 1, step: 1, min: 1 },
+      { k: 'hrs', adv: 1, l: 'Running hours', u: 'h/day', v: 20, step: 0.5, min: 1, max: 24 },
+      { k: 'util', adv: 1, l: 'Utilisation (stops, coil changes)', u: '%', v: 80, step: 1, min: 10, max: 100 },
+      { k: 'rho', adv: 1, l: 'Steel density', u: 'kg/m³', v: 7850, step: 10, min: 7000, max: 8100 }
+    ],
+    run: function (v) {
+      if (!(v.d > 0) || !(v.v > 0)) return { warn: ['Enter the wire size and the line speed.'] };
+      var kgm = v.rho * Math.PI / 4 * v.d * v.d * 1e-6, len = v.coil / kgm, fill = len / v.v / 60;
+      var kgh = kgm * v.v * 3600 * v.n, tday = kgh * v.hrs * v.util / 100 / 1000;
+      var perM = Math.PI * v.d / 1000, sa = perM / kgm * 1000, zt = v.g * sa / 1000, warn = [];   // m² of surface per metre and per tonne; zinc kg/t
+      if (fill < 5) warn.push('A coil of ' + fx(v.coil) + ' kg fills in under 5 minutes at this speed. A bigger package or a twin take-up saves stops.');
+      var rows = [['Metres per kg', fx(1 / kgm, 2) + ' m'], ['Cross-section', fx(Math.PI / 4 * v.d * v.d, 3) + ' mm²'], ['Output a day', fx(tday, 1) + ' t at ' + v.hrs + ' h and ' + v.util + ' %'], ['Surface per tonne', fx(sa, 1) + ' m²']];
+      if (v.g > 0) rows = rows.concat([['Coating thickness', fx(v.g / 7.14, 1) + ' µm'], ['Zinc per tonne of wire', fx(zt, 1) + ' kg'], ['Zinc in one coil', fx(v.g * perM * len / 1000, 1) + ' kg'], ['Galvanized wire weight', fx((kgm + v.g * perM / 1000) * 1000, 1) + ' kg/km']]);
+      return {
+        key: [['Weight', fx(kgm * 1000, 1) + ' kg/km', fx(kgm, 4) + ' kg per metre'], ['One coil holds', fx(len) + ' m', fx(len / 1000, 2) + ' km in ' + fx(v.coil) + ' kg'],
+          ['Output', fx(kgh / 1000, 2) + ' t/h', (v.n > 1 ? v.n + ' strands' : 'one strand') + ' at ' + v.v + ' m/s'], ['Coil fills in', fx(fill, fill < 10 ? 1 : 0) + ' min', 'at ' + v.v + ' m/s']],
+        rows: rows,
+        warn: warn,
+        note: 'Weight from the nominal size at ' + fx(v.rho) + ' kg/m³. Surface per tonne = 4,000 ÷ (7.85 × Ø in mm). Coating thickness at 7.14 g/m² per µm of zinc; zinc lost to dross, ash and wiping comes on top. Check the coating mass against the standard on your order, for example IS 4826 or ISO 7989-2.'
+      };
+    }
+  });
+
+  /* ---------------- 10. Spent acid neutralisation: lime, sludge and salt ---------------- */
+  CALCS.push({
+    id: 'neutralise', div: 'rein', t: 'Spent acid neutralisation', s: 'Lime, filter cake and dissolved salt',
+    lead: 'What it takes to neutralise spent hydrochloric pickling acid with hydrated lime: the lime a month, the iron hydroxide sludge and filter cake to dispose of, and the calcium chloride left dissolved in the water, which is the load a ZLD plant has to remove.',
+    inputs: [
+      { k: 'vol', l: 'Spent acid', u: 'm³/month', v: 60, step: 1, min: 0.1 },
+      { k: 'fe', l: 'Iron in the spent acid', u: 'g/L', v: 130, step: 5, min: 0, max: 220 },
+      { k: 'hcl', l: 'Free acid left', u: '% HCl', v: 3, step: 0.5, min: 0, max: 20, hint: 'from a titration' },
+      { k: 'zn', adv: 1, l: 'Zinc, if you strip in the same acid', u: 'g/L', v: 0, step: 5, min: 0, max: 250 },
+      { k: 'sg', adv: 1, l: 'Density of the spent acid', u: 'kg/L', v: 1.25, step: 0.01, min: 1, max: 1.6 },
+      { k: 'pur', adv: 1, l: 'Lime purity', u: '% Ca(OH)₂', v: 90, step: 1, min: 50, max: 100 },
+      { k: 'ex', adv: 1, l: 'Lime excess', u: '%', v: 10, step: 1, min: 0, max: 50 },
+      { k: 'cake', adv: 1, l: 'Solids in the filter cake', u: '%', v: 35, step: 1, min: 10, max: 80 },
+      { k: 'days', adv: 1, l: 'Working days', u: 'per month', v: 26, step: 1, min: 1, max: 31 }
+    ],
+    run: function (v) {
+      var hcl = v.vol * 1000 * v.sg * v.hcl / 100, fe = v.vol * v.fe, zn = v.vol * v.zn;               // kg a month
+      var need = hcl * 1.0161 + fe * 1.3268 + zn * 1.1333;                                                 // kg Ca(OH)₂ that reacts
+      if (!(need > 0)) return { warn: ['Enter the iron or the free acid in the spent acid.'] };
+      var lime = need * (1 + v.ex / 100) / (v.pur / 100), dry = fe * 1.9136 + zn * 1.5202 + (lime - need), cake = dry / (v.cake / 100);
+      var cacl = hcl * 1.5219 + fe * 1.9873 + zn * 1.6975, warn = [];
+      if (v.vol > 300) warn.push('At over 300 m³ a month an acid regeneration plant usually suits better than neutralising: it returns hydrochloric acid to the line and turns the iron into iron oxide you can sell.');
+      if (v.zn > 0 && v.fe > 0) warn.push('Acid that carries both iron and zinc is hard to regenerate. A separate tank for stripping keeps the pickling acid clean and the zinc recoverable.');
+      var rows = [['Iron in the acid', fx(fe / 1000, 2) + ' t / month'], ['Free HCl', fx(hcl / 1000, 2) + ' t / month']];
+      if (zn > 0) rows.push(['Zinc in the acid', fx(zn / 1000, 2) + ' t / month']);
+      rows = rows.concat([['Pure Ca(OH)₂ that reacts', fx(need / 1000, 2) + ' t / month'], ['Lime per m³ of spent acid', fx(lime / v.vol) + ' kg'], ['Filter cake per m³ of spent acid', fx(cake / v.vol) + ' kg'], ['Oxygen to turn Fe(II) into Fe(III)', fx(fe * 0.1433) + ' kg / month, in theory, from air']]);
+      return {
+        key: [['Hydrated lime', fx(lime / 1000, 1) + ' t / month', fx(lime / v.days) + ' kg per working day'], ['Filter cake', fx(cake / 1000, 1) + ' t / month', 'at ' + v.cake + ' % solids'],
+          ['Dry sludge', fx(dry / 1000, 1) + ' t / month', 'iron hydroxide' + (zn > 0 ? ', zinc hydroxide' : '') + ' and lime residue'], ['Dissolved CaCl₂', fx(cacl / 1000, 1) + ' t / month', '≈ ' + fx(cacl / v.vol) + ' g/L before dilution']],
+        rows: rows,
+        warn: warn,
+        note: '2HCl + Ca(OH)₂ → CaCl₂ + 2H₂O; FeCl₂ + Ca(OH)₂ → Fe(OH)₂ + CaCl₂, and aeration turns Fe(OH)₂ into Fe(OH)₃ (1.91 kg per kg of iron); ZnCl₂ + Ca(OH)₂ → Zn(OH)₂ + CaCl₂. Lime is dosed to about pH 9 in practice, so set the real dose with a jar test. The calcium chloride stays in the water: neutralising, settling and filtering do not remove it; only a ZLD plant (RO, then evaporation) does. SHIVAS Reinplast builds neutralisation and filter press plants, ETP, ZLD and acid regeneration.'
+      };
+    }
+  });
+
+  /* ---------------- 11. FRP pultruded profile: weight and deflection beside steel ---------------- */
+  var SHP = { ib: 'I-beam', ch: 'Channel', rt: 'Square or rectangular tube', ct: 'Round tube', ang: 'Equal angle', rod: 'Round rod', flat: 'Flat strip' };
+  CALCS.push({
+    id: 'frp', div: 'frp', t: 'FRP profile weight and deflection', s: 'kg per metre, steel comparison, beam check',
+    lead: 'For a pultruded FRP section: its weight per metre and per piece, what the same section weighs in steel, and how far it bends as a simply supported beam under your load, beside steel of the same size.',
+    inputs: [
+      { k: 'shp', l: 'Section', type: 'sel', opts: Object.keys(SHP).map(function (k) { return [k, SHP[k]]; }), v: 'ib' },
+      { k: 'H', l: 'Height H, or outside Ø', u: 'mm', v: 150, step: 1, min: 3 },
+      { k: 'B', l: 'Width B (flange, tube or strip)', u: 'mm', v: 75, step: 1, min: 3 },
+      { k: 't', l: 'Wall or web thickness t', u: 'mm', v: 8, step: 0.5, min: 0.5 },
+      { k: 'L', l: 'Span, and the piece length', u: 'm', v: 3, step: 0.1, min: 0.1 },
+      { k: 'w', l: 'Load spread along the span', u: 'kN/m', v: 1, step: 0.1, min: 0 },
+      { k: 'tf', adv: 1, l: 'Flange thickness, I-beam and channel', u: 'mm', v: 0, step: 0.5, min: 0, hint: '0 = same as t', auto: 'same as t' },
+      { k: 'rho', adv: 1, l: 'FRP density', u: 'g/cm³', v: 1.9, step: 0.05, min: 1.2, max: 2.4 },
+      { k: 'E', adv: 1, l: 'FRP modulus along the length', u: 'GPa', v: 23, step: 0.5, min: 5, max: 60, hint: 'use the value your supplier guarantees' },
+      { k: 'G', adv: 1, l: 'FRP shear modulus', u: 'GPa', v: 3, step: 0.1, min: 0.5, max: 10 }
+    ],
+    run: function (v) {
+      var H = v.H, B = v.B, t = v.t, tf = v.tf > 0 ? v.tf : t, s = v.shp, c = H / 2, A, I = 0, Aw = 0, dims, bad = 'Check the sizes: the wall is too thick for this section.';
+      if (s === 'ib' || s === 'ch') {
+        if (2 * tf >= H || t >= B) return { warn: [bad] };
+        A = 2 * B * tf + (H - 2 * tf) * t; I = (B * Math.pow(H, 3) - (B - t) * Math.pow(H - 2 * tf, 3)) / 12; Aw = H * t; dims = H + ' × ' + B + ' × ' + t + (tf !== t ? ' / ' + tf : '');
+      } else if (s === 'rt') {
+        if (2 * t >= H || 2 * t >= B) return { warn: [bad] };
+        A = H * B - (H - 2 * t) * (B - 2 * t); I = (B * Math.pow(H, 3) - (B - 2 * t) * Math.pow(H - 2 * t, 3)) / 12; Aw = 2 * H * t; dims = H + ' × ' + B + ' × ' + t;
+      } else if (s === 'ct') {
+        if (2 * t >= H) return { warn: [bad] };
+        var di = H - 2 * t; A = Math.PI / 4 * (H * H - di * di); I = Math.PI / 64 * (Math.pow(H, 4) - Math.pow(di, 4)); Aw = A / 2; dims = 'Ø' + H + ' × ' + t;
+      } else if (s === 'rod') {
+        A = Math.PI / 4 * H * H; I = Math.PI / 64 * Math.pow(H, 4); Aw = 0.9 * A; dims = 'Ø' + H;
+      } else if (s === 'flat') {
+        A = B * t; I = B * Math.pow(t, 3) / 12; Aw = A * 5 / 6; c = t / 2; dims = B + ' × ' + t;
+      } else {
+        if (t >= H) return { warn: [bad] };
+        A = t * (2 * H - t); dims = H + ' × ' + H + ' × ' + t;
+      }
+      var kgm = A * v.rho / 1000, st = A * 7.85 / 1000, Lm = v.L * 1000, warn = [];
+      var key = [['FRP weight', fx(kgm, 2) + ' kg/m', fx(kgm * v.L, 1) + ' kg per ' + v.L + ' m piece'], ['Same section in steel', fx(st, 2) + ' kg/m', 'FRP is ' + fx((1 - kgm / st) * 100) + ' % lighter']];
+      var rows = [['Section', SHP[s] + ', ' + dims + ' mm'], ['Area', fx(A) + ' mm²'], ['Pieces per tonne', fx(1000 / (kgm * v.L)) + ' of ' + v.L + ' m']];
+      if (I > 0) {
+        var wF = v.w + kgm * 9.81 / 1000, wS = v.w + st * 9.81 / 1000, E = v.E * 1000, G = v.G * 1000;    // N/mm, N/mm²
+        var bF = 5 * wF * Math.pow(Lm, 4) / (384 * E * I), sF = wF * Lm * Lm / (8 * Aw * G), dF = bF + sF;
+        var dS = 5 * wS * Math.pow(Lm, 4) / (384 * 200000 * I) + wS * Lm * Lm / (8 * Aw * 77000);
+        var sig = wF * Lm * Lm / 8 * c / I, ratio = function (d) { var r = Lm / d; return 'span ÷ ' + fx(r, r < 10 ? 1 : 0); };
+        key.push(['Deflection, FRP', fx(dF, 1) + ' mm', ratio(dF)], ['Deflection, steel', fx(dS, 2) + ' mm', ratio(dS)]);
+        if (Lm / dF < 50) warn.push('This section is far too small for this load and span, and simple beam sums no longer describe it. Choose a deeper section or a shorter span.');
+        else if (sig > 100) warn.push('The bending stress in the FRP (' + fx(sig) + ' MPa) is high for a pultruded profile. Check it against the allowable stress your supplier guarantees, with its safety factor.');
+        rows = rows.concat([['Second moment of area', fx(I / 1e4, 1) + ' cm⁴'], ['Bending stress at mid-span', fx(sig, 1) + ' MPa in FRP'], ['Shear part of the FRP deflection', fx(sF / dF * 100) + ' %'], ['FRP bends', fx(dF / dS, 1) + ' times as much as steel'], ['Load used', fx(v.w, 2) + ' kN/m plus self-weight ' + fx(kgm * 9.81 / 1000, 3) + ' kN/m']]);
+      } else {
+        key.push(['Deflection', 'n/a', 'not worked out for angles']);
+        warn.push('An angle bends about an inclined axis, so its deflection is not worked out here. Ask SHIVAS to check the span.');
+      }
+      return {
+        key: key, rows: rows, warn: warn,
+        note: 'Section properties for sharp corners, about the strong axis. Deflection = bending (5wL⁴ ÷ 384EI) plus shear (wL² ÷ 8A<sub>w</sub>G); the shear part matters in FRP because its shear modulus is low. Steel at 200 GPa and 77 GPa. FRP is usually sized for deflection before strength: use the modulus and allowable stresses your supplier guarantees for the profile. SHIVAS Products India pultrudes FRP profiles and can check your section and span.'
+      };
+    }
+  });
+
+  /* Most used and most important first; the plant calculator (its own page) leads the list */
+  var ORDER = ['wire', 'burner', 'coating', 'wireweight', 'scrubber', 'acid', 'neutralise', 'bagfilter', 'fan', 'rectifier', 'frp'];
+  CALCS.sort(function (a, b) { return ORDER.indexOf(a.id) - ORDER.indexOf(b.id); });
+
   window.SHIVAS_CALCS = CALCS;
 
   /* ---------------- UI ---------------- */
   var root = document.getElementById('calcs'); if (!root) return;
   var nav = $('.cx-nav', root), pane = $('.cx-pane', root), cur = null, st = {};
-  var DIVN = { hdg: 'Galvanizing', wire: 'Wire', rein: 'Reinplast' };
-  nav.innerHTML = CALCS.map(function (c) { return '<a href="#' + c.id + '" data-id="' + c.id + '" class="d-' + c.div + '"><small>' + DIVN[c.div] + '</small><b>' + c.t + '</b><span>' + c.s + '</span></a>'; }).join('') +
-    '<a href="calculator.html" class="d-hdg ext"><small>Galvanizing</small><b>Plant size and running cost</b><span>Full plant planner, cost per tonne ↗</span></a>';
+  var DIVN = { hdg: 'Galvanizing', wire: 'Wire', rein: 'Reinplast', frp: 'FRP profiles' }, DCL = { frp: 'hdg' };
+  nav.innerHTML = '<a href="calculator.html" class="d-hdg ext"><small>Galvanizing</small><b>Plant size and running cost</b><span>Full plant planner, cost per tonne ↗</span></a>' +
+    CALCS.map(function (c) { return '<a href="#' + c.id + '" data-id="' + c.id + '" class="d-' + (DCL[c.div] || c.div) + '"><small>' + DIVN[c.div] + '</small><b>' + c.t + '</b><span>' + c.s + '</span></a>'; }).join('');
   function field(c, f) {
     var val = st[c.id][f.k], id = 'cx-' + c.id + '-' + f.k;
-    if (f.type === 'sel') return '<label class="fld" for="' + id + '"><span>' + f.l + '</span><select id="' + id + '" data-k="' + f.k + '">' + f.opts.map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === val ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></label>';
+    if (f.type === 'sel') return '<label class="fld fsel" for="' + id + '"><span>' + f.l + '</span><select id="' + id + '" data-k="' + f.k + '">' + f.opts.map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === val ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></label>';
     return '<label class="fld" for="' + id + '"><span>' + f.l + (f.hint ? ' <em>' + f.hint + '</em>' : '') + '</span><span class="u"><input id="' + id + '" type="number" inputmode="decimal" step="' + (f.step || 'any') + '"' + (f.min != null ? ' min="' + f.min + '"' : '') + (f.max != null ? ' max="' + f.max + '"' : '') + ' value="' + val + '" data-k="' + f.k + '">' + (f.u || '') + '</span></label>';
   }
   function open(id, push) {
@@ -311,7 +483,7 @@
     p.innerHTML = '<span>Typical values used:</span> ' + cur.inputs.filter(function (f) { return f.adv; }).map(function (f) {
       var v = st[cur.id][f.k]; if (f.type === 'sel') v = f.opts.filter(function (o) { return o[0] === v; })[0][1];
       var auto = !v && f.hint && f.hint.indexOf('0 =') === 0;
-      return '<i>' + f.l.replace(/ \(.*\)$/, '').replace(/, if you already have one$/, '') + ' ' + (auto ? (f.k === 'nb' ? 'auto' : 'from the article') : v) + (f.u && f.type !== 'sel' && !auto ? '\u00a0' + f.u : '') + '</i>';
+      return '<i>' + f.l.replace(/ \(.*\)$/, '').replace(/, if you (already have one|know it)$/, '') + ' ' + (auto ? (f.auto || (f.k === 'nb' ? 'auto' : 'from the article')) : v) + (f.u && f.type !== 'sel' && !auto ? '\u00a0' + f.u : '') + '</i>';
     }).join(' ');
   }
   /* "Ask our engineer": the visitor's own details and this calculation, sent to SHIVAS (visitor log when set up, else WhatsApp) */

@@ -18,18 +18,19 @@
   var me = document.currentScript; if (!me) return;
   var D = me.dataset, NAME = D.name || document.title.replace(/\s*[·|].*$/, ''), PHONE = '919810920468';
   var base = me.src.replace(/v\/shivas-bar\.js.*$/, '');
-  var MODELS = [
+  var MODELS = [            // most important first: whole plants, then the furnace and kettle, pretreatment, environment, auxiliaries
     ['hdg-plant', 'Hot-dip galvanizing plant'],
+    ['hv-furnace', 'High-velocity furnace, 6.7 m kettle'],
     ['spin-galvanizing', 'Spin galvanizing plant'],
-    ['acid-room-2line', 'Enclosed acid room, two lines'],
     ['electric-furnace', 'Electric kettle furnace'],
+    ['acid-room-2line', 'Enclosed acid room, two lines'],
+    ['etp-zld-compact', 'ETP and ZLD, compact site'],
+    ['etp-zld-spread', 'ETP and ZLD, open site'],
+    ['arp-10', 'Acid regeneration plant ARP-10'],
     ['zinc-ash-plant', 'Zinc ash recovery plant'],
     ['zinc-ash-hoist', 'Zinc ash unit, hoist tilt'],
     ['zinc-ash-hydraulic', 'Zinc ash unit, hydraulic tilt'],
-    ['dross-grab', 'Pneumatic dross grab'],
-    ['etp-zld-compact', 'ETP and ZLD, compact site'],
-    ['etp-zld-spread', 'ETP and ZLD, open site'],
-    ['arp-10', 'Acid regeneration plant ARP-10']
+    ['dross-grab', 'Pneumatic dross grab']
   ];
   var HERE = (location.pathname.split('/').pop() || '').replace(/\.html$/, '');
   var css = '' +
@@ -173,7 +174,9 @@
     addEventListener('resize', place);
     place();
 
-    // one short hint, once the model is up; goes away on the first touch of the model or after 7 s
+    // one short hint, once the model is up; goes away on the first touch of the model or after 7 s.
+    // data-hint="0" leaves it out, for a viewer that shows its own.
+    if (D.hint === '0') return;
     var hint = document.createElement('div');
     hint.className = 'shv-hint'; hint.setAttribute('aria-hidden', 'true');
     hint.textContent = 'Drag to turn · + / − or scroll to zoom';

@@ -254,7 +254,7 @@ def main():
             if rel not in files:
                 errors.append(f"sitemap.xml: {loc} has no file")
         for rel, p in parsed.items():
-            if rel.startswith(VIEWER_DIR) or p.refresh or p.noindex or rel in NOINDEX_OK:
+            if p.refresh or p.noindex or rel in NOINDEX_OK:
                 continue
             if rel not in in_map:
                 warnings.append(f"sitemap.xml: {rel} is not listed")

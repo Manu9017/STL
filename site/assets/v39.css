@@ -294,6 +294,8 @@ h3:not(#v39a):not(#v39b):not(#v61){font-weight:700!important;letter-spacing:-.01
 .cx-nav a.d-wire{--c:#9a5a00}
 .cx-nav a.d-rein{--c:#0a6e78}
 .cx-nav a[aria-current="true"] small,.cx-nav a[aria-current="true"] span{color:#fff!important}
+/* calculator drop-downs take the full width of the form, so long choices are not cut off */
+.cx-in .fld.fsel{grid-column:1/-1}
 .mx label>span i,.xp-prog span{opacity:1!important}
 /* water-system keys and the Reinplast line scope list (light cards) */
 :root:not([data-theme="dark"]) .ws-air .ws-k{color:#7a5c00!important}
