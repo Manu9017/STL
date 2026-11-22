@@ -28,7 +28,8 @@ setTimeout(async () => {
   const b = await chromium.launch();
   const found = {}; let total = 0;
   for (const theme of ['light', 'dark']) {
-    const ctx = await b.newContext({ ...devices['iPhone 13'], colorScheme: theme });
+    // reducedMotion: the scroll reveal (MOTION LAYER) would otherwise be measured mid-fade and give flaky contrast/target results
+    const ctx = await b.newContext({ ...devices['iPhone 13'], colorScheme: theme, reducedMotion: 'reduce' });
     await ctx.addInitScript((t) => { try { localStorage.setItem('shivas.mode', t); } catch (e) {} }, theme);
     for (const p of pages) {
       const pg = await ctx.newPage();

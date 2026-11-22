@@ -16,6 +16,7 @@ node tools/a11y.cjs index.html items/kettle.html      # a few pages
 
 - `lighthouse.sh` installs Lighthouse once into `~/.cache/shivas-lighthouse` (axe-core comes with it). It serves the site with gzip, as GitHub Pages and Cloudflare do, so the scores match production. It prints a score row per page and form factor, then any failing binary audits. The JSON reports go to `preview/lighthouse/`, which is git-ignored.
 - `a11y.cjs` prints one line per rule and selector, with the number of pages and the theme(s) affected.
+- `a11y.cjs` runs with reduced motion, so the scroll reveal (MOTION LAYER) is skipped. Without it, axe can measure cards mid-fade and report contrast or target-size problems that come and go between runs.
 
 ## Baseline (10 Nov 2026)
 | Page | Phone perf / a11y / best / SEO | Desktop |
