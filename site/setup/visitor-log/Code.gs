@@ -41,7 +41,25 @@ function netType(org) {
 }
 
 // ---------------- web app ----------------
-function doGet() { return ContentService.createTextOutput('SHIVAS visitor log is running.'); }
+// Opening the web app link once (as the owner, after Deploy) finishes the setup by itself and emails a confirmation,
+// so nobody has to run setup() by hand. Later visits only say it is running.
+function doGet() {
+  if (!PropertiesService.getScriptProperties().getProperty('SHEET')) {
+    try {
+      setup();
+      MailApp.sendEmail({ to: recipients_(), subject: 'SHIVAS visitor log is switched on', name: 'SHIVAS website',
+        htmlBody: '<div style="font:14px/1.5 Arial,sans-serif;color:#13202c"><p><b>The SHIVAS visitor log is set up.</b></p>' +
+          '<p>From now on you get an email for every enquiry, one when someone opens the website (at most ' + VISIT_ALERTS_PER_DAY + ' a day), ' +
+          'a report every morning at 8:00 and every Monday at 8:30. Everything is also in the Google Sheet: ' +
+          '<a href="' + SpreadsheetApp.getActiveSpreadsheet().getUrl() + '">open the visitor log</a>.</p>' +
+          '<p style="color:#566778">Last step: send the web app link (it ends in /exec) to Claude, so the website starts sending visits.</p></div>' });
+      return ContentService.createTextOutput('SHIVAS visitor log is set up. A confirmation email is on its way. Copy this page\'s address (it ends in /exec) and send it to Claude.');
+    } catch (err) {
+      return ContentService.createTextOutput('Setup did not finish: ' + err.message + ' — open Extensions > Apps Script in the Sheet and run setup once.');
+    }
+  }
+  return ContentService.createTextOutput('SHIVAS visitor log is running.');
+}
 
 function doPost(e) {
   var lock = LockService.getScriptLock();

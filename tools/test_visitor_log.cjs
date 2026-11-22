@@ -31,3 +31,25 @@ t=run(); for(let i=0;i<30;i++) t.post({type:'view',landing:1});
 console.log('30 landings    -> mails',t.mails.length,'(cap 25) | rows',t.rows.Visits.length,'(all 30 logged)');
 t=run({mailFails:true}); console.log('mail failing   ->',t.post({type:'view',landing:1}),'| rows',t.rows.Visits.length,'(still logged)');
 t=run(); t.post({type:'lead',source:'Enquiry form',name:'Test',contact:'+91 0000000000',product:'Kettle'}); console.log('lead           -> mails',t.mails.length,'subject:',t.mails[0].subject);
+
+// doGet: first open runs setup and emails a confirmation; later opens only report "running"
+(function () {
+  const mails = [], props = {}, created = {}, triggers = [];
+  const sheet = n => ({ getRange: () => ({ setValues() { return this; }, setFontWeight() { return this; }, setBackground() { return this; }, setFontColor() { return this; }, setNumberFormat() { return this; }, setFormula() { return this; } }),
+    setFrozenRows() {}, hideColumns() {}, getLastRow: () => 0 });
+  const book = { getId: () => 'SHEET-ID', getUrl: () => 'https://docs.google.com/spreadsheets/d/SHEET-ID', getSheetByName: n => created[n] || null,
+    insertSheet: n => (created[n] = sheet(n)), getSheets: () => Object.keys(created), deleteSheet() {} };
+  const trig = { timeBased: () => trig, atHour: () => trig, everyDays: () => trig, inTimezone: () => trig, onWeekDay: () => trig, nearMinute: () => trig, create: () => triggers.push(1) };
+  const ctx = { console, JSON, Date, Math, String, Number, Object, isNaN,
+    ContentService: { createTextOutput: t => t },
+    PropertiesService: { getScriptProperties: () => ({ getProperty: k => k in props ? props[k] : null, setProperty: (k, v) => { props[k] = v; } }) },
+    SpreadsheetApp: { getActiveSpreadsheet: () => book },
+    ScriptApp: { getProjectTriggers: () => [], deleteTrigger() {}, newTrigger: () => trig, WeekDay: { MONDAY: 1 } },
+    MailApp: { sendEmail: m => mails.push(m), getRemainingDailyQuota: () => 100 },
+    Session: { getEffectiveUser: () => ({ getEmail: () => 'owner@example.com' }) },
+    Utilities: { formatDate: d => new Date(d).toISOString().slice(0, 10) } };
+  vm.createContext(ctx); vm.runInContext(fs.readFileSync('site/setup/visitor-log/Code.gs', 'utf8'), ctx);
+  console.log('doGet first   ->', ctx.doGet());
+  console.log('   tabs:', Object.keys(created).join(', '), '| triggers:', triggers.length, '| mail:', mails[0] && mails[0].subject, '| SHEET:', props.SHEET);
+  console.log('doGet again   ->', ctx.doGet(), '| mails still', mails.length);
+})();

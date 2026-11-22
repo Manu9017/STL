@@ -30,24 +30,25 @@ What it cannot do
   only when people browse from an office network that is registered to the company.
 - Record location or company for visitors who press "No thanks". Their page views are still counted.
 
-Steps
+Steps (about 5 minutes; Claude Desktop can click through them for you while you approve)
 1. Sign in to Google with the account that should own the data (for example shivastechnology@gmail.com).
 2. Create a new Google Sheet. Name it "SHIVAS visitor log".
 3. In the sheet: Extensions → Apps Script. Delete what is there, paste all of Code.gs, press Save.
-4. In the function list at the top choose "setup" and press Run. Allow the permissions it asks for
-   (the sheet, sending email, running every morning). The tabs Visits, Leads, Companies, Pages,
-   Daily and Viewers appear. (Already set up before Nov 2026? Paste the new Code.gs and run setup
-   again: it adds the new tabs and the Monday report and keeps your data.)
-5. Deploy → New deployment → gear icon → Web app.
+4. Deploy → New deployment → gear icon → Web app.
      Execute as: Me      Who has access: Anyone
-   Press Deploy and copy the Web app URL (it ends in /exec).
-6. In the website files, open assets/config.js and paste the URL between the quotes of sheetUrl:
+   Press Deploy. Google asks for permissions (the sheet, sending email, running every morning):
+   choose your account → Advanced → Go to the project → Allow. Copy the Web app URL (it ends in /exec).
+5. Open that URL once in the same browser. It finishes the setup by itself: the tabs Visits, Leads,
+   Companies, Pages, Daily and Viewers appear, the morning and Monday reports are scheduled, and a
+   "SHIVAS visitor log is switched on" email arrives. (Running "setup" from the function list does the
+   same. Already set up before? Paste the new Code.gs, run setup again, then Deploy → Manage
+   deployments → edit → New version: your data is kept.)
+6. Send the /exec URL to Claude. Claude puts it in assets/config.js and publishes the site. Or do it
+   yourself: open assets/config.js and paste it between the quotes of sheetUrl:
      sheetUrl: 'https://script.google.com/macros/s/AKfy..../exec',
-   Upload the site again (or ask Claude to republish it).
-7. Test: open the website, press OK on the bar at the bottom, fill the enquiry form.
-   A row appears in Visits and Leads within a few seconds and the enquiry email arrives.
-8. Check the report: choose "sendTestReport" in the function list and press Run. An email with
-   today's visits so far arrives at info@shivastechnology.com and at your own Google address.
+7. Test on the real site (not the claude.ai preview): open it, press OK on the bar at the bottom, fill
+   the enquiry form. Rows appear in Visits and Leads within seconds, and the visit and enquiry
+   emails arrive. "sendTestReport" in the function list sends today's report on demand.
 
 Options (assets/config.js)
 - ga4: a Google Analytics 4 measurement ID (G-...) for charts of countries, cities and devices.
