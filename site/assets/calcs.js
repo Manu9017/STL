@@ -24,9 +24,7 @@
     ms:  { n: 'Low carbon steel (MS, ≤ 0.1 % C)', uts: 380, k: 330, rho: 7850, red: 25, v: 12 },
     mc:  { n: 'Medium carbon (0.3–0.45 % C)', uts: 600, k: 380, rho: 7850, red: 22, v: 10 },
     hc:  { n: 'High carbon (0.6–0.85 % C, spring, LRPC)', uts: 1050, k: 450, rho: 7850, red: 20, v: 8 },
-    ss:  { n: 'Stainless steel 304', uts: 650, k: 900, rho: 7900, red: 18, v: 6 },
-    al:  { n: 'Aluminium (EC grade)', uts: 90, k: 70, rho: 2700, red: 22, v: 20 },
-    cu:  { n: 'Copper (ETP)', uts: 230, k: 170, rho: 8900, red: 25, v: 20 }
+    ss:  { n: 'Stainless steel 304', uts: 650, k: 900, rho: 7900, red: 18, v: 6 }
   };
   CALCS.push({
     id: 'wire', mg: 1, div: 'wire', t: 'Wire drawing', s: 'Passes, die sequence, block speeds, kW and output',

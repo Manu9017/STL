@@ -21,3 +21,8 @@
 
 ## Home page banner (added 12 Nov 2026)
 - [ ] Confirm the six pictures in the home banner (`site/assets/brand/shivas-banner-*.webp`) show SHIVAS equipment. If any are illustrations or renderings, say so and they can be labelled or swapped for own photos.
+
+## Scope: steel only (added 22 Nov 2026)
+The owner does not make copper or aluminium equipment. The Aluminium wire drawing machine page was removed (301 to wire-drawing.html), and the wire calculator and product finder offer steel grades only. Two items stay until the owner says otherwise, because they are steel-wire products:
+- [ ] CO2 / MIG welding wire plant (items/mig.html): steel wire with a copper coating line. Keep, or remove?
+- [ ] Zinc-aluminium (Galfan-type) baths listed as an option on items/wirezinc.html and items/hdgwire.html: offered, or remove?

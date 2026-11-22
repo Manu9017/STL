@@ -280,7 +280,7 @@ def main():
     if "index.html" in parsed:
         home = parsed["index.html"].src
         actual = {
-            "products": len(set(re.findall(r'<a class="mini[^"]*" href="([a-z0-9-]+)\.html"', parsed["items/index.html"].src))) if "items/index.html" in parsed else None,
+            "products": len(set(re.findall(r'<a class="mini[^"]*" href="([^"#]+)"', parsed["items/index.html"].src))) if "items/index.html" in parsed else None,   # every card, incl. ../pultrusion.html
             "3D models": len([f for f in files if f.startswith(VIEWER_DIR) and f.endswith(".html")]),
             "articles": len([f for f in files if f.startswith("blog/") and f.endswith(".html") and f != "blog/index.html"]),
             "photos": int((re.findall(r'data-div="" aria-pressed="true">All <i>(\d+)</i>', parsed["gallery.html"].src) or [0])[0]) if "gallery.html" in parsed else None,

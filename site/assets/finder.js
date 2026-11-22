@@ -14,7 +14,6 @@
     wiredraw: { n: 'Wire drawn from rod (MS, HB, high-carbon, spring)', g: 'draw', cap: 'w' },
     wiregalv: { n: 'Galvanized wire, barbed wire, strand', g: 'wgalv', cap: 'w' },
     mig: { n: 'CO₂ / MIG welding wire', g: 'mig', cap: 'w' },
-    alwire: { n: 'Aluminium wire and conductor', g: 'al', cap: 'w' },
     strip: { n: 'Steel strip and coil', g: 'strip', cap: 's' },
     chem: { n: 'Chemical, plating and process plants', g: 'chem', cap: 'p' },
     effluent: { n: 'An effluent, acid or fume problem to solve', g: 'env', cap: 'p' }
@@ -41,7 +40,6 @@
              upgrade: ['wirezinc', 'line-fpl', 'htakeup', 'anneal', 'r-acid'], equipment: ['wirezinc', 'htakeup', 'payoff', 'anneal', 'egline', 'line-egl'],
              env: ['line-fpl', 'r-scrub', 'r-acid', 'r-etp', 'r-zld'] },
     mig: { new: ['mig', 'payoff', 'descaler', 'slm', 'spooler', 'line-egl'], upgrade: ['mig', 'slm', 'spooler', 'diebox'], equipment: ['mig', 'slm', 'spooler', 'diebox', 'acc'], env: ['line-fpl', 'r-scrub', 'r-etp'] },
-    al: { new: ['alwdm', 'payoff', 'spooler', 'acc'], upgrade: ['alwdm', 'spooler', 'acc', 'special'], equipment: ['alwdm', 'spooler', 'acc', 'special'], env: ['r-scrub', 'r-etp'] },
     strip: { new: ['r-strip', 'r-pick', 'r-airdryer', 'r-scrub', 'r-acid', 'r-etp'], upgrade: ['r-strip', 'r-airdryer', 'r-hx', 'r-acid', 'r-recovery'],
              equipment: ['r-tanks', 'r-pump', 'r-hx', 'r-airdryer', 'r-hood', 'r-duct', 'r-blower'], env: ['r-scrub', 'r-acid', 'r-recovery', 'r-etp', 'r-zld'] },
     chem: { new: ['r-tanks', 'r-storage', 'r-mix', 'r-plating', 'r-structure', 'r-pump', 'r-hx', 'r-pipe', 'r-duct', 'r-frpfab'],
@@ -56,7 +54,6 @@
     draw: 'Rod size, finished size and speed set the number of blocks; we design the die sequence with you.',
     wgalv: 'Strand count and line speed set the bath length; fumeless pickling keeps acid fume inside the tanks.',
     mig: 'Copper coating and precision layer winding decide CO₂ wire quality.',
-    al: 'Aluminium needs lower reductions per pass and careful surface handling.',
     strip: 'Strip width, gauge and speed set tank length and the scrubber size.',
     chem: 'PP-H, FRP and PP-FRP built to the chemical, temperature and load.',
     env: 'We start from your waste streams: acid, rinse water, fume and sludge.'
