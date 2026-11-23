@@ -339,3 +339,12 @@
 @media (prefers-reduced-motion:reduce){
   :root:not(#_) :is(body[data-pt="home"] #what .dv,.mini[data-div],.bcard):hover{transform:none}
 }
+
+/* ============================== 12. ARTICLES AT THE FOOT OF EVERY PAGE (23 Nov 2026) ============================== */
+:root:not(#_) .rel-more{margin:16px 0 0}
+:root:not(#_) .rel-more a{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:10px;border:1.5px solid var(--s-line2);background:var(--s-card);color:var(--s-ink);font-weight:700;text-decoration:none}
+:root:not(#_) .rel-more a:hover{border-color:var(--s-hdg);color:var(--s-hdg)}
+:root:not(#_) body[data-pt="app"] #read{background:var(--s-band)!important;--ico:var(--i-doc)}
+:root:not(#_) body[data-pt="app"] #read .rdl{margin-top:22px}
+:root:not(#_) .rdl a{border-radius:10px!important;box-shadow:var(--s-sh)!important}
+:root:not(#_)[data-theme="dark"] body[data-pt="app"] #read{background:var(--s-band)!important}

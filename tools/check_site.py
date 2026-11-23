@@ -361,6 +361,18 @@ def main():
             print("Calculator pages not checked: node is not installed")
         except Exception as e:
             warnings.append(f"calculator page check failed ({e})")
+        try:
+            import build_related, io, contextlib
+            with contextlib.redirect_stdout(io.StringIO()):
+                old_argv = sys.argv; sys.argv = ["build_related.py", "--check"]
+                try:
+                    build_related.main()
+                finally:
+                    sys.argv = old_argv
+        except SystemExit:
+            warnings.append("related articles out of date: run python3 tools/build_related.py")
+        except Exception as e:
+            warnings.append(f"calculator page check failed ({e})")
 
     print(f"SHIVAS site check: {len(pages)} HTML pages, {len(files)} files in {os.path.relpath(root)}")
     print(f"Visitor tracking: {tracking}")
