@@ -36,7 +36,7 @@ The company name is always written **SHIVAS** in capitals.
 | `assets/fonts/` | Noto Sans latin woff2 (self-hosted; `@font-face` inline in each page as `<style id="v52f">`). |
 | `assets/resp/` | 480/960 px copies of large photos and WebP 3D previews, made by `tools/responsive_images.py`. |
 | `favicon.ico`, `apple-touch-icon.png` | Cut from the logo's S. |
-| `404.html`, `_redirects`, `_headers`, `.htaccess`, `assets/og/` | Production only, not on the artifact (`.htaccess` repeats `_redirects` and `_headers` for Apache or cPanel hosting; `check_site.py` warns if the redirects differ): the not-found page (absolute links, noindex), Cloudflare redirects and headers, and the 1200×630 link-preview images. Every page carries og/twitter tags; items and blog pages carry BreadcrumbList JSON-LD; every page has a theme-color meta. |
+| `404.html`, `_redirects`, `_headers`, `.htaccess`, `assets/og/` | Production only, not on the artifact (`.htaccess` repeats `_redirects` and `_headers` for Apache or cPanel hosting, adds compression, and has an HTTPS AND WWW block that stays commented out until the domain has its certificate; `check_site.py` warns if the redirects differ): the not-found page (absolute links, noindex), Cloudflare redirects and headers, and the 1200×630 link-preview images. Every page carries og/twitter tags; items and blog pages carry BreadcrumbList JSON-LD; every page has a theme-color meta. |
 | `sitemap.xml`, `robots.txt` | Base URL `https://www.shivastechnology.com/`. Add every new indexable page, viewers included, to the sitemap. |
 
 Each page carries its own `<title>`, meta description, canonical link and JSON-LD (`Organization`, `Product`, `FAQPage`, `Article`). Keep them unique and valid.

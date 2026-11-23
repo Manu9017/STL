@@ -1,7 +1,8 @@
 # Apache / cPanel hosting only. Cloudflare Pages and Netlify use _redirects and _headers instead; this file repeats
 # the same rules for a host that runs Apache. Keep the two in step (tools/check_site.py warns if they differ).
-# Only common directives that standard cPanel hosting allows (Redirect, ErrorDocument, Header, AddType). If a host ever
-# answers every page with 500 Internal Server Error, it does not allow one of them: delete this file and tell the developer.
+# Only common directives that standard cPanel hosting allows (Redirect, ErrorDocument, Header, AddType,
+# AddOutputFilterByType), each inside IfModule so a host without that module skips it. If a host ever answers every
+# page with 500 Internal Server Error, it does not allow one of them: delete this file and tell the developer.
 
 # 301 redirects from the 2019 site, from docs/redirects.csv (site_path), the same as _redirects
 <IfModule mod_alias.c>
@@ -56,3 +57,24 @@ ErrorDocument 404 /404.html
   AddType image/webp .webp
   AddType application/manifest+json .webmanifest
 </IfModule>
+
+# compression for pages, styles, scripts and the 3D model data (Cloudflare does this by itself); a host that already
+# compresses is not affected, because Apache never compresses a response twice
+<IfModule mod_deflate.c>
+  <IfModule mod_filter.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml text/javascript application/javascript application/json application/xml application/ld+json application/manifest+json image/svg+xml image/x-icon image/vnd.microsoft.icon
+  </IfModule>
+</IfModule>
+
+# HTTPS AND WWW (off until the domain is live). Once https://www.shivastechnology.com/ opens with a padlock, switch on
+# the eight lines below by deleting the first "# " of each, or use cPanel > Domains > Force HTTPS Redirect instead.
+# They send http:// and shivastechnology.com to https://www.shivastechnology.com/ with a 301 (also correct behind a
+# proxy such as Cloudflare, which reports https in X-Forwarded-Proto).
+# <IfModule mod_rewrite.c>
+#   RewriteEngine On
+#   RewriteCond %{HTTPS} !=on
+#   RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+#   RewriteRule ^ https://www.shivastechnology.com%{REQUEST_URI} [L,R=301]
+#   RewriteCond %{HTTP_HOST} !^www\. [NC]
+#   RewriteRule ^ https://www.shivastechnology.com%{REQUEST_URI} [L,R=301]
+# </IfModule>
