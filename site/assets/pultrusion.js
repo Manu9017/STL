@@ -69,6 +69,9 @@
     var fg = ctx.createLinearGradient(0, 238, 0, H); fg.addColorStop(0, 'rgba(130,170,210,.13)'); fg.addColorStop(1, 'rgba(10,24,40,0)'); ctx.fillStyle = fg; ctx.fillRect(0, 238, W, H - 238);
     for (var x = -600; x <= W + 600; x += 60) { var lg = ctx.createLinearGradient(0, 238, 0, H); lg.addColorStop(0, 'rgba(160,195,225,.12)'); lg.addColorStop(1, 'rgba(160,195,225,0)'); ctx.strokeStyle = lg; ctx.lineWidth = .8; ctx.beginPath(); ctx.moveTo(W / 2 + (x - W / 2) * .55, 238); ctx.lineTo(x, H); ctx.stroke(); }
     ctx.fillStyle = 'rgba(190,220,245,.25)'; ctx.fillRect(0, 238, W, 1.2); }
+  /* V81 pultrusion: contact shadow on the floor and a steel stand */
+  function shadow(x, w) { ctx.save(); ctx.translate(x + w / 2, 239); ctx.scale(1, .12); var g2 = ctx.createRadialGradient(0, 0, 0, 0, 0, w * .6 + 8); g2.addColorStop(0, 'rgba(0,0,0,.45)'); g2.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = g2; ctx.beginPath(); ctx.arc(0, 0, w * .6 + 8, 0, 6.283); ctx.fill(); ctx.restore(); }
+  function stand(x, y, w) { var sg = ctx.createLinearGradient(0, y, 0, 238); sg.addColorStop(0, '#3b5672'); sg.addColorStop(1, '#22364b'); ctx.fillStyle = sg; ctx.fillRect(x, y, 8, 238 - y); ctx.fillRect(x + w - 8, y, 8, 238 - y); ctx.fillRect(x, 226, w, 6); ctx.fillStyle = 'rgba(255,255,255,.12)'; ctx.fillRect(x, y, 2, 238 - y); }
   function vignette() { var v = ctx.createRadialGradient(W / 2, H * .45, W * .3, W / 2, H * .5, W * .75); v.addColorStop(0, 'rgba(4,10,18,0)'); v.addColorStop(1, 'rgba(4,10,18,.36)'); ctx.fillStyle = v; ctx.fillRect(0, 0, W, H); }
   function draw() {
     if (!cv.width) { var w0 = cv.getBoundingClientRect().width; if (!w0) return; size(); }
@@ -77,6 +80,8 @@
     // floor
     ctx.fillStyle = '#13263a'; ctx.fillRect(0, 238, W, 2);
     var flow = t * SPEED;
+    shadow(20, 116); shadow(220, 130); shadow(470, 180); shadow(680, 250); shadow(950, 150);
+    ctx.strokeStyle = '#3b5672'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(22, 214); ctx.lineTo(22, 60); ctx.moveTo(134, 214); ctx.lineTo(134, 60); ctx.moveTo(22, 60); ctx.lineTo(134, 60); for (var cyy = 99; cyy < 214; cyy += 34) { ctx.moveTo(22, cyy); ctx.lineTo(134, cyy); } ctx.stroke();
     // 1 creel: spools turning
     for (var i = 0; i < 3; i++) for (var j = 0; j < 4; j++) {
       var cx = 38 + i * 34, cy = 82 + j * 34;
@@ -103,7 +108,9 @@
     ctx.beginPath(); ctx.moveTo(222, 178);
     for (var x = 222; x <= 348; x += 6) ctx.lineTo(x, 178 + Math.sin(x * .12 + t * 3) * 2);
     ctx.strokeStyle = '#f0c46a'; ctx.lineWidth = 1.5; ctx.stroke();
-    ctx.fillStyle = '#2d4860'; ctx.fillRect(228, 226, 8, 12); ctx.fillRect(334, 226, 8, 12);
+    stand(226, 226, 118);
+    var dr = ctx.createRadialGradient(282, 200, 2, 285, 204, 12); dr.addColorStop(0, '#dfe7ee'); dr.addColorStop(1, '#5d7590'); ctx.fillStyle = dr; ctx.beginPath(); ctx.arc(285, 204, 11, 0, 6.283); ctx.fill();
+    ctx.save(); ctx.translate(285, 204); ctx.rotate(t * 2); ctx.strokeStyle = 'rgba(30,45,60,.6)'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(-8, 0); ctx.lineTo(8, 0); ctx.stroke(); ctx.restore();
     // 3 preformer plates
     ctx.fillStyle = '#5d7590'; ctx.fillRect(386, Y - 34, 8, 68); ctx.fillRect(410, Y - 26, 8, 52);
     ctx.fillStyle = '#e9e2c8'; ctx.fillRect(394, Y - 5, 76, 10);
@@ -112,7 +119,8 @@
     side(470, Y - 46, 180, 92, '#5a2a12', 12); rr(470, Y - 46, 180, 92, 6); ctx.fillStyle = g; ctx.fill(); ctx.strokeStyle = '#e66a2c'; ctx.lineWidth = 2; ctx.stroke();
     for (i = 0; i < 5; i++) { var hb = .5 + .3 * Math.sin(t * 2.2 + i * .9), bg = ctx.createLinearGradient(484 + i * 34, 0, 498 + i * 34, 0); bg.addColorStop(0, 'rgba(120,40,12,.9)'); bg.addColorStop(.5, 'rgba(255,' + Math.round(100 + 60 * hb) + ',44,' + (.55 + .35 * hb).toFixed(3) + ')'); bg.addColorStop(1, 'rgba(120,40,12,.9)'); ctx.fillStyle = bg; ctx.fillRect(484 + i * 34, Y - 52, 14, 104);
       ctx.save(); ctx.globalCompositeOperation = 'lighter'; var gl = ctx.createRadialGradient(491 + i * 34, Y, 2, 491 + i * 34, Y, 46); gl.addColorStop(0, 'rgba(255,120,50,' + (.16 * hb).toFixed(3) + ')'); gl.addColorStop(1, 'rgba(255,120,50,0)'); ctx.fillStyle = gl; ctx.fillRect(445 + i * 34, Y - 60, 92, 120); ctx.restore(); }
-    ctx.fillStyle = '#2d4860'; ctx.fillRect(500, Y + 46, 10, 238 - Y - 46); ctx.fillRect(610, Y + 46, 10, 238 - Y - 46);
+    stand(494, Y + 46, 132);
+    for (i = 0; i < 5; i++) { ctx.strokeStyle = '#c9d4de'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(491 + i * 34, Y - 52); ctx.quadraticCurveTo(491 + i * 34, Y - 72, 500 + i * 34, Y - 80); ctx.stroke(); ctx.fillStyle = '#e8a317'; ctx.fillRect(498 + i * 34, Y - 84, 6, 6); }
     // the cured profile, moving
     var p0 = 650, p1 = 960;
     side(p0, Y - 10, p1 - p0, 20, '#5f8f85', 7); ctx.fillStyle = '#7fb3a8'; ctx.fillRect(p0, Y - 10, p1 - p0, 20);
@@ -128,6 +136,10 @@
       ctx.fillStyle = '#2d4860'; ctx.fillRect(bx + 18, Y + 30 + gap, 8, 238 - (Y + 30 + gap));
     });
     ctx.fillStyle = '#2d4860'; ctx.fillRect(680, 236, 250, 4);
+    [0, 1].forEach(function (k) { var q = (ph + k * .5) % 1, pulling = q < .5, u = pulling ? q / .5 : 1 - (q - .5) / .5, bx = 690 + k * 120 + u * 70, cy0 = 214 + k * 8;
+      var cg = ctx.createLinearGradient(0, cy0 - 6, 0, cy0 + 6); cg.addColorStop(0, '#6f8faf'); cg.addColorStop(.5, '#3f6082'); cg.addColorStop(1, '#1f3550'); ctx.fillStyle = cg; ctx.fillRect(bx + 44, cy0 - 6, 6, 12);
+      var rg2 = ctx.createLinearGradient(0, cy0 - 3, 0, cy0 + 3); rg2.addColorStop(0, '#f1f5f8'); rg2.addColorStop(1, '#8fa3b6'); ctx.fillStyle = rg2; ctx.fillRect(bx + 50, cy0 - 3, Math.max(4, 800 + k * 120 - bx - 50), 6);
+      ctx.fillStyle = cg; ctx.fillRect(800 + k * 120, cy0 - 7, 34, 14); });
     // 6 flying saw: rides with the profile, drops, cuts, returns; cut pieces roll away on the table
     var sc = 7, sp = (t % sc) / sc, sxp = 900 + (sp < .6 ? sp / .6 * 40 : 40 - (sp - .6) / .4 * 40), down = sp > .25 && sp < .6;
     var bladeY = down ? Y : Y - 44;
@@ -136,6 +148,8 @@
     for (i = 0; i < 12; i++) { ctx.rotate(.5236); ctx.beginPath(); ctx.moveTo(22, 0); ctx.lineTo(26, 3); ctx.stroke(); }
     ctx.restore();
     ctx.fillStyle = '#5d7590'; ctx.fillRect(sxp - 3, 60, 6, bladeY - 60 - 22);
+    ctx.fillStyle = '#3b5672'; ctx.fillRect(sxp - 30, 50, 60, 14); ctx.fillStyle = '#2d4860'; ctx.fillRect(sxp - 8, 0, 16, 50);
+    if (down) { for (var di = 0; di < 18; di++) { var dph = ((t * 1.8) + di / 18) % 1, da = -1.2 + (di % 7) * .35; ctx.fillStyle = 'rgba(214,236,230,' + (.6 * (1 - dph)).toFixed(3) + ')'; ctx.beginPath(); ctx.arc(sxp + Math.cos(da) * dph * 46, Y + Math.sin(da) * dph * 30 - dph * 10, 1.6 + dph * 2.4, 0, 6.283); ctx.fill(); } }
     if (down && Math.abs(sp - .58) < .02 && (!pieces.length || t - pieces[pieces.length - 1].t > 3)) { pieces.push({ t: t, k: SH[cur][0] }); made++; }
     pieces = pieces.filter(function (pc) { return t - pc.t < 9; });
     pieces.forEach(function (pc) {
@@ -143,7 +157,8 @@
       side(x0, Y - 10, 110, 20, '#79a79d', 7); ctx.fillStyle = '#9cc7bd'; ctx.fillRect(x0, Y - 10, 110, 20);
       section(Math.min(x0 + 120, W - 22), Y, 22, pc.k);
     });
-    ctx.fillStyle = '#2d4860'; ctx.fillRect(950, 236, 150, 4);
+    ctx.fillStyle = '#2d4860'; ctx.fillRect(950, 236, 150, 4); stand(952, Y + 20, 146); ctx.fillStyle = '#3b5672'; ctx.fillRect(952, Y + 18, 146, 5);
+    for (var ri = 0; ri < 6; ri++) { var rx2 = 962 + ri * 24, rg3 = ctx.createRadialGradient(rx2 - 2, Y + 12, 1, rx2, Y + 14, 6); rg3.addColorStop(0, '#dfe7ee'); rg3.addColorStop(1, '#4d6278'); ctx.fillStyle = rg3; ctx.beginPath(); ctx.arc(rx2, Y + 14, 5, 0, 6.283); ctx.fill(); }
     // section inset
     var iw = 134 * Math.min(K, 1.6), ih = 104 * Math.min(K, 1.6);
     rr(W - iw - 16, 16, iw, ih, 10); ctx.fillStyle = 'rgba(19,38,58,.95)'; ctx.fill(); ctx.strokeStyle = '#2d4860'; ctx.lineWidth = 1; ctx.stroke();
