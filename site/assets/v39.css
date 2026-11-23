@@ -298,6 +298,11 @@ h3:not(#v39a):not(#v39b):not(#v61){font-weight:700!important;letter-spacing:-.01
 .cx-in .fld.fsel{grid-column:1/-1}
 /* a long typical-value item may wrap on a phone instead of widening the page */
 @media (max-width:640px){.cx-assume i{white-space:normal}}
+/* photographs in articles: one wide, or a landscape and a portrait side by side at the same height */
+.post-b .pf{margin:6px 0 22px}
+.post-b .pf img{display:block;width:100%;height:auto;border-radius:10px;background:var(--soft)}
+.post-b .pf2{display:grid;grid-template-columns:1.78fr 1fr;gap:10px;align-items:start}
+.post-b .pf figcaption{grid-column:1/-1;margin-top:2px;font-size:14px;line-height:1.45;color:var(--muted)}
 /* ETP and ZLD process flow diagram (calculators): scrolls sideways on phones, colours follow the theme */
 .zfd{overflow-x:auto;min-width:0;max-width:100%;border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:8px}
 .zfd svg{display:block;min-width:760px;width:100%;height:auto;font-family:"Noto Sans","Segoe UI",Arial,sans-serif}
@@ -375,3 +380,14 @@ a.btn[href^="mailto:"],a.v31-btn[href^="mailto:"]{display:inline-flex!important;
  .flt .chk{white-space:nowrap}
  .flt .cnt{margin:0;width:auto}
 }
+/* calculators: hints in labels at full strength (AA on the light form), and the selected galvanizing or FRP card
+   in dark mode on a deep navy so its white text passes */
+.cx-in .fld em{opacity:1}
+:root[data-theme="dark"] .cx-nav a.d-hdg[aria-current="true"]{background:#1f4e79;border-color:#4f8fca}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .cx-nav a.d-hdg[aria-current="true"]{background:#1f4e79;border-color:#4f8fca}}
+/* product pages: articles from our engineers */
+.rdl{list-style:none;margin:0;padding:0;display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.rdl a{display:grid;gap:4px;height:100%;padding:14px 16px;border:1px solid var(--line);border-left:4px solid var(--amber,#e8a317);border-radius:10px;background:var(--panel);color:var(--fg);text-decoration:none}
+.rdl a:hover{border-color:var(--acc,#1f4e79)}
+.rdl b{font-size:16px;line-height:1.3}
+.rdl span{font-size:13px;color:var(--muted)}
