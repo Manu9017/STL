@@ -84,7 +84,8 @@ footer .v39-lines{color:rgba(255,255,255,.78)!important}
 [data-theme="dark"] .v40-sb{background:#10233a;border-color:#2b4866}
 [data-theme="dark"] .v40-sb a{color:#c6d4e1}
 [data-theme="dark"] .v40-sb a:hover{background:#1b3653;color:#fff}
-[data-theme="dark"] .v40-sb a.cur{background:#3f86c6;color:#fff}
+[data-theme="dark"] .v40-sb a.cur{background:#2f6fa8;color:#fff}   /* #3f86c6 gave 3.9:1 with white (axe, 23 Nov 2026) */
+[data-theme="dark"] .v40-sb a.q{color:#111}   /* the Enquiry chip keeps dark text on amber in dark mode */
 html{scroll-padding-top:calc(var(--hd-h,64px) + var(--sb,0px) + 12px)!important}
 #app section{scroll-margin-top:calc(var(--hd-h,64px) + var(--sb,0px) + 12px)!important}
 @media (max-width:640px){.v40-sb a{font-size:14px;padding:7px 10px}.v40-sb-in{padding:5px 10px}}

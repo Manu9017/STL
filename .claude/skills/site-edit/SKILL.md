@@ -39,6 +39,17 @@ Text colours that fail contrast are fixed in the A11Y LAYER at the end of `asset
 4. Add a card to `items/index.html` (`<a class="mini" href="<id>.html" data-div="hdg|wire|rein">`), and links from the division page(s) and related items where they fit.
 5. Add `<url><loc>https://www.shivastechnology.com/items/<id>.html</loc></url>` to `sitemap.xml`.
 
+## Calculators on pages (assets/calcs.js)
+Every calculator in `assets/calcs.js` shows in four places, all drawn by `mount()` there (owner, 23 Nov 2026):
+- **The hub** `calculators.html` (`#calcs`): all of them, picked from a list, `#id` in the address.
+- **Its own page** `calculators/<name>.html` (`PAGE` in `calcs.js` gives the names). Never edit these by hand: run `python3 tools/build_calc_pages.py`. Its `PAGES` table holds each page's h1, title, description, the products that carry the calculator and the articles to read; everything else (what you enter, what it works out, how it works) comes from the calculator itself. Header, menu and footer come from `calculators.html`.
+- **Product pages:** a `<section class="sec cxsec" id="calc">` after the technical specification, holding `<div class="cx-one" data-calc="<id>" data-h="3" data-div="hdg|wire|rein|frp">` with a `.cx-ph` placeholder link to the calculator's own page; a `<a href="#calc">Calculator</a>` after Specifications in both On this page lists (menu and page); and a hero button `<a class="btn line" href="#calc">… ↓</a>`. Two calculators on one page: two `cx-one` divs, heading "Calculators". Add the product to that calculator's list in `build_calc_pages.py` and run it.
+- **Division pages:** a set, `<div class="cx cx-app pg-wire" data-calcs="wire,wireweight,rectifier" data-h="3" data-div="wire">`, in `#tools` (galvanizing and wire) and `#rein-calc` (Reinplast). Same edit in all three copies.
+
+`site.js` loads `calcs.js` when a calculator comes near the screen (hub and own pages load it directly). The division pages do not load `item.css`, so `site.js` also adds `assets/calcs.css` in front of `v39.css`: it is generated from the `.cx` rules of `item.css` by `python3 tools/build_calcs_css.py`; run it after changing a calculator style. `check_site.py` warns when `calcs.css` or a calculator page is out of date.
+
+A new calculator: add it to `CALCS` and `ORDER` in `calcs.js`, a name to `PAGE`, an anchor `<span class="cx-a" id="<id>">` in `calculators.html`, an entry in `PAGES` in `build_calc_pages.py`, the page to `sitemap.xml`, and mount it on its products. Check every formula by hand.
+
 ## Adding an article (blog/)
 1. Copy an existing article in the same category, for example `blog/pickling-right.html`.
 2. Update the title (`… | SHIVAS Articles`), meta description, canonical, and the `Article` JSON-LD (`headline`, `datePublished` as YYYY-MM-DD, `description`).

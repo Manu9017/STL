@@ -334,6 +334,26 @@ def main():
     else:
         tracking = "config.js missing"
 
+    # generated files: the calculator styles for the division pages (from item.css) and the calculator pages (from
+    # calcs.js and calculators.html); only for the real site/, since the tools write there
+    if os.path.samefile(root, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "site")):
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        try:
+            import build_calcs_css
+            if not os.path.exists(build_calcs_css.OUT) or open(build_calcs_css.OUT, encoding="utf-8").read() != build_calcs_css.build():
+                warnings.append("assets/calcs.css is out of date with item.css: run python3 tools/build_calcs_css.py")
+        except Exception as e:  # the check must never stop the site check
+            warnings.append(f"calcs.css check failed ({e})")
+        try:
+            import build_calc_pages
+            old = build_calc_pages.stale()
+            if old:
+                warnings.append("calculator pages out of date with calcs.js: run python3 tools/build_calc_pages.py (" + ", ".join(old) + ")")
+        except FileNotFoundError:
+            print("Calculator pages not checked: node is not installed")
+        except Exception as e:
+            warnings.append(f"calculator page check failed ({e})")
+
     print(f"SHIVAS site check: {len(pages)} HTML pages, {len(files)} files in {os.path.relpath(root)}")
     print(f"Visitor tracking: {tracking}")
     if drift:

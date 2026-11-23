@@ -244,7 +244,8 @@ def template():
     return t
 
 
-def main():
+def pages():
+    """{site-relative path: page text} for every calculator."""
     D = calc_data()
     tpl = template()
     want = {}
@@ -253,10 +254,20 @@ def main():
             sys.exit(f"build_calc_pages: no PAGES entry for calculator '{c['id']}'")
         rel, text = build_page(c, D, tpl)
         want[rel] = text
+    return want
+
+
+def stale(want=None):
+    want = want or pages()
+    return [r for r, t in want.items() if not os.path.exists(os.path.join(SITE, r)) or read(r) != t]
+
+
+def main():
+    want = pages()
     if "--check" in sys.argv:
-        stale = [r for r, t in want.items() if not os.path.exists(os.path.join(SITE, r)) or read(r) != t]
-        if stale:
-            print("calculator pages out of date (run python3 tools/build_calc_pages.py): " + ", ".join(stale))
+        stale_pages = stale(want)
+        if stale_pages:
+            print("calculator pages out of date (run python3 tools/build_calc_pages.py): " + ", ".join(stale_pages))
             sys.exit(1)
         print(f"{len(want)} calculator pages up to date")
         return
