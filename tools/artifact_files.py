@@ -134,16 +134,27 @@ def main():
     removals = []
     shutil.rmtree(BUILD, ignore_errors=True)
     if a.update:
-        # the live artifact holds what the marker commit's site/ gave under the earlier rules (no thumbnail swap)
+        # the live artifact holds what the marker commit's site/ gave under the same rules (thumbnails with a FULL
+        # copy left out unless that commit's home page used them); send what is new or changed since, plus every
+        # page or script that names a thumbnail that is now left out or kept where it was not before
         base = open(MARK).read().split()[0]
         r = subprocess.run(["git", "ls-tree", "-r", "--name-only", base, "--", "site"], cwd=REPO, capture_output=True, text=True, check=True)
-        live = {p[len("site/"):] for p in r.stdout.split() if p.startswith("site/")}
-        live = {p for p in live if p.split("/")[0] not in EXCLUDE_TOP and not p.startswith(EXCLUDE_PREFIX)}
+        tree = {p[len("site/"):] for p in r.stdout.split() if p.startswith("site/")}
+        home = subprocess.run(["git", "show", f"{base}:site/{KEEP_THUMBS_OF}"], cwd=REPO, capture_output=True, text=True, check=True).stdout
+        swaps_then = {p for p in tree if p.startswith(THUMB_DIRS) and p.endswith("_THUMB.webp") and p not in home
+                      and p.replace("_THUMB.webp", "_FULL.webp") in tree}
+        live = {p for p in tree if p.split("/")[0] not in EXCLUDE_TOP and not p.startswith(EXCLUDE_PREFIX)} - swaps_then
         now = set(all_files()) | {"index.html"}
         removals = sorted(live - now)
         changed = set(changed_files())
-        files = [p for p in all_files() if p not in live or p in changed or artifact_source(p) != os.path.join(SITE, p)]
-        print(f"live artifact (commit {base[:8]}): {len(live)} files; remove {len(removals)}; send {len(files)}")
+        moved = swaps_then ^ thumb_swaps()
+        def names_moved(p):
+            if not p.endswith((".html", ".js", ".css")) or not moved:
+                return False
+            text = open(os.path.join(SITE, p), encoding="utf-8").read()
+            return any(m in text for m in moved)
+        files = [p for p in all_files() if p not in live or p in changed or names_moved(p)]
+        print(f"live artifact (commit {base[:8]}): {len(live)} files; remove {len(removals)}; send {len(files)}; thumbnails moved in or out: {len(moved)}")
     else:
         files = changed_files() if a.changed else all_files()
     total = len(all_files()) + 1

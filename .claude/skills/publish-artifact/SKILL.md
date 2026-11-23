@@ -5,7 +5,7 @@ description: Republish the SHIVAS website from site/ to its claude.ai artifact (
 
 # Publish site/ to the claude.ai artifact
 
-Artifact: **https://claude.ai/artifact/QbaMojD3TugfPsudMNCAXJ** (`index.html` is the page; 437 supporting files as of 23 Nov 2026, version 66; robots.txt, sitemap.xml, 404.html, _headers, assets/og/, the items/r-frp.html stub, and the visitor log (assets/config.js, assets/track.js; the preview copies of site.js and v/shivas-bar.js have its loader switched off) are production only).
+Artifact: **https://claude.ai/artifact/QbaMojD3TugfPsudMNCAXJ** (`index.html` is the page; 450 supporting files as of 23 Nov 2026, version 67 (the 12 calculator pages and assets/calcs.css added); robots.txt, sitemap.xml, 404.html, _headers, assets/og/, the items/r-frp.html stub, and the visitor log (assets/config.js, assets/track.js; the preview copies of site.js and v/shivas-bar.js have its loader switched off) are production only).
 Anyone with the link sees an update straight away, so **publish only when the user asks**, and only after the `site-check` skill reports 0 errors.
 
 ## Steps
@@ -23,7 +23,7 @@ Anyone with the link sees an update straight away, so **publish only when the us
    python3 tools/artifact_files.py --changed  # only files changed since the last publish
    python3 tools/artifact_files.py --update   # the safe default: removals first, then every file that is new, changed or rewritten
    ```
-   `--update` works out what the live artifact holds from the marker commit, maps every file that is no longer published to `null` (removals go in batch 1, so no intermediate version passes 511), and sends every file that is new, changed since the marker, or rewritten for the preview. Use it whenever files were added or removed, or the preview rules changed.
+   `--update` works out what the live artifact holds from the marker commit under the same preview rules (thumbnails with a full-size copy left out unless that commit's home page used them), maps every file that is no longer published to `null` (removals go in batch 1, so no intermediate version passes 511), and sends every file that is new or changed since the marker, plus every page or script that names a thumbnail now left out or kept where it was not before. Use it whenever files were added or removed, or the preview rules changed.
    This writes `preview/artifact-batches/batch-N.json`. Each is a `files` map of `{"published/path": "site/published/path"}`, kept under the 255-file limit for one publish. `README.md`, `photos/`, `setup/` and `.nojekyll` are not published.
 4. **Publish batch 1 with the page:** `Artifact` publish with:
    - `url`: the artifact URL;
@@ -37,6 +37,8 @@ Anyone with the link sees an update straight away, so **publish only when the us
    git commit -m "Record artifact publish" docs/artifact-published.txt && git push
    ```
 8. Give the user the link and say what changed.
+
+**After a restart of this session's worker** the first publish is refused with "touches files whose published content is not what you last saw". List the files (`action: "list"`, `scope: "files"`): a listing counts as seeing them. Compare a few of the listed sha256 values with `git show <marker>:site/<file> | sha256sum` for files sent unchanged (for example `assets/calcs.js`), so you know nobody edited the artifact in chat, then publish again.
 
 ## Notes
 - The service rewrites the page head when it stores `index.html`: it drops `<!DOCTYPE><html><head>` and moves the `<title>`, meta tags and `<style>` blocks. So the first publish in a session is refused with a diff that shows these moves. That's expected. Check the diff for **real content** that is on the live page and not in `site/index.html`. If there is any, merge it in. If there's none, publish again unchanged and it goes through.
