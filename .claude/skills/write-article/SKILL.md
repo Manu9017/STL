@@ -15,7 +15,8 @@ description: Write and publish a new SHIVAS engineering article in site/blog/ - 
   - Don't claim CE, ISO 9001 or EN 746.
 
 ## Writing
-- **Voice:** short plain sentences, engineer to engineer. Concrete causes and fixes. No hype, no emoji. Write SHIVAS in capitals.
+- **Voice:** short plain sentences, engineer to engineer. Concrete causes and fixes. No hype, no emoji, and no em dashes (a colon, comma or brackets instead). Ranges in prose use "to" (445 to 455 °C). Write SHIVAS in capitals.
+- **Numbers:** quote the site's own calculators where they apply (the ETP and ZLD, coating, wire and burner calculators), so an article and a calculator never disagree.
 - **Length:** 900–1,600 words.
 - **Shape:** what goes wrong → why → how to check it → how to fix or design it right. Include one table or checklist a reader can use on the shop floor. End with a short "Talk to us" pointing to the matching product page and calculator.
 

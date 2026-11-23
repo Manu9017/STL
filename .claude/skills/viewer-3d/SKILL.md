@@ -40,7 +40,7 @@ The README says it, and the site must say it too: these are **indicative general
 - Ask about this plant (WhatsApp, pre-filled with the name)
 - Call
 - Details and photos (`items/{item}.html`)
-- Switch 3D model (the other ten viewers, from the MODELS list at the top of shivas-bar.js — keep it in step when adding a viewer)
+- Switch 3D model (the other eleven viewers, most important first, from the MODELS list at the top of shivas-bar.js: keep it in step when adding a viewer)
 - All 3D models
 - SHIVAS home
 
@@ -62,8 +62,10 @@ To choose a position:
 4. If it's a headline plant, consider it for the home page's `#models3d` section. Previews there are WebP copies in `assets/resp/v-{file}.webp`:
    `python3 -c "from PIL import Image; Image.open('site/v/img/X.jpg').convert('RGB').save('site/assets/resp/v-X.webp','WEBP',quality=78,method=6)"`
 5. Link to it from its product page. The other product pages use `../v/{file}.html`.
-6. The home page shows "11 3D models" and "All 11 3D models". `tools/check_site.py` warns when that count no longer matches, so update both numbers.
-7. Run `python3 tools/check_site.py` and take the screenshots above.
+6. The home page shows "12 3D models" and "All 12 3D models". `tools/check_site.py` warns when that count no longer matches, so update both numbers.
+7. Put it in importance order everywhere: the `MODELS` list in `v/shivas-bar.js` (the switch-model menu), the cards on `3d-models.html`, `HALL.tech` or `HALL.rein` in all three division pages, and the home `#models3d` section.
+8. A model too big for one file (like `v/hv-furnace.html`) can load its glb as base64 text chunks from a folder beside it (`v/hv-furnace/model.glb.b64.txt`, `.1.txt`, `.2.txt`), each under 25 MiB for Cloudflare Pages. Such a viewer keeps its own loader and its own controls hint, so its script tag carries `data-hint="0"`. Strip client names, prices, PO text, decision logs and open items from any data a new model brings with it before it goes public.
+9. Run `python3 tools/check_site.py` (it also warns when a viewer is missing from the sitemap) and take the screenshots above.
 
 ## Claims
 The viewers' spec tables cite standards. EN 746-2 in `arp-10`, `spin-galvanizing` and `zinc-ash-plant` was reviewed and kept by the owner, and it is allow-listed in the checker. Don't add new certificate claims (CE, ISO 9001, EN 746) to any viewer, and don't cite BS 729.

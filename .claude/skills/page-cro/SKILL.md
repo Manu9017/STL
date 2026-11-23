@@ -17,7 +17,7 @@ description: When the user wants to optimize, improve, or increase conversions o
 - The conversion here is an **enquiry**: the "Get a quote" form (`#enquire` on `index.html`, the quote sections on
   product pages), WhatsApp (+91 98109 20468) or a call. Secondary: plant calculator use, 3D model views.
 - Trust signals that really exist: since 1991 (SHIVAS Reinplast), own fabrication shops in Ghaziabad, 77 product
-  pages, 11 3D plant models, 25 engineering articles, 182 photos, own photos (`-own-` in `assets/library/`).
+  pages, 12 3D plant models, 59 engineering articles, 192 photos, own photos (`-own-` in `assets/library/`).
 - A/B testing needs traffic and tooling the site does not have; prefer clear fixes over "test ideas".
 
 # Page Conversion Rate Optimization (CRO)

@@ -391,3 +391,6 @@ a.btn[href^="mailto:"],a.v31-btn[href^="mailto:"]{display:inline-flex!important;
 .rdl a:hover{border-color:var(--acc,#1f4e79)}
 .rdl b{font-size:16px;line-height:1.3}
 .rdl span{font-size:13px;color:var(--muted)}
+/* calculators: keep room for the calculator while its script builds it, so nothing below it jumps (Lighthouse CLS) */
+#calcs.cx{min-height:760px}
+@media (max-width:899px){#calcs.cx{min-height:980px}}

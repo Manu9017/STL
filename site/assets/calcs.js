@@ -597,7 +597,7 @@
     if (!st[c.id]) { st[c.id] = {}; c.inputs.forEach(function (f) { st[c.id][f.k] = f.v; }); }
     var nAdv = c.inputs.filter(function (f) { return f.adv; }).length;
     [].forEach.call(nav.children, function (a) { a.setAttribute('aria-current', String(a.getAttribute('data-id') === c.id)); });
-    var ca = nav.querySelector('[aria-current="true"]'); if (ca && nav.scrollWidth > nav.clientWidth + 4) nav.scrollTo({ left: ca.offsetLeft - 16, behavior: 'smooth' });
+    var ca = nav.querySelector('[aria-current="true"]'); if (ca && nav.scrollWidth > nav.clientWidth + 4) { if (push) nav.scrollTo({ left: ca.offsetLeft - 16, behavior: 'smooth' }); else nav.scrollLeft = ca.offsetLeft - 16; }   // no smooth scroll on page load: it would end the browser's largest-paint measurement
     document.documentElement.setAttribute('data-brand', c.div === 'rein' ? 'rein' : 'tech');
     pane.innerHTML = '<div class="cx-h"><span class="k">' + DIVN[c.div] + ' · calculator</span><h2>' + c.t + '</h2><p>' + c.lead + '</p></div>' +
       '<div class="cx-grid"><form class="cx-in" onsubmit="return false">' + (c.mg ? '<div class="cx-mg" role="group" aria-label="Extra margin on the selected size"><span class="cx-mg-l" title="Added to the calculated need before the next standard size is chosen. None gives the exact need.">Extra margin</span><div class="seg">' + [0, 10, 20, 30].map(function (m) { return '<button type="button" data-mg="' + m + '" aria-pressed="' + (m === MG) + '">' + (m ? '+' + m + ' %' : 'None') + '</button>'; }).join('') + '</div></div>' : '') + c.inputs.filter(function (f) { return !f.adv; }).map(function (f) { return field(c, f); }).join('') +

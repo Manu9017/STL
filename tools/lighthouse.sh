@@ -30,7 +30,7 @@ import json,sys
 r=json.load(open(sys.argv[1])); c=r['categories']; a=r['audits']
 s=lambda k: round((c[k]['score'] or 0)*100)
 print(f"{sys.argv[2]:<28} {sys.argv[3]:<8} {s('performance'):>5} {s('accessibility'):>5} {s('best-practices'):>5} {s('seo'):>5}  "
-      f"{a['largest-contentful-paint']['displayValue']} / {a['cumulative-layout-shift']['displayValue']} / {a['total-blocking-time']['displayValue']}")
+      f"{a['largest-contentful-paint'].get('displayValue', 'n/a')} / {a['cumulative-layout-shift'].get('displayValue', 'n/a')} / {a['total-blocking-time'].get('displayValue', 'n/a')}")
 for k,v in a.items():
     if v.get('score') is not None and v['score']<0.9 and v.get('scoreDisplayMode')=='binary' and k not in ('errors-in-console',):
         print(f"{'':<38}fail: {k}")
