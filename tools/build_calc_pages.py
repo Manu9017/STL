@@ -89,7 +89,7 @@ var out = { pages: window.SHIVAS_CALC_PAGES, calcs: window.SHIVAS_CALCS.map(func
   var v = {}; c.inputs.forEach(function (f) { v[f.k] = f.v; }); var r = c.run(v);
   return { id: c.id, div: c.div, t: c.t, s: c.s, lead: c.lead, mg: !!c.mg, note: r.note || '',
     key: (r.key || []).map(function (k) { return k[0]; }), rows: (r.rows || []).map(function (x) { return x[0]; }),
-    table: r.table ? (r.table.title || 'Step by step') : '', svg: !!r.svg,
+    table: r.table ? (r.table.title || 'Step by step') : '', svg: !!r.svg, xs: r.xs || [],
     inputs: c.inputs.map(function (f) {
       var sel = f.type === 'sel';
       return { l: f.l, u: f.u || '', adv: !!f.adv, sel: sel, v: sel ? (f.opts.filter(function (o) { return o[0] === f.v; })[0] || ['', ''])[1] : f.v,
@@ -189,7 +189,8 @@ def build_page(c, D, tpl):
     if c["table"]:
         results.append(f"<li>{esc(c['table'])}, as a table</li>")
     if c["svg"]:
-        results.append("<li>A process flow diagram of the plant you set</li>")
+        results.append("<li>A process flow diagram of the plant you set" + (", with the streams moving" if c["id"] == "zld" else "") + "</li>")
+    results += [f"<li>{esc(x)}</li>" for x in c.get("xs", [])]
     how = f'<p>{c["note"]}</p>' + (f"<p>{MG_NOTE}</p>" if c["mg"] else "") + \
         '<p>The answer is a first sizing from typical values, and every input can be changed. Press <b>Ask our engineer to check this</b> under the results and SHIVAS replies with a checked sizing and a proposal.</p>'
     ld = [

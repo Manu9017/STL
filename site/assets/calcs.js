@@ -438,22 +438,44 @@
   var NEUT = { lime: 'Hydrated lime', naoh: 'Caustic soda', soda: 'Lime, then soda ash' };
   var TRAIN = { mee: 'MEE, then ATFD', meec: 'MEE with crystallizer, then ATFD', mvr: 'MVR, then ATFD', mvrc: 'MVR with crystallizer, then ATFD', atfd: 'No evaporator: ATFD takes the RO reject' };
   var ECON = { 3: 2.5, 4: 3.2, 5: 3.9 };   // typical kg of water evaporated per kg of steam for 3, 4 and 5 effects
-  function zldSvg(top, bot) {   // two rows of boxes: top left to right, bottom right to left, joined at the right end
-    var W = 140, H = 66, G = 22, X = function (i) { return 10 + i * (W + G); }, y1 = 22, y2 = 196, s = '';
+  /* V81: the process flow moves. Each stream is drawn as a pipe with a moving dash on top, its width set by its flow
+     (effluent and brine in amber, water in teal, solids in brown, steam in grey, power in gold); steam or power comes
+     in from above the evaporator and the ATFD. */
+  var cl01 = function (x) { return Math.max(0, Math.min(1, x)); };
+  function zldSvg(top, bot) {
+    var W = 140, H = 66, G = 22, X = function (i) { return 10 + i * (W + G); }, y1 = 22, y2 = 214, s = '';
+    var sw = function (q) { return (1.6 + 4.6 * Math.sqrt(cl01(q))).toFixed(1); };
+    var pipe = function (d, c, q) { var w = sw(q); return '<path class="ar ' + (c || 'e') + '" style="stroke-width:' + w + 'px" d="' + d + '"/><path class="fl ' + (c || 'e') + '" style="stroke-width:' + (w * .62).toFixed(1) + 'px" d="' + d + '"/>'; };
     var box = function (x, y, b) {
-      return '<g class="' + (b.c || '') + '"><rect x="' + x + '" y="' + y + '" width="' + W + '" height="' + H + '" rx="9"/>' +
-        '<text x="' + (x + 10) + '" y="' + (y + 22) + '" class="t">' + b.t + '</text>' +
-        '<text x="' + (x + 10) + '" y="' + (y + 41) + '" class="v">' + b.s + '</text>' + (b.s2 ? '<text x="' + (x + 10) + '" y="' + (y + 57) + '" class="v">' + b.s2 + '</text>' : '') + '</g>' +
-        (b.o ? '<path class="ar ' + (b.oc || '') + '" d="M' + (x + W / 2) + ' ' + (y + H) + 'v20"/><text x="' + (x + W / 2) + '" y="' + (y + H + 34) + '" class="o ' + (b.oc || '') + '" text-anchor="middle">' + b.o + '</text>' : '');
+      return '<g class="' + (b.c || '') + '"><rect x="' + x + '" y="' + y + '" width="' + W + '" height="' + H + '" rx="9"/><rect class="ac ac-' + (b.k || 't') + '" x="' + x + '" y="' + (y + 8) + '" width="4" height="' + (H - 16) + '" rx="2"/>' +
+        '<text x="' + (x + 12) + '" y="' + (y + 22) + '" class="t">' + b.t + '</text>' +
+        '<text x="' + (x + 12) + '" y="' + (y + 41) + '" class="v">' + b.s + '</text>' + (b.s2 ? '<text x="' + (x + 12) + '" y="' + (y + 57) + '" class="v">' + b.s2 + '</text>' : '') + '</g>' +
+        (b.o ? pipe('M' + (x + W / 2) + ' ' + (y + H) + 'v20', b.oc, b.oq == null ? .3 : b.oq) + '<text x="' + (x + W / 2) + '" y="' + (y + H + 34) + '" class="o ' + (b.oc || '') + '" text-anchor="middle">' + b.o + '</text>' : '') +
+        (b.in ? pipe('M' + (x + W * .84) + ' ' + (y - 30) + 'V' + (y - 2), b.in.c, .25) + '<text x="' + (x + W * .84) + '" y="' + (y - 36) + '" class="o ' + b.in.c + '" text-anchor="middle">' + b.in.t + '</text>' : '');
     };
-    top.forEach(function (b, i) { s += box(X(i), y1, b); if (i) s += '<path class="ar" d="M' + (X(i) - G + 2) + ' ' + (y1 + H / 2) + 'h' + (G - 6) + '"/>'; });
+    top.forEach(function (b, i) { s += box(X(i), y1, b); if (i) s += pipe('M' + (X(i) - G + 2) + ' ' + (y1 + H / 2) + 'h' + (G - 6), 'e', b.q == null ? 1 : b.q); });
     var r = top.length - 1;
-    s += '<path class="ar" d="M' + (X(r) + W / 2) + ' ' + (y1 + H + 44) + 'V' + (y2 - 4) + '"/>';
-    bot.forEach(function (b, i) { var x = X(r - i); s += box(x, y2, b); if (i) s += '<path class="ar" d="M' + (x + W + G - 2) + ' ' + (y2 + H / 2) + 'h-' + (G - 6) + '"/>'; });
+    s += pipe('M' + (X(r) + W / 2) + ' ' + (y1 + H + 44) + 'V' + (y2 - 4), 'e', bot[0].q == null ? .3 : bot[0].q);
+    bot.forEach(function (b, i) { var x = X(r - i); s += box(x, y2, b); if (i) s += pipe('M' + (x + W + G - 2) + ' ' + (y2 + H / 2) + 'h-' + (G - 6), 'e', b.q == null ? .2 : b.q); });
     return '<svg viewBox="0 0 ' + (X(r) + W + 10) + ' ' + (y2 + H + 44) + '" role="img" aria-label="Process flow of the ETP and ZLD plant, with the flows worked out above">' +
-      '<defs>' + ['', 'w', 's'].map(function (k) { return '<marker id="zar' + k + '" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="mk' + k + '" d="M0 0L8 4L0 8z"/></marker>'; }).join('') + '</defs>' + s + '</svg>';
+      '<defs>' + ['', 'w', 's', 'st', 'pw'].map(function (k) { return '<marker id="zar' + k + '" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path class="mk' + k + '" d="M0 0L8 4L0 8z"/></marker>'; }).join('') + '</defs>' + s + '</svg>';
   }
-  CALCS.push({
+  /* V81: where the water goes, and the choices compared on the visitor's own effluent */
+  var cpv = function (v, o) { var w = {}, k; for (k in v) w[k] = v[k]; for (k in o) w[k] = o[k]; return w; };
+  function zldWide(v, x) {
+    var h = '<p class="k cx-tt">Where the water goes</p><div class="zwb"><div class="zwb-bar" role="img" aria-label="Water out of the plant, by where it goes">' +
+      x.wb.map(function (s) { return '<i class="' + s[2] + '" style="flex-grow:' + Math.max(.004, s[1] / x.wbT).toFixed(4) + '" title="' + s[0] + ': ' + fx(s[1], 1) + ' m³/day"></i>'; }).join('') + '</div>' +
+      '<ul class="zwb-l">' + x.wb.map(function (s) { return '<li><i class="' + s[2] + '"></i>' + s[0] + ' <b>' + fx(s[1], s[1] < 10 ? 2 : 1) + ' m³/day</b></li>'; }).join('') + '</ul>' +
+      '<p class="zwb-n"><b>' + fx(x.recP, 1) + ' %</b> of the water comes back for reuse: ' + fx(x.rec, 1) + ' of ' + fx(x.Wtot, 1) + ' m³/day (the effluent and the water the reagent is mixed in). The rest leaves in the filter cake' + (x.crW > 0 ? ', the salt crystals' : '') + ' and the dry salt.</p></div>';
+    if (x.cmp) {
+      h += '<p class="k cx-tt">Evaporator options on your effluent</p><div class="cx-tw" tabindex="0" role="region" aria-label="Evaporator options compared"><table class="cx-t zcmp"><thead><tr><th>Option</th><th>Steam, t/day</th><th>Power, kWh/day</th><th>Energy, ₹/day</th><th>₹ per m³</th></tr></thead><tbody>' +
+        x.cmp.map(function (c) { return '<tr' + (c[2] ? ' class="on"' : '') + '><td>' + c[0] + (c[2] ? ' <em>your choice</em>' : '') + '</td><td>' + fx(c[1].steam, 1) + '</td><td>' + fx(c[1].power) + '</td><td>' + fx(c[1].cost) + '</td><td>' + fx(c[1].costM3) + '</td></tr>'; }).join('') +
+        '</tbody></table></div><p class="zwb-n">Same effluent, neutraliser and RO for every row; steam includes the ATFD, power includes the RO feed pump. With your steam and power prices.</p>';
+    }
+    if (x.alt) h += '<p class="k cx-tt">If the spent acid is regenerated instead</p><p class="zwhat">With the ' + fx(v.sa, 1) + ' m³/day of spent acid sent to an acid regeneration plant instead of the ETP: <b>' + fx(x.alt.dose) + ' kg/day</b> less neutraliser, <b>' + fx(x.alt.salt) + ' kg/day</b> less salt to take out, <b>' + fx(x.alt.dry, 2) + ' t/day</b> less dry salt and <b>₹' + fx(x.alt.cost) + ' a day</b> less steam and power here. The regeneration plant\'s own running cost is not counted.</p>';
+    return h;
+  }
+  var ZLD = {
     id: 'zld', div: 'rein', t: 'ETP and ZLD plant', s: 'Neutraliser, sludge, RO, MEE or MVR, ATFD, steam and power',
     lead: 'Size the whole effluent plant for a pickling, galvanizing or wire shop, from the acidic effluent to dry salt: the neutraliser and the filter cake, the tanks and clarifier, how much water reverse osmosis gives back, the evaporator (multiple-effect or MVR) with its steam or power, the crystallizer if you want one, and the agitated thin film dryer (ATFD) that turns the last brine into dry salt.',
     inputs: [
@@ -556,12 +578,27 @@
       ].concat(r > 0 ? [['RO permeate', fx(perm, 1), fx(tdsP) + ' mg/L', 'Reuse'], ['RO reject', fx(Qe, 1), fx(tdsR) + ' mg/L', hasEv ? 'Evaporator' : 'ATFD']] : [])
         .concat(hasEv ? [['Evaporator condensate', fx(Ev / 1000, 1), 'low salt', 'Reuse']] : []).concat(hasCr ? [['Salt crystals', fx(cryst / 1000, 2) + ' t', '95 % solids', 'Bagging']] : [])
         .concat([['Brine to the ATFD', fx(Mml / 1000, 2) + ' t', fx(Sml / Mml * 100) + ' % solids', 'ATFD'], ['ATFD condensate', fx(Ea / 1000, 2), 'low salt', 'Reuse'], ['Dry salt', fx(prod / 1000, 2) + ' t', v.adry + ' % solids', 'Bagging']]);
-      var top = [{ t: 'Effluent', s: fx(Fin) + ' m³/day', s2: fx(hcl) + ' kg HCl/day' }, { t: 'Equalisation', s: fx(eqV) + ' m³' },
-        { t: 'Neutralise, aerate', s: NL.toLowerCase(), s2: fx(dose) + ' kg/day' }, { t: 'Clarifier', s: 'Ø ' + fx(cD, 1) + ' m', o: 'cake ' + fx(cake / 1000, 1) + ' t/day', oc: 's' },
-        { t: 'Filters', s: 'sand, carbon', s2: fx(Ft, 1) + ' m³/day' }, { t: 'RO', s: r > 0 ? fx(r * 100) + ' % recovery' : 'bypassed', s2: r > 0 ? fx(P) + ' bar' : '', o: r > 0 ? fx(perm, 1) + ' m³/day water' : '', oc: 'w', c: r > 0 ? '' : 'off' }];
-      var bot = [{ t: hasEv ? evName : 'Evaporator', s: hasEv ? fx(Ev / 1000, 1) + ' m³/day off' : 'not used', s2: hasEv ? (mvr ? fx(kwEv) + ' kWh/day' : fx(stEv / 1000, 1) + ' t steam/day') : '', o: hasEv ? 'condensate to reuse' : '', oc: 'w', c: hasEv ? '' : 'off' }]
-        .concat(hasCr ? [{ t: 'Crystallizer', s: 'and centrifuge', s2: fx(cryst / 1000, 2) + ' t/day salt', o: 'crystals', oc: 's' }] : [])
-        .concat([{ t: 'ATFD', s: fx(Ea / 1000, 1) + ' m³/day off', s2: fx(stA / 1000, 1) + ' t steam/day', o: 'condensate to reuse', oc: 'w' }, { t: 'Dry salt', s: fx(prod / 1000, 2) + ' t/day', s2: saltN, c: 'sl' }]);
+      var qF = function (m3) { return Fin > 0 ? m3 / Fin : 0; };
+      var top = [{ t: 'Effluent', k: 'e', s: fx(Fin) + ' m³/day', s2: fx(hcl) + ' kg HCl/day' }, { t: 'Equalisation', k: 'e', s: fx(eqV) + ' m³', q: 1 },
+        { t: 'Neutralise, aerate', k: 't', s: NL.toLowerCase(), s2: fx(dose) + ' kg/day', q: 1 }, { t: 'Clarifier', k: 't', s: 'Ø ' + fx(cD, 1) + ' m', o: 'cake ' + fx(cake / 1000, 1) + ' t/day', oc: 's', oq: qF(cake / 1000), q: qF(Wtot) },
+        { t: 'Filters', k: 't', s: 'sand, carbon', s2: fx(Ft, 1) + ' m³/day', q: qF(Ft) }, { t: 'RO', k: 'w', s: r > 0 ? fx(r * 100) + ' % recovery' : 'bypassed', s2: r > 0 ? fx(P) + ' bar' : '', o: r > 0 ? fx(perm, 1) + ' m³/day water' : '', oc: 'w', oq: qF(perm), c: r > 0 ? '' : 'off', q: qF(Ft) }];
+      var bot = [{ t: hasEv ? evName : 'Evaporator', k: 'ev', q: qF(Qe), s: hasEv ? fx(Ev / 1000, 1) + ' m³/day off' : 'not used', s2: hasEv ? (mvr ? fx(kwEv) + ' kWh/day' : fx(stEv / 1000, 1) + ' t steam/day') : '', o: hasEv ? 'condensate to reuse' : '', oc: 'w', oq: qF(Ev / 1000), c: hasEv ? '' : 'off', in: hasEv ? (mvr ? { t: fx(kwEv) + ' kWh/day', c: 'pw' } : { t: fx(stEv / 1000, 1) + ' t steam', c: 'st' }) : null }]
+        .concat(hasCr ? [{ t: 'Crystallizer', k: 's', q: qF(Mml / 1000 + cryst / 1000), s: 'and centrifuge', s2: fx(cryst / 1000, 2) + ' t/day salt', o: 'crystals', oc: 's', oq: qF(cryst / 1000) }] : [])
+        .concat([{ t: 'ATFD', k: 'ev', q: qF(Mml / 1000), s: fx(Ea / 1000, 1) + ' m³/day off', s2: fx(stA / 1000, 1) + ' t steam/day', o: 'condensate to reuse', oc: 'w', oq: qF(Ea / 1000), in: { t: fx(stA / 1000, 1) + ' t steam', c: 'st' } }, { t: 'Dry salt', k: 's', q: qF(prod / 1000), s: fx(prod / 1000, 2) + ' t/day', s2: saltN, c: 'sl', o: 'bagged', oc: 's', oq: qF(prod / 1000) }]);
+      /* V81: where the water goes (its parts add up to the water in, less the small volume the salt takes) */
+      var WB = [['RO permeate', perm, 'w1'], ['Evaporator condensate', hasEv ? Ev / 1000 : 0, 'w2'], ['ATFD condensate', Ea / 1000, 'w3'],
+        ['In the filter cake', cakeW / 1000, 'l1'], ['In the salt crystals', crW / 1000, 'l2'], ['In the dry salt', (prod - Sml) / 1000, 'l3']].filter(function (s) { return s[1] > 0.0005; });
+      var num = { steam: steam, power: power, cost: cost, costM3: cost / Fin, recP: recP, dry: prod / 1000, salt: DS, dose: dose };
+      var xs = { wb: WB, wbT: WB.reduce(function (a, s) { return a + s[1]; }, 0), rec: rec, recP: recP, Wtot: Wtot, crW: crW };
+      if (!v._cmp) {
+        var opts = hasCr ? [['meec', '3'], ['meec', '4'], ['meec', '5'], ['mvrc', ''], ['atfd', '']] : [['mee', '3'], ['mee', '4'], ['mee', '5'], ['mvr', ''], ['atfd', '']];
+        xs.cmp = opts.map(function (o) {
+          var z = ZLD.run(cpv(v, { train: o[0], nef: o[1] || v.nef, _cmp: 1 })).num;
+          var name = o[0] === 'atfd' ? 'ATFD only' : (o[0].indexOf('mvr') === 0 ? 'MVR' : o[1] + '-effect MEE') + (hasCr ? ' + crystallizer' : '');
+          return [name, z, o[0] === v.train && (o[1] === '' || o[1] === String(v.nef))];
+        });
+        if (v.sa > 0) { var z0 = ZLD.run(cpv(v, { sa: 0, _cmp: 1 })).num; xs.alt = { dose: dose - z0.dose, salt: DS - z0.salt, dry: prod / 1000 - z0.dry, cost: cost - z0.cost }; }
+      }
       return {
         key: [['ETP design flow', fx(qh, 1) + ' m³/h', fx(Fin) + ' m³/day in ' + v.hrs + ' h'], [NL, fx(dose) + ' kg/day', 'filter cake ' + fx(cake / 1000, 1) + ' t/day'],
           ['RO water back', r > 0 ? fx(perm, 1) + ' m³/day' : 'bypassed', r > 0 ? fx(r * 100) + ' % recovery' : 'feed too salty for RO'], ['Evaporator', hasEv ? fx(Ev / 1000, 1) + ' m³/day' : 'none', hasEv ? evName + (mvr ? ', ' + fx(kwEv) + ' kWh/day' : ', ' + fx(stEv / 1000, 1) + ' t steam/day') : 'ATFD only'],
@@ -569,11 +606,14 @@
         rows: rows,
         table: { title: 'Stream table', head: ['Stream', 'm³ or t a day', 'Strength', 'Goes to'], rows: trows },
         svg: zldSvg(top, bot),
+        wide: v._cmp ? '' : zldWide(v, xs), xs: ['Where the water goes, as a bar', 'Evaporator options compared on your effluent'].concat(v.sa > 0 ? ['What changes if the spent acid is regenerated instead'] : []),
+        num: num,
         warn: warn,
-        note: 'Neutraliser from the chloride the acid carries: 1.02 kg of lime per kg of HCl and 1.33 kg per kg of iron, or 1.10 and 1.43 kg of caustic soda; aeration turns the iron into Fe(OH)₃. RO recovery is the lower of what you ask and what keeps the reject under your limit; feed pressure is estimated from the reject strength. Evaporation uses typical steam economies of 2.5, 3.2 and 3.9 for 3, 4 and 5 effects, or the MVR power you set, and the ATFD dries the last brine to a powder. ETP pumps, agitators and blowers are not included. A first sizing for budgets and layouts: SHIVAS Reinplast confirms it on your effluent analysis, with jar and pilot tests.'
+        note: 'Neutraliser from the chloride the acid carries: 1.02 kg of lime per kg of HCl and 1.33 kg per kg of iron, or 1.10 and 1.43 kg of caustic soda; aeration turns the iron into Fe(OH)₃. RO recovery is the lower of what you ask and what keeps the reject under your limit; feed pressure is estimated from the reject strength. Evaporation uses typical steam economies of 2.5, 3.2 and 3.9 for 3, 4 and 5 effects, or the MVR power you set, and the ATFD dries the last brine to a powder. The options table runs the same sizing for each evaporator on your inputs. ETP pumps, agitators and blowers are not included. A first sizing for budgets and layouts: SHIVAS Reinplast confirms it on your effluent analysis, with jar and pilot tests.'
       };
     }
-  });
+  };
+  CALCS.push(ZLD);
 
   /* Most used and most important first; the plant calculator (its own page) leads the list */
   var ORDER = ['wire', 'burner', 'zld', 'coating', 'wireweight', 'scrubber', 'acid', 'neutralise', 'bagfilter', 'fan', 'rectifier', 'frp'];
@@ -706,7 +746,7 @@
         (cur.mg ? '\nExtra margin on the selected size: ' + (MG ? '+' + MG + ' %' : 'none') : '') + '\n\nResults\n' + (r.key || []).map(function (k) { return k[0] + ': ' + k[1] + (k[2] ? ' (' + k[2] + ')' : ''); }).join('\n');
       lastSum = sum;
       h += '<div class="cx-act"><a class="btn line" target="_blank" rel="noopener" href="https://wa.me/919810920468?text=' + encodeURIComponent(sum) + '">WhatsApp it</a><button type="button" class="btn line cx-copy">Copy</button></div>';
-      o.innerHTML = rel(h); $('.cx-wide', pane).innerHTML = (r.svg ? '<p class="k cx-tt">Process flow</p><div class="zfd" tabindex="0" role="region" aria-label="Process flow diagram">' + r.svg + '</div>' : '') + tw;
+      o.innerHTML = rel(h); $('.cx-wide', pane).innerHTML = (r.svg ? '<p class="k cx-tt">Process flow</p><div class="zfd" tabindex="0" role="region" aria-label="Process flow diagram">' + r.svg + '</div>' : '') + (r.wide || '') + tw;
       $('.cx-copy', o).addEventListener('click', function () { try { navigator.clipboard.writeText(sum); this.textContent = 'Copied'; } catch (e) {} });
     }
     MOUNTS.push({ mg: function () { [].forEach.call(pane.querySelectorAll('[data-mg]'), function (x) { x.setAttribute('aria-pressed', String(+x.getAttribute('data-mg') === MG)); }); if (cur) calc(); } });
