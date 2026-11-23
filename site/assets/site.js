@@ -3,7 +3,8 @@
       scroll restoration is off, the page is put at the top on load (or at its #anchor), and when the site is shown
       inside a frame that grows with its content (phones, embedded viewers) the frame itself is brought into view.
    2. A back-to-top button on long sub-pages.
-   3. Gentle auto-scroll for horizontal rails marked data-auto (pauses on touch, hover or focus). */
+   3. Gentle auto-scroll for horizontal rails marked data-auto (pauses on touch, hover or focus).
+   4. Loads the calculators (assets/calcs.js) on product and division pages when one comes near the screen. */
 (function () {
   'use strict';
   var H = document.documentElement, MAIN = !!document.getElementById('app'), ME = (document.currentScript && document.currentScript.src) || '';
@@ -100,6 +101,33 @@
     els.forEach(function (el) { el.classList.add('rv'); io.observe(el); });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', reveal); else reveal();
+
+  // calculators placed on product and division pages (<div data-calc> or <div data-calcs>): assets/calcs.js is loaded
+  // when one comes near the screen, and calcs.js puts in each one that is showing. The division pages do not load
+  // item.css, so a page with a calculator set (.cx-app) also gets assets/calcs.css, in front of v39.css.
+  function calcs() {
+    var els = document.querySelectorAll('[data-calc],[data-calcs]');
+    if (!els.length || !ME || window.SHIVAS_CALCS_MOUNT || document.querySelector('script[src*="calcs.js"]')) return;
+    var base = ME.replace(/site\.js(\?.*)?$/, ''), state = 0;
+    var run = function () { if (window.SHIVAS_CALCS_MOUNT) window.SHIVAS_CALCS_MOUNT(); };
+    var load = function () {
+      if (state) { if (state === 2) run(); return; }
+      state = 1;
+      if (document.querySelector('.cx-app')) {
+        var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = base + 'calcs.css';
+        var v = document.getElementById('v39c'); if (v) v.parentNode.insertBefore(l, v); else document.head.appendChild(l);
+      }
+      var s = document.createElement('script'); s.src = base + 'calcs.js'; s.onload = function () { state = 2; run(); };
+      document.body.appendChild(s);
+    };
+    if (!('IntersectionObserver' in window)) { load(); return; }
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting && e.target.hasAttribute('data-on')) io.unobserve(e.target); });
+      if (es.some(function (e) { return e.isIntersecting && !e.target.hasAttribute('data-on'); })) load();
+    }, { rootMargin: '1000px 0px' });
+    [].forEach.call(els, function (el) { io.observe(el); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', calcs); else calcs();
 
   // settings, then the visitor log (it does nothing until assets/config.js is filled in)
   if (ME && !window.SHIVAS_TRACK) {

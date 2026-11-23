@@ -1,7 +1,8 @@
 /* SHIVAS own photos added by hand on 22 Nov 2026, until they go through the SHIVAS image-library pipeline.
    Load this right after assets/library.js (item pages and the three division pages do). It adds the photos to
-   window.SHIVAS_LIBRARY: their entries, and their places in each product's gallery (own photos before supplier
-   photos). Files: assets/own/ (FULL and THUMB) and assets/resp/ (480/960 px for phones). Originals, for the
+   window.SHIVAS_LIBRARY: their entries, their places in each product's gallery (own photos before supplier
+   photos) and, where set, the product's lead photo (owner, 23 Nov 2026: the blue and white die box leads, not the
+   red primer one). Files: assets/own/ (FULL and THUMB) and assets/resp/ (480/960 px for phones). Originals, for the
    pipeline: docs/own-photos/. When the library is next rebuilt with these photos in it, delete this file and its
    <script> tags. Captions say only what the photo shows. */
 (function () {
@@ -187,22 +188,25 @@
   ]
  },
  "diebox": {
-  "after": "diebox-photo-own-fa22d6fda9",
-  "add": [
+  "image": "diebox-photo-own-be841dd299",
+  "first": [
    "diebox-photo-own-be841dd299",
    "diebox-photo-own-a44362b187",
    "diebox-photo-own-62021afd68"
   ]
  }
 };
-  var k, i, it, g, n;
+  var k, i, it, g, n, s, old;
   for (k in A) L.assets[k] = A[k];
   for (k in G) {
     it = L.items[k]; g = G[k]; if (!it) continue;
     it.gallery = (it.gallery || []).filter(function (x) { return !A[x]; });
     if (g.first) it.gallery = g.first.concat(it.gallery);
     if (g.add) { i = it.gallery.indexOf(g.after); Array.prototype.splice.apply(it.gallery, [i < 0 ? 0 : i + 1, 0].concat(g.add)); }
-    if (g.image) it.image = g.image;
+    if (g.image) {   /* the new lead photo, also on the hover cards (segments) that showed the old one */
+      old = it.image; it.image = g.image;
+      for (s in L.segments || {}) if (L.segments[s].item === k && L.segments[s].image === old) L.segments[s].image = g.image;
+    }
     n = 0; it.gallery.forEach(function (x) { if (L.assets[x] && L.assets[x].type === 'photo') n++; }); it.photos = n;
   }
 })();

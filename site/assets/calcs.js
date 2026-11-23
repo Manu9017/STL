@@ -581,52 +581,25 @@
 
   window.SHIVAS_CALCS = CALCS;
 
-  /* ---------------- UI ---------------- */
-  var root = document.getElementById('calcs'); if (!root) return;
-  var nav = $('.cx-nav', root), pane = $('.cx-pane', root), cur = null, st = {};
+  /* ---------------- UI ----------------
+     One panel, three ways to show it:
+     1. calculators.html: <div class="cx" id="calcs"> with .cx-nav and .cx-pane. Every calculator, picked from the
+        list; the address carries #id and the page colour follows the calculator's company.
+     2. A division page: <div class="cx cx-app" data-calcs="wire,wireweight" data-h="3"> (data-ext="1" puts the
+        plant calculator first). The same list with only these; the address does not change.
+     3. One calculator: <div class="cx-one" data-calc="zld" data-h="3"> on a product page, or data-h="0" on the
+        calculator's own page, calculators/<PAGE[id]>.html, where the page carries the title. data-div="hdg|wire|rein"
+        names the company for the label and the enquiry when the page belongs to another one.
+     Pages that do not load this file themselves get it from site.js when a calculator comes near the screen.
+     Links in the calculators are written from the site root; rel() makes them work from any folder. */
+  var PAGE = { wire: 'wire-drawing', burner: 'burner-kw', zld: 'etp-zld', coating: 'coating-thickness', wireweight: 'wire-weight', scrubber: 'fume-scrubber', acid: 'pickling-acid', neutralise: 'acid-neutralisation', bagfilter: 'bag-filter', fan: 'fan-motor', rectifier: 'eg-rectifier', frp: 'frp-profile' };
+  window.SHIVAS_CALC_PAGES = PAGE;
   var DIVN = { hdg: 'Galvanizing', wire: 'Wire', rein: 'Reinplast', frp: 'FRP profiles' }, DCL = { frp: 'hdg' };
-  nav.innerHTML = '<a href="calculator.html" class="d-hdg ext"><small>Galvanizing</small><b>Plant size and running cost</b><span>Full plant planner, cost per tonne ↗</span></a>' +
-    CALCS.map(function (c) { return '<a href="#' + c.id + '" data-id="' + c.id + '" class="d-' + (DCL[c.div] || c.div) + '"><small>' + DIVN[c.div] + '</small><b>' + c.t + '</b><span>' + c.s + '</span></a>'; }).join('');
-  function field(c, f) {
-    var val = st[c.id][f.k], id = 'cx-' + c.id + '-' + f.k;
-    if (f.type === 'sel') return '<label class="fld fsel" for="' + id + '"><span>' + f.l + '</span><select id="' + id + '" data-k="' + f.k + '">' + f.opts.map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === val ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></label>';
-    return '<label class="fld" for="' + id + '"><span>' + f.l + (f.hint ? ' <em>' + f.hint + '</em>' : '') + '</span><span class="u"><input id="' + id + '" type="number" inputmode="decimal" step="' + (f.step || 'any') + '"' + (f.min != null ? ' min="' + f.min + '"' : '') + (f.max != null ? ' max="' + f.max + '"' : '') + ' value="' + val + '" data-k="' + f.k + '">' + (f.u || '') + '</span></label>';
-  }
-  function open(id, push) {
-    var c = CALCS.filter(function (x) { return x.id === id; })[0] || CALCS[0]; cur = c;
-    if (!st[c.id]) { st[c.id] = {}; c.inputs.forEach(function (f) { st[c.id][f.k] = f.v; }); }
-    var nAdv = c.inputs.filter(function (f) { return f.adv; }).length;
-    [].forEach.call(nav.children, function (a) { a.setAttribute('aria-current', String(a.getAttribute('data-id') === c.id)); });
-    var ca = nav.querySelector('[aria-current="true"]'); if (ca && nav.scrollWidth > nav.clientWidth + 4) { if (push) nav.scrollTo({ left: ca.offsetLeft - 16, behavior: 'smooth' }); else nav.scrollLeft = ca.offsetLeft - 16; }   // no smooth scroll on page load: it would end the browser's largest-paint measurement
-    document.documentElement.setAttribute('data-brand', c.div === 'rein' ? 'rein' : 'tech');
-    pane.innerHTML = '<div class="cx-h"><span class="k">' + DIVN[c.div] + ' · calculator</span><h2>' + c.t + '</h2><p>' + c.lead + '</p></div>' +
-      '<div class="cx-grid"><form class="cx-in" onsubmit="return false">' + (c.mg ? '<div class="cx-mg" role="group" aria-label="Extra margin on the selected size"><span class="cx-mg-l" title="Added to the calculated need before the next standard size is chosen. None gives the exact need.">Extra margin</span><div class="seg">' + [0, 10, 20, 30].map(function (m) { return '<button type="button" data-mg="' + m + '" aria-pressed="' + (m === MG) + '">' + (m ? '+' + m + ' %' : 'None') + '</button>'; }).join('') + '</div></div>' : '') + c.inputs.filter(function (f) { return !f.adv; }).map(function (f) { return field(c, f); }).join('') +
-      (nAdv ? '<button type="button" class="cx-adv-t" aria-expanded="' + !!st[c.id]._adv + '" aria-controls="cxAdv"><span><b>Advanced</b> · ' + nAdv + ' more inputs for a closer answer</span><em aria-hidden="true">↓</em></button>' +
-        '<p class="cx-assume"' + (st[c.id]._adv ? ' hidden' : '') + '></p>' +
-        '<div class="cx-adv" id="cxAdv"' + (st[c.id]._adv ? '' : ' hidden') + '>' + c.inputs.filter(function (f) { return f.adv; }).map(function (f) { return field(c, f); }).join('') + '</div>' : '') +
-      '<button type="button" class="btn line sm cx-reset">Reset to typical values</button></form>' +
-      '<div class="cx-out"><div class="cx-res" aria-live="polite"></div>' + ASK + '</div></div><div class="cx-wide"></div>';
-    $('.cx-in', pane).addEventListener('input', change); $('.cx-in', pane).addEventListener('change', change);
-    [].forEach.call(pane.querySelectorAll('[data-mg]'), function (b) { b.addEventListener('click', function () { MG = +b.getAttribute('data-mg'); try { localStorage.setItem('shivas.mg', String(MG)); } catch (e) {} [].forEach.call(pane.querySelectorAll('[data-mg]'), function (x) { x.setAttribute('aria-pressed', String(x === b)); }); calc(); }); });
-    $('.cx-reset', pane).addEventListener('click', function () { var a = st[c.id]._adv; delete st[c.id]; open(c.id); if (a) toggleAdv(true); });
-    var at = $('.cx-adv-t', pane); if (at) at.addEventListener('click', function () { toggleAdv(at.getAttribute('aria-expanded') !== 'true'); });
-    askInit();
-    calc();
-    if (push) { try { history.replaceState(null, '', '#' + c.id); } catch (e) {} }
-  }
-  function toggleAdv(on) {
-    var at = $('.cx-adv-t', pane); if (!at) return; st[cur.id]._adv = on;
-    at.setAttribute('aria-expanded', String(on)); $('.cx-adv', pane).hidden = !on; $('.cx-assume', pane).hidden = on;
-    if (on) { var f = $('.cx-adv input,.cx-adv select', pane); if (f) f.focus({ preventScroll: true }); }
-  }
-  function assumed() {
-    var p = $('.cx-assume', pane); if (!p) return;
-    p.innerHTML = '<span>Typical values used:</span> ' + cur.inputs.filter(function (f) { return f.adv; }).map(function (f) {
-      var v = st[cur.id][f.k]; if (f.type === 'sel') v = f.opts.filter(function (o) { return o[0] === v; })[0][1];
-      var auto = !v && f.hint && f.hint.indexOf('0 =') === 0;
-      return '<i>' + f.l.replace(/ \(.*\)$/, '').replace(/, if (you already have one|you know it|your supplier gives one)$/, '') + ' ' + (auto ? (f.auto || (f.k === 'nb' ? 'auto' : 'from the article')) : v) + (f.u && f.type !== 'sel' && !auto ? '\u00a0' + f.u : '') + '</i>';
-    }).join(' ');
-  }
+  var ME = document.currentScript || document.querySelector('script[src*="calcs.js"]');
+  var BASE = ME ? (ME.getAttribute('src') || '').replace(/assets\/calcs\.js(\?.*)?$/, '') : '';
+  if (/calcs\.js/.test(BASE)) BASE = '';
+  var rel = function (h) { return BASE ? String(h).replace(/href="(?![a-z]+:|#|\/|\.\.\/)/g, 'href="' + BASE) : h; };
+  var pageOf = function (id) { return BASE + 'calculators/' + PAGE[id] + '.html'; };
   /* "Ask our engineer": the visitor's own details and this calculation, sent to SHIVAS (visitor log when set up, else WhatsApp) */
   var ASK = '<div class="cx-ask"><button type="button" class="btn amber cx-ask-t" aria-expanded="false">Ask our engineer to check this</button>' +
     '<form class="cx-ask-f" hidden novalidate><p class="cx-ask-h">We reply with a checked sizing and a proposal.</p>' +
@@ -637,48 +610,124 @@
     '<p class="cx-ask-e" hidden>Add your name and a phone number.</p>' +
     '<div class="cx-act"><button type="submit" class="btn amber">Send to SHIVAS</button><a class="btn line cx-ask-mail" href="#" target="_blank" rel="noopener">Email instead</a></div>' +
     '<p class="cx-ask-n">Used only to reply to you. <a href="privacy.html">Privacy</a></p></form><p class="cx-ask-ok" hidden></p></div>';
-  var lastSum = '';
-  function askInit() {
-    var t = $('.cx-ask-t', pane), f = $('.cx-ask-f', pane), ok = $('.cx-ask-ok', pane);
-    t.addEventListener('click', function () { var o = f.hidden; f.hidden = !o; t.setAttribute('aria-expanded', String(o)); if (o) f.querySelector('input').focus(); });
-    $('.cx-ask-mail', f).addEventListener('click', function (e) {
-      var ALL = ['info@shivastechnology.com', 'shivastechnology@gmail.com', 'info@shivasasia.com', 'shivasasia@gmail.com', 'shivas1470@gmail.com'], to = cur.div === 'rein' ? 'info@shivasasia.com' : 'info@shivastechnology.com', cc = ALL.filter(function (x) { return x !== to; }).join(',');
-      this.href = 'mailto:' + to + '?cc=' + cc + '&subject=' + encodeURIComponent('Calculator: ' + cur.t) + '&body=' + encodeURIComponent(who() + '\n\n' + lastSum + '\n\nPlease check this and send a proposal.');
+  var MOUNTS = [], N = 0;
+  function setMG(m) { MG = m; try { localStorage.setItem('shivas.mg', String(MG)); } catch (e) {} MOUNTS.forEach(function (x) { x.mg(); }); }
+
+  function mount(root, ids, opt) {
+    var list = CALCS.filter(function (c) { return ids.indexOf(c.id) >= 0; }); if (!list.length) return;
+    var P = opt.hub ? 'cx' : 'cx' + (++N), H = opt.h, nav = $('.cx-nav', root), pane = $('.cx-pane', root), cur = null, div = '', st = {}, lastSum = '', timer = 0;
+    if (!pane) {   // replaces the placeholder the page carries until the script runs
+      root.innerHTML = (opt.one ? '' : '<nav class="cx-nav" aria-label="' + (opt.label || 'Calculators') + '"></nav>') + '<div class="cx-pane"></div>';
+      nav = $('.cx-nav', root); pane = $('.cx-pane', root);
+    }
+    root.classList.add('cx-on');
+    if (nav) {
+      nav.innerHTML = rel((opt.ext ? '<a href="calculator.html" class="d-hdg ext"><small>Galvanizing</small><b>Plant size and running cost</b><span>Full plant planner, cost per tonne ↗</span></a>' : '') +
+        list.map(function (c) { return '<a href="' + (opt.hub ? '#' + c.id : pageOf(c.id)) + '" data-id="' + c.id + '" class="d-' + (DCL[c.div] || c.div) + '"><small>' + DIVN[c.div] + '</small><b>' + c.t + '</b><span>' + c.s + '</span></a>'; }).join(''));
+      nav.addEventListener('click', function (e) { var a = e.target.closest('a[data-id]'); if (!a) return; e.preventDefault(); open(a.getAttribute('data-id'), true); if (innerWidth < 900) pane.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    }
+    function field(c, f) {
+      var val = st[c.id][f.k], id = P + '-' + c.id + '-' + f.k;
+      if (f.type === 'sel') return '<label class="fld fsel" for="' + id + '"><span>' + f.l + '</span><select id="' + id + '" data-k="' + f.k + '">' + f.opts.map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === val ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></label>';
+      return '<label class="fld" for="' + id + '"><span>' + f.l + (f.hint ? ' <em>' + f.hint + '</em>' : '') + '</span><span class="u"><input id="' + id + '" type="number" inputmode="decimal" step="' + (f.step || 'any') + '"' + (f.min != null ? ' min="' + f.min + '"' : '') + (f.max != null ? ' max="' + f.max + '"' : '') + ' value="' + val + '" data-k="' + f.k + '">' + (f.u || '') + '</span></label>';
+    }
+    function open(id, push) {
+      var c = list.filter(function (x) { return x.id === id; })[0] || list[0]; cur = c; div = opt.div || c.div;
+      if (!st[c.id]) { st[c.id] = {}; c.inputs.forEach(function (f) { st[c.id][f.k] = f.v; }); }
+      var nAdv = c.inputs.filter(function (f) { return f.adv; }).length, adv = P + 'Adv';
+      if (nav) {
+        [].forEach.call(nav.children, function (a) { a.setAttribute('aria-current', String(a.getAttribute('data-id') === c.id)); });
+        var ca = nav.querySelector('[aria-current="true"]'); if (ca && nav.scrollWidth > nav.clientWidth + 4) { if (push) nav.scrollTo({ left: ca.offsetLeft - 16, behavior: 'smooth' }); else nav.scrollLeft = ca.offsetLeft - 16; }   // no smooth scroll on page load: it would end the browser's largest-paint measurement
+      }
+      if (opt.hub) document.documentElement.setAttribute('data-brand', c.div === 'rein' ? 'rein' : 'tech');
+      pane.innerHTML = rel((H ? '<div class="cx-h"><span class="k">' + DIVN[div] + ' · calculator</span><h' + H + '>' + c.t + '</h' + H + '><p>' + c.lead + '</p>' +
+          '<p class="cx-own"><a href="' + pageOf(c.id) + '">' + (opt.hub ? 'This calculator on its own page' : 'Open it on its own page') + ' →</a></p></div>' : '') +
+        '<div class="cx-grid"><form class="cx-in" onsubmit="return false">' + (c.mg ? '<div class="cx-mg" role="group" aria-label="Extra margin on the selected size"><span class="cx-mg-l" title="Added to the calculated need before the next standard size is chosen. None gives the exact need.">Extra margin</span><div class="seg">' + [0, 10, 20, 30].map(function (m) { return '<button type="button" data-mg="' + m + '" aria-pressed="' + (m === MG) + '">' + (m ? '+' + m + ' %' : 'None') + '</button>'; }).join('') + '</div></div>' : '') + c.inputs.filter(function (f) { return !f.adv; }).map(function (f) { return field(c, f); }).join('') +
+        (nAdv ? '<button type="button" class="cx-adv-t" aria-expanded="' + !!st[c.id]._adv + '" aria-controls="' + adv + '"><span><b>Advanced</b> · ' + nAdv + ' more inputs for a closer answer</span><em aria-hidden="true">↓</em></button>' +
+          '<p class="cx-assume"' + (st[c.id]._adv ? ' hidden' : '') + '></p>' +
+          '<div class="cx-adv" id="' + adv + '"' + (st[c.id]._adv ? '' : ' hidden') + '>' + c.inputs.filter(function (f) { return f.adv; }).map(function (f) { return field(c, f); }).join('') + '</div>' : '') +
+        '<button type="button" class="btn line sm cx-reset">Reset to typical values</button></form>' +
+        '<div class="cx-out"><div class="cx-res" aria-live="polite"></div>' + ASK + '</div></div><div class="cx-wide"></div>');
+      $('.cx-in', pane).addEventListener('input', change); $('.cx-in', pane).addEventListener('change', change);
+      [].forEach.call(pane.querySelectorAll('[data-mg]'), function (b) { b.addEventListener('click', function () { setMG(+b.getAttribute('data-mg')); }); });
+      $('.cx-reset', pane).addEventListener('click', function () { var a = st[c.id]._adv; delete st[c.id]; open(c.id); if (a) toggleAdv(true); });
+      var at = $('.cx-adv-t', pane); if (at) at.addEventListener('click', function () { toggleAdv(at.getAttribute('aria-expanded') !== 'true'); });
+      askInit();
+      calc();
+      if (push && opt.hub) { try { history.replaceState(null, '', '#' + c.id); } catch (e) {} }
+    }
+    function toggleAdv(on) {
+      var at = $('.cx-adv-t', pane); if (!at) return; st[cur.id]._adv = on;
+      at.setAttribute('aria-expanded', String(on)); $('.cx-adv', pane).hidden = !on; $('.cx-assume', pane).hidden = on;
+      if (on) { var f = $('.cx-adv input,.cx-adv select', pane); if (f) f.focus({ preventScroll: true }); }
+    }
+    function assumed() {
+      var p = $('.cx-assume', pane); if (!p) return;
+      p.innerHTML = '<span>Typical values used:</span> ' + cur.inputs.filter(function (f) { return f.adv; }).map(function (f) {
+        var v = st[cur.id][f.k]; if (f.type === 'sel') v = f.opts.filter(function (o) { return o[0] === v; })[0][1];
+        var auto = !v && f.hint && f.hint.indexOf('0 =') === 0;
+        return '<i>' + f.l.replace(/ \(.*\)$/, '').replace(/, if (you already have one|you know it|your supplier gives one)$/, '') + ' ' + (auto ? (f.auto || (f.k === 'nb' ? 'auto' : 'from the article')) : v) + (f.u && f.type !== 'sel' && !auto ? ' ' + f.u : '') + '</i>';
+      }).join(' ');
+    }
+    function askInit() {
+      var t = $('.cx-ask-t', pane), f = $('.cx-ask-f', pane), ok = $('.cx-ask-ok', pane);
+      t.addEventListener('click', function () { var o = f.hidden; f.hidden = !o; t.setAttribute('aria-expanded', String(o)); if (o) f.querySelector('input').focus(); });
+      $('.cx-ask-mail', f).addEventListener('click', function (e) {
+        var ALL = ['info@shivastechnology.com', 'shivastechnology@gmail.com', 'info@shivasasia.com', 'shivasasia@gmail.com', 'shivas1470@gmail.com'], to = div === 'rein' ? 'info@shivasasia.com' : 'info@shivastechnology.com', cc = ALL.filter(function (x) { return x !== to; }).join(',');
+        this.href = 'mailto:' + to + '?cc=' + cc + '&subject=' + encodeURIComponent('Calculator: ' + cur.t) + '&body=' + encodeURIComponent(who() + '\n\n' + lastSum + '\n\nPlease check this and send a proposal.');
+      });
+      function who() { var d = new FormData(f); return ['Name: ' + d.get('name'), 'Company: ' + d.get('company'), 'Phone: ' + d.get('phone'), 'Email: ' + d.get('email')].join('\n'); }
+      f.addEventListener('submit', function (e) {
+        e.preventDefault(); var d = new FormData(f), name = (d.get('name') || '').trim(), phone = (d.get('phone') || '').trim();
+        $('.cx-ask-e', f).hidden = !!(name && phone); if (!name || !phone) return;
+        var T = window.SHIVAS_TRACK, sent = T && T.lead({ source: 'Calculator · ' + cur.t, div: div, name: name, company: (d.get('company') || '').trim(), contact: phone, email: (d.get('email') || '').trim(), product: cur.t, message: lastSum });
+        if (!sent) window.open('https://wa.me/919810920468?text=' + encodeURIComponent(who() + '\n\n' + lastSum + '\n\nPlease check this and send a proposal.'), '_blank', 'noopener');
+        f.hidden = true; t.hidden = true; ok.hidden = false;
+        ok.textContent = sent ? 'Sent. A SHIVAS engineer will call or WhatsApp you on ' + phone + '.' : 'WhatsApp opened with your details and this calculation. Press send there.';
+      });
+    }
+    function change(e) {
+      var el = e.target, k = el.getAttribute('data-k'); if (!k) return; var f = cur.inputs.filter(function (x) { return x.k === k; })[0];
+      var val = f.type === 'sel' ? el.value : parseFloat(el.value); if (f.type !== 'sel' && !isFinite(val)) return;
+      st[cur.id][k] = val;
+      if (f.set && e.type === 'change') { f.set(val, st[cur.id]); cur.inputs.forEach(function (g) { var i = $('[data-k="' + g.k + '"]', pane); if (i && g.k !== k) i.value = st[cur.id][g.k]; }); }
+      calc();
+      clearTimeout(timer); timer = setTimeout(function () { var T = window.SHIVAS_TRACK; if (T) T.event('calc', { calc: cur.t, detail: lastSum.slice(0, 900) }); }, 15000);
+    }
+    function calc() {
+      var r; try { r = cur.run(st[cur.id]); } catch (err) { r = { warn: ['Check the inputs.'] }; console.error(err); }
+      var o = $('.cx-res', pane), h = ''; assumed();
+      if (r.key) h += '<div class="cx-key">' + r.key.map(function (k) { return '<div><span>' + k[0] + '</span><b' + (String(k[1]).length > 11 ? ' class="l"' : '') + '>' + k[1] + '</b><small>' + (k[2] || '') + '</small></div>'; }).join('') + '</div>';
+      if (r.warn && r.warn.length) h += r.warn.map(function (w) { return '<p class="cx-warn">' + w + '</p>'; }).join('');
+      var tw = r.table ? '<p class="k cx-tt">' + (r.table.title || 'Step by step') + '</p><div class="cx-tw" tabindex="0" role="region" aria-label="Step by step table"><table class="cx-t"><thead><tr>' + r.table.head.map(function (x) { return '<th>' + x + '</th>'; }).join('') + '</tr></thead><tbody>' + r.table.rows.map(function (row) { return '<tr>' + row.map(function (x) { return '<td>' + x + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>' : '';
+      if (r.rows) h += '<dl class="cx-dl">' + r.rows.map(function (x) { return '<div><dt>' + x[0] + '</dt><dd>' + x[1] + '</dd></div>'; }).join('') + '</dl>';
+      if (r.note) h += '<p class="cx-note">' + r.note + '</p>';
+      var sum = cur.t + '\n' + cur.inputs.map(function (f) { var v = st[cur.id][f.k]; if (f.type === 'sel') v = f.opts.filter(function (o) { return o[0] === v; })[0][1]; return f.l + ': ' + v + (f.u && f.type !== 'sel' ? ' ' + f.u : ''); }).join('\n') +
+        (cur.mg ? '\nExtra margin on the selected size: ' + (MG ? '+' + MG + ' %' : 'none') : '') + '\n\nResults\n' + (r.key || []).map(function (k) { return k[0] + ': ' + k[1] + (k[2] ? ' (' + k[2] + ')' : ''); }).join('\n');
+      lastSum = sum;
+      h += '<div class="cx-act"><a class="btn line" target="_blank" rel="noopener" href="https://wa.me/919810920468?text=' + encodeURIComponent(sum) + '">WhatsApp it</a><button type="button" class="btn line cx-copy">Copy</button></div>';
+      o.innerHTML = rel(h); $('.cx-wide', pane).innerHTML = (r.svg ? '<p class="k cx-tt">Process flow</p><div class="zfd" tabindex="0" role="region" aria-label="Process flow diagram">' + r.svg + '</div>' : '') + tw;
+      $('.cx-copy', o).addEventListener('click', function () { try { navigator.clipboard.writeText(sum); this.textContent = 'Copied'; } catch (e) {} });
+    }
+    MOUNTS.push({ mg: function () { [].forEach.call(pane.querySelectorAll('[data-mg]'), function (x) { x.setAttribute('aria-pressed', String(+x.getAttribute('data-mg') === MG)); }); if (cur) calc(); } });
+    if (opt.hub) {
+      var fromHash = function () { var h = (location.hash || '').slice(1); open(list.some(function (c) { return c.id === h; }) ? h : list[0].id); };
+      addEventListener('hashchange', fromHash); fromHash();
+    } else open(list[0].id);
+  }
+
+  /* calculators.html, then every visible set or single calculator on the page; site.js calls it again when a hidden
+     one (another company's section on a division page) comes into view */
+  function mountAll() {
+    var hub = document.getElementById('calcs');
+    if (hub && !hub.hasAttribute('data-on')) { hub.setAttribute('data-on', ''); mount(hub, ORDER, { hub: true, ext: true, h: 2, label: 'Calculators' }); }
+    [].forEach.call(document.querySelectorAll('[data-calc],[data-calcs]'), function (el) {
+      if (el === hub || el.hasAttribute('data-on') || !el.getClientRects().length) return;
+      el.setAttribute('data-on', '');
+      var one = el.hasAttribute('data-calc'), ids = (el.getAttribute(one ? 'data-calc' : 'data-calcs') || '').split(',').map(function (x) { return x.trim(); });
+      mount(el, ids, { one: one, h: el.hasAttribute('data-h') ? +el.getAttribute('data-h') : 3, ext: el.getAttribute('data-ext') === '1', div: el.getAttribute('data-div') || '', label: el.getAttribute('data-label') || '' });
     });
-    function who() { var d = new FormData(f); return ['Name: ' + d.get('name'), 'Company: ' + d.get('company'), 'Phone: ' + d.get('phone'), 'Email: ' + d.get('email')].join('\n'); }
-    f.addEventListener('submit', function (e) {
-      e.preventDefault(); var d = new FormData(f), name = (d.get('name') || '').trim(), phone = (d.get('phone') || '').trim();
-      $('.cx-ask-e', f).hidden = !!(name && phone); if (!name || !phone) return;
-      var T = window.SHIVAS_TRACK, sent = T && T.lead({ source: 'Calculator · ' + cur.t, div: cur.div, name: name, company: (d.get('company') || '').trim(), contact: phone, email: (d.get('email') || '').trim(), product: cur.t, message: lastSum });
-      if (!sent) window.open('https://wa.me/919810920468?text=' + encodeURIComponent(who() + '\n\n' + lastSum + '\n\nPlease check this and send a proposal.'), '_blank', 'noopener');
-      f.hidden = true; t.hidden = true; ok.hidden = false;
-      ok.textContent = sent ? 'Sent. A SHIVAS engineer will call or WhatsApp you on ' + phone + '.' : 'WhatsApp opened with your details and this calculation. Press send there.';
-    });
   }
-  function change(e) {
-    var el = e.target, k = el.getAttribute('data-k'); if (!k) return; var f = cur.inputs.filter(function (x) { return x.k === k; })[0];
-    var val = f.type === 'sel' ? el.value : parseFloat(el.value); if (f.type !== 'sel' && !isFinite(val)) return;
-    st[cur.id][k] = val;
-    if (f.set && e.type === 'change') { f.set(val, st[cur.id]); cur.inputs.forEach(function (g) { var i = $('[data-k="' + g.k + '"]', pane); if (i && g.k !== k) i.value = st[cur.id][g.k]; }); }
-    calc();
-    clearTimeout(change.t); change.t = setTimeout(function () { var T = window.SHIVAS_TRACK; if (T) T.event('calc', { calc: cur.t, detail: lastSum.slice(0, 900) }); }, 15000);
-  }
-  function calc() {
-    var r; try { r = cur.run(st[cur.id]); } catch (err) { r = { warn: ['Check the inputs.'] }; console.error(err); }
-    var o = $('.cx-res', pane), h = ''; assumed();
-    if (r.key) h += '<div class="cx-key">' + r.key.map(function (k) { return '<div><span>' + k[0] + '</span><b' + (String(k[1]).length > 11 ? ' class="l"' : '') + '>' + k[1] + '</b><small>' + (k[2] || '') + '</small></div>'; }).join('') + '</div>';
-    if (r.warn && r.warn.length) h += r.warn.map(function (w) { return '<p class="cx-warn">' + w + '</p>'; }).join('');
-    var tw = r.table ? '<p class="k cx-tt">' + (r.table.title || 'Step by step') + '</p><div class="cx-tw" tabindex="0" role="region" aria-label="Step by step table"><table class="cx-t"><thead><tr>' + r.table.head.map(function (x) { return '<th>' + x + '</th>'; }).join('') + '</tr></thead><tbody>' + r.table.rows.map(function (row) { return '<tr>' + row.map(function (x) { return '<td>' + x + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>' : '';
-    if (r.rows) h += '<dl class="cx-dl">' + r.rows.map(function (x) { return '<div><dt>' + x[0] + '</dt><dd>' + x[1] + '</dd></div>'; }).join('') + '</dl>';
-    if (r.note) h += '<p class="cx-note">' + r.note + '</p>';
-    var sum = cur.t + '\n' + cur.inputs.map(function (f) { var v = st[cur.id][f.k]; if (f.type === 'sel') v = f.opts.filter(function (o) { return o[0] === v; })[0][1]; return f.l + ': ' + v + (f.u && f.type !== 'sel' ? ' ' + f.u : ''); }).join('\n') +
-      (cur.mg ? '\nExtra margin on the selected size: ' + (MG ? '+' + MG + ' %' : 'none') : '') + '\n\nResults\n' + (r.key || []).map(function (k) { return k[0] + ': ' + k[1] + (k[2] ? ' (' + k[2] + ')' : ''); }).join('\n');
-    lastSum = sum;
-    h += '<div class="cx-act"><a class="btn line" target="_blank" rel="noopener" href="https://wa.me/919810920468?text=' + encodeURIComponent(sum) + '">WhatsApp it</a><button type="button" class="btn line cx-copy">Copy</button></div>';
-    o.innerHTML = h; $('.cx-wide', pane).innerHTML = (r.svg ? '<p class="k cx-tt">Process flow</p><div class="zfd" tabindex="0" role="region" aria-label="Process flow diagram">' + r.svg + '</div>' : '') + tw;
-    $('.cx-copy', o).addEventListener('click', function () { try { navigator.clipboard.writeText(sum); this.textContent = 'Copied'; } catch (e) {} });
-  }
-  nav.addEventListener('click', function (e) { var a = e.target.closest('a[data-id]'); if (!a) return; e.preventDefault(); open(a.getAttribute('data-id'), true); if (innerWidth < 900) pane.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
-  function fromHash() { var h = (location.hash || '').slice(1); open(CALCS.some(function (c) { return c.id === h; }) ? h : CALCS[0].id); }
-  addEventListener('hashchange', fromHash); fromHash();
+  window.SHIVAS_CALCS_MOUNT = mountAll;
+  if (typeof document.querySelectorAll === 'function') mountAll();   // not when the formulas are tested outside a browser
 })();

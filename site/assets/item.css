@@ -524,6 +524,17 @@ body[data-calc] .foot{padding-bottom:70px}}
 .priv h2{font-size:clamp(22px,2.4vw,28px);margin-top:10px}
 .priv p{max-width:72ch;margin:0}
 @media (max-width:420px){.cx-adv,.cx-ask-f{grid-template-columns:1fr}}
+/* V70 (23 Nov 2026): calculators on product pages, division pages and their own pages (mount() in assets/calcs.js).
+   The division pages get these rules through assets/calcs.css, made by tools/build_calcs_css.py from every .cx rule here. */
+.cx-h h3{margin:0;font-size:clamp(22px,2.4vw,28px);line-height:1.15}
+.cx-own{margin:0!important;font-size:14px}
+.cx-own a{font-weight:600}
+.cx-one:not(.cx-on),.cx-app:not(.cx-on){min-height:640px}
+.cx-ph{display:grid;gap:6px;justify-items:start;padding:22px;border:1px dashed var(--line);border-top:4px solid var(--acc);border-radius:12px;background:var(--panel);color:var(--fg);text-decoration:none}
+.cx-ph b{font-size:20px;line-height:1.2}
+.cx-ph span{color:var(--muted);max-width:72ch}
+.cx-ph em{font-style:normal;font-weight:600;color:var(--acc)}
+.cx-one+.cx-one{margin-top:22px}
 /* ===== V31 calm: one type family in sentence case, light by default, same footer as the main pages ===== */
 :root{--f-display:"Archivo","Helvetica Neue",Arial,sans-serif}
 h1,h2{font-family:var(--f-body);font-weight:750;text-transform:none;letter-spacing:-.015em;line-height:1.12}
