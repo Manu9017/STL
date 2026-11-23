@@ -240,6 +240,10 @@
 :root:not(#_) body[data-pt="item"] .onpage a{background:var(--s-card)!important;border:1px solid var(--s-line)!important;border-radius:9px!important;color:var(--s-ink)!important}
 :root:not(#_) body[data-pt="item"] .onpage a:hover{border-color:var(--div)!important;color:var(--div-x)!important}
 
+/* hub, calculator and plain pages: the title area is a panel too, topped with the page's colour */
+:root:not(#_) body:is([data-pt="hub"],[data-pt="page"],[data-pt="calc"]) main>section.hero{background:var(--s-card);border:1px solid var(--s-line);border-top:6px solid var(--div);border-radius:16px!important;box-shadow:var(--s-sh)!important;padding:clamp(18px,2.6vw,34px)!important;margin-top:14px}
+:root:not(#_) body:is([data-pt="hub"],[data-pt="page"]) main>section.hero .k{color:var(--div-x)!important;font-weight:700!important}
+
 /* 5b. product cards everywhere: the company colour on top and in the tag line */
 :root:not(#_) .mini[data-div]{--dc:var(--s-hdg);--dcx:var(--s-hdg-x)}
 :root:not(#_) .mini[data-div="wire"]{--dc:var(--s-wire);--dcx:var(--s-wire-x)}

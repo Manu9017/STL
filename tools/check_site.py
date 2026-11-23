@@ -230,6 +230,14 @@ def main():
             if THIRD_PARTY_MAIL.search(ln) and "mailto:" not in ln:
                 errors.append(f"{rel}:{i}: third-party lead address in page source")
 
+    # The 2026 theme (23 Nov 2026): every page loads assets/theme.css last and names its page type on <body>
+    for rel, p in parsed.items():
+        if rel.startswith(VIEWER_DIR) or p.refresh or rel == "404.html" or rel.startswith(("setup/", "photos/")):
+            continue
+        if 'id="theme26"' not in p.src:
+            warnings.append(f"{rel}: no theme link (<link id=\"theme26\" rel=\"stylesheet\" href=\"...assets/theme.css\"> after v39.css)")
+        if not re.search(r'<body[^>]*\sdata-pt="(home|app|hub|item|post|calc|page)"', p.src):
+            warnings.append(f"{rel}: <body> has no data-pt page type (home, app, hub, item, post, calc or page)")
     # The owner asked for no em dashes anywhere (22 Nov 2026): pages, scripts, styles and the Apps Script.
     for rel in sorted(files):
         if rel.endswith((".html", ".js", ".css", ".gs", ".json", ".md", ".txt")) and not rel.startswith("assets/resp/"):

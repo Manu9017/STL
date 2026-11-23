@@ -21,6 +21,13 @@ The site is hand-written HTML. There is no build and no templates, so every page
 - New pictures: run `python3 tools/fix_img_sizes.py <page>`, then `python3 tools/responsive_images.py`.
 - The home page quotes counts in its proof strip and links: products, 3D models, articles and photos. When you add a product, article, viewer or photos, update them. `check_site.py` warns when they're stale.
 
+## The theme (assets/theme.css, 23 Nov 2026)
+Look changes go in `assets/theme.css`, linked last on every page. Every new page needs:
+- `<link id="theme26" rel="stylesheet" href="assets/theme.css">` (with `../` from a folder) right after the `v39.css` link and any style block that directly follows it, or last in `<head>` when `v39.css` is in the head;
+- `<body ... data-pt="...">`: `home`, `app` (the three division pages), `hub` (the product, article, calculator, gallery and 3D indexes), `item` (product pages), `post` (articles), `calc` (calculator pages) or `page` (the rest);
+- `data-div="hdg|wire|rein|frp"` on `<body>` when the page belongs to one company (product pages: the card's `data-div` in `items/index.html`; articles: wire topics `wire`, effluent, fume and tanks topics `rein`, the rest `hdg`).
+Copying a page of the same type brings all three along; change `data-div` if the company differs. Theme rules start with `:root:not(#_)` (dark: `:root:not(#_)[data-theme="dark"]`) to outrank the V52 corner rule in `v39.css`. Use the company tokens (`--s-hdg`, `--s-wire`, `--s-rein`, `--s-frp`, their `-x` text and `-t` tint forms) instead of new colours, keep two dark bands apart on the home page, and run `node tools/a11y.cjs` in both themes after a change.
+
 ## Site-wide changes (phone, e-mail, address, nav, footer)
 These appear in every page's header, mobile menu (`.v42m`), phone dock, enquiry section, footer and JSON-LD.
 ```bash

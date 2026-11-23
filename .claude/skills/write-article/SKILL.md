@@ -5,6 +5,8 @@ description: Write and publish a new SHIVAS engineering article in site/blog/ - 
 
 # New article
 
+> **Theme (23 Nov 2026):** an article copied from another keeps `<link id="theme26">` and `<body data-pt="post" data-div="...">`. Set `data-div` by topic: wire drawing, wire lines and wire quality `wire`; effluent, fume control and tanks `rein`; everything else `hdg`. `check_site.py` warns if the link or `data-pt` is missing.
+
 ## Before writing
 - **Pick a topic** buyers search for that the 25 existing articles don't cover. Check `blog/index.html` first, so you don't write a second "pickling" article.
   - If the `harborrank:content-brief` or `keyword-research` skills are available, use them for intent and questions.
