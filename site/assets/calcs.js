@@ -721,7 +721,7 @@
   function mountAll() {
     var hub = document.getElementById('calcs');
     if (hub && !hub.hasAttribute('data-on')) { hub.setAttribute('data-on', ''); mount(hub, ORDER, { hub: true, ext: true, h: 2, label: 'Calculators' }); }
-    [].forEach.call(document.querySelectorAll('[data-calc],[data-calcs]'), function (el) {
+    [].forEach.call(document.querySelectorAll('div[data-calc],div[data-calcs]'), function (el) {   // <body data-calcs> on the hub is a page flag, not a calculator
       if (el === hub || el.hasAttribute('data-on') || !el.getClientRects().length) return;
       el.setAttribute('data-on', '');
       var one = el.hasAttribute('data-calc'), ids = (el.getAttribute(one ? 'data-calc' : 'data-calcs') || '').split(',').map(function (x) { return x.trim(); });

@@ -106,7 +106,7 @@
   // when one comes near the screen, and calcs.js puts in each one that is showing. The division pages do not load
   // item.css, so a page with a calculator set (.cx-app) also gets assets/calcs.css, in front of v39.css.
   function calcs() {
-    var els = document.querySelectorAll('[data-calc],[data-calcs]');
+    var els = document.querySelectorAll('div[data-calc],div[data-calcs]');   // not <body data-calc> on the plant calculator page
     if (!els.length || !ME || window.SHIVAS_CALCS_MOUNT || document.querySelector('script[src*="calcs.js"]')) return;
     var base = ME.replace(/site\.js(\?.*)?$/, ''), state = 0;
     var run = function () { if (window.SHIVAS_CALCS_MOUNT) window.SHIVAS_CALCS_MOUNT(); };

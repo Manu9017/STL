@@ -210,7 +210,7 @@ def build_page(c, D, tpl):
             f'<meta property="og:image" content="{BASE_URL}assets/og/{OG[c["div"]]}"><meta name="twitter:card" content="summary_large_image">\n'
             + tpl["theme"] + "\n" + up(tpl["css"]) + tpl["v36"] + up(tpl["v39"]) + up(tpl["fonts"]) + up(tpl["v52f"]).replace("url(assets/", "url(../assets/") + "\n"
             + "".join(f'<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>' for x in ld)
-            + '</head><body data-item="" data-calcs="1">\n')
+            + f'<link id="theme26" rel="stylesheet" href="../assets/theme.css"></head><body data-item="" data-calcs="1" data-pt="calc" data-div="{c["div"]}">\n')
     main = (f'<main id="main" class="wrap cxpg"><nav class="crumbs" aria-label="You are here"><a href="../">SHIVAS</a><span>›</span><a href="../calculators.html">Engineering calculators</a><span>›</span><b>{esc(h1)}</b></nav>\n'
             f'<section class="hero hero-s"><div class="hero-t"><span class="k">{COMPANY[c["div"]]} · calculator</span><h1>{esc(h1)}</h1>\n<p class="d">{esc(c["lead"])}</p></div></section>\n'
             f'<div class="cx-one" data-calc="{c["id"]}" data-h="0" data-div="{c["div"]}"><noscript><p class="sub">This calculator works in your browser and needs JavaScript. Call or WhatsApp +91 98109 20468 and our engineers will work it out with you.</p></noscript></div>\n'
