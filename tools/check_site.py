@@ -238,8 +238,23 @@ def main():
             warnings.append(f"{rel}: no theme link (<link id=\"theme26\" rel=\"stylesheet\" href=\"...assets/theme.css\"> after v39.css)")
         if not re.search(r'<body[^>]*\sdata-pt="(home|app|hub|item|post|calc|page)"', p.src):
             warnings.append(f"{rel}: <body> has no data-pt page type (home, app, hub, item, post, calc or page)")
+    # site/.htaccess (Apache hosting) repeats the redirects of _redirects (Cloudflare Pages); keep the two in step
+    hp, rp = os.path.join(root, ".htaccess"), os.path.join(root, "_redirects")
+    if os.path.exists(hp) and os.path.exists(rp):
+        want = {tuple(l.split()[:2]) for l in open(rp, encoding="utf-8") if l.strip() and not l.startswith("#")}
+        have = {tuple(l.split()[2:4]) for l in open(hp, encoding="utf-8") if l.strip().startswith("Redirect ")}
+        for a, b in sorted(want - have):
+            warnings.append(f".htaccess: missing Redirect 301 {a} {b} (it is in _redirects)")
+        for a, b in sorted(have - want):
+            warnings.append(f".htaccess: Redirect {a} {b} is not in _redirects")
     # The owner asked for no em dashes anywhere (22 Nov 2026): pages, scripts, styles and the Apps Script.
+    # One exception (owner, 23 Nov 2026): setup/visitor-log/Code.gs mirrors the live Apps Script (Version 3) byte for
+    # byte, which still has five em dashes in a comment, an error text, the enquiry email subject and the report lines.
+    # Change that file only together with a new version of the live deployment, and remove it from this list then.
+    LIVE_MIRROR = {"setup/visitor-log/Code.gs"}
     for rel in sorted(files):
+        if rel in LIVE_MIRROR:
+            continue
         if rel.endswith((".html", ".js", ".css", ".gs", ".json", ".md", ".txt")) and not rel.startswith("assets/resp/"):
             try:
                 with open(os.path.join(root, rel), encoding="utf-8") as fh:

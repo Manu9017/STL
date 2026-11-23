@@ -5,7 +5,7 @@ description: Turn on, change or check the SHIVAS website visitor log (Google She
 
 # Visitor tracking
 
-Everything is **off** until `site/assets/config.js` has values. With all three empty, the site records nothing.
+**Status (23 Nov 2026): the visitor log is on.** `sheetUrl` in `site/assets/config.js` is the live Apps Script web app (Version 3, final link); GA4 and `companyScript` are empty. `site/setup/visitor-log/Code.gs` mirrors the live script byte for byte. With all three values empty the site records nothing.
 
 ```js
 window.SHIVAS_CONFIG = { sheetUrl: '', ga4: '', companyScript: '' };
@@ -36,6 +36,7 @@ window.SHIVAS_CONFIG = { sheetUrl: '', ga4: '', companyScript: '' };
 - `track.js` stays silent for automation (`navigator.webdriver`, and a user agent containing "Headless"). To test it, give the Playwright context a normal Chrome `userAgent`, serve `site/` over http (routes do not see `file://` pages), set `navigator.sendBeacon = undefined` in an init script so the fallback `fetch` is routable, and:
   - launch Chromium with `--disable-blink-features=AutomationControlled` and override `navigator.webdriver` in an init script;
   - route `assets/config.js` to a test `sheetUrl`, and route `script.google.com` to capture the POST bodies.
+- Time on page is sent with `sendBeacon` when the page is hidden or left, and a test cannot catch a beacon sent while the page unloads. Wrap `Blob` and replace `sendBeacon` in an init script with a stub that hands the text to an exposed binding, then fire `visibilitychange` with `document.visibilityState` set to `hidden` while the page is still open (23 Nov 2026: view, update, time, click, calc and lead all matched the script, the time message carried its view's `pv`). Answer `script.google.com` and the IP lookups locally so no test row reaches the live Sheet.
 - `Code.gs` can be run in Node against small stand-ins for SpreadsheetApp, MailApp, Utilities, Session, PropertiesService and ScriptApp, to check the formulas, recipients and email HTML before the owner pastes it in. `node tools/test_visitor_log.cjs` does this (visit alerts, the daily cap, a failing MailApp, enquiries); last run 22 Nov 2026.
 
 ## What only the owner can do

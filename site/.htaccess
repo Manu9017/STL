@@ -1,0 +1,58 @@
+# Apache / cPanel hosting only. Cloudflare Pages and Netlify use _redirects and _headers instead; this file repeats
+# the same rules for a host that runs Apache. Keep the two in step (tools/check_site.py warns if they differ).
+# Only common directives that standard cPanel hosting allows (Redirect, ErrorDocument, Header, AddType). If a host ever
+# answers every page with 500 Internal Server Error, it does not allow one of them: delete this file and tell the developer.
+
+# 301 redirects from the 2019 site, from docs/redirects.csv (site_path), the same as _redirects
+<IfModule mod_alias.c>
+  Redirect 301 /profile.html /about.html
+  Redirect 301 /enquiry.php /contact.html
+  Redirect 301 /resources.html /blog/
+  Redirect 301 /wire-drawing-machine.html /wire-drawing.html
+  Redirect 301 /oto-type-wire-drawing-machine.html /items/oto.html
+  Redirect 301 /straight-line-wire-drawing-machine.html /items/slm.html
+  Redirect 301 /dead-block-coilers.html /items/dbc.html
+  Redirect 301 /horizontal-take-up-for-gi-wire-plant.html /items/htakeup.html
+  Redirect 301 /horizontal-take-up-for-strand-pickling.html /items/htakeup.html
+  Redirect 301 /spooler-for-wire-drawing-line.html /items/spooler.html
+  Redirect 301 /inverted-vertical-wire-drawing-machine.html /items/ivcoiler.html
+  Redirect 301 /payoff-stands.html /items/payoff.html
+  Redirect 301 /annealing-furnace.html /items/anneal.html
+  Redirect 301 /batch-pickling-system.html /items/r-wirepick.html
+  Redirect 301 /tunnel-pickling-system.html /items/r-wirepick.html
+  Redirect 301 /fumeless-pickling.html /items/line-fpl.html
+  Redirect 301 /electro-galvanized.html /items/egline.html
+  Redirect 301 /hot-dip-galvanizing-plant.html /galvanizing.html
+  Redirect 301 /galvanizing-furnaces.html /items/furnace.html
+  Redirect 301 /zinc-furnace.html /items/furnace.html
+  Redirect 301 /galvanizing-kettle.html /items/kettle.html
+  Redirect 301 /eot-crane.html /items/eot.html
+  Redirect 301 /hot-air-dryer.html /items/dryer.html
+  Redirect 301 /flux-heating-system.html /items/fluxheat.html
+  Redirect 301 /flux-regeneration.html /items/flux.html
+  Redirect 301 /items/alwdm.html /wire-drawing.html
+</IfModule>
+
+# the not-found page (absolute links, noindex)
+ErrorDocument 404 /404.html
+
+# security headers and the short cache for the tracking switch, as in _headers
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+  <FilesMatch "^config\.js$">
+    Header set Cache-Control "public, max-age=300"
+  </FilesMatch>
+  <FilesMatch "\.(woff2|webp)$">
+    Header set Cache-Control "public, max-age=2592000"
+  </FilesMatch>
+</IfModule>
+
+# file types some older hosts do not know
+<IfModule mod_mime.c>
+  AddType font/woff2 .woff2
+  AddType image/webp .webp
+  AddType application/manifest+json .webmanifest
+</IfModule>

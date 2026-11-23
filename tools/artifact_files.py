@@ -25,7 +25,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 SITE = os.path.join(REPO, "site")
 OUT = os.path.join(REPO, "preview", "artifact-batches")
-EXCLUDE_TOP = {"README.md", ".nojekyll", "photos", "setup", "CNAME", "_redirects", "_headers", "robots.txt", "sitemap.xml", "404.html"}  # robots/sitemap: production only
+EXCLUDE_TOP = {"README.md", ".nojekyll", ".htaccess", "photos", "setup", "CNAME", "_redirects", "_headers", "robots.txt", "sitemap.xml", "404.html"}  # robots/sitemap: production only
 EXCLUDE_PREFIX = ("assets/resp/", "assets/og/", "items/r-frp.html", "assets/config.js", "assets/track.js")
 # config.js / track.js: the visitor log only works on the real domain (claude.ai cannot report visitors), so the
 # preview leaves both out and artifact_source() switches off the loader in site.js and v/shivas-bar.js.

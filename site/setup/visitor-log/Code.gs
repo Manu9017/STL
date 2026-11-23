@@ -1,8 +1,8 @@
 /**
- * SHIVAS website visitor log - Google Apps Script for a Google Sheet.
+ * SHIVAS website visitor log — Google Apps Script for a Google Sheet.
  * Receives what the website sends (assets/track.js) and writes it to two tabs:
- *   Visits: one row per page view: page, device, browser, country, city, network / company, time on page …
- *   Leads: every enquiry form and "ask our engineer" request, with what that visitor looked at before.
+ *   Visits  – one row per page view: page, device, browser, country, city, network / company, time on page …
+ *   Leads   – every enquiry form and "ask our engineer" request, with what that visitor looked at before.
  * Also: an email for every lead at once, a report of yesterday's visitors every morning at 8:00 (India time) and of the
  * last 7 days every Monday, sent to DIGEST_TO and to the Google account that set this up. Tabs Pages, Daily and Viewers
  * summarise the Visits tab.
@@ -51,11 +51,11 @@ function doGet() {
         htmlBody: '<div style="font:14px/1.5 Arial,sans-serif;color:#13202c"><p><b>The SHIVAS visitor log is set up.</b></p>' +
           '<p>From now on you get an email for every enquiry, one when someone opens the website (at most ' + VISIT_ALERTS_PER_DAY + ' a day), ' +
           'a report every morning at 8:00 and every Monday at 8:30. Everything is also in the Google Sheet: ' +
-          '<a href="' + SpreadsheetApp.getActiveSpreadsheet().getUrl() + '">open the visitor log</a>.</p>' +
+          '<a href="' + book_().getUrl() + '">open the visitor log</a>.</p>' +
           '<p style="color:#566778">Last step: send the web app link (it ends in /exec) to Claude, so the website starts sending visits.</p></div>' });
       return ContentService.createTextOutput('SHIVAS visitor log is set up. A confirmation email is on its way. Copy this page\'s address (it ends in /exec) and send it to Claude.');
     } catch (err) {
-      return ContentService.createTextOutput('Setup did not finish: ' + err.message + '. Open Extensions > Apps Script in the Sheet and run setup once.');
+      return ContentService.createTextOutput('Setup did not finish: ' + err.message + ' — open Extensions > Apps Script in the Sheet and run setup once.');
     }
   }
   return ContentService.createTextOutput('SHIVAS visitor log is running.');
@@ -94,7 +94,7 @@ function clean(d) {
 }
 function book_() {
   var id = PropertiesService.getScriptProperties().getProperty('SHEET');
-  return id ? SpreadsheetApp.openById(id) : SpreadsheetApp.getActiveSpreadsheet();
+  var b = id ? SpreadsheetApp.openById(id) : (SpreadsheetApp.getActiveSpreadsheet() || SpreadsheetApp.create('SHIVAS visitor log')); if (!id) PropertiesService.getScriptProperties().setProperty('SHEET', b.getId()); return b;
 }
 function row_(cols, d) {   // text from the web is never run as a formula (+91… stays text too)
   return cols.map(function (c) { var v = d[c[0]]; if (v === undefined || v === null) return ''; return typeof v === 'string' && /^[=+\-@]/.test(v) ? "'" + v : v; });
@@ -107,7 +107,7 @@ function update_(sh, d) {
   var from = Math.max(2, last - 799), pvCol = col_(VISIT_COLS, 'pv');
   var pvs = sh.getRange(from, pvCol, last - from + 1, 1).getValues();
   for (var i = pvs.length - 1; i >= 0; i--) {
-    if (pvs[i][0] !== d.pv) continue;
+    if (String(pvs[i][0]) !== String(d.pv)) continue;
     var r = from + i, keys = d.type === 'time' ? ['secs', 'scroll'] : ['visitor', 'visit', 'first', 'country', 'region', 'city', 'org', 'nettype', 'ip'];
     keys.forEach(function (k) { if (d[k] !== undefined && d[k] !== '') sh.getRange(r, col_(VISIT_COLS, k)).setValue(d[k]); });
     return;
@@ -121,7 +121,7 @@ function history_(sh, visitor) {
   var from = Math.max(2, last - 4999), v = sh.getRange(from, 1, last - from + 1, VISIT_COLS.length).getValues();
   var cV = col_(VISIT_COLS, 'visitor') - 1, cT = col_(VISIT_COLS, 'title') - 1, cA = 0, cY = col_(VISIT_COLS, 'type') - 1, cD = col_(VISIT_COLS, 'detail') - 1, out = [];
   v.forEach(function (r) {
-    if (r[cV] !== visitor) return;
+    if (String(r[cV]) !== String(visitor)) return;
     var when = Utilities.formatDate(new Date(r[cA]), 'Asia/Kolkata', 'd MMM HH:mm');
     if (r[cY] === 'view') out.push(when + '  ' + r[cT]);
     else if (r[cY] === 'calc' || r[cY] === 'click') out.push(when + '  ' + (r[cY] === 'calc' ? 'Calculator: ' : 'Clicked ') + String(r[cD]).split('\n')[0]);
@@ -141,7 +141,7 @@ function alert_(d) {
     (d.message ? '<p><b>Message / calculation</b></p><pre style="white-space:pre-wrap;font:13px/1.45 monospace;background:#f3f5f7;padding:10px">' + esc(d.message) + '</pre>' : '') +
     (d.seen ? '<p><b>What this visitor looked at</b></p><pre style="white-space:pre-wrap;font:13px/1.45 monospace">' + esc(d.seen) + '</pre>' : '') +
     '<p style="color:#566778">Reply directly to the customer. All enquiries are in the Leads tab of the visitor log.</p></div>';
-  MailApp.sendEmail({ to: who.to, cc: who.cc, subject: 'Website enquiry: ' + [d.name, d.company].filter(Boolean).join(' · ') + ' · ' + (d.product || d.source), htmlBody: html, name: 'SHIVAS website' });
+  MailApp.sendEmail({ to: who.to, cc: who.cc, subject: 'Website enquiry: ' + [d.name, d.company].filter(Boolean).join(' · ') + ' — ' + (d.product || d.source), htmlBody: html, name: 'SHIVAS website' });
 }
 // an email when someone opens the site: the first page of each visit, at most VISIT_ALERTS_PER_DAY a day.
 // Without the visitor's OK it can only say the page, device, language and where they came from; city and
@@ -212,8 +212,8 @@ function summary_(from, to) {
         f.n++; f.secs += +r[c.secs] || 0; f.pages[title] = 1;
       }
     } else if (t === 'lead') s.leads.push(r[c.detail]);
-    else if (t === 'calc') s.calcs.push(String(r[c.detail]).split('\n')[0] + (r[c.org] ? ' · ' + r[c.org] : '') + (r[c.city] ? ', ' + r[c.city] : ''));
-    else if (t === 'click' && /^(WhatsApp|Email|Phone|3D viewer)/.test(r[c.detail])) s.clicks.push(r[c.detail] + (r[c.org] ? ' · ' + r[c.org] : '') + (r[c.city] ? ', ' + r[c.city] : ''));
+    else if (t === 'calc') s.calcs.push(String(r[c.detail]).split('\n')[0] + (r[c.org] ? ' — ' + r[c.org] : '') + (r[c.city] ? ', ' + r[c.city] : ''));
+    else if (t === 'click' && /^(WhatsApp|Email|Phone|3D viewer)/.test(r[c.detail])) s.clicks.push(r[c.detail] + (r[c.org] ? ' — ' + r[c.org] : '') + (r[c.city] ? ', ' + r[c.city] : ''));
   });
   return s;
 }
@@ -281,7 +281,7 @@ function cleanup() {
 
 // ---------------- run once ----------------
 function setup() {
-  var book = SpreadsheetApp.getActiveSpreadsheet();
+  var book = book_();
   PropertiesService.getScriptProperties().setProperty('SHEET', book.getId());
   [['Visits', VISIT_COLS], ['Leads', LEAD_COLS]].forEach(function (x) {
     var sh = book.getSheetByName(x[0]) || book.insertSheet(x[0]);

@@ -30,9 +30,14 @@ The owner does the account and DNS steps in their browser. Claude can't log in t
    - Google Search Console: add the property, submit `https://www.shivastechnology.com/sitemap.xml`, and inspect a few URLs.
    - Run `tools/lighthouse.sh` against the live site. Pass the URLs to Lighthouse directly, since the script serves `site/` locally; the baselines are in `site-audit`.
 
+## Upload by hand (a zip, 23 Nov 2026)
+The upload zip is `site/` with the files at its root (no `site/` folder inside): `git archive --format=zip -9 -o <zip> HEAD:site`. It carries `assets/config.js` with the visitor log switched on, `assets/track.js`, `_redirects`, `_headers` and `.htaccess`. Never upload the artifact preview build (`preview/artifact-build/`): it has the visitor log switched off.
+- **Cloudflare Pages:** Workers & Pages → Create → Pages → Upload assets (Direct Upload) → name the project → drop the zip → Deploy. Then Custom domains as in step 2 below. A new upload later: the project → Create deployment → drop the new zip.
+- **cPanel or other Apache hosting:** File Manager → `public_html` → back up or remove the old site's files → Upload the zip → Extract into `public_html` → check that `index.html` sits directly in `public_html` and that `.htaccess` is there (Settings → Show hidden files). `.htaccess` gives the same 301 redirects, 404 page and headers as `_redirects` and `_headers`.
+
 ## Redirects
 - **Source of truth:** `docs/redirects.csv` (`old_path,new_path,site_path`). `new_path` belongs to the on-hold Astro plan; `site_path` is what the current site uses.
-- **To regenerate `site/_redirects`:** edit the CSV, then rebuild the file (format `/old /new 301`, one per line). `python3 tools/check_site.py` fails if a target page is missing.
+- **To regenerate `site/_redirects`:** edit the CSV, then rebuild the file (format `/old /new 301`, one per line), and the `Redirect 301 /old /new` lines in `site/.htaccess`. `python3 tools/check_site.py` fails if a target page is missing.
 - **When a page is renamed or removed:** add a row for it. Never leave an old URL that Google knows about pointing at a 404.
 
 ## Before every production deploy

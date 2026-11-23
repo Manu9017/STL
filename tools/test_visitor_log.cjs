@@ -11,7 +11,7 @@ function run(opts={}){
     CacheService:{getScriptCache:()=>({get:()=>null,put(){}})},
     ContentService:{createTextOutput:t=>t},
     PropertiesService:{getScriptProperties:()=>({getProperty:k=>k in props?props[k]:null,setProperty:(k,v)=>{props[k]=v},deleteProperty:k=>{delete props[k]}})},
-    SpreadsheetApp:{getActiveSpreadsheet:()=>({getSheetByName:sheet}),openById:()=>({getSheetByName:sheet})},
+    SpreadsheetApp:{getActiveSpreadsheet:()=>({getId:()=>'SHEET-ID',getUrl:()=>'https://docs.google.com/spreadsheets/d/SHEET-ID',getSheetByName:sheet}),openById:()=>({getId:()=>'SHEET-ID',getUrl:()=>'https://docs.google.com/spreadsheets/d/SHEET-ID',getSheetByName:sheet}),create:()=>({getId:()=>'SHEET-ID',getUrl:()=>'https://docs.google.com/spreadsheets/d/SHEET-ID',getSheetByName:sheet})},
     MailApp:{sendEmail:m=>{if(opts.mailFails)throw new Error('quota');mails.push(m)},getRemainingDailyQuota:()=>100},
     Session:{getEffectiveUser:()=>({getEmail:()=>'owner@example.com'})},
     Utilities:{formatDate:(d,tz,f)=>new Date(d).toISOString().slice(0,10)}
@@ -43,7 +43,7 @@ t=run(); t.post({type:'lead',source:'Enquiry form',name:'Test',contact:'+91 0000
   const ctx = { console, JSON, Date, Math, String, Number, Object, isNaN,
     ContentService: { createTextOutput: t => t },
     PropertiesService: { getScriptProperties: () => ({ getProperty: k => k in props ? props[k] : null, setProperty: (k, v) => { props[k] = v; } }) },
-    SpreadsheetApp: { getActiveSpreadsheet: () => book },
+    SpreadsheetApp: { getActiveSpreadsheet: () => book, openById: () => book, create: () => book },
     ScriptApp: { getProjectTriggers: () => [], deleteTrigger() {}, newTrigger: () => trig, WeekDay: { MONDAY: 1 } },
     MailApp: { sendEmail: m => mails.push(m), getRemainingDailyQuota: () => 100 },
     Session: { getEffectiveUser: () => ({ getEmail: () => 'owner@example.com' }) },

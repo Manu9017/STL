@@ -42,7 +42,8 @@ Steps (about 5 minutes; Claude Desktop can click through them for you while you 
    Companies, Pages, Daily and Viewers appear, the morning and Monday reports are scheduled, and a
    "SHIVAS visitor log is switched on" email arrives. (Running "setup" from the function list does the
    same. Already set up before? Paste the new Code.gs, run setup again, then Deploy → Manage
-   deployments → edit → New version: your data is kept.)
+   deployments → edit → New version: your data is kept. Made the script at script.google.com
+   instead of from the Sheet? That works too: setup then makes a Sheet called "SHIVAS visitor log".)
 6. Send the /exec URL to Claude. Claude puts it in assets/config.js and publishes the site. Or do it
    yourself: open assets/config.js and paste it between the quotes of sheetUrl:
      sheetUrl: 'https://script.google.com/macros/s/AKfy..../exec',

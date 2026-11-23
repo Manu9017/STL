@@ -11,7 +11,7 @@
    Visitors are asked once (small bar at the bottom). Location, network and the visitor number are recorded
    only after they press OK; enquiries they send are always recorded. Details: privacy.html */
 window.SHIVAS_CONFIG = {
-  sheetUrl: '',
+  sheetUrl: 'https://script.google.com/macros/s/AKfycbwtqTPpATnbeAie7KYKLzyf_bOfEsTsVlMfHe2Ry9ctQfyLIIsxYniowtfjD6-sIzTCTg/exec',
   ga4: '',
   companyScript: ''
 };
