@@ -20,7 +20,7 @@
   var base = me.src.replace(/v\/shivas-bar\.js.*$/, '');
   var MODELS = [            // most important first: whole plants, then the furnace and kettle, pretreatment, environment, auxiliaries
     ['hdg-plant', 'Hot-dip galvanizing plant'],
-    ['hv-furnace', 'High-velocity furnace, 6.7 m kettle'],
+    ['hv-furnace', 'High-velocity furnace and four-position dryer'],
     ['spin-galvanizing', 'Spin galvanizing plant'],
     ['electric-furnace', 'Electric kettle furnace'],
     ['acid-room-2line', 'Enclosed acid room, two lines'],
