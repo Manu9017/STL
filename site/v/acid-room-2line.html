@@ -65,7 +65,7 @@ button.frp.on{background:#00a37a;border-color:#00e5a0;color:#001a12}
  22.051 × 18.592 m · steel top 6.500 m · enclosed roof 4.100 m</div>
  <div class="rev" id="stat"></div>
 </div>
-<div id="frpbar">FRP LINING MODE — lined members highlighted · 630.57 m² · 2 mm acid-grade</div>
+<div id="frpbar">FRP LINING MODE: lined members highlighted · 630.57 m² · 2 mm acid-grade</div>
 <div id="legend" class="panel"></div>
 <div id="ctr" class="panel">
  <button id="bLeg" onclick="document.body.classList.toggle('sh-leg');this.classList.toggle('on')">Layers</button>
@@ -177,7 +177,7 @@ DATA.m.forEach(m=>{
   const f=m.f;
   const mesh=new THREE.Mesh(box,matFor(f,m.frp));
   if(m.a&&m.b){
-    // TRUE ORIENTED MEMBER — straight, aligned to its own axis (no stair-stepping)
+    // TRUE ORIENTED MEMBER - straight, aligned to its own axis (no stair-stepping)
     const A=new THREE.Vector3(m.a[0],m.a[2],m.a[1]);   // world Y = data z
     const Bv=new THREE.Vector3(m.b[0],m.b[2],m.b[1]);
     const dir=new THREE.Vector3().subVectors(Bv,A);
@@ -277,7 +277,7 @@ cv.addEventListener('click',e=>{
   info.style.display='block';
   info.innerHTML='<div class="t">'+m.n+'</div>'+
    row('Family',LABEL[m.f]||m.f)+row('Section',m.s)+row('Scope',({OURS:'SHIVAS',CUSTOMER:'Client',BY_OTHERS:'By others'})[m.sc]||m.sc)+
-   row('FRP lined',m.frp==='yes'?'YES — 2 mm acid-grade':'no')+
+   row('FRP lined',m.frp==='yes'?'YES, 2 mm acid-grade':'no')+
    row('Size (m)',dx.toFixed(3)+' × '+dy.toFixed(3)+' × '+dz.toFixed(3))+
    row('X',m.mn[0].toFixed(3)+' → '+m.mx[0].toFixed(3))+
    row('Y',m.mn[1].toFixed(3)+' → '+m.mx[1].toFixed(3))+

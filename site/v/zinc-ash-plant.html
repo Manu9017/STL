@@ -385,24 +385,24 @@ const LOADS=[
  ["F18","ZA-189","Rotary airlock",0.75,"DOL"],["F19","ZA-191","Air compressor + dryer",8.2,"Star-delta"],["F20","ZA-190","Lighting, PLC, small power",6,"MCB DB"]];
 /* Instrument index: [tag, service, type, range/setting, io, P&ID sheet, equipment] */
 const INST=[
- ["HV-101","Gas inlet isolation","Ball valve, lockable","DN40","—","03A","ZA-113"],
- ["F-101","Gas filter","Cartridge, 50 µm","DN40","—","03A","ZA-113"],
- ["PI-101","Gas inlet pressure","Gauge","0–600 mbar","—","03A","ZA-113"],
- ["PCV-101","Gas pressure regulator","Self-acting, slam-shut","Out 40 mbar","—","03A","ZA-113"],
+ ["HV-101","Gas inlet isolation","Ball valve, lockable","DN40","-","03A","ZA-113"],
+ ["F-101","Gas filter","Cartridge, 50 µm","DN40","-","03A","ZA-113"],
+ ["PI-101","Gas inlet pressure","Gauge","0–600 mbar","-","03A","ZA-113"],
+ ["PCV-101","Gas pressure regulator","Self-acting, slam-shut","Out 40 mbar","-","03A","ZA-113"],
  ["PSL-101","Gas pressure low","Pressure switch","Set 25 mbar","DI:1","03A","ZA-113"],
  ["XV-101A","Main gas safety shut-off 1","Solenoid SSOV, Class A","DN40","DO:1","03A","ZA-113"],
  ["XV-101B","Main gas safety shut-off 2 with POC","Solenoid SSOV, Class A","DN40","DO:1,DI:1","03A","ZA-113"],
  ["PSH-101","Gas pressure high","Pressure switch","Set 55 mbar","DI:1","03A","ZA-113"],
- ["FCV-101","Air/gas ratio regulator","Pneumatic ratio, air-loaded","1:1 impulse","—","03A","ZA-113"],
+ ["FCV-101","Air/gas ratio regulator","Pneumatic ratio, air-loaded","1:1 impulse","-","03A","ZA-113"],
  ["XV-103","Ignition gas valve","Solenoid, DN15","DN15","DO:1","03A","ZA-113"],
  ["BCU-111","Burner control unit","Flame safeguard + ignition","3 s safety time","DI:2,DO:1","03A","ZA-111"],
- ["BE-111","Flame detector","UV scanner","To BCU","—","03A","ZA-111"],
- ["IGN-111","Direct spark igniter","Ignition transformer + electrode","7.5 kV","—","03A","ZA-111"],
+ ["BE-111","Flame detector","UV scanner","To BCU","-","03A","ZA-111"],
+ ["IGN-111","Direct spark igniter","Ignition transformer + electrode","7.5 kV","-","03A","ZA-111"],
  ["PDS-112","Combustion air proving","Differential pressure switch","Set 8 mbar","DI:1","03A","ZA-112"],
  ["FV-112","Combustion air control","Butterfly + electric actuator","4–20 mA, feedback","AO:1,AI:1","03A","ZA-112"],
  ["M-112","Blower motor","Run / start","2.2 kW","DI:1,DO:1","03A","ZA-112"],
  ["TE/TT-101","Drum gas temperature","Type K thermocouple, transmitter","0–1,000 °C","AI:1","03A","ZA-110"],
- ["TIC-101","Drum temperature control","PLC PID to FV-112","SP 520 °C","—","03A","ZA-110"],
+ ["TIC-101","Drum temperature control","PLC PID to FV-112","SP 520 °C","-","03A","ZA-110"],
  ["TSHH-101","Drum over-temperature","Independent high-limit relay","Trip 600 °C","DI:1","03A","ZA-110"],
  ["TT-102","Shell temperature","IR pyrometer","0–400 °C, alarm 250 °C","AI:1","03A","ZA-110"],
  ["SIC-110","Drum speed","VFD","0.5–12 rpm","AO:1,AI:1,DO:1,DI:1","03A","ZA-110"],
@@ -412,32 +412,32 @@ const INST=[
  ["ZSHH-110","Tilt at dump limit","Limit switch","+45°","DI:1","03A","ZA-110"],
  ["ZT-110","Tilt angle","Inclinometer","−10 to +50°","AI:1","03A","ZA-110"],
  ["PT-114","Hydraulic pressure","Transmitter","0–250 bar","AI:1","03A","ZA-114"],
- ["LSL-114","Hydraulic oil level low","Float switch","—","DI:1","03A","ZA-114"],
+ ["LSL-114","Hydraulic oil level low","Float switch","-","DI:1","03A","ZA-114"],
  ["TSH-114","Hydraulic oil temperature high","Thermostat","60 °C","DI:1","03A","ZA-114"],
  ["XY-114","Tilt proportional valve","Proportional DCV + enable","4–20 mA","AO:1,DO:2","03A","ZA-114"],
  ["M-114","Hydraulic pump motor","Run / start","5.5 kW","DI:1,DO:1","03A","ZA-114"],
- ["ZSC-115","Door closed","Limit switch","—","DI:1","03A","ZA-115"],
+ ["ZSC-115","Door closed","Limit switch","-","DI:1","03A","ZA-115"],
  ["XY-115","Door cylinder","Pneumatic solenoid valve","6 bar","DO:1","03A","ZA-115"],
- ["ZS-102","Tipper at rest, gate closed","Safety switch","—","DI:2","03A","ZA-102"],
+ ["ZS-102","Tipper at rest, gate closed","Safety switch","-","DI:2","03A","ZA-102"],
  ["M-102","Tipper hydraulics","Run / raise / tip","3.7 kW","DI:1,DO:3","03A","ZA-102"],
- ["ZS-120","Carousel mould in position","Proximity","—","DI:1","03A","ZA-120"],
+ ["ZS-120","Carousel mould in position","Proximity","-","DI:1","03A","ZA-120"],
  ["M-120","Carousel index drive","Run","0.75 kW","DO:1,DI:1","03A","ZA-120"],
- ["ZS-121","Launder in tap position","Limit switch","—","DI:1","03A","ZA-120"],
+ ["ZS-121","Launder in tap position","Limit switch","-","DI:1","03A","ZA-120"],
  ["TT-121","Launder temperature","Thermocouple","0–600 °C","AI:1","03A","ZA-120"],
- ["ZS-130","Pan under drum mouth","Proximity","—","DI:1","03A","ZA-130"],
+ ["ZS-130","Pan under drum mouth","Proximity","-","DI:1","03A","ZA-130"],
  ["M-130","Pan traverser","VFD","1.5 kW","DO:2,DI:1","03A","ZA-130"],
  ["WT-192","Ash intake weight","Load cells + indicator","0–2,000 kg","AI:1","03A","ZA-192"],
- ["HS-001","Emergency stop chain","Safety relay, dual channel","—","DI:2","03A","ZA-190"],
+ ["HS-001","Emergency stop chain","Safety relay, dual channel","-","DI:2","03A","ZA-190"],
  ["TE/TT-181","Bag filter inlet temperature","Thermocouple + transmitter","0–300 °C","AI:1","03B","ZA-181"],
- ["TIC-181","Dilution air control","PLC PID","SP 130 °C","—","03B","ZA-181"],
+ ["TIC-181","Dilution air control","PLC PID","SP 130 °C","-","03B","ZA-181"],
  ["TV-181","Dilution air damper","Motorised damper","4–20 mA","AO:1,AI:1","03B","ZA-181"],
  ["PDIT-182","Bag filter differential pressure","Transmitter","0–250 mmWC","AI:1","03B","ZA-182"],
  ["UC-182","Pulse sequencer","ΔP-on-demand controller","14 rows","DI:1,DO:1","03B","ZA-182"],
- ["LSH-189","Hopper level high","Capacitance switch","—","DI:1","03B","ZA-189"],
+ ["LSH-189","Hopper level high","Capacitance switch","-","DI:1","03B","ZA-189"],
  ["M-189","Rotary airlock","Run + zero speed","0.75 kW","DO:1,DI:2","03B","ZA-189"],
  ["PSL-191","Compressed air low","Pressure switch","Set 5 bar","DI:1","03B","ZA-191"],
  ["PT-184","Header static pressure","Transmitter","−500 to 0 mmWC","AI:1","03B","ZA-180"],
- ["PIC-184","Header suction control","PLC PID to fan VFD","SP −60 mmWC at hood","—","03B","ZA-184"],
+ ["PIC-184","Header suction control","PLC PID to fan VFD","SP −60 mmWC at hood","-","03B","ZA-184"],
  ["SIC-184","ID fan speed","VFD","0–50 Hz","AO:1,AI:1,DO:1,DI:2","03B","ZA-184"],
  ["VT-184","Fan vibration","Velocity transmitter","0–25 mm/s","AI:1","03B","ZA-184"],
  ["TT-184","Fan bearing temperature","RTD","0–150 °C","AI:1","03B","ZA-184"],
@@ -450,23 +450,23 @@ const INST=[
  ["AIC-186","pH control","PLC PID to dosing pump","SP 8.0","AO:1","03B","ZA-188"],
  ["CIT-186","Liquor conductivity","Conductivity analyser","0–200 mS/cm","AI:1","03B","ZA-186"],
  ["XV-186","Bleed to ETP","Actuated ball valve","DN25","DO:1,DI:1","03B","ZA-186"],
- ["LSL-188","NaOH tank low","Float switch","—","DI:1","03B","ZA-188"],
+ ["LSL-188","NaOH tank low","Float switch","-","DI:1","03B","ZA-188"],
  ["M-188","NaOH dosing pump","Run","0.37 kW","DO:1,DI:1","03B","ZA-188"],
  ["AIT-185","Stack dust (if consent requires)","Triboelectric PM monitor","0–100 mg/Nm³","AI:1","03B","ZA-185"],
  ["TT-170","Melt temperature","Dip thermocouple","0–800 °C","AI:1","SLD","ZA-170"],
- ["FSL-171","Induction cooling water flow low","Flow switch","—","DI:1","SLD","ZA-171"],
+ ["FSL-171","Induction cooling water flow low","Flow switch","-","DI:1","SLD","ZA-171"],
  ["TSH-171","Induction cooling water temperature high","Thermostat","45 °C","DI:1","SLD","ZA-171"],
  ["M-171","Cooling tower pump + fan","Run / start","5.9 kW","DI:2,DO:2","SLD","ZA-171"],
- ["UC-170","MF panel status","Ready / run / fault","—","DI:3,DO:1","SLD","ZA-173"],
+ ["UC-170","MF panel status","Ready / run / fault","-","DI:3,DO:1","SLD","ZA-173"],
  ["M-141","Bucket elevator","Run / start","3.7 kW","DI:1,DO:1","SLD","ZA-141"],
- ["SSL-141","Elevator zero speed","Proximity","—","DI:1","SLD","ZA-141"],
- ["LSH/LSL-142","Mill feed bin level","Capacitance switches","—","DI:2","SLD","ZA-142"],
+ ["SSL-141","Elevator zero speed","Proximity","-","DI:1","SLD","ZA-141"],
+ ["LSH/LSL-142","Mill feed bin level","Capacitance switches","-","DI:2","SLD","ZA-142"],
  ["SC-142","Feeder rate","Vibro controller","0–100%","AO:1,DO:1","SLD","ZA-142"],
  ["M-150","Ball mill","Run / start / soft starter fault","22 kW","DI:2,DO:1","SLD","ZA-150"],
  ["II-150","Mill motor current","CT + transducer","0–60 A","AI:1","SLD","ZA-150"],
  ["M-151","Screw conveyor","Run / start","3.0 kW","DI:1,DO:1","SLD","ZA-151"],
  ["M-160","Screen vibromotors","Run / start","2 × 1.1 kW","DI:1,DO:1","SLD","ZA-160"],
- ["LSH-161","Oversize bin high","Capacitance switch","—","DI:1","SLD","ZA-161"],
+ ["LSH-161","Oversize bin high","Capacitance switch","-","DI:1","SLD","ZA-161"],
  ["WT-163","FIBC weight","Load cells","0–1,500 kg","AI:1","SLD","ZA-163"]
 ];
 
@@ -1626,8 +1626,8 @@ function sepDetail(){const W=1680,H=1188;let b='';const s=150,ox=300,oy=370; // 
 /* ============ MASS BALANCE ============ */
 const IN=Object.freeze({zn:100,ash:12,met:65,hot:75,scr:70,conc:85,rem:92,days:26,batch:400,mid:15,dust:1.5,fuel:'NG',burn:90,cyc:30,pZn:280,pFine:40,pAsh:0,pGas:55,pLpg:90,pPow:9,lab:60000,capex:0});
 let MB={...IN};
-const fmt=(v,d=1)=>isFinite(v)?Number(v).toLocaleString('en-IN',{minimumFractionDigits:d,maximumFractionDigits:d}):'—';
-const inr=v=>{if(!isFinite(v))return '—';const a=Math.abs(v);const s=v<0?'−':'';if(a>=1e7)return s+'₹ '+fmt(a/1e7,2)+' cr';if(a>=1e5)return s+'₹ '+fmt(a/1e5,2)+' lakh';return s+'₹ '+fmt(a,0);};
+const fmt=(v,d=1)=>isFinite(v)?Number(v).toLocaleString('en-IN',{minimumFractionDigits:d,maximumFractionDigits:d}):'-';
+const inr=v=>{if(!isFinite(v))return '-';const a=Math.abs(v);const s=v<0?'−':'';if(a>=1e7)return s+'₹ '+fmt(a/1e7,2)+' cr';if(a>=1e5)return s+'₹ '+fmt(a/1e5,2)+' lakh';return s+'₹ '+fmt(a,0);};
 function calc(p){const A=p.zn*p.ash/100,Am=A*p.met/100,T2=Am*p.hot/100,R=A-T2,Rm=Am-T2,Om=Rm*p.scr/100,O=Om/(p.conc/100),S8=Om*p.rem/100,D=O-S8,F=R-O+D,Dust=A*p.dust/100;
  const S10=T2+S8,batches=A*1000/p.days/p.batch;const opH=p.days*16;
  const ncv=p.fuel==='NG'?9.9:12.8;const fuelPerBatch=p.burn*p.cyc/60/ncv;const fuelM=fuelPerBatch*A*1000/p.batch;const fuelCost=fuelM*(p.fuel==='NG'?p.pGas:p.pLpg);
@@ -1641,7 +1641,7 @@ function streams(p,c){return [
  ["10","Zinc ingots back to kettle","Solid, 25 kg ingots",c.S10,c.S10],["11","Fume to bag filter","Gas, ≤ 130 °C, 12,000 m³/h",NaN,NaN],["12","Bag filter dust (in stream 7)","Solid, fine",c.Dust,NaN],
  ["13","Scrubber bleed to ETP","Liquid, ≈ 0.5 m³/day",NaN,NaN],["14","Clean gas to stack","Gas, ≈ 40 °C, saturated",NaN,NaN]];}
 function streamTable(p,c){return `<div class="tw"><table><thead><tr><th>Stream</th><th>Description</th><th>Phase / condition</th><th class="n">Mass t/month</th><th class="n">kg/day</th><th class="n">Metallic Zn t/month</th></tr></thead><tbody>${
- streams(p,c).map(s=>`<tr><td class="tag">S${s[0]}</td><td>${s[1]}</td><td>${s[2]}</td><td class="n">${isNaN(s[3])?'—':fmt(s[3],2)}</td><td class="n">${isNaN(s[3])?'—':fmt(s[3]*1000/p.days,0)}</td><td class="n">${isNaN(s[4])?'—':fmt(s[4],2)}</td></tr>`).join('')
+ streams(p,c).map(s=>`<tr><td class="tag">S${s[0]}</td><td>${s[1]}</td><td>${s[2]}</td><td class="n">${isNaN(s[3])?'-':fmt(s[3],2)}</td><td class="n">${isNaN(s[3])?'-':fmt(s[3]*1000/p.days,0)}</td><td class="n">${isNaN(s[4])?'-':fmt(s[4],2)}</td></tr>`).join('')
  }<tr class="tot"><td></td><td>Check: stream 1 = streams 10 + 7</td><td></td><td class="n">${fmt(c.A,2)} = ${fmt(c.S10+c.F,2)}</td><td></td><td></td></tr></tbody></table></div>`;}
 
 /* ============ DOCUMENT RENDERERS ============ */
@@ -1729,7 +1729,7 @@ function updateMB(){const p=MB,c=calc(p);
  <p style="font-size:13px;color:var(--muted)">Benefit figures use the rates you enter. They are not a price for the plant.</p>`;
  const ps=$('pfdStreams');if(ps)ps.innerHTML=streamTable(p,c);const u=$('utilGas');if(u)renderUt();}
 
-function renderIO(){const cnt={DI:0,DO:0,AI:0,AO:0};INST.forEach(i=>{if(i[4]==='—')return;i[4].split(',').forEach(x=>{const [k,n]=x.split(':');cnt[k]+=+n;});});
+function renderIO(){const cnt={DI:0,DO:0,AI:0,AO:0};INST.forEach(i=>{if(i[4]==='-')return;i[4].split(',').forEach(x=>{const [k,n]=x.split(':');cnt[k]+=+n;});});
  const tot=Object.values(cnt).reduce((a,b)=>a+b,0);
  $('t-io').innerHTML=`<div class="docno">SH-ZAR-D04</div><h2>Instrument index and PLC I/O</h2><p class="lede">${INST.length} tagged items across P&IDs 03A and 03B plus the cold circuit and remelt. I/O includes 20% spare in the PLC sizing below.</p>
  <div class="kpis">${Object.entries(cnt).map(([k,v])=>`<div class="kpi"><small>${k}</small><strong>${v}</strong><em>+20% spare: ${Math.ceil(v*1.2)}</em></div>`).join('')}<div class="kpi a"><small>Total I/O</small><strong>${tot}</strong><em>PLC sized for ${Math.ceil(tot*1.2)}</em></div></div>

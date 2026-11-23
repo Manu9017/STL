@@ -349,7 +349,7 @@ table.pt{width:100%;border-collapse:collapse;font-family:var(--f-mono);font-size
 .site .dom{font-family:var(--f-mono);font-size:14px;color:var(--teal);display:flex;justify-content:space-between;gap:8px;overflow-wrap:anywhere}
 .site b{font-family:var(--f-display);font-weight:800;font-size:26px;text-transform:uppercase;line-height:.98}
 .site ul{list-style:none;margin:0;padding:0;display:grid;gap:5px;color:var(--muted);font-size:14px}
-.site li::before{content:"— ";color:var(--line2)}
+.site li::before{content:"· ";color:var(--line2)}
 .more{display:grid;gap:12px}
 .more .chips li{font-size:12px;padding:5px 11px}
 .more .chips li.hot{border-color:var(--teal);color:var(--teal)}
@@ -2178,7 +2178,7 @@ html{scroll-padding-top:calc(var(--nav-h,60px) + 12px)} /* V35 scroll-pad */
     <div class="tblock" aria-label="You are here"><span>SHIVAS Reinplast</span><span>3D models</span><span>Interactive</span></div>
     <span class="eyebrow">Interactive</span>
     <h2>3D models of <em>our plants</em></h2>
-    <p class="lede">The ETP + ZLD plant in two layouts — packed into a tight two-level footprint, or spread out at grade — and our ARP-10 acid regeneration package.</p>
+    <p class="lede">The ETP + ZLD plant in two layouts (packed into a tight two-level footprint, or spread out at grade) and our ARP-10 acid regeneration package.</p>
     <div class="hall" id="hallRein"></div>
     <p class="hall-note">Models are indicative general arrangements; client names and commercial data removed. <a href="3d-models.html">See all 3D models on one page</a></p>
   </div>
@@ -2689,7 +2689,7 @@ function schedule(){
   else{st.className='status bad';st.textContent='Too heavy · add dies'};
   const rpm=v=>v*60/(Math.PI*.6);
   $('#passTable').innerHTML=`<thead><tr><th>Die</th><th>Ø in mm</th><th>Ø out mm</th><th>Reduction</th><th>Speed m/s</th><th>rpm @ Ø600</th><th>Δ</th></tr></thead><tbody>`+
-    `<tr><td>Rod</td><td>—</td><td>${d0.toFixed(2)}</td><td>—</td><td>${vin.toFixed(2)}</td><td>—</td><td>—</td></tr>`+
+    `<tr><td>Rod</td><td>-</td><td>${d0.toFixed(2)}</td><td>-</td><td>${vin.toFixed(2)}</td><td>-</td><td>-</td></tr>`+
     dies.map(d=>`<tr><td>D${d.i}</td><td>${d.din.toFixed(2)}</td><td>${d.d.toFixed(2)}</td><td>${(d.red*100).toFixed(1)} %</td><td>${d.v.toFixed(2)}</td><td>${rpm(d.v).toFixed(0)}</td><td>${dl(d.red).toFixed(2)}</td></tr>`).join('')+'</tbody>';
   const D=dl(per),ds=$('#sDelS');$('#sDel').textContent=D.toFixed(2);if(D<1){ds.className='status warn';ds.textContent='Friction-heavy'}else if(D<=3){ds.className='status ok';ds.textContent='Good range'}else{ds.className='status bad';ds.textContent='Centre-burst risk'}
   drawPass(d0,dies,vin);
@@ -3232,7 +3232,7 @@ const EX_WIRE=[
   const bx=60,bw=680;P.slice(0,5).forEach((p,i)=>{const x=bx+bw*i/5;g.rect(x+2,430,bw/5-4,8,i<ph?g.acc:i===ph?C.fg:C.line);g.text(p[0],x+bw/10,456,{size:10,col:i===ph?C.fg:C.muted})});
   const temp=ph===1?Math.round(lerp(30,1300,clamp((tc-2)/2,0,1))):ph===2?1300:ph===3?650:ph===4?Math.round(lerp(650,80,clamp((tc-8)/2.4,0,1))):30;
   g.call(1,265,130);g.call(2,535+gap-ups,130);g.call(3,400,330);g.call(4,470,150);g.call(5,40,434);
-  return [['Step',P[ph][0]],['Joint','≈ '+temp+' °C'],['Upset',bulge>0?'Ends forged':'—'],['Result','Joint passes the dies']];
+  return [['Step',P[ph][0]],['Joint','≈ '+temp+' °C'],['Upset',bulge>0?'Ends forged':'-'],['Result','Joint passes the dies']];
  }},
 {id:'coildryer',code:'Wire drawing',name:'Wire coil dryer',prod:'Wire coil dryer',
  lead:'Coils coming off pickling and coating are dried before drawing, so the carrier coating sets and no water reaches the dies. Trolleys index through a recirculating hot-air oven; moist air is vented and the rest is reheated and reused.',
@@ -3261,7 +3261,7 @@ const EX_WIRE=[
  modes:[{id:'line',label:'Full line'},{id:'copper',label:'Copper coating'},{id:'spool',label:'Layer winding'}],
  lead:'A complete plant for copper-coated solid welding wire such as ER70S-6 (AWS A5.18). Descaled rod is rough-drawn, cleaned, copper coated, fine-drawn to size and precision layer-wound on spools.',
  calls:m=>m==='copper'?[['Electrolytic degreasing','Strips drawing soap with current.'],['Rinse','Hot water rinse.'],['Acid activation','Sulphuric acid wakes the surface for copper.'],['Rinse','Stops acid carry-over.'],['Copper sulphate bath','Copper deposits on the steel.'],['Rinse','Removes bath salts.'],['Neutraliser','Stops any further attack.'],['Dryer','Dry, bright copper surface.']]:m==='spool'?[['Dancer','Holds winding tension constant.'],['Traverse','Pitch locked to wire diameter.'],['Spool','D300 spool, 15 kg.'],['Layer section','Turn sits beside turn, layer on layer.'],['Drive','Servo or inverter spool drive.']]:[['Rod payoff','5.5 mm rod coils.'],['Mechanical descaler','Cracks mill scale off the rod.'],['Rough drawing','SLM draws rod to intermediate size.'],['Cleaning','Electrolytic cleaning before plating.'],['Copper coating','Copper sulphate bath coats the wire.'],['Fine drawing','Draws to final size and skin-passes the copper.'],['Layer winding','Precision spools, 5 to 15 kg.'],['Packing','Sealed and boxed.']],
- specs:[['Product','ER70S-6 solid wire'],['Sizes','0.8 – 1.6 mm'],['Coating','Copper'],['Pack','Precision spools']],
+ specs:[['Product','ER70S-6 solid wire'],['Sizes','0.8 to 1.6 mm'],['Coating','Copper'],['Pack','Precision spools']],
  draw(g,t,m){
   if(m==='copper'){const T=[['DEGREASE','#1f6f78'],['RINSE','#1d4a70'],['ACID','#6f7234'],['RINSE','#1d4a70'],['CuSO₄','#2f6fd0'],['RINSE','#1d4a70'],['NEUTRAL','#25616a'],['DRYER',null]];
    const A=[[0,212]],B=[];let split=0;
@@ -3368,7 +3368,7 @@ const EX_HDG=[
   const P=['PURGE','IGNITE','PILOT','MAIN','MODULATE'],bx=60,bw=680;P.forEach((p,i)=>{const x=bx+bw*i/5;g.rect(x+2,420,bw/5-4,8,i<st?g.acc:i===st?C.fg:C.line);g.text(p,x+bw/10,446,{size:10,col:i===st?C.fg:C.muted})});
   g.label('UV',58,262,{size:10,col:C.teal});g.label('GAS',196,24,{size:10,col:C.gas,align:'left'});g.label('AIR',10,326,{size:10,col:C.air,align:'left'});
   g.call(1,210,60);g.call(2,40,340);g.call(3,330,170);g.call(4,470,176);g.call(5,612,176);g.call(6,390,120);g.call(7,58,200);g.call(8,760,212);
-  return [['Step',P[st]],['Flame',st>=2?'Proven (UV)':'Off'],['Firing',st>=3?Math.round(30+70*fire)+' %':'—'],['Exit','High-velocity jet']];
+  return [['Step',P[st]],['Flame',st>=2?'Proven (UV)':'Off'],['Firing',st>=3?Math.round(30+70*fire)+' %':'-'],['Exit','High-velocity jet']];
  }},
 {id:'gastrain',code:'Galvanizing',name:'Dual fuel & gas train',prod:'Galvanizing furnace',
  modes:[{id:'gas',label:'Gas'},{id:'oil',label:'Oil'}],
@@ -3845,7 +3845,7 @@ function Explorer(root,list,acc){
 
 
 /* ================= TOOLS ================= */
-const inr=x=>{if(!isFinite(x))return '—';const a=Math.abs(x);if(a>=1e7)return '₹ '+(x/1e7).toFixed(2)+' Cr';if(a>=1e5)return '₹ '+(x/1e5).toFixed(2)+' L';return '₹ '+Math.round(x).toLocaleString('en-IN')};
+const inr=x=>{if(!isFinite(x))return '-';const a=Math.abs(x);if(a>=1e7)return '₹ '+(x/1e7).toFixed(2)+' Cr';if(a>=1e5)return '₹ '+(x/1e5).toFixed(2)+' L';return '₹ '+Math.round(x).toLocaleString('en-IN')};
 const TDEF={
  't-zinc':[['zTpd','Steel galvanized',5,500,5,60,v=>v+' t/day'],['zDays','Working days',20,31,1,26,v=>v+' / month'],['zThk','Avg steel thickness',1,25,.5,6,v=>v+' mm'],['zAct','Actual avg coating',40,300,5,100,v=>v+' µm'],['zDross','Dross',0,30,1,10,v=>v+' %'],['zAsh','Ash',0,30,1,15,v=>v+' %'],['zPrice','Zinc price',150,700,5,450,v=>'₹ '+v+'/kg'],['zRec','Zinc won back from ash',0,80,5,50,v=>v+' %']],
  't-die':[['dD0','Entry Ø',.8,14,.05,5.5,v=>(+v).toFixed(2)+' mm'],['dR','Area reduction',8,40,.5,20,v=>v+' %'],['dA','Die half-angle α',3,15,.5,6,v=>v+'°'],['dB','Bearing length',20,100,5,40,v=>v+' % Ø']],
@@ -3952,7 +3952,7 @@ const EX_BURN={id:'burner',code:'Galvanizing',name:'High-velocity burner',prod:'
   const bx=40,bw=720;P.forEach((p,i)=>{const x=bx+bw*i/6;g.rect(x+2,420,bw/6-4,8,i<st?g.acc:i===st?C.fg:C.line);g.text(p,x+bw/12,446,{size:9.5,col:i===st?C.fg:C.muted})});
   g.label('UV',58,262,{size:10,col:C.teal});g.label('GAS',196,24,{size:10,col:C.gas,align:'left'});g.label('AIR',10,326,{size:10,col:C.air,align:'left'});
   g.call(1,214,140);g.call(2,40,394);g.call(3,330,170);g.call(4,470,176);g.call(5,612,176);g.call(6,390,120);g.call(7,58,200);g.call(8,760,212);g.call(9,600,63);g.call(10,90,350);g.call(11,140,73);
-  return [['Step',P[st]],['Flame',st>=3?'Proven (UV)':st===2?'Lighting':'Off'],['Firing',st>=4?Math.round(25+75*fire)+' %':st>=2?'Low':'—'],['Pilot','None · direct spark']];
+  return [['Step',P[st]],['Flame',st>=3?'Proven (UV)':st===2?'Lighting':'Off'],['Firing',st>=4?Math.round(25+75*fire)+' %':st>=2?'Low':'-'],['Pilot','None · direct spark']];
  }};
 
 const EX_EF={id:'efurnace',code:'Galvanizing',name:'Electric kettle furnace',prod:'Galvanizing furnace',
@@ -4062,7 +4062,7 @@ const EX_PLANT=[
 {id:'wireplant',code:'Complete plant',name:'Rod to GI wire',prod:'Hot-dip galvanized wire plant',
  lead:'The full wire route in one view. Rod coils are paid off, descaled, pointed and butt-welded, drawn down through a straight-line machine and coiled on a dead block coiler. The drawn coils then run multi-strand through fumeless pickling, flux, the zinc bath and wiping, and are taken up on spoolers.',
  calls:[['Rod payoff','Turntable payoff feeds the rod.'],['Descaler','Reverse bending cracks off mill scale.'],['Pointing + butt weld','Threads the new coil and joins it to the last.'],['Straight-line machine','Six blocks, each pulling the wire through a smaller die.'],['Dead block coiler','Builds a compact coil on the carrier.'],['Coil payoffs','Multi-strand payoffs for the galvanizing line.'],['Fumeless pickling','Covered acid bath, no fume at the floor.'],['Flux + dryer','Fluxes and dries the strands.'],['Zinc bath','Strands pass under the sinker in molten zinc.'],['Wiping + cooling','Sets the coating weight and cools the wire.'],['Take-up spoolers','Constant-tension spooling of finished wire.']],
- specs:[['Rod','5.5 – 12 mm'],['Drawing','Straight line · 6 blocks'],['Galvanizing','Multi-strand'],['Finish','Spools or coils']],
+ specs:[['Rod','5.5 to 12 mm'],['Drawing','Straight line · 6 blocks'],['Galvanizing','Multi-strand'],['Finish','Spools or coils']],
  draw(g,t){const c=g.ctx;
   g.label('DRAWING',20,40,{size:11,w:600,col:C.amber,align:'left'});g.label('HOT-DIP GALVANIZING',20,270,{size:11,w:600,col:C.amber,align:'left'});
   // row 1
@@ -4186,7 +4186,7 @@ const V3=(function(){
   function load(){const v=it.v[vi];el.querySelector('.v3d-t b').textContent=it.title;el.querySelector('.v3d-t span').textContent=v.l==='3D'?it.tags.join(' · '):v.l;el.querySelector('.v3d-new').href=v.f;
     seg.innerHTML=it.v.length>1?it.v.map((x,k)=>`<button type="button" data-k="${k}" aria-pressed="${k===vi}">${x.l}</button>`).join(''):'';
     body.querySelectorAll('iframe').forEach(f=>f.remove());body.classList.add('busy');
-    const f=document.createElement('iframe');f.title=it.title+' — 3D';f.setAttribute('allow','fullscreen');f.setAttribute('allowfullscreen','');f.onload=()=>body.classList.remove('busy');f.src=v.f;body.appendChild(f)}
+    const f=document.createElement('iframe');f.title=it.title+' (3D)';f.setAttribute('allow','fullscreen');f.setAttribute('allowfullscreen','');f.onload=()=>body.classList.remove('busy');f.src=v.f;body.appendChild(f)}
   function open(item,k){it=item;vi=k||0;el.hidden=false;document.documentElement.classList.add('v3d-on');load();
     if(!pushed){try{history.pushState({v3d:1},'');pushed=true}catch(e){}}
     setTimeout(()=>el.querySelector('.v3d-x').focus(),30)}
@@ -4208,8 +4208,8 @@ function Hall(root,items){
     ${it.v.length>1?`<div class="hc-var">${it.v.map((x,k)=>`<button type="button" data-k="${k}">${x.l}</button>`).join('')}</div>`:''}
     <span class="hc-open">Open 3D model →</span></div></div>`).join('')}</div>`;
   const view=root.querySelector('.hall-view'),seg=root.querySelector('.hall-var'),load=root.querySelector('.hall-load');
-  function poster(){const it=items[cur],v=it.v[vi];live=false;view.innerHTML=`<img src="${v.i}" alt="${it.title} — 3D model preview"><button type="button" class="hall-play" aria-label="Load the 3D model"><i>▶</i><span>Tap to load the live 3D model</span></button>`;view.querySelector('.hall-play').onclick=go;load.textContent='▶ Load here'}
-  function go(){const it=items[cur],v=it.v[vi];live=true;view.innerHTML=`<iframe src="${v.f}" title="${it.title} — 3D" allow="fullscreen" allowfullscreen></iframe>`;load.textContent='✕ Close'}
+  function poster(){const it=items[cur],v=it.v[vi];live=false;view.innerHTML=`<img src="${v.i}" alt="${it.title}: 3D model preview"><button type="button" class="hall-play" aria-label="Load the 3D model"><i>▶</i><span>Tap to load the live 3D model</span></button>`;view.querySelector('.hall-play').onclick=go;load.textContent='▶ Load here'}
+  function go(){const it=items[cur],v=it.v[vi];live=true;view.innerHTML=`<iframe src="${v.f}" title="${it.title} (3D)" allow="fullscreen" allowfullscreen></iframe>`;load.textContent='✕ Close'}
   function render(){const it=items[cur];root.querySelector('.hall-meta b').textContent=it.title;root.querySelector('.hall-meta span').textContent=it.sub;
     seg.innerHTML=it.v.length>1?it.v.map((x,k)=>`<button type="button" data-k="${k}" aria-pressed="${k===vi}">${x.l}</button>`).join(''):'';
     root.querySelectorAll('.hall-card').forEach((b,k)=>b.setAttribute('aria-pressed',String(k===cur)));if(live)go();else poster()}

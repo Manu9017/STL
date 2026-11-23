@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 <style>
-/* Layout: full-bleed 3D stage; a control-room HUD floats over it — header strip, view chips,
+/* Layout: full-bleed 3D stage; a control-room HUD floats over it - header strip, view chips,
    and an inspector panel that is a right rail on desktop and a bottom sheet on phones. */
 :root{
   /* deliberately dark-first, single theme: a control-room HUD over a dark stage */
@@ -455,7 +455,7 @@ body.touring .lb, body.mech .lb{opacity:.35}
 /* ---- 10_core.js ---- */
 'use strict';
 /* =====================================================================
-   SHIVAS HDG Plant Model — core: renderer, scene, materials, geometry
+   SHIVAS HDG Plant Model - core: renderer, scene, materials, geometry
    Units: metres.  Axes: x = process flow (west → east), y = up,
    z = north (−) → south (+).  FFL = 0.000.
    ===================================================================== */
@@ -875,7 +875,7 @@ class Bld {
   }
 }
 
-/* make(id, meta, fn) — registers equipment and builds its static geometry.
+/* make(id, meta, fn) - registers equipment and builds its static geometry.
    meta: {tag,name,area,sub,specs,note,flags,src,anchor,lbl,layer,view} */
 function make(id, meta, fn) {
   const group = new THREE.Group(); group.name = id;
@@ -888,7 +888,7 @@ function make(id, meta, fn) {
   b.flush(group, id);
   return rec;
 }
-/* sub(rec, fn) — a separately movable sub-group belonging to an equipment record */
+/* sub(rec, fn) - a separately movable sub-group belonging to an equipment record */
 function sub(rec, fn, parent) {
   const g = new THREE.Group(); (parent || rec.group).add(g);
   const b = new Bld(); fn(b, g); b.flush(g, rec.id); return g;
@@ -1590,7 +1590,7 @@ function buildDryer() {
     s.userData.x0 = D.P[0] + k * 1.5; s.position.x = s.userData.x0;
     MOV.saddles.push(s);
   }
-  // sprockets: 12 teeth, PCD 300, keyed to the shafts — they turn as the chain indexes
+  // sprockets: 12 teeth, PCD 300, keyed to the shafts - they turn as the chain indexes
   MOV.sprockets = [];
   [D.x0 + .22, D.x1 - .22].forEach(x => [D.z0 + .2, D.z1 - .2].forEach(z => {
     const sp = sub(dryer, (b) => {
@@ -1693,7 +1693,7 @@ function buildDryer() {
       [.15, 1.25].forEach(x => [D.z0 - .32, D.z1 + .32].forEach(z => { b.cyl('dark', .09, [x, .3, z - .04], [x, .3, z + .04], 18); b.cyl('galv', .025, [x, .3, z - .07], [x, .3, z + .07], 10); }));
     });
     door.position.set(x0, 0, 0);
-    // pinion: 16 teeth, m6, PCD 96 — turns with the door travel
+    // pinion: 16 teeth, m6, PCD 96 - turns with the door travel
     const pin = sub(rec, (b) => { b.geo('gear', gGear(16, .0405, .054, .05, .012, .3, .4)); b.cyl('dark', .022, [0, 0, -.03], [0, 0, .03], 12); b.box('red', -.003, .025, -.026, .003, .045, .026); });
     pin.position.set(px, yp + rp, zr); door.userData.pin = pin; door.userData.x0 = x0;
     return door;
@@ -2493,7 +2493,7 @@ function buildPost() {
   });
   MOV.jig = makeJig(pj, { loadMat: LOAD_MAT });
   MOV.jig.position.set(LAY.ENTRYX, Y.trolley, -6);
-  // resident jigs (dryer P2/P3, jigging trestle, unloading) — hidden while a run is active
+  // resident jigs (dryer P2/P3, jigging trestle, unloading) - hidden while a run is active
   const res = make('JIG-02', { tag: 'JIG-02', name: 'Jigs in the dryer and on trestles', area: 'MHS', sub: 'Other loads in progress', hidden: true });
   MOV.resident = [];
   [[LAY.DRY.P[1], Y.dryRest, LZ], [LAY.DRY.P[2], Y.dryRest, LZ], [10.5, Y.trestle, -6.4]].forEach(([x, y, z], i) => {
@@ -2579,7 +2579,7 @@ function setNbHook(c, z, y) {
 /* ---- 86_spinport.js ---- */
 /* =====================================================================
    SHIVAS flux treatment skid (FFU + FRU), zinc ash recovery and ZAR residue processing
-   SH-ZAV V5 Option B (hydraulic tilting drum), ball mill, screen, FIBC, dust collector — taken
+   SH-ZAV V5 Option B (hydraulic tilting drum), ball mill, screen, FIBC, dust collector - taken
    as built in the SHIVAS spin galvanizing plant model (Rev B) and placed in this plant.
    ===================================================================== */
 const SPIN = (() => {
@@ -3017,7 +3017,7 @@ function buildZARProcess(G){
   for(let l=0;l<3;l++)for(let i=0;i<3;i++){const o=bx(11.42+i*0.21,11.6+i*0.21,0.12+l*0.07,0.19+l*0.07,-0.2+(l%2)*0.05,0.4-(l%2)*0.05,MAT.zincW,ig);o.userData.part='ingot_stack'}
 }
 
-/* ---------------- zinc ash recovery: SHIVAS SH-ZAV V5 Option B — rotary drum on a hydraulic tilt frame ----------------
+/* ---------------- zinc ash recovery: SHIVAS SH-ZAV V5 Option B - rotary drum on a hydraulic tilt frame ----------------
    Angles: 0° HOME (rest pads, charge, heat, rotate) · +12° TAP (zinc to moulds) · +40° DUMP (residue; full cylinder stroke) · +45° mechanical stop */
 const ZARC={tilt:0,rot:0,rpm:0,hoistZ:0,hookY:2.29,binOn:true,binTip:0,funnel:0,launder:0,flame:0,tray:0,phase:'Home',ang:0};
 const zRot=(p,deg)=>{const a=deg*Math.PI/180;return [p[0]*Math.cos(a)+p[1]*Math.sin(a),-p[0]*Math.sin(a)+p[1]*Math.cos(a)]};
@@ -3056,7 +3056,7 @@ function buildZAR(G){
   part(bx(-0.55,-0.45,0.43,0.49,-0.05,0.05,MAT.yellow,D),'zar_marker');
   R.zarMelt=cylX(0.28,-0.5,0.55,MAT.zinc,-0.2,0,D,24);R.zarMelt.userData.part='zar_melt';R.zarMelt.userData.noEdge=true;R.zarMelt.userData.noClash=true;R.zarMelt.visible=false;
   part(bx(rx(10.05),rx(10.11),-0.02,0.02,0.58,0.6,MAT.red,T),'zar_pointer');
-  // hydraulic cylinders (2 no., outside the frame) — barrel from the cap pin, rod to the tilt-frame lug
+  // hydraulic cylinders (2 no., outside the frame) - barrel from the cap pin, rod to the tilt-frame lug
   R.zarCyl=[];for(const s of [-1,1]){const b=cyl(0.05,0.05,1,MZ.hyd,0,0,0,g,16),r=cyl(0.018,0.018,1,MAT.mach,0,0,0,g,10);b.userData.part='zar_cyl';r.userData.part='zar_cylrod';R.zarCyl.push({b,r,s})}
   // tap-stop links (2 no.): slotted bar on a base pin; pin holes for TAP 12° and DUMP 40°; proximity switches confirm the pinned hole
   R.zarLinks=[];const lb=[px-0.62,0.20], lf=[-0.93,-0.40];R.zarLinkGeo={lb,lf};
@@ -3079,7 +3079,7 @@ function buildZAR(G){
   part(tube([[hx1+0.2,0.85,zc-0.1],[hx1+0.45,0.85,zc-0.1],[hx1+0.45,0.02,zc-0.1]],0.02,MAT.yellow,hd),'gasline');
   R.zarFlame=cyl(0.07,0.015,0.35,MAT.flame,hx1-0.48,1.0,zc,hd,12);R.zarFlame.rotation.z=Math.PI/2;R.zarFlame.userData.noEdge=true;R.zarFlame.userData.noClash=true;R.zarFlame.visible=false;
   part(tube([[10.97,1.56,zc],[10.97,5.6,zc],[DUCT[0],5.6,zc],[DUCT[0],DUCT[1],zc]],0.10,MAT.ss,hd),'zar_duct');
-  // swing charging funnel (post beside the mouth) — swings in front of the mouth only for charging
+  // swing charging funnel (post beside the mouth) - swings in front of the mouth only for charging
   const fp=[10.85,zc+0.85];part(cyl(0.035,0.035,2.75,MAT.paint,fp[0],1.375,fp[1],g,12),'zar_funnelpost');
   R.zarFunnel=grp(g,fp[0],0,fp[1]);const fg=grp(R.zarFunnel,-0.28,0,-0.85);
   part(frustum(fg,MAT.tint,-0.05,1.62,1.98,0,0.16,0.16,0.5,0.46),'zar_funnel');part(tube([[-0.05,1.63,0],[-0.03,1.35,0],[-0.01,1.12,0]],0.06,MAT.tint,fg),'zar_funnel');
@@ -3352,7 +3352,7 @@ function buildExtras() {
   const dg = make('DRS-01', {
     tag: 'DRS-01', name: 'Dross grab', area: 'ZAR', sub: 'Perforated clamshell · crane auxiliary hook',
     specs: [['Type', 'Perforated clamshell grab, holes Ø10–15 mm so zinc drains back'], ['Handling', 'Process crane auxiliary hook'], ['Practice', 'Settle the bath 20–30 min first; lower gently, close on the floor, lift at a crawl'],
-      ['Why', 'Dross is FeZn13, ≈ 94–96 % zinc, density ≈ 7.2 vs 6.6 g/cm³ — it sinks; 1 kg of iron locks up ≈ 15 kg of zinc'], ['Control mode', 'Drossing mode: bath set point lowered, flames stay proven']],
+      ['Why', 'Dross is FeZn13, ≈ 94–96 % zinc, density ≈ 7.2 vs 6.6 g/cm³, so it sinks; 1 kg of iron locks up ≈ 15 kg of zinc'], ['Control mode', 'Drossing mode: bath set point lowered, flames stay proven']],
     note: 'Rushed lifts carry good zinc up with the crystals and stir fine dross into the bath, where it reappears as pimples on the next loads.',
     src: '', anchor: [49.0, 2.6, 3.0], lbl: 2
   }, (b) => {
@@ -4365,7 +4365,7 @@ function initUI() {
 
 /* ---- 96_edges.js ---- */
 /* =====================================================================
-   Outlines, structure modes, hover — the "drawing" layer over the model.
+   Outlines, structure modes, hover - the "drawing" layer over the model.
    Every solid gets crisp dark feature edges (CAD-style), faded with distance
    so the overview stays clean; selection and hover recolour the outlines.
    ===================================================================== */
@@ -4488,7 +4488,7 @@ const SECTIONS = {
   fume: { n: 'D–D · bag filter and scrubber', nrm: [0, 0, -1], c: () => 26.0, keep: [], view: [[34, 9.5, 46], [34, 4.2, 26]], pv: [[34, 10, 52], [34, 4.5, 26]],
     d: 'Cut through the fume plant: 196 filter bags, the scrubber packing, spray header and demister, and both chimneys.' },
   plan: { n: 'Plan cut at +3.5 m', nrm: [0, -1, 0], c: () => 3.5, keep: HANDLING, view: [[24, 44, 44], [33, 0, 5]], pv: [[33, 72, 20], [33, 0, 6]],
-    d: 'Everything above +3.5 m is removed — roof, steel, lid, ducts — so the whole line reads as a plan, with the handling equipment kept.' }
+    d: 'Everything above +3.5 m is removed (roof, steel, lid, ducts), so the whole line reads as a plan, with the handling equipment kept.' }
 };
 const SECT = { mode: 'off', planes: [], keep: new Set(), touched: new Set() };
 const CAP_ON = { value: 0 };
@@ -4538,7 +4538,7 @@ function setSection(mode, opts = {}) {
   $$('[data-sect]').forEach(b => b.setAttribute('aria-pressed', b.dataset.sect === SECT.mode));
   const sel = $('#selSect'); if (sel) sel.value = SECT.mode;
   if (opts.fly && S.view) flyView(S.view, S.pv, 1.2);
-  if (opts.toast !== false && S.d) toast(S.n + ' — ' + (S.d.split(':')[0]));
+  if (opts.toast !== false && S.d) toast(S.n + ': ' + (S.d.split(':')[0]));
 }
 
 /* ---------------- line of sight: fade whatever sits between the camera and the subject ---------------- */
@@ -4617,7 +4617,7 @@ function hudTick(dt) {
   const tot = STEPS.reduce((a, q) => a + q.dur, 0), done = STEPS.slice(0, RUN.i).reduce((a, q) => a + q.dur, 0) + RUN.u * s.dur;
   const mm = t => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
   const set = (id, v) => { const e = $(id); if (e && e.innerHTML !== v) e.innerHTML = v; };
-  set('#kWhere', WHERE[RUN.i] || '—');
+  set('#kWhere', WHERE[RUN.i] || '-');
   set('#kStep', `${(RUN.u * s.dur).toFixed(1)}<small>/${s.dur}s</small>`);
   set('#kZn', `${(450 + 2.5 * Math.sin(performance.now() / 2400)).toFixed(0)}<small>°C</small>`);
   set('#kDry', `${(112 + 4 * Math.sin(performance.now() / 3100)).toFixed(0)}<small>°C</small>`);
@@ -4851,7 +4851,7 @@ let CINE_T = 0;
 function cineShowBar() { document.body.classList.add('cine-ui'); clearTimeout(CINE_T); CINE_T = setTimeout(() => { if (!$('#cine').matches(':hover')) document.body.classList.remove('cine-ui'); }, 2600); }
 function cineTick() {
   if (!CINE.on) return;
-  const cap = $('#cnCap'); if (!CINE.cc || !RUN.on) return; const s = STEPS[RUN.i]; const tx = s ? `${RUN.i + 1} / ${STEPS.length} · ${s.t} — ${s.d}` : '';
+  const cap = $('#cnCap'); if (!CINE.cc || !RUN.on) return; const s = STEPS[RUN.i]; const tx = s ? `${RUN.i + 1} / ${STEPS.length} · ${s.t}: ${s.d}` : '';
   if (cap.textContent !== tx) cap.textContent = tx;
   const k = $('#cnK'); if (k) { const v = `${WHERE[RUN.i] || ''} · zinc 450 °C · ×${RUN.speed}`; if (k.textContent !== v) k.textContent = v; }
 }

@@ -107,7 +107,7 @@ $('j39Send').addEventListener('click',function(){
  if(!n||!p){$('j39Err').hidden=false;return} $('j39Err').hidden=true;
  var a=$('j39Area').value;
  var t=['Job application from the SHIVAS website','Name: '+n,'Phone: '+p,($('j39Mail').value.trim()?'Email: '+$('j39Mail').value.trim():''),($('j39City').value.trim()?'City: '+$('j39City').value.trim():''),'Area: '+a,($('j39Msg').value.trim()?'\n'+$('j39Msg').value.trim():''),'\n(CV attached)'].filter(Boolean).join('\n');
- (window.shivasMail||location.assign.bind(location))('mailto:info@shivastechnology.com?cc=shivas1470@gmail.com&subject='+encodeURIComponent('Job application: '+a+' – '+n)+'&body='+encodeURIComponent(t));
+ (window.shivasMail||location.assign.bind(location))('mailto:info@shivastechnology.com?cc=shivas1470@gmail.com&subject='+encodeURIComponent('Job application: '+a+' · '+n)+'&body='+encodeURIComponent(t));
 });
 })()</script>
 <footer class="foot v31f"><div class="wrap">

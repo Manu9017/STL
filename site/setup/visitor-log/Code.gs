@@ -1,8 +1,8 @@
 /**
- * SHIVAS website visitor log — Google Apps Script for a Google Sheet.
+ * SHIVAS website visitor log - Google Apps Script for a Google Sheet.
  * Receives what the website sends (assets/track.js) and writes it to two tabs:
- *   Visits  – one row per page view: page, device, browser, country, city, network / company, time on page …
- *   Leads   – every enquiry form and "ask our engineer" request, with what that visitor looked at before.
+ *   Visits: one row per page view: page, device, browser, country, city, network / company, time on page …
+ *   Leads: every enquiry form and "ask our engineer" request, with what that visitor looked at before.
  * Also: an email for every lead at once, a report of yesterday's visitors every morning at 8:00 (India time) and of the
  * last 7 days every Monday, sent to DIGEST_TO and to the Google account that set this up. Tabs Pages, Daily and Viewers
  * summarise the Visits tab.
@@ -55,7 +55,7 @@ function doGet() {
           '<p style="color:#566778">Last step: send the web app link (it ends in /exec) to Claude, so the website starts sending visits.</p></div>' });
       return ContentService.createTextOutput('SHIVAS visitor log is set up. A confirmation email is on its way. Copy this page\'s address (it ends in /exec) and send it to Claude.');
     } catch (err) {
-      return ContentService.createTextOutput('Setup did not finish: ' + err.message + ' — open Extensions > Apps Script in the Sheet and run setup once.');
+      return ContentService.createTextOutput('Setup did not finish: ' + err.message + '. Open Extensions > Apps Script in the Sheet and run setup once.');
     }
   }
   return ContentService.createTextOutput('SHIVAS visitor log is running.');
@@ -141,7 +141,7 @@ function alert_(d) {
     (d.message ? '<p><b>Message / calculation</b></p><pre style="white-space:pre-wrap;font:13px/1.45 monospace;background:#f3f5f7;padding:10px">' + esc(d.message) + '</pre>' : '') +
     (d.seen ? '<p><b>What this visitor looked at</b></p><pre style="white-space:pre-wrap;font:13px/1.45 monospace">' + esc(d.seen) + '</pre>' : '') +
     '<p style="color:#566778">Reply directly to the customer. All enquiries are in the Leads tab of the visitor log.</p></div>';
-  MailApp.sendEmail({ to: who.to, cc: who.cc, subject: 'Website enquiry: ' + [d.name, d.company].filter(Boolean).join(' · ') + ' — ' + (d.product || d.source), htmlBody: html, name: 'SHIVAS website' });
+  MailApp.sendEmail({ to: who.to, cc: who.cc, subject: 'Website enquiry: ' + [d.name, d.company].filter(Boolean).join(' · ') + ' · ' + (d.product || d.source), htmlBody: html, name: 'SHIVAS website' });
 }
 // an email when someone opens the site: the first page of each visit, at most VISIT_ALERTS_PER_DAY a day.
 // Without the visitor's OK it can only say the page, device, language and where they came from; city and
@@ -212,8 +212,8 @@ function summary_(from, to) {
         f.n++; f.secs += +r[c.secs] || 0; f.pages[title] = 1;
       }
     } else if (t === 'lead') s.leads.push(r[c.detail]);
-    else if (t === 'calc') s.calcs.push(String(r[c.detail]).split('\n')[0] + (r[c.org] ? ' — ' + r[c.org] : '') + (r[c.city] ? ', ' + r[c.city] : ''));
-    else if (t === 'click' && /^(WhatsApp|Email|Phone|3D viewer)/.test(r[c.detail])) s.clicks.push(r[c.detail] + (r[c.org] ? ' — ' + r[c.org] : '') + (r[c.city] ? ', ' + r[c.city] : ''));
+    else if (t === 'calc') s.calcs.push(String(r[c.detail]).split('\n')[0] + (r[c.org] ? ' · ' + r[c.org] : '') + (r[c.city] ? ', ' + r[c.city] : ''));
+    else if (t === 'click' && /^(WhatsApp|Email|Phone|3D viewer)/.test(r[c.detail])) s.clicks.push(r[c.detail] + (r[c.org] ? ' · ' + r[c.org] : '') + (r[c.city] ? ', ' + r[c.city] : ''));
   });
   return s;
 }

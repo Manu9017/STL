@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: engineering datasheet — 3D model first, then numbered data sections in one column; tables scroll in their own frames */
+/* Layout: engineering datasheet - 3D model first, then numbered data sections in one column; tables scroll in their own frames */
 :root{
   --bg:#eef2f6; --surface:#ffffff; --ink:#10212f; --muted:#526476; --line:#d3dce5;
   --blue:#1F4E79; --teal:#0E7C86; --amber:#D9970F; --amber-soft:#fbf1dc;
@@ -280,7 +280,7 @@ footer{margin-top:40px;padding-top:12px;border-top:1px solid var(--line);font:40
       <tr><td class="k">Above zinc</td><td>Mast, battens, head plate, yoke, rim rest</td><td>IS 2062 E250; eye plate IS 2062 E350 BR</td></tr>
       <tr><td class="k">Finish</td><td>Above kettle rim only</td><td>Heat-resistant silicone paint 600 °C. Nothing below the rim is painted, greased or plated.</td></tr>
       <tr><td class="k">Welding</td><td>All</td><td>E7018 low-hydrogen; full penetration at hanger-to-mast and eye/yoke welds; MPI of lifting-path welds</td></tr>
-      <tr><td class="k">Forbidden below zinc line</td><td>—</td><td>Stainless steel (zinc embrittlement), brass/bronze/copper, aluminium, galvanized or zinc-plated parts, bearings, grease, threaded fasteners</td></tr>
+      <tr><td class="k">Forbidden below zinc line</td><td>-</td><td>Stainless steel (zinc embrittlement), brass/bronze/copper, aluminium, galvanized or zinc-plated parts, bearings, grease, threaded fasteners</td></tr>
     </tbody>
   </table></div>
 </section>
@@ -431,7 +431,7 @@ footer{margin-top:40px;padding-top:12px;border-top:1px solid var(--line);font:40
       <tr><td class="k">Eye plate tear-out</td><td>2 × (75 − 12.5) × 25</td><td class="n">8.5 MPa</td><td class="n">100 MPa</td><td class="ok">OK</td></tr>
       <tr><td class="k">Eye bearing</td><td>shackle pin 22.4 × 25</td><td class="n">47 MPa</td><td class="n">210 MPa</td><td class="ok">OK</td></tr>
       <tr><td class="k">Yoke welds</td><td>8 fillet, 4 runs × 120, throat 2,688 mm²</td><td class="n">9.9 MPa</td><td class="n">95 MPa</td><td class="ok">OK</td></tr>
-      <tr><td class="k">Buoyancy</td><td>≈ 285 kg steel submerged, ρ<sub>Zn</sub> 6.6 vs steel 7.85 t/m³</td><td class="n">45 kg apparent</td><td class="n">—</td><td>Grab lands on rim rest with ≈ 285 kg apparent weight</td></tr>
+      <tr><td class="k">Buoyancy</td><td>≈ 285 kg steel submerged, ρ<sub>Zn</sub> 6.6 vs steel 7.85 t/m³</td><td class="n">45 kg apparent</td><td class="n">-</td><td>Grab lands on rim rest with ≈ 285 kg apparent weight</td></tr>
     </tbody>
   </table></div>
   <div class="warn">Steel loses 84 % of its weight in molten zinc, so a dross grab cannot dig by weight. This design bites by lip travel: lips approach horizontally near closure and scrape the dross layer toward the centre, while the rim rest holds the depth.</div>
@@ -480,7 +480,7 @@ function bom(D){const W=G.W,rho=7850,Hm=D-375+1000,Ldb=Hm-120-797,mast=Hm-950,nb
  ['19','Lip wear bars 20×80, weld-on','Low-Si plate',2,(0.656+0.618)/2*0.02*0.08*rho],
  ['20','Lug pins Ø30 with cross-pins','EN-8',4,0.4],
  ['21','Hoses ½" × 2.5 m, fire sleeve, keyed couplings','Bought-out',2,1.5],
- ['22','Cotters, washers, drawbar guide pads','—',1,5]];
+ ['22','Cotters, washers, drawbar guide pads','-',1,5]];
  let t=0;r.forEach(x=>{x[5]=x[3]*x[4];t+=x[5];});return{Hm,Ldb,mast,rows:r,total:Math.round(t)};}
 function fillTables(D){
  const b=bom(D);let h='';

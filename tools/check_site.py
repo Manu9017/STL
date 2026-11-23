@@ -9,7 +9,7 @@ Checks every HTML page under the site root for:
            invalid JSON-LD, lead e-mails copied to a third party, sitemap entries with no file
   warnings duplicate titles/descriptions, missing or wrong canonical, pages missing from the
            sitemap, <img> without alt or width/height, standards/certificates we must not
-           claim, [bracketed] placeholders, division pages drifting apart
+           claim, [bracketed] placeholders, division pages drifting apart, em dashes anywhere
 Exit code 1 when there are errors.
 """
 import argparse
@@ -229,6 +229,17 @@ def main():
                     warnings.append(f"{rel}:{i}: {why}")
             if THIRD_PARTY_MAIL.search(ln) and "mailto:" not in ln:
                 errors.append(f"{rel}:{i}: third-party lead address in page source")
+
+    # The owner asked for no em dashes anywhere (22 Nov 2026): pages, scripts, styles and the Apps Script.
+    for rel in sorted(files):
+        if rel.endswith((".html", ".js", ".css", ".gs", ".json", ".md", ".txt")) and not rel.startswith("assets/resp/"):
+            try:
+                with open(os.path.join(root, rel), encoding="utf-8") as fh:
+                    n = fh.read().count("\u2014")
+            except (UnicodeDecodeError, OSError):
+                continue
+            if n:
+                warnings.append(f"{rel}: {n} em dash(es); use a colon, comma or brackets instead")
 
     for t, rels in titles.items():
         if len(rels) > 1:

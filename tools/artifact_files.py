@@ -29,7 +29,7 @@ EXCLUDE_TOP = {"README.md", ".nojekyll", "photos", "setup", "CNAME", "_redirects
 EXCLUDE_PREFIX = ("assets/resp/", "assets/og/", "items/r-frp.html", "assets/config.js", "assets/track.js")
 # config.js / track.js: the visitor log only works on the real domain (claude.ai cannot report visitors), so the
 # preview leaves both out and artifact_source() switches off the loader in site.js and v/shivas-bar.js.
-NO_TRACK = {"assets/site.js": "if (ME && !window.SHIVAS_TRACK) {", "v/shivas-bar.js": "if (!window.SHIVAS_TRACK) {"}   # resp: speed copies; r-frp: redirect stub for an old URL — both production only (artifact file limit)
+NO_TRACK = {"assets/site.js": "if (ME && !window.SHIVAS_TRACK) {", "v/shivas-bar.js": "if (!window.SHIVAS_TRACK) {"}   # resp: speed copies; r-frp: redirect stub for an old URL - both production only (artifact file limit)
 BUILD = os.path.join(REPO, "preview", "artifact-build")
 MAX_ARTIFACT_FILES = 511
 MAX_FILES, MAX_BYTES = 250, 60 * 1024 * 1024
