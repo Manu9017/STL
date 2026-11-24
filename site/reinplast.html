@@ -4257,10 +4257,10 @@ function Explorer(root,list,acc){
   root.classList.add('xp');
   root.innerHTML=`<div class="xp-tabs" role="tablist" aria-label="Machines">${list.map((e,i)=>`<button type="button" role="tab" aria-selected="${i===0}" data-i="${i}"><span>${String(i+1).padStart(2,'0')}</span><b>${e.name}</b></button>`).join('')}</div>
   <div class="xp-prog" aria-hidden="true"><i></i><span>Auto tour · tap anything to stay on a machine</span></div>
-  <div class="xp-main"><div class="xp-stage night"><div class="xp-cv"><canvas></canvas></div><div class="xp-key" tabindex="0"></div><div class="xp-rngs"></div>
-   <div class="xp-ctl"><div class="seg" role="group" aria-label="Mode"></div><span class="sp"></span>
-    <button type="button" class="ib" data-a="prev" aria-label="Previous machine">←</button><button type="button" class="ib" data-a="play" aria-label="Pause">❚❚</button><button type="button" class="ib" data-a="next" aria-label="Next machine">→</button><button type="button" class="ib zm" data-a="zoom" aria-label="Zoom drawing">⊕</button><button type="button" class="ib" data-a="full" aria-label="Expand">⤢</button></div>
-   <div class="xp-hud" tabindex="0"></div></div>
+  <div class="xp-main"><div class="xp-stage night"><div class="xp-cv"><canvas></canvas></div><div class="xp-rngs"></div>
+   <div class="xp-ctl"><span class="xp-tr" role="group" aria-label="Animation"><button type="button" class="ib" data-a="prev" aria-label="Previous machine">←</button><button type="button" class="ib" data-a="play" aria-label="Pause">❚❚</button><button type="button" class="ib" data-a="next" aria-label="Next machine">→</button></span><div class="seg" role="group" aria-label="Mode"></div><span class="sp"></span>
+    <button type="button" class="ib xk-b" data-a="key" aria-expanded="${KEY_OPEN()}">Colour key</button><button type="button" class="ib zm" data-a="zoom" aria-label="Zoom drawing">⊕</button><button type="button" class="ib" data-a="full" aria-label="Expand">⤢</button></div>
+   <div class="xp-key"${KEY_OPEN()?'':' hidden'}></div><div class="xp-hud"></div></div>
    <div class="xp-info"><span class="eyebrow xp-code"></span><h3 class="xp-name"></h3><p class="xp-lead"></p><a class="xp-more" hidden></a><span class="eyebrow">Tap a number to find it on the drawing</span><ol class="xp-calls"></ol><dl class="xp-specs"></dl><button type="button" class="card-btn xp-enq">Enquire about this →</button></div></div>`;
   root.querySelector('.xp-key').innerHTML=keyHTML(root.dataset.div);
   const cv=root.querySelector('canvas'),ctx=cv.getContext('2d'),tabs=[...root.querySelectorAll('.xp-tabs button')],seg=root.querySelector('.seg'),hud=root.querySelector('.xp-hud'),callsEl=root.querySelector('.xp-calls'),playB=root.querySelector('[data-a=play]');
@@ -5075,9 +5075,9 @@ function LineXP(root,lines,turnEl){
  const self={i:0,time:0,hl:0,vis:false,dirty:true,paused:RM,opt:{},rv:{},lock:0,lay:[],path:[],lines};
  root.classList.add('xp','ln');
  root.innerHTML=`<div class="xp-tabs" role="tablist" aria-label="Lines">${lines.map((l,i)=>`<button type="button" role="tab" aria-selected="${i===0}" data-i="${i}"><span>${String(i+1).padStart(2,'0')}</span><b>${l.name}</b></button>`).join('')}</div>
- <div class="xp-main"><div class="ln-left"><div class="xp-stage night"><div class="xp-cv"><canvas></canvas></div><div class="xp-key" tabindex="0">${keyHTML('lines')}</div>
-   <div class="xp-ctl"><span class="ln-now" aria-live="polite"></span><button type="button" class="ib" data-a="prev" aria-label="Previous stage">←</button><button type="button" class="ib" data-a="play" aria-label="Pause">❚❚</button><button type="button" class="ib" data-a="next" aria-label="Next stage">→</button></div></div>
-  <div class="ln-set"><div class="ln-opts"></div><div class="xp-rngs"></div><div class="xp-hud" tabindex="0"></div></div></div>
+ <div class="xp-main"><div class="ln-left"><div class="xp-stage night"><div class="xp-cv"><canvas></canvas></div>
+   <div class="xp-ctl"><span class="ln-now" aria-live="polite"></span><span class="xp-tr" role="group" aria-label="Animation"><button type="button" class="ib" data-a="prev" aria-label="Previous stage">←</button><button type="button" class="ib" data-a="play" aria-label="Pause">❚❚</button><button type="button" class="ib" data-a="next" aria-label="Next stage">→</button></span><button type="button" class="ib xk-b" data-a="key" aria-expanded="${KEY_OPEN()}">Colour key</button></div><div class="xp-key"${KEY_OPEN()?'':' hidden'}>${keyHTML('lines')}</div></div>
+  <div class="ln-set"><div class="ln-opts"></div><div class="xp-rngs"></div><div class="xp-hud"></div></div></div>
   <div class="ln-info"><span class="eyebrow xp-code"></span><h3 class="xp-name"></h3><p class="xp-lead"></p><a class="xp-more" hidden></a><ol class="ln-steps"></ol><div class="ln-utils"></div></div></div>`;
  const cv=root.querySelector('canvas'),ctx=cv.getContext('2d'),tabs=[...root.querySelectorAll('.xp-tabs button')],hud=root.querySelector('.xp-hud'),list=root.querySelector('.ln-steps'),nowEl=root.querySelector('.ln-now'),playB=root.querySelector('[data-a=play]');
  let W=0,d=1,scale=1,small=false,io=null;
@@ -5231,6 +5231,9 @@ function keyHTML(div){
   }[div]||[];
   return `<span class="xk-cap">Simplified animated drawing, not to scale</span>`+K.map(k=>`<span><i style="background:${k[0]}"></i>${k[1]}</span>`).join('');
 }
+// the colour key sits under the controls: open on computers, closed on phones until its button opens it
+function KEY_OPEN(){return !matchMedia('(max-width:760px)').matches}
+document.addEventListener('click',e=>{const b=e.target.closest('.xp [data-a=key]');if(!b)return;const k=b.closest('.xp-stage').querySelector('.xp-key');if(!k)return;k.hidden=!k.hidden;b.setAttribute('aria-expanded',String(!k.hidden))});
 (function(){
  // counts on start tiles
  const cnt={wire:[EX_WIRE.length,'machines'],hdg:[EX_HDG.length,'pieces of equipment'],rein:[EX_REIN.length,'pieces of equipment']};
