@@ -1,7 +1,10 @@
 SHIVAS website: notes for the developer (24 Nov 2026)
 
 THE FILE
-SHIVAS-website-final-2026-11-24-v5.zip is the complete new website for www.shivastechnology.com.
+SHIVAS-website-final-2026-11-24-v6.zip is the complete new website for www.shivastechnology.com.
+- It replaces v5. The only difference is setup/visitor-log/Code.gs, a reference copy of the visitor log
+  script (the script itself runs at Google, not on this server). If v5 is already online, replacing that
+  one file is enough, and the site works the same either way.
 - Static files only: HTML, CSS, JavaScript and images. No PHP, no database, no build step.
 - The files are at the top level of the zip, so index.html must end up directly in the web root.
 - 765 files, about 36 MB. The largest file is 11 MB (3D model data).
