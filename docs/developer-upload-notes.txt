@@ -1,0 +1,56 @@
+SHIVAS website: notes for the developer (24 Nov 2026)
+
+THE FILE
+SHIVAS-website-final-2026-11-24-v5.zip is the complete new website for www.shivastechnology.com.
+- Static files only: HTML, CSS, JavaScript and images. No PHP, no database, no build step.
+- The files are at the top level of the zip, so index.html must end up directly in the web root.
+- 765 files, about 36 MB. The largest file is 11 MB (3D model data).
+- On 24 Nov 2026 www.shivastechnology.com still showed the old 2019 site. Please upload this zip there.
+- If an earlier copy of the new site was put anywhere for testing (another address or a test server), please
+  take it down once this one is live: it sends its visits to the same SHIVAS visitor log.
+
+UPLOAD (cPanel or any Apache host)
+1. Back up the current site: in File Manager, compress public_html and download it.
+2. Delete the old site's files from public_html. The old enquiry form also sent every enquiry to an
+   outside address (clquery@indianbusinesshub.com), so none of the old files may stay online.
+3. Upload the zip into public_html, Extract it there, then delete the zip.
+4. Turn on "Show Hidden Files" and check that .htaccess is there. It replaces any old .htaccess and
+   carries the 301 redirects from the old pages, the 404 page, security headers and compression.
+   Keep _redirects and _headers too (they are used by Cloudflare Pages and Netlify, harmless here).
+5. If every page answers "500 Internal Server Error", the host refuses a line in .htaccess:
+   rename it to htaccess-off and tell SHIVAS.
+
+HTTPS AND WWW
+- The main address is https://www.shivastechnology.com/ (the canonical links and the sitemap use it).
+- Make sure the SSL certificate covers both shivastechnology.com and www.shivastechnology.com
+  (cPanel: SSL/TLS Status, AutoSSL).
+- Then send http:// and the bare domain to https://www. with a 301. Either use
+  cPanel > Domains > Force HTTPS Redirect, or switch on the block marked HTTPS AND WWW at the end of
+  .htaccess (delete the first "# " of its eight lines). Use one of the two, not both.
+
+OR: CLOUDFLARE PAGES (free, fast in India; uses _redirects and _headers, ignores .htaccess)
+Workers & Pages > Create > Pages > Upload assets > name the project > drop the zip > Deploy.
+Then Custom domains: add www.shivastechnology.com (and shivastechnology.com) and create the DNS
+records Cloudflare shows. HTTPS and compression are automatic there.
+
+PLEASE DO NOT
+- Edit assets/config.js. It holds the address of the SHIVAS visitor log, which is final.
+- Upload any copy saved from the claude.ai preview link. Only this zip.
+
+CHECKS AFTER UPLOAD
+- https://www.shivastechnology.com/ opens, and http://... and shivastechnology.com end up there too.
+- Old addresses answer 301:
+    /profile.html            to /about.html
+    /galvanizing-kettle.html to /items/kettle.html
+    /enquiry.php             to /contact.html
+  for example:  curl -sI https://www.shivastechnology.com/profile.html
+- A wrong address such as /xyz shows the SHIVAS "page not found" page.
+- https://www.shivastechnology.com/3d-models.html opens, and a 3D model loads.
+- Under the animations on the Galvanizing, Wire drawing and Reinplast pages there is one control row and
+  no colour key.
+- Pages are compressed:
+    curl -sI -H "Accept-Encoding: gzip" https://www.shivastechnology.com/
+  shows "content-encoding: gzip" (or br).
+- Google Search Console: add the property and submit https://www.shivastechnology.com/sitemap.xml
+
+SHIVAS checks the visitor log itself (one enquiry named TEST, which appears in the Leads tab).
