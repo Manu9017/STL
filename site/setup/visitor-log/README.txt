@@ -37,10 +37,15 @@ use). A message confirms it, and from then on that browser is not counted, so th
 not you. Enquiries you send from it still arrive. To count a browser again: open www.shivastechnology.com/?staff=0
 
 Updating the script to a new version (the web app link stays the same)
-1. Open the Sheet "SHIVAS visitor log", then Extensions > Apps Script.
-2. Select everything in Code.gs, delete it, paste the new Code.gs, press Save.
-3. Deploy > Manage deployments > the pencil (Edit) > Version: New version > Deploy.
-   Do NOT choose "New deployment": that would make a new link.
+Do this on a computer (the Apps Script editor does not work in the phone apps).
+1. Open script.google.com, signed in to the Google account that owns the visitor log, and open the
+   visitor log project: the one where Deploy > Manage deployments lists the web app whose link is in
+   assets/config.js (for SHIVAS the deployment ID starts with AKfycbwtq). The SHIVAS project was made at
+   script.google.com, not from the Sheet, so Extensions > Apps Script in the Sheet opens a different,
+   empty project: do not use that one.
+2. Click Code.gs on the left, select everything in it, delete it, paste the new Code.gs, press Save.
+3. Deploy > Manage deployments > select that web app > the pencil (Edit) > Version: New version > Deploy.
+   Do NOT choose "New deployment": that makes a new link the website does not use.
 4. In the function list at the top choose sendTestWeekly, press Run: the report of the last 7 days
    arrives within a minute.
 
