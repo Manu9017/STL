@@ -1,70 +1,41 @@
-SHIVAS website visitor log (Version 5, 24 Nov 2026)
+SHIVAS website visitor log (Version 6, 24 Nov 2026)
 
 What you get
 - A Google Sheet with every page view: page, device (phone / computer, model, browser), country, city,
   network or company name, time on page, where the visitor came from. The first page of each visit is
   marked "Start of visit" in the Detail column.
-- A row and an email for every enquiry and every "Ask our engineer" request from the calculators, at once,
-  with what that visitor looked at before getting in touch.
-- Every Monday at 8:30 (India time) one report of the week before, built to act on:
-    Follow up first: the enquiries, the companies (office networks) that looked at the site, the most
-      interested visitors, and the WhatsApp, phone and email taps.
-    What people looked at: products, calculators with what visitors entered, 3D models, articles.
-    Where visitors came from: Google, LinkedIn, direct or an app, other sites; countries; phone or computer.
-    Worth improving: pages that many people leave within a few seconds.
-  Each number is compared with the week before. It goes to info@shivastechnology.com AND to the Google
-  account you set this up with.
+- ONE email a week, every Monday at 8:30 (India time), about the week before:
+    In the email: what to follow up first (enquiries, companies, the most interested visitors, WhatsApp,
+      phone and email taps), what people looked at (products, calculators with what they entered,
+      3D models, articles), where they came from, countries, devices, and pages people leave quickly.
+      Every number is compared with the week before.
+    Attached: ONE Excel file with everything the log has for that week, tab by tab: Summary, Enquiries,
+      Companies, Visitors who pressed OK, Pages, Calculators, Taps, Came from, Countries, Devices, Days,
+      Every visit. IP addresses are left out of the file (they stay only in the Sheet).
+  It goes to info@shivastechnology.com AND to the Google account you set this up with.
+- An email for each enquiry as it arrives (the enquiry form and "Ask our engineer" in the calculators),
+  with what that visitor looked at first. To have these only in the weekly email instead, add the script
+  property ENQUIRY_EMAILS = off (see Switches).
+- Nothing else: no email per visit, no daily email, no WhatsApp.
 - Tabs in the Sheet: Visits (every page view), Pages (views per page), Daily (views per day),
   Viewers (each visitor who pressed OK), Companies (office networks) and Leads (enquiries).
 - The 3D model pages are counted too. They do not show the bar (it would cover the model's buttons);
   a choice made on the main site applies there, otherwise only the plain page view is recorded.
 
-Not sent any more (Version 4): an email every time someone opens the site, and the report every morning.
-Both can be switched back on without changing the script (see Switches).
+Finding out who a potential client is, the fair way
+- Enquiries: name, phone, email and company, because the person typed them in.
+- Companies: when a visitor who pressed OK browses from an office network, the network names its company.
+  The weekly email and the Companies tab give a Google and a LinkedIn search link for each company, so you
+  can see who it is and reach it through its own public channels. The links search the company, never a person.
+- Interest score (Companies and Visitors tabs): page views + minutes + 5 for each calculator use + 5 for
+  each WhatsApp, phone or email tap + 10 for an enquiry + 3 for a return visit.
+- What it never does: name a person who did not send their details, look up phone numbers, or follow
+  people across other websites. Visitors who press "No thanks" are counted, never located or named.
 
 What it cannot do
-- Report visits to the claude.ai preview link. The preview is built without the visitor log (claude.ai
-  pages are not set up to send data to your Sheet). Only the real site (www.shivastechnology.com) sends.
-- Name a person who has not sent you their details. A name comes only from the enquiry form,
-  the calculators or a WhatsApp message.
-- Name the company of a visitor on home broadband or mobile data (Jio, Airtel ...). Companies are named
-  only when people browse from an office network that is registered to the company.
-- Record location or company for visitors who press "No thanks". Their page views are still counted.
-
-WhatsApp (Version 5): enquiries and short summaries on your own WhatsApp
-What comes, all in one WhatsApp chat (you can mute it):
-- Every enquiry at once: name, phone (tap it to call), company, place, product, message and the pages
-  they looked at first.
-- A company network looking at the site, once a day per company: its name, city and the page.
-- Every morning at 8:00, if anything happened the day before: visits, enquiries, taps, calculator uses,
-  companies and the most viewed products.
-- Every Monday: the week against the week before, with a button that opens this Sheet.
-- Only if you want it: a message for every visit (script property WA_VISITS = on). A visit has no name
-  or number; the website learns a number only when someone types it into the enquiry form or a calculator.
-It goes through WhatsApp's official Business API (Meta), so an enquiry goes from your Sheet to your WhatsApp
-and to nobody else. Meta charges per message (about Rs 0.115 plus GST per utility message in India in 2026);
-with Meta's free test number no payment method is needed. The test number can message up to 5 numbers.
-Set up once, on a computer (about 20 minutes; Claude on your computer can click through it with you):
-1. developers.facebook.com: log in with Facebook (register as a developer if asked).
-2. My Apps > Create app > name "SHIVAS alerts" > use case "Connect with customers through WhatsApp" >
-   choose or create the business portfolio "SHIVAS" > Create.
-3. In the app: WhatsApp > API Setup. Write down the "Phone number ID" and the "WhatsApp Business Account
-   ID". Under "To", add +91 98186 10744 (and up to 4 more people) and enter the code WhatsApp sends.
-   Press "Send message": a "Hello World" arrives in a new chat. Everything will come to that chat.
-4. A token that does not expire: business.facebook.com > Settings > Users > System users > Add (name
-   "shivas-alerts", role Admin) > Assign assets: the app "SHIVAS alerts" and the WhatsApp account, full
-   control > Generate new token > app "SHIVAS alerts", expiry Never, permissions whatsapp_business_messaging
-   and whatsapp_business_management. Copy the token (it is shown once).
-5. Apps Script > Project settings (gear) > Script properties > Add: WA_TOKEN = the token, WA_PHONE_ID = the
-   Phone number ID, WA_WABA_ID = the WhatsApp Business Account ID. (WA_TO only for other numbers than
-   +91 98186 10744, comma-separated.) Never put the token in Code.gs or in a chat: Code.gs is public.
-6. Choose setupWhatsApp in the function list and press Run. It asks Meta to approve the five message
-   formats. Run it again after a few minutes until every line says APPROVED; then a test enquiry arrives.
-7. testWhatsApp sends yesterday's summary at once, and the Execution log shows what Meta answered.
-Switches (script properties, on or off): WA_LEADS, WA_COMPANIES, WA_DAILY and WA_WEEKLY are on, WA_VISITS
-is off, WEEKLY_EMAIL (the Monday email) is on. If WhatsApp stops, the Monday email names the last problem.
-If Meta ever stops the test number, add a spare SIM as the sender (WhatsApp > API Setup > Add phone number)
-and change WA_PHONE_ID; nothing else changes.
+- Report visits to the claude.ai preview link. The preview is built without the visitor log. Only the
+  real site (www.shivastechnology.com) sends.
+- Name the company of a visitor on home broadband or mobile data (Jio, Airtel ...).
 
 Your own visits
 Open www.shivastechnology.com/?staff=1 once on each of your phones and computers (and in each browser you
@@ -79,10 +50,11 @@ Do this on a computer (the Apps Script editor does not work in the phone apps).
    script.google.com, not from the Sheet, so Extensions > Apps Script in the Sheet opens a different,
    empty project: do not use that one.
 2. Click Code.gs on the left, select everything in it, delete it, paste the new Code.gs, press Save.
-3. Deploy > Manage deployments > select that web app > the pencil (Edit) > Version: New version > Deploy.
+3. Choose setupWeekly in the function list at the top, press Run, allow if asked: one trigger remains,
+   every Monday at 8:30.
+4. Choose sendTestWeekly, press Run: the email for the last 7 days arrives, with the Excel file.
+5. Deploy > Manage deployments > select that web app > the pencil (Edit) > Version: New version > Deploy.
    Do NOT choose "New deployment": that makes a new link the website does not use.
-4. In the function list at the top choose sendTestWeekly, press Run: the report of the last 7 days
-   arrives within a minute.
 
 First setup (about 5 minutes, once; already done for SHIVAS)
 1. Sign in to Google with the account that should own the data.
@@ -90,33 +62,22 @@ First setup (about 5 minutes, once; already done for SHIVAS)
 3. In the sheet: Extensions > Apps Script. Delete what is there, paste all of Code.gs, press Save.
 4. Deploy > New deployment > gear icon > Web app.
      Execute as: Me      Who has access: Anyone
-   Press Deploy. Google asks for permissions (the sheet, sending email, running every week):
-   choose your account > Advanced > Go to the project > Allow. Copy the Web app URL (it ends in /exec).
-5. Open that URL once in the same browser. It finishes the setup by itself: the tabs Visits, Leads,
-   Companies, Pages, Daily and Viewers appear, the Monday report is scheduled, and a "SHIVAS visitor
-   log is switched on" email arrives. (Running "setup" from the function list does the same. Made the
-   script at script.google.com instead of from the Sheet? That works too: setup then makes a Sheet called
-   "SHIVAS visitor log".)
-6. Put the /exec URL in assets/config.js between the quotes of sheetUrl:
-     sheetUrl: 'https://script.google.com/macros/s/AKfy..../exec',
+   Press Deploy and allow the permissions Google asks for (the sheet, sending email, running every week).
+   Copy the Web app URL (it ends in /exec).
+5. Open that URL once in the same browser. It finishes the setup by itself: the tabs appear, the Monday
+   email is scheduled, and a "SHIVAS visitor log is switched on" email arrives.
+6. Put the /exec URL in assets/config.js between the quotes of sheetUrl.
 7. Test on the real site (not the claude.ai preview): open it, press OK on the bar at the bottom, fill
-   the enquiry form. Rows appear in Visits and Leads within seconds and the enquiry email arrives.
+   the enquiry form. Rows appear in Visits and Leads within seconds.
 
 Switches (Apps Script > Project settings (gear) > Script properties > Add script property)
-- DAILY_REPORT = on     a report of yesterday every morning at 8:00, as well as the Monday report.
-- VISIT_ALERTS = on     an email every time someone opens the site (at most 25 a day).
-- REPORT_TO = a@x.com, b@y.com     more addresses for the reports, separated by commas.
-Delete a property (or set it to off) to switch it off again. No new version is needed for these.
-If you switch DAILY_REPORT or VISIT_ALERTS on, say so on privacy.html too ("Why, and who sees it").
-
-Options (assets/config.js)
-- ga4: a Google Analytics 4 measurement ID (G-...) for charts of countries, cities and devices.
-- companyScript: the script address from a company-identification service (Dealfront / Leadfeeder,
-  Snitcher, Albacross ...). These name more companies than the visitor log can, for a monthly fee.
+- REPORT_TO = a@x.com, b@y.com     more addresses for the weekly email, separated by commas.
+- ENQUIRY_EMAILS = off              no email for each enquiry; they are then only in the weekly email
+                                    and the Leads tab. Delete the property to have them again.
 
 Changing who gets the emails
-- Top of Code.gs: ALERT_TECH, ALERT_REIN, DIGEST_TO. After changing Code.gs, make a new version
-  (see "Updating the script" above; the URL stays the same).
+- Top of Code.gs: ALERT_TECH, ALERT_REIN (enquiry emails), DIGEST_TO (the weekly email). After changing
+  Code.gs, make a new version (see "Updating the script"; the link stays the same).
 
 Privacy
 - The bar at the bottom of the website asks every visitor once. privacy.html explains what is recorded.

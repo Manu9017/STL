@@ -1,9 +1,10 @@
-/* Runs site/setup/visitor-log/Code.gs in Node against stand-ins for the Google services (a Sheet that keeps its rows,
-   MailApp, properties, triggers) and prints what it would write and email. Nothing leaves this machine.
-     node tools/test_visitor_log.cjs                 (run from the repo root)
-     node tools/test_visitor_log.cjs report.html     (also saves the sample weekly report, to look at in a browser)
-   The sample week uses made-up visitors and companies ("Example ...", "Sample ..."), never real data. */
-const fs = require('fs'), vm = require('vm');
+/* Runs site/setup/visitor-log/Code.gs (Version 6) in Node against stand-ins for the Google services (a Sheet that keeps
+   its rows, MailApp, properties, triggers, Utilities.zip) and checks what it would write and email. The weekly Excel file
+   is really built: its parts are zipped and opened with Python's openpyxl. Nothing leaves this machine.
+     node tools/test_visitor_log.cjs                       (run from the repo root; needs python3 with openpyxl)
+     node tools/test_visitor_log.cjs report.html out.xlsx  (also saves the sample weekly email and its Excel file)
+   The sample fortnight uses made-up visitors and companies ("Example ...", "Sample ..."), never real data. */
+const fs = require('fs'), os = require('os'), path = require('path'), vm = require('vm'), cp = require('child_process');
 const SRC = fs.readFileSync('site/setup/visitor-log/Code.gs', 'utf8');
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const formatDate = (d, tz, f) => {   // India time, the patterns Code.gs uses
@@ -13,57 +14,69 @@ const formatDate = (d, tz, f) => {   // India time, the patterns Code.gs uses
 };
 let failed = 0;
 const check = (ok, what) => { console.log((ok ? '  ok    ' : '  FAIL  ') + what); if (!ok) failed++; };
+const blob = (data, type, name) => ({ data: String(data), type, name, setContentType(t) { this.type = t; return this; }, setName(n) { this.name = n; return this; }, getName() { return this.name; } });
 
 function run(opts = {}) {
-  const mails = [], props = Object.assign({ SHEET: 'SHEET-ID' }, opts.props || {}), tabs = { Visits: [], Leads: [] }, triggers = [], calls = [];
+  const mails = [], props = Object.assign({ SHEET: 'SHEET-ID' }, opts.props || {}), tabs = { Visits: [], Leads: [] };
+  const triggers = (opts.triggers || []).map(h => ({ h })), made = [], deleted = [];
   const sheet = n => ({
-    appendRow: r => tabs[n].push(r.slice()),
-    getLastRow: () => tabs[n].length + 1,
-    getRange: (row, col, nr, nc) => ({
-      getValues: () => tabs[n].slice(row - 2, row - 2 + (nr || 1)).map(r => r.slice(col - 1, col - 1 + (nc || 1))),
-      setValue: v => { tabs[n][row - 2][col - 1] = v; }
-    }),
+    appendRow: r => tabs[n].push(r.slice()), getLastRow: () => tabs[n].length + 1,
+    getRange: (row, col, nr, nc) => ({ getValues: () => tabs[n].slice(row - 2, row - 2 + (nr || 1)).map(r => r.slice(col - 1, col - 1 + (nc || 1))), setValue: v => { tabs[n][row - 2][col - 1] = v; } }),
     deleteRows: (row, k) => tabs[n].splice(row - 2, k)
   });
   const book = { getId: () => 'SHEET-ID', getUrl: () => 'https://docs.google.com/spreadsheets/d/SHEET-ID', getSheetByName: n => tabs[n] ? sheet(n) : null };
+  const trig = h => { const o = { timeBased: () => o, onWeekDay: d => { o.day = d; return o; }, atHour: x => { o.hour = x; return o; }, nearMinute: m => { o.min = m; return o; }, everyDays: () => { o.daily = true; return o; }, inTimezone: z => { o.tz = z; return o; }, create: () => { made.push(Object.assign({ h }, o)); triggers.push({ h }); } }; return o; };
   const ctx = {
-    console, JSON, Date, Math, String, Number, Object, isNaN,
+    console: { log() {} }, JSON, Date, Math, String, Number, Object, isNaN, isFinite, encodeURIComponent,
     LockService: { getScriptLock: () => ({ waitLock() {}, releaseLock() {} }) },
     CacheService: { getScriptCache: () => ({ get: () => null, put() {} }) },
     ContentService: { createTextOutput: t => t },
     PropertiesService: { getScriptProperties: () => ({ getProperty: k => k in props ? props[k] : null, setProperty: (k, v) => { props[k] = v; }, deleteProperty: k => { delete props[k]; }, getKeys: () => Object.keys(props) }) },
     SpreadsheetApp: { getActiveSpreadsheet: () => book, openById: () => book, create: () => book },
-    ScriptApp: { getProjectTriggers: () => [], deleteTrigger() {}, newTrigger: () => ({}), WeekDay: { MONDAY: 1 } },
-    UrlFetchApp: { fetch: (url, o = {}) => { const c = { url, method: o.method || 'get', headers: o.headers || {}, body: o.payload ? JSON.parse(o.payload) : null }; calls.push(c);
-      const a = (opts.meta || (() => ({})))(c), code = a.code || 200; return { getResponseCode: () => code, getContentText: () => JSON.stringify(a.json || (c.method === 'post' ? { messages: [{ id: 'wamid.TEST' }] } : { data: [] })) }; } },
+    ScriptApp: { getProjectTriggers: () => triggers.map(t => ({ getHandlerFunction: () => t.h, _t: t })), deleteTrigger: t => { deleted.push(t._t.h); triggers.splice(triggers.indexOf(t._t), 1); }, newTrigger: trig, WeekDay: { MONDAY: 'MONDAY' } },
     MailApp: { sendEmail: m => { if (opts.mailFails) throw new Error('quota'); mails.push(m); }, getRemainingDailyQuota: () => 100 },
     Session: { getEffectiveUser: () => ({ getEmail: () => 'owner@example.com' }) },
-    Utilities: { formatDate }
+    Utilities: { formatDate, newBlob: blob, zip: (parts, name) => Object.assign(blob('', 'application/zip', name), { parts }) }
   };
   vm.createContext(ctx); vm.runInContext(SRC, ctx);
   const base = { page: 'index.html', title: 'SHIVAS home', device: 'Phone', os: 'Android', browser: 'Chrome', lang: 'en-IN', tz: 'Asia/Kolkata' };
   const post = d => ctx.doPost({ postData: { contents: JSON.stringify(Object.assign({ at: new Date().toISOString() }, base, d)) } });
-  return { ctx, post, mails, tabs, props, calls };
+  return { ctx, post, mails, tabs, props, made, deleted, triggers };
+}
+// open a built .xlsx with openpyxl and return what is in it
+function openXlsx(file, save) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xl-'));
+  file.parts.forEach(b => { const f = path.join(dir, b.name); fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, b.data); });
+  const out = save || path.join(dir, 'out.xlsx');
+  const py = `import sys,os,zipfile,json
+from openpyxl import load_workbook
+d,out=sys.argv[1],sys.argv[2]
+with zipfile.ZipFile(out,'w',zipfile.ZIP_DEFLATED) as z:
+    for root,_,files in os.walk(d):
+        for f in files:
+            p=os.path.join(root,f)
+            if p!=out: z.write(p,os.path.relpath(p,d))
+wb=load_workbook(out)
+print(json.dumps({ws.title:[[c.value for c in r] for r in ws.iter_rows()] for ws in wb.worksheets}))`;
+  return JSON.parse(cp.execFileSync('python3', ['-c', py, dir, out], { encoding: 'utf8' }));
 }
 const C = {}; { const c = {}; vm.createContext(c); vm.runInContext(SRC, c); c.VISIT_COLS.forEach((x, i) => { C[x[0]] = i; }); }
 
 console.log('Posting from the website');
 let t = run();
-check(t.post({ type: 'view', landing: 1 }) === 'ok' && t.mails.length === 0, 'first page of a visit: logged, no email (visit alerts off by default)');
-check(t.tabs.Visits[0][C.detail] === 'Start of visit', 'that row is marked "Start of visit"');
-t.post({ type: 'view' }); check(t.tabs.Visits[1][C.detail] === '', 'second page: not marked');
-t = run({ props: { VISIT_ALERTS: 'on' } });
-t.post({ type: 'view', landing: 1, city: 'Ghaziabad', region: 'Uttar Pradesh', country: 'India', org: 'Example Steel Pvt Ltd', visit: 3 });
-check(t.mails.length === 1 && /someone opened SHIVAS home · Ghaziabad/.test(t.mails[0].subject) && /Example Steel Pvt Ltd \(Company network\)/.test(t.mails[0].htmlBody), 'script property VISIT_ALERTS = on: the visit email comes back');
-for (let i = 0; i < 30; i++) t.post({ type: 'view', landing: 1 });
-check(t.mails.length === 25 && t.tabs.Visits.length === 31, 'and is capped at 25 a day, every visit still logged');
-t = run({ mailFails: true, props: { VISIT_ALERTS: 'on' } });
-check(t.post({ type: 'view', landing: 1 }) === 'ok' && t.tabs.Visits.length === 1, 'a failing MailApp never loses the row');
+check(t.post({ type: 'view', landing: 1 }) === 'ok' && t.mails.length === 0, 'a visit: logged, never an email');
+check(t.tabs.Visits[0][C.detail] === 'Start of visit', 'the first page of a visit is marked "Start of visit"');
+t.post({ type: 'view' }); check(t.tabs.Visits[1][C.detail] === '', 'the second page is not marked');
 t = run(); t.post({ type: 'lead', source: 'Enquiry form', name: 'Test', contact: '+91 0000000000', product: 'Kettle' });
-check(t.mails.length === 1 && t.mails[0].subject === 'Website enquiry: Test (Kettle)' && t.mails[0].to === 'info@shivastechnology.com', 'enquiry: emailed at once, subject "' + (t.mails[0] || {}).subject + '"');
-check(t.tabs.Leads.length === 1 && t.tabs.Visits.length === 1, 'enquiry: a Leads row and a Visits row');
-t = run(); t.post({ type: 'lead', source: 'Enquiry form', name: 'Test', contact: '+91 0000000000', div: 'rein', product: 'SHIVAS Reinplast · Scrubber' });
-check(t.mails[0].to === 'info@shivasasia.com' && t.mails[0].cc === 'shivasasia@gmail.com', 'Reinplast enquiry goes to info@shivasasia.com');
+check(t.mails.length === 1 && t.mails[0].subject === 'Website enquiry: Test (Kettle)' && t.mails[0].to === 'info@shivastechnology.com', 'an enquiry: emailed at once (the default), "' + (t.mails[0] || {}).subject + '"');
+check(t.tabs.Leads.length === 1 && t.tabs.Visits.length === 1, 'an enquiry: a Leads row and a Visits row');
+t = run({ props: { ENQUIRY_EMAILS: 'off' } }); t.post({ type: 'lead', source: 'Enquiry form', name: 'Quiet', contact: '1' });
+check(t.mails.length === 0 && t.tabs.Leads.length === 1, 'ENQUIRY_EMAILS = off: no email, the enquiry is still saved');
+t.ctx.sendTestWeekly(); check(/Enquiry emails are switched off/.test(t.mails[0].htmlBody) && /Quiet/.test(t.mails[0].htmlBody), 'and the weekly email then says enquiries arrive there, and lists it');
+t = run(); t.post({ type: 'lead', source: 'Enquiry form', name: 'Test', contact: '1', div: 'rein', product: 'SHIVAS Reinplast · Scrubber' });
+check(t.mails[0].to === 'info@shivasasia.com' && t.mails[0].cc === 'shivasasia@gmail.com', 'a Reinplast enquiry goes to info@shivasasia.com');
+t = run({ mailFails: true });
+check(t.post({ type: 'lead', source: 'Enquiry form', name: 'Fail', contact: '1' }) === 'ok' && t.tabs.Leads.length === 1 && t.tabs.Visits.length === 1, 'the email failing never loses the enquiry or its Visits row');
 t = run(); t.post({ type: 'view', pv: 'p1', landing: 1 }); t.post({ type: 'view', pv: 'p2' }); t.post({ type: 'time', pv: 'p1', secs: 31, scroll: 64 });
 t.post({ type: 'update', pv: 'p2', visitor: 'V-abc', city: 'Pune', country: 'India', org: 'Reliance Jio Infocomm' });
 check(t.tabs.Visits[0][C.secs] === 31 && t.tabs.Visits[0][C.scroll] === 64 && t.tabs.Visits.length === 2, 'time on page fills the right row, no new row');
@@ -71,16 +84,16 @@ check(t.tabs.Visits[1][C.city] === 'Pune' && t.tabs.Visits[1][C.nettype] === 'Ho
 t = run(); t.post({ type: 'lead', source: 'Enquiry form', name: '=HYPERLINK(1)', contact: '+91 1' });
 check(t.tabs.Leads[0][2] === "'=HYPERLINK(1)" && t.tabs.Leads[0][4] === "'+91 1", 'text that looks like a formula is stored as text');
 
-console.log('\nMorning run (dailyDigest)');
-t = run(); t.post({ type: 'view', landing: 1, at: new Date(Date.now() - 864e5).toISOString() });
-t.ctx.dailyDigest(); check(t.mails.length === 0, 'no morning report by default (it still tidies old rows)');
-t = run({ props: { DAILY_REPORT: 'on' } }); t.post({ type: 'view', landing: 1, at: new Date(Date.now() - 864e5).toISOString() });
-t.ctx.dailyDigest(); check(t.mails.length === 1 && /^SHIVAS website, \d+ \w+: 0 enquiries, 1 visit$/.test(t.mails[0].subject), 'DAILY_REPORT = on: "' + (t.mails[0] || {}).subject + '"');
+console.log('\nSchedule');
+t = run({ triggers: ['dailyDigest', 'weeklyDigest'] }); t.ctx.setupWeekly();
+check(t.deleted.join(',') === 'dailyDigest,weeklyDigest' && t.made.length === 1 && t.made[0].h === 'weeklyDigest' && t.made[0].day === 'MONDAY' && t.made[0].hour === 8 && t.made[0].min === 30 && t.made[0].tz === 'Asia/Kolkata', 'setupWeekly: the old daily and weekly triggers go, one trigger every Monday 8:30 India time');
+t = run(); t.post({ type: 'view', landing: 1, at: new Date(Date.now() - 864e5).toISOString() }); t.ctx.dailyDigest();
+check(t.mails.length === 0, 'an old daily trigger still firing sends nothing');
 t = run(); t.post({ type: 'view', at: new Date(Date.now() - 800 * 864e5).toISOString() }); t.post({ type: 'view' }); t.post({ type: 'view' });
 t.ctx.dailyDigest(); check(t.tabs.Visits.length === 2, 'rows older than 730 days are deleted');
 
 // ---------------- a sample fortnight: made-up visitors, the week before for comparison ----------------
-console.log('\nWeekly report on a sample fortnight (made-up data)');
+console.log('\nThe weekly email on a sample fortnight (made-up data)');
 t = run();
 const title = f => { try { return (fs.readFileSync('site/' + f, 'utf8').match(/<title>([^<]*)/) || [])[1].replace(/\s*\|\s*SHIVAS.*$/, ''); } catch (e) { return f; } };
 const ist = (daysAgo, hh, mm) => new Date(formatDate(Date.now() - daysAgo * 864e5, '', 'yyyy-MM-dd') + 'T' + String(hh).padStart(2, '0') + ':' + String(mm).padStart(2, '0') + ':00+05:30');
@@ -102,9 +115,8 @@ const pc = { device: 'Computer', os: 'Windows', browser: 'Chrome', model: '', sc
 const PLANT = 'Galvanizing plant calculator\nProduct mix: ISMC 150 (40 %); ISA 50 × 50 × 5 (40 %); MS pipe 2" (20 %)\nTarget: 800 t of black steel a month, 26 days, 2 shifts of 8 h\nLargest article: 6.5 × 1.2 × 1.4 m\nFuel: Natural gas\n\nCalculator estimate: kettle 7 × 1.5 × 2.5 m, 1.92 t/h, zinc 68.4 kg/t';
 const WIRE = 'Wire drawing\nInlet wire: 5.5 mm\nFinal wire: 2.5 mm\nCarbon: 0.08 %\nFinal speed: 10 m/s\n\nResults\nPasses: 8\nMotor power: 75 kW';
 const ZLD = 'ETP and ZLD plant\nEffluent: 120 m³/day\nTDS: 18,000 mg/l\nEvaporator: MVR\n\nResults\nRO permeate: 78 m³/day\nEvaporator: 36 m³/day';
-// this week (the 7 days to today)
 visit(ist(5, 10, 12), { dev: phone, ref: 'www.google.com (search)' }, [['index.html', 22], ['items/kettle.html', 95], ['calculator.html', 260, PLANT, 'WhatsApp: https://wa.me/919810920468 · WhatsApp it']]);
-visit(ist(4, 15, 40), { dev: pc, ref: 'https://www.linkedin.com/', ok: { visitor: 'V-sample1', visit: 2, city: 'Ludhiana', region: 'Punjab', country: 'India', org: 'Sample Wires Ltd', ip: '203.0.113.10' } },
+visit(ist(4, 15, 40), { dev: pc, ref: 'https://www.linkedin.com/', ok: { visitor: 'V-sample1', visit: 2, first: '2026-11-02', city: 'Ludhiana', region: 'Punjab', country: 'India', org: 'Sample Wires Ltd', ip: '203.0.113.10' } },
   [['wire-drawing.html', 70], ['items/oto.html', 180], ['items/slm.html', 240], ['calculators/wire-drawing.html', 150, WIRE]]);
 visit(ist(3, 11, 5), { dev: phone, ok: { visitor: 'V-sample2', visit: 3, city: 'Pune', region: 'Maharashtra', country: 'India', org: 'Reliance Jio Infocomm', ip: '203.0.113.20' } },
   [['reinplast.html', 60], ['calculators/etp-zld.html', 320, ZLD], ['contact.html', 90, '', '', { source: 'Enquiry form', name: 'Sample buyer', company: 'Example Chemicals (sample)', contact: '+91 00000 00000', email: 'buyer@example.com', div: 'rein', product: 'SHIVAS Reinplast · ETP and ZLD plant', place: 'Pune', message: 'Sample enquiry: effluent about 120 m3 a day from a dyeing unit, we need ZLD. Please send a proposal and call us.' }]]);
@@ -112,109 +124,56 @@ visit(ist(2, 19, 30), { dev: Object.assign({}, phone, { tz: 'Asia/Dhaka', lang: 
 visit(ist(2, 9, 45), { dev: pc, ok: { visitor: 'V-sample3', visit: 1, city: 'Dubai', country: 'United Arab Emirates', org: 'Example Steel LLC (sample)', ip: '203.0.113.30' }, ref: 'https://www.bing.com/' }, [['galvanizing.html', 50], ['items/furnace.html', 300], ['items/kettle.html', 120, '', 'Phone: +919810280104 · +91 98102 80104']]);
 visit(ist(1, 12, 0), { dev: pc }, [['index.html', 30], ['about.html', 45], ['contact.html', 25, '', 'Email: info@shivastechnology.com · info@shivastechnology.com']]);
 for (let i = 0; i < 6; i++) visit(ist(1 + (i % 4), 8 + i, 10), { dev: phone }, [['careers.html', 4 + i % 3]]);
-visit(ist(0, 9, 20), { dev: phone, ref: 'android-app://com.google.android.gm/' }, [['index.html', 18], ['items/kettle.html', 75]]);
-// the week before
+visit(ist(0, 9, 20), { dev: phone, ref: 'android-app://com.google.android.gm/', utm: 'linkedin / social / kettle-post' }, [['index.html', 18], ['items/kettle.html', 75]]);
 visit(ist(10, 11, 0), { dev: phone, ref: 'www.google.com (search)' }, [['index.html', 20], ['items/kettle.html', 60]]);
 visit(ist(9, 16, 0), { dev: pc }, [['galvanizing.html', 40]]);
 visit(ist(8, 10, 30), { dev: phone }, [['wire-drawing.html', 35], ['contact.html', 30, '', 'WhatsApp: https://wa.me/919810920468 · WhatsApp']]);
 t.mails.length = 0;
 t.ctx.sendTestWeekly();
-const m = t.mails[0] || {}, h = m.htmlBody || '';
-check(t.mails.length === 1 && m.to === 'info@shivastechnology.com,owner@example.com', 'one report to info@ and the owner\'s account');
+const m = t.mails[0] || {}, h = m.htmlBody || '', file = (m.attachments || [])[0];
+check(t.mails.length === 1 && m.to === 'info@shivastechnology.com,owner@example.com', 'ONE email, to info@ and the owner\'s Google account');
 console.log('        subject: ' + m.subject);
-check(/^Test: SHIVAS website, Last 7 days, .*: 1 enquiry, 13 visits, 2 companies$/.test(m.subject), 'subject counts: 1 enquiry, 13 visits (6 short careers visits included), 2 companies');
-check(/Sample buyer/.test(h) && /Example Chemicals \(sample\)/.test(h) && /buyer@example.com/.test(h), 'the enquiry is at the top, with contact details');
-check(/Sample Wires Ltd/.test(h) && /Example Steel LLC \(sample\)/.test(h) && !/Reliance Jio/.test(h.split('Most interested')[0].split('Companies that')[1] || ''), 'companies: office networks only, not Jio');
-check(/Galvanizing plant calculator<\/b>: Product mix: ISMC 150/.test(h) && /ETP and ZLD plant<\/b>: Effluent: 120/.test(h), 'calculators: what visitors entered');
-check(/Google search/.test(h) && /LinkedIn/.test(h) && /Gmail/.test(h) && /Other search engines/.test(h), 'sources: Google, LinkedIn, Gmail app, Bing');
-check(/Bangladesh/.test(h) && /United Arab Emirates/.test(h), 'countries: Bangladesh from the time zone, UAE from the location');
-check(/Worth improving/.test(h) && /Careers/.test(h.split('Worth improving')[1] || ''), 'worth improving: the page people leave within seconds');
-check(/3 the week before/.test(h), 'compared with the week before (3 visits)');
-check(!/—/.test(h) && !/—/.test(m.subject), 'no em dashes');
-check(h.length < 60000, 'size ' + Math.round(h.length / 1024) + ' KB (Gmail clips above 102 KB)');
+check(/^Test: SHIVAS website, Last 7 days, .*: 1 enquiry, 13 visits, 2 companies$/.test(m.subject), 'subject: 1 enquiry, 13 visits, 2 companies');
+check(file && /^SHIVAS website \d{4}-\d\d-\d\d to \d{4}-\d\d-\d\d\.xlsx$/.test(file.name) && file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'ONE file attached: "' + (file || {}).name + '"');
+check(/Sample buyer/.test(h) && /look up the company/.test(h) && /Sample Wires Ltd/.test(h) && /linkedin\.com\/search\/results\/companies\/\?keywords=Sample%20Wires%20Ltd/.test(h) && /google\.com\/search\?q=Sample%20Wires%20Ltd%20Ludhiana/.test(h), 'the email: the enquiry first, and Google and LinkedIn links for each company');
+check(/<b>Attached<\/b>: one Excel file/.test(h) && !/WhatsApp messages|WA_|DAILY_REPORT|VISIT_ALERTS/.test(h), 'the email says what is attached and mentions no WhatsApp or daily options');
+check(!/—/.test(h + m.subject), 'no em dashes');
+const X = openXlsx(file, process.argv[3]);
+const names = Object.keys(X);
+check(names.join(',') === 'Summary,Enquiries,Companies,Visitors who pressed OK,Pages,Calculators,Taps,Came from,Countries,Devices,Days,Every visit', 'Excel opens with openpyxl, 12 tabs: ' + names.join(', '));
+const row = (tab, label) => (X[tab] || []).find(r => r[0] === label) || [];
+check(row('Summary', 'Visits')[1] === 13 && row('Summary', 'Visits')[2] === 3 && row('Summary', 'Enquiries')[1] === 1, 'Summary: visits 13 against 3, enquiries 1');
+const E = X.Enquiries || [];
+check(E.length === 2 && E[1][2] === 'Sample buyer' && E[1][4] === '+91 00000 00000' && /HYPERLINK\("https:\/\/www\.google\.com\/search\?q=Example%20Chemicals/.test(E[1][E[0].length - 1]), 'Enquiries: name, number, the pages seen before, a link to look up the company');
+const F = X.Companies || [];
+check(F.length === 3 && F.slice(1).map(r => r[0]).sort().join('|') === 'Example Steel LLC (sample)|Sample Wires Ltd' && F[1][2] >= F[2][2] && /linkedin/.test(F[1][14]), 'Companies: the two office networks (not Jio), highest interest first, Google and LinkedIn links');
+const P = X['Visitors who pressed OK'] || [];
+check(P.length === 4 && P.some(r => r[0] === 'V-sample2' && r[2] === 'Yes' && r[6] === 'Reliance Jio Infocomm') && P.some(r => r[0] === 'V-sample1' && r[4] === '2026-11-02'), 'Visitors who pressed OK: 3 people, the one who sent the enquiry marked, first seen as a date');
+check((X.Calculators || []).length === 4 && X.Calculators.some(r => /Galvanizing plant calculator/.test(r[1]) && /Target: 800 t/.test(r[2])), 'Calculators: every use with what was entered');
+check((X.Taps || []).length === 4 && X.Taps.some(r => r[1] === 'Phone' && /98102 80104/.test(r[2])), 'Taps: the 3 WhatsApp, phone and email taps of the week, with the number tapped');
+check(row('Came from', 'Google search')[1] === 2 && row('Came from', 'linkedin / social / kettle-post')[1] === 1 && row('Countries', 'Bangladesh')[1] === 1 && row('Countries', 'Dubai, United Arab Emirates')[1] === 1, 'Came from and Countries: sources, campaigns, countries and cities');
+const EV = X['Every visit'] || [];
+check(EV.length > 30 && !EV[0].includes('IP address') && !EV[0].includes('pv') && !JSON.stringify(X).includes('203.0.113'), 'Every visit: every row of the week, and no IP address anywhere in the file');
+check((X.Days || []).length === 7 && (X.Pages || []).some(r => r[1] === 'items/kettle.html' && r[2] === 3), 'Days and Pages: 6 days with visits, views per page (Zinc kettle 3 this week)');
+if (process.argv[2]) { fs.writeFileSync(process.argv[2], '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sample weekly report</title><body style="margin:0;padding:16px;background:#f6f8fb">' + h + '</body>'); console.log('        saved ' + process.argv[2] + (process.argv[3] ? ' and ' + process.argv[3] : '')); }
 t.mails.length = 0; t.ctx.weeklyDigest();
-check(t.mails.length === 1 && /^SHIVAS website, Week of /.test(t.mails[0].subject), 'Monday run: "' + (t.mails[0] || {}).subject + '"');
-// rows from before Version 4 (no "Start of visit" marks): visits found from a gap of 30 minutes
+check(t.mails.length === 1 && /^SHIVAS website, Week of /.test(t.mails[0].subject) && t.mails[0].attachments.length === 1, 'the Monday run: "' + (t.mails[0] || {}).subject + '", with the file');
 const old = run();
 ['10:00', '10:05', '10:20', '14:00'].forEach(hm => old.post({ type: 'view', at: ist(2, +hm.slice(0, 2), +hm.slice(3)).toISOString() }));
 old.ctx.sendTestWeekly(); check(/0 enquiries, 2 visits$/.test(old.mails[0].subject), 'older rows without marks: 4 views at 10:00, 10:05, 10:20, 14:00 = 2 visits');
-const empty = run(); empty.ctx.weeklyDigest();
-check(/0 enquiries, 0 visits/.test(empty.mails[0].subject) && /No visits were recorded this week/.test(empty.mails[0].htmlBody), 'a quiet week still sends a short report');
-if (process.argv[2]) { fs.writeFileSync(process.argv[2], '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sample weekly report</title><body style="margin:0;padding:16px;background:#f6f8fb">' + h + '</body>'); console.log('        saved ' + process.argv[2]); }
+const empty = run(); empty.ctx.weeklyDigest(); const ef = openXlsx(empty.mails[0].attachments[0]);
+check(/0 enquiries, 0 visits/.test(empty.mails[0].subject) && /No visits were recorded this week/.test(empty.mails[0].htmlBody) && Object.keys(ef).length === 12, 'a quiet week: still one short email, with the file (headers only)');
+check(!/UrlFetchApp|DriveApp|graph\.facebook|WA_TOKEN/.test(SRC), 'no WhatsApp and no extra Google permissions in the script (no UrlFetchApp, no DriveApp)');
 
-// ---------------- WhatsApp (Version 5), against a stand-in for Meta: nothing is sent anywhere ----------------
-console.log('\nWhatsApp');
-const WA = { WA_TOKEN: 'TEST-TOKEN', WA_PHONE_ID: '111', WA_WABA_ID: '222' };
-const sends = x => x.calls.filter(c => /\/111\/messages$/.test(c.url)).map(c => c.body);
-const flat = b => b.template.components[0].parameters.map(q => q.text);
-t = run(); t.post({ type: 'lead', source: 'Enquiry form', name: 'Test', contact: '+91 0000000000', product: 'Kettle' });
-check(t.calls.length === 0 && t.mails.length === 1, 'not set up: no WhatsApp call, the enquiry email still goes');
-t = run({ props: WA });
-t.post({ type: 'view', pv: 'a1', landing: 1, title: 'Zinc kettle', page: 'items/kettle.html', visitor: 'V-1' });
-t.post({ type: 'lead', source: 'Enquiry form', name: 'Ramesh\nKumar', company: 'Example Steel', contact: '+91 98765 43210', email: 'r@example.com', place: 'Pune', product: 'Galvanizing · Kettle', message: 'Line one\nline two\twith a tab', visitor: 'V-1' });
-let s1 = sends(t);
-check(s1.length === 1 && s1[0].template.name === 'shivas_enquiry' && s1[0].to === '919818610744' && t.mails.length === 1, 'enquiry: one WhatsApp to +91 98186 10744 and the email');
-check(flat(s1[0]).length === 7 && flat(s1[0]).every(x => x && !/[\n\t]/.test(x)), 'its 7 values are filled and have no line breaks: ' + JSON.stringify(flat(s1[0]).slice(0, 3)));
-check(flat(s1[0])[1] === '+91 98765 43210 · r@example.com' && flat(s1[0])[6] === 'Zinc kettle', 'the number to call, and the page they looked at first');
-check(t.calls[0].headers.Authorization === 'Bearer TEST-TOKEN' && /graph\.facebook\.com\/v\d+\.0\//.test(t.calls[0].url), 'official Cloud API with the token from the script properties');
-t = run({ props: WA });
-t.post({ type: 'view', landing: 1, org: 'Example Steel Pvt Ltd', city: 'Ludhiana', country: 'India', title: 'Zinc kettle' });
-t.post({ type: 'view', org: 'Example Steel Pvt Ltd', city: 'Ludhiana', country: 'India', title: 'Galvanizing furnace' });
-t.post({ type: 'update', pv: 'x', org: 'Example Steel Pvt Ltd', city: 'Ludhiana', country: 'India' });
-t.post({ type: 'view', landing: 1, org: 'Reliance Jio Infocomm', city: 'Pune', country: 'India' });
-s1 = sends(t);
-check(s1.length === 1 && s1[0].template.name === 'shivas_company' && flat(s1[0])[0] === 'Example Steel Pvt Ltd' && flat(s1[0])[1] === 'Ludhiana, India', 'a company network: one message a day per company, none for Jio');
-check(!s1.some(b => b.template.name === 'shivas_visit'), 'no message per visit unless WA_VISITS is on');
-t = run({ props: Object.assign({ WA_VISITS: 'on' }, WA) }); t.post({ type: 'view', landing: 1, title: 'Zinc kettle', ref: 'www.google.com (search)' });
-s1 = sends(t); check(s1.length === 1 && s1[0].template.name === 'shivas_visit' && flat(s1[0]).join('|') === 'Zinc kettle|Google search|Phone, Android|India (from the time zone)', 'WA_VISITS = on: ' + (s1[0] ? flat(s1[0]).join(' | ') : 'none'));
-t = run({ props: Object.assign({ WA_TO: '919818610744, +91 98109 20468; 98102 80104' }, WA) }); t.post({ type: 'lead', source: 'Enquiry form', name: 'Two', contact: '1' });
-check(sends(t).map(b => b.to).join(',') === '919818610744,919810920468,919810280104', 'WA_TO with three numbers, written three ways: all get it');
-t = run({ props: WA, meta: c => (c.method === 'post' ? { code: 400, json: { error: { message: '(#131030) Recipient phone number not in allowed list' } } } : {}) });
-check(t.post({ type: 'lead', source: 'Enquiry form', name: 'Fail', contact: '1' }) === 'ok' && t.tabs.Leads.length === 1 && t.mails.length === 1 && /131030/.test(t.props.WA_LAST || ''), 'Meta refuses: the enquiry is still saved and emailed, the reason is kept in WA_LAST');
-t.ctx.sendTestWeekly(); check(/did not go through/.test(t.mails[1].htmlBody) && /131030/.test(t.mails[1].htmlBody), 'and the Monday email says so at the foot');
-// mornings and Mondays
-t = run({ props: Object.assign({ 'WC_2020-01-01_Old': '1', 'WV_2020-01-01': '3' }, WA) });
-t.post({ type: 'view', landing: 1, at: new Date(Date.now() - 864e5).toISOString(), title: 'Zinc kettle', page: 'items/kettle.html' });
-t.post({ type: 'lead', source: 'Enquiry form', name: 'Asha', company: 'Example Wires', contact: '+91 90000 00001', at: new Date(Date.now() - 864e5).toISOString() });
-t.calls.length = 0; t.mails.length = 0; t.ctx.dailyDigest(); s1 = sends(t);
-check(s1.length === 1 && s1[0].template.name === 'shivas_daily' && t.mails.length === 0, 'every morning: a WhatsApp summary of yesterday, no email');
-check(flat(s1[0])[1] === '1' && flat(s1[0])[2] === '1: Asha, Example Wires, +91 90000 00001' && flat(s1[0])[6] === 'Zinc kettle (1)', 'with the visits, each enquiry with its number, and the most viewed: ' + flat(s1[0]).join(' | '));
-check(!('WC_2020-01-01_Old' in t.props) && !('WV_2020-01-01' in t.props), 'old once-a-day markers are tidied');
-const q = run({ props: WA }); q.ctx.dailyDigest(); check(sends(q).length === 0, 'a morning after a day with no visits: no WhatsApp');
-t.calls.length = 0; t.mails.length = 0; t.ctx.sendTestWeekly(); s1 = sends(t);
-check(t.mails.length === 1 && s1.length === 1 && s1[0].template.name === 'shivas_weekly' && flat(s1[0])[1] === '1' && /\(test\)$/.test(flat(s1[0])[0]), 'Monday: the email and a WhatsApp summary: ' + flat(s1[0]).join(' | '));
-t = run({ props: Object.assign({ WEEKLY_EMAIL: 'off' }, WA) }); t.ctx.weeklyDigest(); check(t.mails.length === 0 && sends(t).length === 1, 'WEEKLY_EMAIL = off: WhatsApp only');
-// the message formats Meta has to approve
-t = run({ props: WA });
-const r1 = t.ctx.setupWhatsApp(), made = t.calls.filter(c => c.method === 'post' && /message_templates$/.test(c.url)).map(c => c.body);
-check(made.length === 5 && made.every(b => b.category === 'UTILITY' && b.language === 'en'), 'setupWhatsApp asks Meta for 5 formats (utility, English)');
-made.forEach(b => {
-  const body = b.components[0], n = (body.text.match(/\{\{\d+\}\}/g) || []).map(x => +x.slice(2, -2)), words = body.text.replace(/\{\{\d+\}\}/g, ' ').split(/\s+/).filter(Boolean).length;
-  check(!/^\s*\{\{/.test(body.text) && !/\}\}\s*$/.test(body.text) && n.every((x, i) => x === i + 1) && body.example.body_text[0].length === n.length && words / n.length >= 4 && body.text.length < 1024,
-    b.name + ': no variable at the start or end, numbered 1 to ' + n.length + ', ' + (words / n.length).toFixed(1) + ' words per variable, ' + body.text.length + ' characters');
-});
-check(made.find(b => b.name === 'shivas_weekly').components[1].buttons[0].url === 'https://docs.google.com/spreadsheets/d/SHEET-ID', 'the weekly one has a button that opens the Sheet');
-check(/PENDING/.test(r1) && /again in a few minutes/.test(r1) && sends(t).length === 0, 'first run: sent for review, nothing sent yet');
-t = run({ props: WA, meta: c => (c.method === 'get' ? { json: { data: [{ name: (c.url.match(/name=(\w+)/) || [])[1], language: 'en', status: 'APPROVED' }] } } : {}) });
-const r2 = t.ctx.setupWhatsApp();
-check(/All five approved/.test(r2) && sends(t).length === 1 && flat(sends(t)[0])[0] === 'TEST from setupWhatsApp', 'once approved: a test enquiry arrives');
-{ const W = t.ctx.WA_TEMPLATES, big = run({ props: WA }), long = 'x'.repeat(400), S = { views: 1, visits: 99999, leads: Array(9).fill({ name: long, company: long, contact: long }), tapN: { WhatsApp: 99, Phone: 99, Email: 99 }, calcN: { [long]: 9, [long + 'b']: 9 }, calcs: Array(9).fill({}), firms: { [long]: { n: 9, where: long }, [long + 'c']: { n: 1, where: long } }, pages: { 'items/a.html': { page: 'items/a.html', title: long, n: 9 } } };
-  big.ctx.waDaily_(S, 'Mon 23 Nov'); big.ctx.waWeekly_(S, S, '16 Nov to 22 Nov'); big.post({ type: 'lead', source: long, name: long, company: long, contact: long, email: long, place: long, product: long, message: long, seen: Array(9).fill('1 Nov 10:00  ' + long).join('\n') });
-  const len = b => { let x = W[b.template.name].text; flat(b).forEach((v, i) => { x = x.replace('{{' + (i + 1) + '}}', v); }); return x.length; };
-  const L = sends(big).map(b => b.template.name + ' ' + len(b)); check(sends(big).length === 3 && sends(big).every(b => len(b) <= 1024), 'longest possible messages stay within 1,024 characters: ' + L.join(', ')); }
-check(t.ctx.waText_('a\nb\tc', 50) === 'a · b · c' && t.ctx.waText_('x'.repeat(80), 20).length === 20 && t.ctx.waText_('', 9) === '-' && t.ctx.waText_("'+91 1", 9) === '+91 1', 'values: line breaks out, length capped, never empty');
-check(!/EAA|token\s*=\s*'[A-Za-z0-9]{20,}/.test(SRC), 'no token written in Code.gs (it is public on the website)');
-
-// doGet: first open runs setup and emails a confirmation; later opens only report "running"
 console.log('\nFirst open of the web app (doGet)');
 (function () {
-  const mails = [], props = {}, created = {}, triggers = [];
+  const mails = [], props = {}, created = {}, made = [];
   const sheet = n => ({ getRange: () => ({ setValues() { return this; }, setFontWeight() { return this; }, setBackground() { return this; }, setFontColor() { return this; }, setNumberFormat() { return this; }, setFormula() { return this; } }),
     setFrozenRows() {}, hideColumns() {}, getLastRow: () => 0 });
   const book = { getId: () => 'SHEET-ID', getUrl: () => 'https://docs.google.com/spreadsheets/d/SHEET-ID', getSheetByName: n => created[n] || null,
     insertSheet: n => (created[n] = sheet(n)), getSheets: () => Object.keys(created), deleteSheet() {} };
-  const trig = { timeBased: () => trig, atHour: () => trig, everyDays: () => trig, inTimezone: () => trig, onWeekDay: () => trig, nearMinute: () => trig, create: () => triggers.push(1) };
-  const ctx = { console, JSON, Date, Math, String, Number, Object, isNaN,
+  const trig = { timeBased: () => trig, atHour: () => trig, everyDays: () => trig, inTimezone: () => trig, onWeekDay: () => trig, nearMinute: () => trig, create: () => made.push(1) };
+  const ctx = { console: { log() {} }, JSON, Date, Math, String, Number, Object, isNaN,
     ContentService: { createTextOutput: t => t },
     PropertiesService: { getScriptProperties: () => ({ getProperty: k => k in props ? props[k] : null, setProperty: (k, v) => { props[k] = v; } }) },
     SpreadsheetApp: { getActiveSpreadsheet: () => book, openById: () => book, create: () => book },
@@ -223,8 +182,8 @@ console.log('\nFirst open of the web app (doGet)');
     Session: { getEffectiveUser: () => ({ getEmail: () => 'owner@example.com' }) },
     Utilities: { formatDate } };
   vm.createContext(ctx); vm.runInContext(SRC, ctx);
-  check(/is set up/.test(ctx.doGet()) && Object.keys(created).join(',') === 'Visits,Leads,Companies,Pages,Daily,Viewers' && triggers.length === 2 && props.SHEET === 'SHEET-ID', 'tabs, 2 triggers and the confirmation email "' + (mails[0] && mails[0].subject) + '"');
-  check(/every Monday at 8:30/.test(mails[0].htmlBody) && !/opens the website/.test(mails[0].htmlBody), 'the confirmation describes the enquiry emails and the Monday report');
+  check(/is set up/.test(ctx.doGet()) && Object.keys(created).join(',') === 'Visits,Leads,Companies,Pages,Daily,Viewers' && made.length === 1 && props.SHEET === 'SHEET-ID', 'tabs, ONE trigger (weekly) and the confirmation email');
+  check(/one email a week, every Monday at 8:30/.test(mails[0].htmlBody), 'the confirmation describes Version 6');
   check(ctx.doGet() === 'SHIVAS visitor log is running.' && mails.length === 1, 'opening it again only says it is running');
 })();
 console.log(failed ? '\n' + failed + ' FAILED' : '\nall passed');

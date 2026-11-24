@@ -1,31 +1,25 @@
 /**
- * SHIVAS website visitor log: Google Apps Script for a Google Sheet. Version 5.1 (24 Nov 2026).
+ * SHIVAS website visitor log: Google Apps Script for a Google Sheet. Version 6 (24 Nov 2026).
  * Receives what the website sends (assets/track.js) and writes it to two tabs:
  *   Visits: one row per page view (page, device, browser, country, city, network or company, time on page ...)
  *   Leads: every enquiry form and "ask our engineer" request, with what that visitor looked at before.
- * Emails: every enquiry at once, and every Monday at 8:30 (India time) a report of the week before: what to follow up,
- * what people looked at, the calculators they used and where they came from. It goes to DIGEST_TO and to the Google
- * account that set this up. An email for every visit and a report every morning are switched off; to switch them on,
- * add VISIT_ALERTS = on or DAILY_REPORT = on in Project settings > Script properties (no new version needed).
- * WhatsApp (once set up, README.txt "WhatsApp"): every enquiry with the name and number, a company network looking
- * at the site, a short summary every morning at 8:00 and every Monday, all to the owner's own WhatsApp (WA_TO).
+ * Email: ONE report a week, every Monday at 8:30 (India time), with ONE Excel file attached that holds everything the
+ * log has for that week (IP addresses left out). Also an email for each enquiry as it arrives, unless the script
+ * property ENQUIRY_EMAILS is off. Nothing else: no email per visit, no daily email, no WhatsApp (owner, 24 Nov 2026).
+ * Recipients: DIGEST_TO, the Google account that set this up, and the script property REPORT_TO (comma-separated).
  * Tabs Pages, Daily, Viewers and Companies summarise the Visits tab.
- * Set up: see README.txt in this folder. Run setup() once, then Deploy > New deployment > Web app.
- * Update: paste this file over the old one, Save, then Deploy > Manage deployments > edit (pencil) >
- * Version: New version > Deploy. The web app link stays the same.
+ * Set up: see README.txt in this folder. Update: paste this file over the old one, Save, run setupWeekly once, then
+ * Deploy > Manage deployments > edit (pencil) > Version: New version > Deploy. The web app link stays the same.
  */
 
 // ---------------- settings ----------------
 var ALERT_TECH = { to: 'info@shivastechnology.com', cc: 'shivastechnology@gmail.com' };   // galvanizing and wire drawing
 var ALERT_REIN = { to: 'info@shivasasia.com', cc: 'shivasasia@gmail.com' };               // SHIVAS Reinplast
-var DIGEST_TO = 'info@shivastechnology.com';                                              // the Monday report
+var DIGEST_TO = 'info@shivastechnology.com';                                              // the Monday report (the only scheduled email)
 var KEEP_DAYS = 730;                                                                      // visit rows older than this are deleted (privacy notice says 24 months)
-var VISIT_ALERTS = false;                                                                  // an email every time someone opens the site (owner, 24 Nov 2026: off)
-var VISIT_ALERTS_PER_DAY = 25;                                                             // if switched on: at most this many a day
-var DAILY_REPORT = false;                                                                  // a report of yesterday every morning at 8:00 (off; the Monday report covers the week)
 var SITE = 'https://www.shivastechnology.com/';
 
-// a script property (Project settings > Script properties) overrides a switch above: on or off
+// a script property (Project settings > Script properties) switches something on or off: ENQUIRY_EMAILS
 function on_(name, fallback) {
   var v = null; try { v = PropertiesService.getScriptProperties().getProperty(name); } catch (e) {}
   return v === null || v === '' ? fallback : /^(on|yes|true|1)$/i.test(String(v).trim());
@@ -63,7 +57,7 @@ function doGet() {
       setup();
       MailApp.sendEmail({ to: recipients_(), subject: 'SHIVAS visitor log is switched on', name: 'SHIVAS website',
         htmlBody: '<div style="font:14px/1.5 Arial,sans-serif;color:#13202c"><p><b>The SHIVAS visitor log is set up.</b></p>' +
-          '<p>From now on you get an email for every enquiry, and every Monday at 8:30 a report of the week. Everything is also in the Google Sheet: ' +
+          '<p>From now on you get one email a week, every Monday at 8:30, with the report and an Excel file of the week, and an email for every enquiry. Everything is also in the Google Sheet: ' +
           '<a href="' + book_().getUrl() + '">open the visitor log</a>.</p>' +
           '<p style="color:#566778">Last step: send the web app link (it ends in /exec) to Claude, so the website starts sending visits.</p></div>' });
       return ContentService.createTextOutput('SHIVAS visitor log is set up. A confirmation email is on its way. Copy this page\'s address (it ends in /exec) and send it to Claude.');
@@ -75,7 +69,7 @@ function doGet() {
 }
 
 function doPost(e) {
-  var lock = LockService.getScriptLock(), later = [];
+  var lock = LockService.getScriptLock();
   try { lock.waitLock(10000); } catch (err) { /* write anyway */ }
   try {
     var d = JSON.parse((e && e.postData && e.postData.contents) || '{}');
@@ -86,24 +80,18 @@ function doPost(e) {
     clean(d);
     d.nettype = netType(d.org);
     var book = book_(), visits = book.getSheetByName('Visits');
-    if (d.type === 'time' || d.type === 'update') { update_(visits, d); if (d.type === 'update') later.push(function () { waCompany_(d); }); return reply('ok'); }
+    if (d.type === 'time' || d.type === 'update') { update_(visits, d); return reply('ok'); }
     if (d.type === 'lead') {
       d.seen = history_(visits, d.visitor);
       book.getSheetByName('Leads').appendRow(row_(LEAD_COLS, d));
       d.detail = d.source + ': ' + [d.name, d.company, d.contact].filter(Boolean).join(' · ');
-      alert_(d);
-      later.push(function () { waLead_(d); });
+      if (on_('ENQUIRY_EMAILS', true)) { try { alert_(d); } catch (err) { /* the enquiry is saved even if the email fails */ } }
     }
     var landing = d.type === 'view' && +d.landing === 1;
     if (landing && !d.detail) d.detail = 'Start of visit';                               // the first page of each visit, so the report can count visits
     visits.appendRow(row_(VISIT_COLS, d));
-    if (landing) { visitAlert_(d); later.push(function () { waVisit_(d); }); }
-    if (d.type === 'view') later.push(function () { waCompany_(d); });
     return reply('ok');
-  } finally {
-    try { lock.releaseLock(); } catch (err) {}
-    later.forEach(function (f) { try { f(); } catch (err) { waNote_(err.message); } });
-  }
+  } finally { try { lock.releaseLock(); } catch (err) {} }
 }
 function reply(t) { return ContentService.createTextOutput(t); }
 function clean(d) {
@@ -162,28 +150,6 @@ function alert_(d) {
     (d.seen ? '<p><b>What this visitor looked at</b></p><pre style="white-space:pre-wrap;font:13px/1.45 monospace">' + esc(d.seen) + '</pre>' : '') +
     '<p style="color:#566778">Reply directly to the customer. All enquiries are in the Leads tab of the visitor log.</p></div>';
   MailApp.sendEmail({ to: who.to, cc: who.cc, subject: 'Website enquiry: ' + [d.name, d.company].filter(Boolean).join(' · ') + ' (' + (d.product || d.source) + ')', htmlBody: html, name: 'SHIVAS website' });
-}
-// if VISIT_ALERTS is on: an email when someone opens the site, the first page of each visit, at most VISIT_ALERTS_PER_DAY
-// a day. Without the visitor's OK it can only say the page, device, language and where they came from. It never names a person.
-function visitAlert_(d) {
-  if (!on_('VISIT_ALERTS', VISIT_ALERTS)) return;
-  try {
-    var props = PropertiesService.getScriptProperties(), key = 'VA_' + day_(0), n = +(props.getProperty(key) || 0);
-    if (n >= VISIT_ALERTS_PER_DAY) return;
-    props.setProperty(key, String(n + 1));
-    var y = 'VA_' + day_(-2); if (props.getProperty(y) !== null) props.deleteProperty(y);   // tidy old counters
-    var line = function (k, v) { return v ? '<tr><td style="padding:3px 12px 3px 0;color:#566778">' + k + '</td><td style="padding:3px 0"><b>' + esc(v) + '</b></td></tr>' : ''; };
-    var where = [d.city, d.region, d.country].filter(Boolean).join(', ');
-    var html = '<div style="font:14px/1.5 Arial,sans-serif;color:#13202c">' +
-      '<p style="font-size:16px"><b>Someone opened the SHIVAS website</b></p><table>' +
-      line('First page', (d.title || '') + (d.page ? ' (' + d.page + ')' : '')) + line('Came from', d.ref || 'Typed the address or a saved link') + line('Campaign', d.utm) +
-      line('Device', [d.device, d.model, d.os, d.browser].filter(Boolean).join(' · ')) + line('Language / time zone', [d.lang, d.tz].filter(Boolean).join(' · ')) +
-      line('Location', where) + line('Network / company', d.org ? d.org + ' (' + d.nettype + ')' : '') + line('Visit no.', d.visit ? String(d.visit) : '') + '</table>' +
-      '<p style="color:#566778">' + (where ? '' : 'Location and company network show only for visitors who pressed OK on the privacy bar. ') +
-      'Alert ' + (n + 1) + ' of ' + VISIT_ALERTS_PER_DAY + ' today; every visit is in the Visits tab and in the Monday report. ' +
-      'To stop these emails, delete the script property VISIT_ALERTS.</p></div>';
-    MailApp.sendEmail({ to: recipients_(), subject: 'SHIVAS website: someone opened ' + (d.title || d.page || 'the site') + (where ? ' · ' + where : ''), htmlBody: html, name: 'SHIVAS website' });
-  } catch (err) { /* an alert must never stop the visit being logged */ }
 }
 function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
@@ -324,7 +290,7 @@ function summary_(data, from, to) {
 }
 
 // the report: what to follow up first, then what people looked at, then where they came from. p is the period before.
-function report_(s, p, label, kind) {
+function report_(s, p, label, kind, withFile) {
   var navy = '#1f4e79', amber = '#e8a317', ink = '#13202c', mut = '#566778', line = '#dde5ee', soft = '#eef3f8';
   var grey = function (t) { return '<span style="color:' + mut + ';font-size:12px">' + t + '</span>'; };
   var none = function (t) { return '<p style="color:' + mut + ';margin:4px 0">' + t + '</p>'; }, per = kind === 'day' ? 'that day' : 'this week';
@@ -372,13 +338,12 @@ function report_(s, p, label, kind) {
   var quick = all.filter(function (x) { return x.n >= 5 && x.timed >= 3 && x.secs / x.timed < 15; }).slice(0, 3);
   var devTotal = Object.keys(s.devices).reduce(function (n, k) { return n + s.devices[k]; }, 0);
   var url = ''; try { url = book_().getUrl(); } catch (e) {}
-  var waLast = ''; try { waLast = PropertiesService.getScriptProperties().getProperty('WA_LAST') || ''; } catch (e) {}
 
   var lead = function (l) {
     var when = ''; try { when = Utilities.formatDate(l.at, 'Asia/Kolkata', 'EEE d MMM, HH:mm'); } catch (e) {}
     var msg = String(l.message || '').replace(/\s+/g, ' ');
     return '<div style="border-left:4px solid ' + amber + ';background:#fff8ea;padding:10px 12px;margin:8px 0">' +
-      '<b>' + esc(l.name || 'No name given') + '</b>' + (l.company ? ' · ' + esc(l.company) : '') + '<br>' +
+      '<b>' + esc(l.name || 'No name given') + '</b>' + (l.company ? ' · ' + esc(l.company) + ' <a href="' + look_(l.company, l.place || l.where) + '" style="color:' + navy + ';font-size:12px">look up the company</a>' : '') + '<br>' +
       (l.product ? esc(l.product) + '<br>' : '') + [l.contact, l.email].filter(Boolean).map(esc).join(' · ') + '<br>' +
       grey(esc([when, l.source, l.place || l.where].filter(Boolean).join(' · '))) +
       (msg ? '<div style="margin-top:6px;font-size:13px">' + esc(msg.slice(0, 220)) + (msg.length > 220 ? ' ...' : '') + '</div>' : '') + '</div>';
@@ -400,12 +365,12 @@ function report_(s, p, label, kind) {
   if (!s.views && !s.leads.length) {
     html += none('No visits were recorded ' + per + '.');
   } else {
-    html += h2('Follow up first', 'Enquiries also reached you by email the moment they were sent.') +
+    html += h2('Follow up first', on_('ENQUIRY_EMAILS', true) ? 'Enquiries also reached you by email the moment they were sent.' : 'Enquiry emails are switched off, so this is where enquiries arrive: please reply soon.') +
       (s.leads.length ? s.leads.map(lead).join('') : none('No enquiries ' + per + '.')) +
       '<p style="margin:16px 0 4px"><b>Companies that looked at the site</b> ' + grey('office networks, named from their internet address') + '</p>' +
       (firms.length ? '<ul style="margin:0;padding-left:18px">' + firms.slice(0, 10).map(function (k) {
         var f = s.firms[k];
-        return '<li style="margin:0 0 8px"><b>' + esc(k) + '</b>' + (f.where ? ' · ' + esc(f.where) : '') + '<br>' + grey(count_(f.n, 'page', 'pages') + (f.secs ? ', ' + mins(f.secs) : '') + ': ' + esc(f.pages.slice(0, 6).map(short).join(' · '))) + '</li>';
+        return '<li style="margin:0 0 8px"><b>' + esc(k) + '</b>' + (f.where ? ' · ' + esc(f.where) : '') + ' · <a href="' + look_(k, f.where) + '" style="color:' + navy + '">Google</a> · <a href="' + lookIn_(k) + '" style="color:' + navy + '">LinkedIn</a><br>' + grey(count_(f.n, 'page', 'pages') + (f.secs ? ', ' + mins(f.secs) : '') + ': ' + esc(f.pages.slice(0, 6).map(short).join(' · '))) + '</li>';
       }).join('') + '</ul>' : none('None identified. Most people browse on mobile data or home broadband, which cannot be named.')) +
       (hot.length ? '<p style="margin:16px 0 4px"><b>Most interested visitors</b> ' + grey('visitors who pressed OK; a name appears only if they send an enquiry') + '</p><ul style="margin:0;padding-left:18px">' + hot.map(function (v) {
         return '<li style="margin:0 0 8px"><b>' + esc(v.where || 'Place unknown') + '</b>' + (v.org ? ' · ' + esc(v.org) + (v.net ? ' (' + esc(v.net) + ')' : '') : '') + '<br>' +
@@ -435,44 +400,38 @@ function report_(s, p, label, kind) {
   }
 
   html += '<div style="margin-top:28px;padding:14px 16px;background:' + soft + ';border-radius:8px;font-size:13px;line-height:1.55">' +
-    (url ? '<a href="' + url + '" style="color:' + navy + ';font-weight:700">Open the visitor log (Google Sheet)</a> ' + grey('every visit, page and enquiry, row by row') + '<br>' : '') +
+    (withFile ? '<b>Attached</b>: one Excel file with everything the visitor log has for this week, tab by tab: summary, enquiries, companies, visitors who pressed OK, pages, calculators, taps, where visitors came from, countries, devices, days and every visit. IP addresses are left out.<br>' : '') +
+    (url ? '<a href="' + url + '" style="color:' + navy + ';font-weight:700">Open the visitor log (Google Sheet)</a> ' + grey('every visit, page and enquiry since the start') + '<br>' : '') +
     '<b>Your own visits</b>: open <a href="' + SITE + '?staff=1" style="color:' + navy + '">' + SITE.replace(/^https:\/\//, '') + '?staff=1</a> once on each of your phones and computers, and they are not counted.<br>' +
-    '<b>More or fewer emails</b>: Apps Script, Project settings, Script properties. DAILY_REPORT = on adds a report every morning, VISIT_ALERTS = on an email for every visit, and REPORT_TO sends this report to more addresses (separated by commas).' +
-    (waOn_() && waLast ? '<br><b>WhatsApp</b>: the last message that did not go through, ' + esc(waLast) + '. Run testWhatsApp in Apps Script to see why.' : '') +
+    '<b>Settings</b>: Apps Script, Project settings, Script properties. REPORT_TO sends this report to more addresses (separated by commas). ENQUIRY_EMAILS = off stops the email for each enquiry; they are then only in this report and in the Leads tab.' +
     '</div></div></div>';
   return html;
 }
 
 function day_(offset) { return Utilities.formatDate(new Date(Date.now() + offset * 864e5), 'Asia/Kolkata', 'yyyy-MM-dd'); }
-function send_(s, p, label, kind, test) {
+function send_(s, p, label, kind, test, file) {
   var nf = Object.keys(s.firms).length;
   var subject = (test ? 'Test: ' : '') + 'SHIVAS website, ' + label + ': ' + count_(s.leads.length, 'enquiry', 'enquiries') + ', ' + count_(s.visits, 'visit', 'visits') + (nf ? ', ' + count_(nf, 'company', 'companies') : '');
-  MailApp.sendEmail({ to: recipients_(), subject: subject, htmlBody: report_(s, p, label, kind), name: 'SHIVAS website' });
+  var mail = { to: recipients_(), subject: subject, htmlBody: report_(s, p, label, kind, !!file), name: 'SHIVAS website' };
+  if (file) mail.attachments = [file];
+  MailApp.sendEmail(mail);
 }
 // the last 7 days and the 7 before them; 'shift' 0 is Monday's report (last Monday to Sunday), 1 includes today
 function weekly_(shift, test) {
-  var to = day_(shift), from = day_(shift - 7), before = day_(shift - 14), data = load_(before);
-  var s = summary_(data, from, to), p = summary_(data, before, from), span = nice_(from) + ' to ' + nice_(day_(shift - 1));
-  if (test || on_('WEEKLY_EMAIL', true)) send_(s, p, (test ? 'Last 7 days, ' : 'Week of ') + span, 'week', test);
-  try { waWeekly_(s, p, span + (test ? ' (test)' : '')); } catch (err) { waNote_(err.message); }
+  var to = day_(shift), from = day_(shift - 7), before = day_(shift - 14), end = day_(shift - 1), data = load_(before);
+  var s = summary_(data, from, to), p = summary_(data, before, from), label = (test ? 'Last 7 days, ' : 'Week of ') + nice_(from) + ' to ' + nice_(end), file = null;
+  try { file = xlsx_(weekSheets_(data, s, p, from, to, label), 'SHIVAS website ' + from + ' to ' + end + '.xlsx'); }
+  catch (err) { console.log('The Excel file could not be made, the email goes without it: ' + err.message); }
+  send_(s, p, label, 'week', test, file);
 }
 
-// every Monday at 8:30: the week before
-function weeklyDigest() { weekly_(0, false); }
+// every Monday at 8:30: the week before (the only scheduled email); also tidies visit rows older than KEEP_DAYS
+function weeklyDigest() { try { weekly_(0, false); } finally { cleanup(); } }
 
-// every morning at 8:00: tidies old rows; a WhatsApp summary of yesterday (WA_DAILY) and, only if DAILY_REPORT is on, an email
-function dailyDigest() {
-  try {
-    var y = day_(-1), mail = on_('DAILY_REPORT', DAILY_REPORT), wa = waOn_() && on_('WA_DAILY', true);
-    if (mail || wa) {
-      var data = load_(day_(-2)), s = summary_(data, y, day_(0));
-      if (mail && (s.views || s.leads.length)) send_(s, summary_(data, day_(-2), y), nice_(y), 'day', false);
-      if (wa) { try { waDaily_(s, Utilities.formatDate(ist_(y), 'Asia/Kolkata', 'EEE d MMM')); } catch (err) { waNote_(err.message); } }
-    }
-  } finally { tidy_(); cleanup(); }
-}
+// an older daily trigger may still call this until setupWeekly has run: it only tidies, it sends nothing
+function dailyDigest() { cleanup(); }
 
-// run by hand (choose it in the function list, press Run): the weekly report for the last 7 days, today included
+// run by hand (choose it in the function list, press Run): the weekly email for the last 7 days, today included, with the Excel file
 function sendTestWeekly() { weekly_(1, true); }
 function sendTestReport() { sendTestWeekly(); }
 
@@ -484,159 +443,160 @@ function cleanup() {
   if (n) sh.deleteRows(2, Math.min(n, last - 2));
 }
 
-// ---------------- WhatsApp (Version 5): messages to the owner's own WhatsApp ----------------
-// Sent through WhatsApp's official Cloud API (Meta), so an enquiry goes from SHIVAS's Sheet to SHIVAS's WhatsApp and to
-// nobody else. Set up once (README.txt, "WhatsApp"): put these in Project settings > Script properties, never in this
-// file (it is public on the website): WA_TOKEN (the access token), WA_PHONE_ID (the sender's phone number ID) and
-// WA_WABA_ID (the WhatsApp Business Account ID); then run setupWhatsApp. WA_TO (script property) changes the numbers.
-// Switches (script properties, on or off): WA_LEADS, WA_COMPANIES, WA_DAILY and WA_WEEKLY are on; WA_VISITS is off.
-// A message that does not go through never stops a visit or an enquiry being written; the last problem is kept in
-// WA_LAST and shown at the foot of the Monday email.
-var WA_TO = '919818610744';                     // +91 98186 10744, the owner (24 Nov 2026); several: comma-separated
-var WA_VERSION = 'v26.0';                       // Graph API version (script property WA_VERSION overrides)
-var WA_LANG = 'en';
-var WA_VISITS_PER_DAY = 25;
-// The message formats (Meta calls them templates and reviews each once). Meta's rules: no {{n}} at the very start or
-// end, enough words around each {{n}}, and the values themselves have no line breaks (waText_ removes them).
-var WA_TEMPLATES = {
-  shivas_enquiry: { text: 'New enquiry from the SHIVAS website.\n\nName: {{1}}\nPhone: {{2}}\nCompany: {{3}}\nPlace: {{4}}\nProduct: {{5}}\nMessage: {{6}}\nLooked at: {{7}}\n\nPlease call or WhatsApp them soon. The full enquiry is also in your email and in the Leads tab of the visitor log.',
-    example: ['Ramesh Kumar', '+91 98765 43210', 'Example Steel Pvt Ltd', 'Pune, India', 'Galvanizing plant', 'We need a galvanizing plant for 800 t a month, please call', 'Zinc kettle, Galvanizing plant calculator'] },
-  shivas_company: { text: 'A company network is looking at the SHIVAS website.\n\nCompany network: {{1}}\nPlace: {{2}}\nPage: {{3}}\n\nThis name comes from their office internet connection, not from a person. If they send an enquiry, their number will come to this chat.',
-    example: ['Example Steel Pvt Ltd', 'Ludhiana, India', 'Zinc kettle'] },
-  shivas_visit: { text: 'Someone opened the SHIVAS website.\n\nFirst page: {{1}}\nCame from: {{2}}\nDevice: {{3}}\nPlace: {{4}}\n\nA visit has no name or number. If they send an enquiry, their number will come to this chat.',
-    example: ['Zinc kettle', 'Google search', 'Phone, Android', 'Pune, India'] },
-  shivas_daily: { text: 'SHIVAS website, yesterday ({{1}}).\n\nVisits: {{2}}\nEnquiries: {{3}}\nWhatsApp, phone and email taps: {{4}}\nCalculator uses: {{5}}\nCompanies: {{6}}\nMost viewed: {{7}}\n\nEach enquiry also came to this chat when it was sent. The full report comes by email every Monday.',
-    example: ['Mon 23 Nov', '12', '1: Ramesh Kumar, Example Steel Pvt Ltd, +91 98765 43210', '3 (WhatsApp 2, phone 1)', '2: Galvanizing plant calculator, Wire drawing', 'Example Steel Pvt Ltd (Ludhiana)', 'Zinc kettle (4), Galvanizing furnace (2)'] },
-  shivas_weekly: { text: 'SHIVAS website, week of {{1}}.\n\nVisits: {{2}}, the week before: {{3}}\nEnquiries: {{4}}\nCompanies: {{5}}\nMost viewed: {{6}}\nCalculators: {{7}}\n\nThe full report with every enquiry, company and page is in your email. Tap the button to open the visitor log.',
-    example: ['16 Nov to 22 Nov', '41', '29', '2: Ramesh Kumar, Example Steel Pvt Ltd, +91 98765 43210; Anil Verma, +91 99999 00000', 'Example Steel Pvt Ltd (Ludhiana)', 'Zinc kettle (9), Galvanizing furnace (5)', 'Galvanizing plant calculator 4, Wire drawing 2'], button: 'Open the visitor log' }
-};
-function waProps_() {
-  var p = PropertiesService.getScriptProperties();
-  return { token: p.getProperty('WA_TOKEN'), phone: p.getProperty('WA_PHONE_ID'), waba: p.getProperty('WA_WABA_ID'), to: p.getProperty('WA_TO') || WA_TO, v: p.getProperty('WA_VERSION') || WA_VERSION };
-}
-function waOn_() { var w = waProps_(); return !!(w.token && w.phone); }
-// a value for a {{n}}: one line, not empty, not too long
-function waText_(v, max) {
-  var s = String(v === null || v === undefined ? '' : v).replace(/^'/, '').replace(/[\r\n\t]+/g, ' · ').replace(/\s{4,}/g, '   ').trim();
-  if (s.length > max) s = s.slice(0, max - 3).trim() + '...';
-  return s || '-';
-}
-function waNote_(what) { try { PropertiesService.getScriptProperties().setProperty('WA_LAST', Utilities.formatDate(new Date(), 'Asia/Kolkata', 'd MMM HH:mm') + ': ' + String(what).slice(0, 300)); } catch (e) {} }
-// one message in a given format to every WA_TO number; returns what Meta answered
-function waSend_(name, values) {
-  var w = waProps_(); if (!w.token || !w.phone) return 'WhatsApp is not set up (script properties WA_TOKEN and WA_PHONE_ID).';
-  var out = [];
-  String(w.to).split(/[,;]+/).map(function (x) { x = x.replace(/\D/g, ''); return /^[6-9]\d{9}$/.test(x) ? '91' + x : x; }).filter(function (x) { return x.length >= 11; }).forEach(function (to) {   // +91 98186 10744, 919818610744 or 9818610744
-    var body = { messaging_product: 'whatsapp', to: to, type: 'template', template: { name: name, language: { code: WA_LANG },
-      components: [{ type: 'body', parameters: values.map(function (x) { return { type: 'text', text: x }; }) }] } };
-    try {
-      var r = UrlFetchApp.fetch('https://graph.facebook.com/' + w.v + '/' + w.phone + '/messages', { method: 'post', contentType: 'application/json',
-        headers: { Authorization: 'Bearer ' + w.token }, payload: JSON.stringify(body), muteHttpExceptions: true });
-      var code = r.getResponseCode(), txt = r.getContentText();
-      if (code >= 300) waNote_(name + ' to ' + to + ': ' + txt.slice(0, 250));
-      out.push(to + ': ' + (code < 300 ? 'sent' : 'not sent, ' + code + ' ' + txt.slice(0, 250)));
-    } catch (err) { waNote_(name + ': ' + err.message); out.push(to + ': not sent, ' + err.message); }
+// ---------------- finding out who a company is, without touching anyone's privacy ----------------
+// A public web search for the company (never for a person). An office network names its company; these links let
+// the owner see who that company is and how to reach it through its own public channels.
+function look_(name, place) { return 'https://www.google.com/search?q=' + encodeURIComponent([name, String(place || '').split(',')[0]].filter(Boolean).join(' ')); }
+function lookIn_(name) { return 'https://www.linkedin.com/search/results/companies/?keywords=' + encodeURIComponent(name); }
+
+// ---------------- the weekly Excel file ----------------
+// Built here as a plain .xlsx (an Office Open XML zip), so it needs no Drive permission and leaves no files behind.
+// sheets: [{ name, rows: [[header ...], [value ...] ...] }]; a value may be text, a number or { link, text }.
+function xlsx_(sheets, fileName) {
+  var x = function (v) { return String(v).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F￾￿]/g, '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
+  var colName = function (n) { var s = ''; n++; while (n) { var m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = (n - 1 - m) / 26; } return s; };
+  var NS = 'http://schemas.openxmlformats.org/', parts = [], types = '', list = '', rels = '';
+  var isLink = function (v) { return v !== null && typeof v === 'object' && typeof v.link === 'string'; };   // not 'v.link': every string has a link() method
+  sheets.forEach(function (sh, i) {
+    var widths = [];
+    sh.rows.forEach(function (r) { r.forEach(function (v, j) { var n = String(isLink(v) ? v.text : (v === null || v === undefined ? '' : v)).length; widths[j] = Math.min(60, Math.max(widths[j] || 9, n + 2)); }); });
+    var body = sh.rows.map(function (r, ri) {
+      return '<row r="' + (ri + 1) + '">' + r.map(function (v, j) {
+        var ref = colName(j) + (ri + 1), st = ri === 0 ? ' s="1"' : '';
+        if (v === null || v === undefined || v === '') return '';
+        if (isLink(v)) return '<c r="' + ref + '" t="str"' + st + '><f>' + x('HYPERLINK("' + v.link + '","' + v.text + '")') + '</f><v>' + x(v.text) + '</v></c>';
+        if (typeof v === 'number' && isFinite(v)) return '<c r="' + ref + '"' + st + '><v>' + v + '</v></c>';
+        return '<c r="' + ref + '" t="inlineStr"' + st + '><is><t xml:space="preserve">' + x(String(v).slice(0, 32000)) + '</t></is></c>';
+      }).join('') + '</row>';
+    }).join('');
+    parts.push(Utilities.newBlob('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="' + NS + 'spreadsheetml/2006/main">' +
+      '<sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>' +
+      (widths.length ? '<cols>' + widths.map(function (w, j) { return '<col min="' + (j + 1) + '" max="' + (j + 1) + '" width="' + w + '" customWidth="1"/>'; }).join('') + '</cols>' : '') +
+      '<sheetData>' + body + '</sheetData></worksheet>', 'application/xml', 'xl/worksheets/sheet' + (i + 1) + '.xml'));
+    types += '<Override PartName="/xl/worksheets/sheet' + (i + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>';
+    list += '<sheet name="' + x(String(sh.name).replace(/[\[\]:*?\/\\]/g, ' ').slice(0, 31)) + '" sheetId="' + (i + 1) + '" r:id="rId' + (i + 1) + '"/>';
+    rels += '<Relationship Id="rId' + (i + 1) + '" Type="' + NS + 'officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (i + 1) + '.xml"/>';
   });
-  return out.join('\n');
-}
-// every enquiry, at once: who, the number to call, and what they looked at first
-function waLead_(d) {
-  if (!waOn_() || !on_('WA_LEADS', true)) return;
-  var seen = String(d.seen || '').split('\n').map(function (x) { return x.replace(/^\d+ \w+ \d\d:\d\d\s+/, '').trim(); }).filter(Boolean);
-  seen = seen.filter(function (x, i) { return seen.lastIndexOf(x) === i; }).slice(-6);
-  waSend_('shivas_enquiry', [waText_(d.name, 60), waText_([d.contact, d.email].filter(Boolean).join(' · '), 70), waText_(d.company, 60),
-    waText_(d.place || [d.city, d.region, d.country].filter(Boolean).join(', '), 60), waText_(d.product || d.source, 80), waText_(d.message, 250), waText_(seen.join(', '), 160)]);
-}
-// a company network (an office connection that names its company) looking at the site: once a day per company
-function waCompany_(d) {
-  if (!waOn_() || !on_('WA_COMPANIES', true) || d.nettype !== 'Company network' || !d.org) return;
-  var p = PropertiesService.getScriptProperties(), key = 'WC_' + day_(0) + '_' + String(d.org).replace(/\W+/g, '_').slice(0, 60);
-  if (p.getProperty(key)) return;
-  p.setProperty(key, '1');
-  waSend_('shivas_company', [waText_(d.org, 80), waText_([d.city, d.region, d.country].filter(Boolean).join(', ') || 'not known', 60), waText_(d.title || d.page, 90)]);
-}
-// a message for every visit: off unless the script property WA_VISITS is on (a visit has no name or number)
-function waVisit_(d) {
-  if (!waOn_() || !on_('WA_VISITS', false)) return;
-  var p = PropertiesService.getScriptProperties(), key = 'WV_' + day_(0), n = +(p.getProperty(key) || 0);
-  if (n >= WA_VISITS_PER_DAY) return;
-  p.setProperty(key, String(n + 1));
-  var place = [d.city, d.country].filter(Boolean).join(', ') || (TZC[d.tz] ? TZC[d.tz] + ' (from the time zone)' : 'not known');
-  waSend_('shivas_visit', [waText_(d.title || d.page, 90), waText_(source_(d.ref, d.utm), 60), waText_([d.device, d.model, d.os].filter(Boolean).join(', '), 60), waText_(place, 60)]);
-}
-// the short lines both summaries use
-function waSum_(s) {
-  var total = (s.tapN.WhatsApp || 0) + (s.tapN.Phone || 0) + (s.tapN.Email || 0);
-  var calcs = Object.keys(s.calcN).sort(function (a, b) { return s.calcN[b] - s.calcN[a]; });
-  var firms = Object.keys(s.firms).sort(function (a, b) { return s.firms[b].n - s.firms[a].n; });
-  var prod = Object.keys(s.pages).map(function (k) { return s.pages[k]; })
-    .filter(function (x) { return /^(items\/(?!index)|galvanizing\.html|wire-drawing\.html|reinplast\.html|pultrusion\.html)/.test(x.page); })
-    .sort(function (a, b) { return b.n - a.n; });
-  return {
-    leads: waText_(s.leads.length ? s.leads.length + ': ' + s.leads.map(function (l) { return [l.name || 'no name', l.company, l.contact].filter(Boolean).join(', '); }).join('; ') : 'none', 240),
-    taps: waText_(total ? total + ' (' + ['WhatsApp', 'Phone', 'Email'].filter(function (k) { return s.tapN[k]; }).map(function (k) { return (k === 'WhatsApp' ? k : k.toLowerCase()) + ' ' + s.tapN[k]; }).join(', ') + ')' : 'none', 80),
-    calcs: waText_(s.calcs.length ? s.calcs.length + ': ' + calcs.slice(0, 3).join(', ') : 'none', 110),
-    calcN: waText_(calcs.length ? calcs.slice(0, 4).map(function (k) { return k + ' ' + s.calcN[k]; }).join(', ') : 'none', 120),
-    firms: waText_(firms.length ? firms.slice(0, 5).map(function (k) { var w = String(s.firms[k].where || '').split(',')[0]; return k + (w ? ' (' + w + ')' : ''); }).join('; ') : 'none identified', 150),
-    top: waText_(prod.length ? prod.slice(0, 3).map(function (x) { return x.title + ' (' + x.n + ')'; }).join(', ') : 'no product pages', 130)
-  };
-}
-// every morning (WA_DAILY): yesterday in seven lines, only when something happened
-function waDaily_(s, label) {
-  if (!waOn_() || !on_('WA_DAILY', true) || (!s.views && !s.leads.length)) return;
-  var w = waSum_(s);
-  waSend_('shivas_daily', [waText_(label, 30), waText_(s.visits, 20), w.leads, w.taps, w.calcs, w.firms, w.top]);
-}
-// every Monday (WA_WEEKLY): the week against the week before, with a button that opens the Sheet
-function waWeekly_(s, p, label) {
-  if (!waOn_() || !on_('WA_WEEKLY', true)) return;
-  var w = waSum_(s);
-  waSend_('shivas_weekly', [waText_(label, 40), waText_(s.visits, 20), waText_(p.visits, 20), w.leads, w.firms, w.top, w.calcN]);
-}
-// old once-a-day markers (WC_ companies, WV_ visit count) are removed every morning
-function tidy_() {
-  try {
-    var p = PropertiesService.getScriptProperties(), today = day_(0);
-    p.getKeys().forEach(function (k) { if (/^(WC|WV)_\d{4}-\d\d-\d\d/.test(k) && k.slice(3, 13) !== today) p.deleteProperty(k); });
-  } catch (e) {}
+  var head = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  parts.unshift(Utilities.newBlob(head + '<Types xmlns="' + NS + 'package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/>' +
+    '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>' + types + '</Types>', 'application/xml', '[Content_Types].xml'));
+  parts.push(Utilities.newBlob(head + '<Relationships xmlns="' + NS + 'package/2006/relationships"><Relationship Id="rId1" Type="' + NS + 'officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>', 'application/xml', '_rels/.rels'));
+  parts.push(Utilities.newBlob(head + '<workbook xmlns="' + NS + 'spreadsheetml/2006/main" xmlns:r="' + NS + 'officeDocument/2006/relationships"><sheets>' + list + '</sheets></workbook>', 'application/xml', 'xl/workbook.xml'));
+  parts.push(Utilities.newBlob(head + '<Relationships xmlns="' + NS + 'package/2006/relationships">' + rels + '<Relationship Id="rIdS" Type="' + NS + 'officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>', 'application/xml', 'xl/_rels/workbook.xml.rels'));
+  parts.push(Utilities.newBlob(head + '<styleSheet xmlns="' + NS + 'spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts>' +
+    '<fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>' +
+    '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs>' +
+    '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>', 'application/xml', 'xl/styles.xml'));
+  return Utilities.zip(parts, fileName).setContentType('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 }
 
-// Run by hand once WA_TOKEN, WA_PHONE_ID and WA_WABA_ID are in the script properties. It asks Meta to approve the five
-// message formats (usually done within minutes). Run it again until every line says APPROVED; then it sends a test
-// enquiry to WA_TO. The Execution log shows every step.
-function setupWhatsApp() {
-  var w = waProps_();
-  if (!w.token || !w.phone || !w.waba) throw new Error('First add the script properties WA_TOKEN, WA_PHONE_ID and WA_WABA_ID (README.txt, "WhatsApp").');
-  var base = 'https://graph.facebook.com/' + w.v + '/' + w.waba + '/message_templates', H = { Authorization: 'Bearer ' + w.token }, lines = [], url = book_().getUrl();
-  Object.keys(WA_TEMPLATES).forEach(function (name) {
-    var t = WA_TEMPLATES[name], have = null;
-    var got = JSON.parse(UrlFetchApp.fetch(base + '?name=' + name + '&fields=name,status,language,rejected_reason', { headers: H, muteHttpExceptions: true }).getContentText() || '{}');
-    if (got.error) { lines.push(name + ': ' + (got.error.error_user_msg || got.error.message)); return; }
-    (got.data || []).forEach(function (x) { if (x.name === name && x.language === WA_LANG) have = x; });
-    if (have) { lines.push(name + ': ' + have.status + (have.rejected_reason && have.rejected_reason !== 'NONE' ? ' (' + have.rejected_reason + ')' : '')); return; }
-    var parts = [{ type: 'BODY', text: t.text, example: { body_text: [t.example] } }];
-    if (t.button) parts.push({ type: 'BUTTONS', buttons: [{ type: 'URL', text: t.button, url: url }] });
-    var r = JSON.parse(UrlFetchApp.fetch(base, { method: 'post', contentType: 'application/json', headers: H, muteHttpExceptions: true,
-      payload: JSON.stringify({ name: name, language: WA_LANG, category: 'UTILITY', components: parts }) }).getContentText() || '{}');
-    lines.push(name + ': ' + (r.error ? 'not created, ' + (r.error.error_user_msg || r.error.message) : (r.status || 'PENDING') + ' (sent to Meta for review)'));
+// Everything the log holds for one week, one tab per subject. Only what visitors sent or agreed to (OK), plus
+// anonymous counts; IP addresses stay in the Sheet and are not copied into the file.
+function weekSheets_(data, s, p, from, to, label) {
+  var t0 = ist_(from), t1 = ist_(to), c = data.c, lc = data.lc, tz = 'Asia/Kolkata';
+  var at = function (v) { var d = new Date(v); return v === '' || isNaN(d) ? '' : Utilities.formatDate(d, tz, 'yyyy-MM-dd HH:mm'); };
+  var cell = function (v) { return v instanceof Date ? Utilities.formatDate(v, tz, 'yyyy-MM-dd') : typeof v === 'number' ? v : txt_(v); };
+  var inWeek = function (v) { var d = new Date(v); return d >= t0 && d < t1; };
+  var V = data.visits.filter(function (r) { return inWeek(r[c.at]); }), L = data.leads.filter(function (r) { return inWeek(r[lc.at]); });
+  var mins = function (secs) { return Math.round((secs || 0) / 6) / 10; };
+  var place = function (r) { return [r[c.city], r[c.region], r[c.country]].filter(Boolean).join(', '); };
+  var g = function (name, where) { return { link: look_(name, where), text: 'Google' }; }, li = function (name) { return { link: lookIn_(name), text: 'LinkedIn' }; };
+  var sorted = function (o) { return Object.keys(o).sort(function (a, b) { return o[b] - o[a] || (a < b ? -1 : 1); }).map(function (k) { return [k, o[k]]; }); };
+  var enquired = {}; L.forEach(function (r) { if (r[lc.visitor]) enquired[String(r[lc.visitor])] = 1; });
+
+  // what each visitor who pressed OK, and each company network, did this week
+  var people = {}, firms = {};
+  V.forEach(function (r) {
+    var vid = String(r[c.visitor] || ''), org = String(r[c.org] || ''), type = r[c.type], title = String(r[c.title] || r[c.page] || '');
+    var tap = type === 'click' && /^(WhatsApp|Phone|Email):/.test(String(r[c.detail] || ''));
+    var add = function (o) {
+      o.first = o.first || at(r[c.at]); o.last = at(r[c.at]);
+      if (type === 'view') { o.views++; o.secs += +r[c.secs] || 0; if (o.pages.indexOf(title) < 0) o.pages.push(title); if (r.entry) o.visits++; }
+      else if (type === 'calc') o.calcs++;
+      else if (tap) o.taps++;
+    };
+    var blank = function () { return { visits: 0, views: 0, secs: 0, pages: [], calcs: 0, taps: 0, first: '', last: '' }; };
+    if (vid) {
+      var v = people[vid] = people[vid] || Object.assign(blank(), { no: 0, since: '', where: '', org: '', net: '', device: '', model: '', os: '', browser: '', from: '' });
+      add(v); v.no = Math.max(v.no, +r[c.visit] || 0); v.since = v.since || cell(r[c.first]);
+      if (place(r)) v.where = place(r);
+      if (org) { v.org = org; v.net = String(r[c.nettype] || ''); }
+      ['device', 'model', 'os', 'browser'].forEach(function (k) { if (r[c[k]]) v[k] = String(r[c[k]]); });
+      if (r.entry && !v.from) v.from = source_(r[c.ref], r[c.utm]);
+    }
+    if (r[c.nettype] === 'Company network' && org) {
+      var f = firms[org] = firms[org] || Object.assign(blank(), { where: '', ids: [] });
+      add(f); if (place(r)) f.where = place(r); if (vid && f.ids.indexOf(vid) < 0) f.ids.push(vid);
+    }
   });
-  if (lines.every(function (l) { return /: APPROVED$/.test(l); })) {
-    lines.push('All five approved. Test enquiry to ' + w.to + ':\n' + waSend_('shivas_enquiry', ['TEST from setupWhatsApp', '+91 00000 00000', 'SHIVAS', 'Ghaziabad, India', 'Test message', 'If this arrived, WhatsApp messages from the visitor log work.', 'nothing, this is a test']));
-  } else {
-    lines.push('Meta is still reviewing some formats (or one was refused: the reason is shown). Run setupWhatsApp again in a few minutes.');
-  }
-  console.log(lines.join('\n'));
-  return lines.join('\n');
-}
-// Run by hand: sends yesterday's summary to WhatsApp now (even on a quiet day) and shows what Meta answered.
-function testWhatsApp() {
-  var y = day_(-1), data = load_(day_(-2)), s = summary_(data, y, day_(0)), w = waSum_(s);
-  var a = waSend_('shivas_daily', [waText_(nice_(y) + ' (test)', 30), waText_(s.visits, 20), w.leads, w.taps, w.calcs, w.firms, w.top]);
-  console.log(a);
-  return a;
+  // interest score: page views + minutes + 5 a calculator use + 5 a WhatsApp, phone or email tap + 10 an enquiry + 3 a return visit
+  var score = function (o, enq, back) { return o.views + Math.round(o.secs / 60) + 5 * o.calcs + 5 * o.taps + (enq ? 10 : 0) + (back ? 3 : 0); };
+  var firmList = Object.keys(firms).map(function (k) { var f = firms[k]; f.name = k; f.score = score(f, f.ids.some(function (id) { return enquired[id]; }), false); return f; }).sort(function (a, b) { return b.score - a.score; });
+  var peopleList = Object.keys(people).map(function (k) { var v = people[k]; v.id = k; v.enq = !!enquired[k]; v.score = score(v, v.enq, v.no >= 2); return v; }).sort(function (a, b) { return b.score - a.score; });
+  var pages = {}, camp = {}, cities = {}, devices = {}, days = {};
+  V.forEach(function (r) {
+    if (r[c.type] !== 'view') return;
+    var k = String(r[c.page] || '').split('#')[0] || 'index.html', pg = pages[k] = pages[k] || { title: String(r[c.title] || k), views: 0, entries: 0, secs: 0, timed: 0, scroll: 0, scrolled: 0, ok: {} };
+    pg.views++; if (+r[c.secs]) { pg.secs += +r[c.secs]; pg.timed++; } if (+r[c.scroll]) { pg.scroll += +r[c.scroll]; pg.scrolled++; } if (r[c.visitor]) pg.ok[r[c.visitor]] = 1;
+    var day = Utilities.formatDate(new Date(r[c.at]), tz, 'yyyy-MM-dd EEE'), dd = days[day] = days[day] || [0, 0]; dd[1]++;
+    if (!r.entry) return;
+    pg.entries++; dd[0]++;
+    if (r[c.utm]) inc_(camp, String(r[c.utm]));
+    if (r[c.city]) inc_(cities, [r[c.city], r[c.country]].filter(Boolean).join(', '));
+    inc_(devices, [r[c.device] || 'Unknown', r[c.os] || '', r[c.browser] || ''].join('|'));
+  });
+  var gap = ['', ''];
+  return [
+    { name: 'Summary', rows: [['SHIVAS website report', label, ''], ['Made', Utilities.formatDate(new Date(), tz, 'yyyy-MM-dd HH:mm') + ' (India time)', ''],
+      ['', 'This week', 'Week before'],
+      ['Visits', s.visits, p.visits], ['Page views', s.views, p.views], ['Visitors who pressed OK', Object.keys(s.ok).length, Object.keys(p.ok).length],
+      ['Enquiries', s.leads.length, p.leads.length], ['Company networks', Object.keys(s.firms).length, Object.keys(p.firms).length], ['Calculator uses', s.calcs.length, p.calcs.length],
+      ['WhatsApp taps', s.tapN.WhatsApp || 0, p.tapN.WhatsApp || 0], ['Phone taps', s.tapN.Phone || 0, p.tapN.Phone || 0], ['Email taps', s.tapN.Email || 0, p.tapN.Email || 0],
+      ['', '', ''], ['How to read this file', '', ''],
+      ['Names, numbers, emails', 'Only from people who typed them into the enquiry form or a calculator (tab Enquiries).', ''],
+      ['Companies', 'Office networks named from their internet address, for visitors who pressed OK. Home and mobile connections (Jio, Airtel ...) cannot be named. The Google and LinkedIn links search the company, never a person.', ''],
+      ['Visitor numbers', 'A random number kept in a browser after its visitor pressed OK. It ties their visits and a later enquiry together. It is not a name.', ''],
+      ['Interest score', 'Page views + minutes + 5 for each calculator use + 5 for each WhatsApp, phone or email tap + 10 for an enquiry + 3 for a return visit. Higher means more interest.', ''],
+      ['Countries', 'From the location of visitors who pressed OK, otherwise from the time zone of their device.', ''],
+      ['Left out', 'IP addresses (they stay only in the visitor log Sheet), and browsers that were opened once with ?staff=1.', '']] },
+    { name: 'Enquiries', rows: [LEAD_COLS.map(function (k) { return k[1]; }).concat(['Look up the company'])].concat(L.map(function (r) {
+      return LEAD_COLS.map(function (k, i) { return k[0] === 'at' ? at(r[i]) : cell(r[i]); }).concat([r[lc.company] ? g(txt_(r[lc.company]), txt_(r[lc.place] || r[lc.city])) : '']);
+    })) },
+    { name: 'Companies', rows: [['Company network', 'Place', 'Interest score', 'Visits', 'Page views', 'Minutes', 'Calculator uses', 'Taps', 'Sent an enquiry', 'Pages viewed', 'Visitor numbers', 'First seen', 'Last seen', 'Look up', 'Look up']].concat(firmList.map(function (f) {
+      return [f.name, f.where, f.score, f.visits, f.views, mins(f.secs), f.calcs, f.taps, f.ids.some(function (id) { return enquired[id]; }) ? 'Yes' : '', f.pages.join(' · '), f.ids.join(', '), f.first, f.last, g(f.name, f.where), li(f.name)];
+    })) },
+    { name: 'Visitors who pressed OK', rows: [['Visitor', 'Interest score', 'Sent an enquiry', 'Visit no.', 'First seen (ever)', 'Place', 'Network / company', 'Network type', 'Device', 'Model', 'OS', 'Browser', 'Came from', 'Visits', 'Page views', 'Minutes', 'Calculator uses', 'Taps', 'Pages viewed', 'First seen this week', 'Last seen']].concat(peopleList.map(function (v) {
+      return [v.id, v.score, v.enq ? 'Yes' : '', v.no || '', v.since, v.where, v.org, v.net, v.device, v.model, v.os, v.browser, v.from, v.visits, v.views, mins(v.secs), v.calcs, v.taps, v.pages.join(' · '), v.first, v.last];
+    })) },
+    { name: 'Pages', rows: [['Page', 'Address', 'Views', 'Visits that started here', 'Average seconds', 'Average scrolled %', 'Visitors who pressed OK']].concat(Object.keys(pages).map(function (k) { return [k, pages[k]]; }).sort(function (a, b) { return b[1].views - a[1].views; }).map(function (e) {
+      var pg = e[1]; return [pg.title, e[0], pg.views, pg.entries, pg.timed ? Math.round(pg.secs / pg.timed) : '', pg.scrolled ? Math.round(pg.scroll / pg.scrolled) : '', Object.keys(pg.ok).length];
+    })) },
+    { name: 'Calculators', rows: [['Time', 'Calculator', 'What was entered and the results', 'Page', 'Visitor', 'Network / company', 'Place']].concat(V.filter(function (r) { return r[c.type] === 'calc'; }).map(function (r) {
+      return [at(r[c.at]), calcLine_(r[c.detail]).name, txt_(r[c.detail]), txt_(r[c.title]), txt_(r[c.visitor]), txt_(r[c.org]), place(r)];
+    })) },
+    { name: 'Taps', rows: [['Time', 'Tapped', 'Number, address or link', 'Page', 'Visitor', 'Network / company', 'Place']].concat(V.filter(function (r) { return r[c.type] === 'click'; }).map(function (r) {
+      var d = txt_(r[c.detail]), kind = d.split(':')[0]; return [at(r[c.at]), kind, d.slice(kind.length + 1).trim(), txt_(r[c.title]), txt_(r[c.visitor]), txt_(r[c.org]), place(r)];
+    })) },
+    { name: 'Came from', rows: [['Came from', 'Visits']].concat(sorted(s.sources)).concat([gap, ['Campaign (utm tags)', 'Visits']]).concat(sorted(camp)) },
+    { name: 'Countries', rows: [['Country', 'Visits']].concat(sorted(s.countries)).concat([gap, ['City (visitors who pressed OK)', 'Visits']]).concat(sorted(cities)) },
+    { name: 'Devices', rows: [['Device', 'OS', 'Browser', 'Visits']].concat(sorted(devices).map(function (e) { return e[0].split('|').concat([e[1]]); })) },
+    { name: 'Days', rows: [['Day', 'Visits', 'Page views']].concat(Object.keys(days).sort().map(function (k) { return [k, days[k][0], days[k][1]]; })) },
+    { name: 'Every visit', rows: (function () {
+      var keep = VISIT_COLS.filter(function (k) { return k[0] !== 'ip' && k[0] !== 'pv'; });
+      return [keep.map(function (k) { return k[1]; })].concat(V.map(function (r) { return keep.map(function (k) { return k[0] === 'at' ? at(r[c.at]) : cell(r[c[k[0]]]); }); }));
+    })() }
+  ];
 }
 
 // ---------------- run once ----------------
+// after pasting a new version: one trigger, every Monday at 8:30 India time (it removes the old daily one)
+function setupWeekly() {
+  ScriptApp.getProjectTriggers().forEach(function (t) { if (/^(dailyDigest|weeklyDigest)$/.test(t.getHandlerFunction())) ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger('weeklyDigest').timeBased().onWeekDay(ScriptApp.WeekDay.MONDAY).atHour(8).nearMinute(30).inTimezone('Asia/Kolkata').create();
+  var now = 'Triggers now: ' + ScriptApp.getProjectTriggers().map(function (t) { return t.getHandlerFunction(); }).join(', ');
+  console.log(now);
+  return now;
+}
 function setup() {
   var book = book_();
   PropertiesService.getScriptProperties().setProperty('SHEET', book.getId());
@@ -658,8 +618,6 @@ function setup() {
   tab('Daily', q('select toDate(A), count(' + L('type') + ') where ' + L('type') + " = 'view' group by toDate(A) order by toDate(A) desc label toDate(A) 'Day', count(" + L('type') + ") 'Page views'")).getRange('A:A').setNumberFormat('ddd dd mmm yyyy');
   tab('Viewers', q('select ' + L('visitor') + ', max(A), count(' + L('type') + '), ' + L('org') + ', ' + L('city') + ', ' + L('country') + ', ' + L('device') + ' where ' + L('type') + " = 'view' and " + L('visitor') + " <> '' group by " + L('visitor') + ', ' + L('org') + ', ' + L('city') + ', ' + L('country') + ', ' + L('device') + ' order by max(A) desc label ' + L('visitor') + " 'Visitor', max(A) 'Last seen', count(" + L('type') + ") 'Page views', " + L('org') + " 'Network / company', " + L('city') + " 'City', " + L('country') + " 'Country', " + L('device') + " 'Device'"));
   var old = book.getSheetByName('Sheet1'); if (old && old.getLastRow() === 0 && book.getSheets().length > 1) book.deleteSheet(old);
-  ScriptApp.getProjectTriggers().forEach(function (t) { if (/^(dailyDigest|weeklyDigest)$/.test(t.getHandlerFunction())) ScriptApp.deleteTrigger(t); });
-  ScriptApp.newTrigger('dailyDigest').timeBased().atHour(8).everyDays(1).inTimezone('Asia/Kolkata').create();
-  ScriptApp.newTrigger('weeklyDigest').timeBased().onWeekDay(ScriptApp.WeekDay.MONDAY).atHour(8).nearMinute(30).inTimezone('Asia/Kolkata').create();
+  setupWeekly();
   MailApp.getRemainingDailyQuota();   // asks for the email permission now, not on the first enquiry
 }
