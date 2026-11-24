@@ -3,21 +3,20 @@
  * Receives what the website sends (assets/track.js) and writes it to two tabs:
  *   Visits: one row per page view (page, device, browser, country, city, network or company, time on page ...)
  *   Leads: every enquiry form and "ask our engineer" request, with what that visitor looked at before.
- * Email: a report every Monday and Thursday at 8:30 (India time), with ONE Excel file attached that holds everything the
- * log has for the days since the last report (Thursday: Monday to Wednesday; Monday: Thursday to Sunday; IP addresses
- * left out). Also an email for each enquiry as it arrives, unless the script property ENQUIRY_EMAILS is off (the owner
- * set it off on 24 Nov 2026). Nothing else: no email per visit, no daily email, no WhatsApp (owner, 24 Nov 2026).
+ * Email: a report twice a week at 8:30 (India time), each with ONE Excel file attached that holds everything the
+ * log has for its days (IP addresses left out): Monday covers Thursday to Sunday, Thursday covers Monday to Wednesday.
+ * Also an email for each enquiry as it arrives, unless the script property ENQUIRY_EMAILS is off (the owner chose off).
+ * Nothing else: no email per visit, no daily email, no WhatsApp (owner, 24 Nov 2026).
  * Recipients: DIGEST_TO, the Google account that set this up, and the script property REPORT_TO (comma-separated).
  * Tabs Pages, Daily, Viewers and Companies summarise the Visits tab.
- * Set up: see README.txt in this folder. Update: paste this file over the old one, Save, run setupWeekly once (two
- * triggers, Monday and Thursday), then
+ * Set up: see README.txt in this folder. Update: paste this file over the old one, Save, run setupWeekly once, then
  * Deploy > Manage deployments > edit (pencil) > Version: New version > Deploy. The web app link stays the same.
  */
 
 // ---------------- settings ----------------
 var ALERT_TECH = { to: 'info@shivastechnology.com', cc: 'shivastechnology@gmail.com' };   // galvanizing and wire drawing
 var ALERT_REIN = { to: 'info@shivasasia.com', cc: 'shivasasia@gmail.com' };               // SHIVAS Reinplast
-var DIGEST_TO = 'info@shivastechnology.com';                                              // the Monday report (the only scheduled email)
+var DIGEST_TO = 'info@shivastechnology.com';                                              // the Monday and Thursday reports (the only scheduled emails)
 var KEEP_DAYS = 730;                                                                      // visit rows older than this are deleted (privacy notice says 24 months)
 var SITE = 'https://www.shivastechnology.com/';
 
@@ -59,7 +58,7 @@ function doGet() {
       setup();
       MailApp.sendEmail({ to: recipients_(), subject: 'SHIVAS visitor log is switched on', name: 'SHIVAS website',
         htmlBody: '<div style="font:14px/1.5 Arial,sans-serif;color:#13202c"><p><b>The SHIVAS visitor log is set up.</b></p>' +
-          '<p>From now on you get an email every Monday and Thursday at 8:30 with the report and an Excel file of the days since the last one, and an email for every enquiry. Everything is also in the Google Sheet: ' +
+          '<p>From now on you get a report every Monday and Thursday at 8:30, each with an Excel file of its days. Everything is also in the Google Sheet: ' +
           '<a href="' + book_().getUrl() + '">open the visitor log</a>.</p>' +
           '<p style="color:#566778">Last step: send the web app link (it ends in /exec) to Claude, so the website starts sending visits.</p></div>' });
       return ContentService.createTextOutput('SHIVAS visitor log is set up. A confirmation email is on its way. Copy this page\'s address (it ends in /exec) and send it to Claude.');
@@ -295,7 +294,7 @@ function summary_(data, from, to) {
 function report_(s, p, label, kind, withFile) {
   var navy = '#1f4e79', amber = '#e8a317', ink = '#13202c', mut = '#566778', line = '#dde5ee', soft = '#eef3f8';
   var grey = function (t) { return '<span style="color:' + mut + ';font-size:12px">' + t + '</span>'; };
-  var none = function (t) { return '<p style="color:' + mut + ';margin:4px 0">' + t + '</p>'; }, per = kind === 'day' ? 'that day' : kind === 'period' ? 'in these days' : 'this week';
+  var none = function (t) { return '<p style="color:' + mut + ';margin:4px 0">' + t + '</p>'; }, per = kind === 'day' ? 'that day' : kind === 'week' ? 'this week' : 'in these days';
   var h2 = function (t, sub) { return '<h2 style="font:700 17px/1.3 Arial,sans-serif;margin:30px 0 4px;color:' + navy + '">' + t + '</h2>' + (sub ? '<p style="margin:0 0 10px;color:' + mut + ';font-size:13px">' + sub + '</p>' : ''); };
   var mins = function (secs) { secs = Math.round(secs || 0); return !secs ? '' : secs < 90 ? secs + ' s' : Math.round(secs / 60) + ' min'; };
   var keys = function (o) { return Object.keys(o).sort(function (a, b) { return o[b] - o[a] || (a < b ? -1 : 1); }); };
@@ -359,7 +358,7 @@ function report_(s, p, label, kind, withFile) {
     '<div style="background:' + navy + ';color:#ffffff;padding:16px 18px;border-radius:10px 10px 0 0"><div style="font-size:12px;letter-spacing:.06em;text-transform:uppercase;opacity:.85">SHIVAS website report</div>' +
     '<div style="font:700 20px/1.3 Arial,sans-serif;margin-top:2px">' + esc(label) + '</div></div>' +
     '<div style="border:1px solid ' + line + ';border-top:0;padding:14px 18px 18px;border-radius:0 0 10px 10px">' +
-    '<p style="font-size:15px;margin:0 0 12px">' + (kind === 'day' ? 'Yesterday' : kind === 'period' ? 'Since the last report' : 'This week') + ': ' + esc(said.join(', ')) + '.</p>' +
+    '<p style="font-size:15px;margin:0 0 12px">' + (kind === 'day' ? 'Yesterday' : kind === 'week' ? 'This week' : 'Since the last report') + ': ' + esc(said.join(', ')) + '.</p>' +
     '<table role="presentation" style="border-collapse:collapse;width:100%"><tr>' +
     tile(s.leads.length, 'enquiries', p ? p.leads.length : 0) + tile(s.visits, 'visits', p ? p.visits : 0) + '</tr><tr>' +
     tile(taps(s), 'WhatsApp, phone and email taps', p ? taps(p) : 0) + tile(s.calcs.length, 'calculator uses', p ? p.calcs.length : 0) + '</tr></table>';
@@ -402,7 +401,7 @@ function report_(s, p, label, kind, withFile) {
   }
 
   html += '<div style="margin-top:28px;padding:14px 16px;background:' + soft + ';border-radius:8px;font-size:13px;line-height:1.55">' +
-    (withFile ? '<b>Attached</b>: one Excel file with everything the visitor log has for ' + (kind === 'period' ? 'these days' : 'this week') + ', tab by tab: summary, enquiries, companies, visitors who pressed OK, pages, calculators, taps, where visitors came from, countries, devices, days and every visit. IP addresses are left out.<br>' : '') +
+    (withFile ? '<b>Attached</b>: one Excel file with everything the visitor log has for these days, tab by tab: summary, enquiries, companies, visitors who pressed OK, pages, calculators, taps, where visitors came from, countries, devices, days and every visit. IP addresses are left out.<br>' : '') +
     (url ? '<a href="' + url + '" style="color:' + navy + ';font-weight:700">Open the visitor log (Google Sheet)</a> ' + grey('every visit, page and enquiry since the start') + '<br>' : '') +
     '<b>Your own visits</b>: open <a href="' + SITE + '?staff=1" style="color:' + navy + '">' + SITE.replace(/^https:\/\//, '') + '?staff=1</a> once on each of your phones and computers, and they are not counted.<br>' +
     '<b>Settings</b>: Apps Script, Project settings, Script properties. REPORT_TO sends this report to more addresses (separated by commas). ENQUIRY_EMAILS = off stops the email for each enquiry; they are then only in this report and in the Leads tab.' +
@@ -427,14 +426,17 @@ function digest_(span, shift, test) {
   send_(s, p, label, 'period', test, file);
 }
 
-// every Monday and Thursday at 8:30 (the only scheduled emails): Thursday ('u' = 4) covers Monday to Wednesday,
-// Monday covers Thursday to Sunday, so every day is in exactly one report; also tidies visit rows older than KEEP_DAYS
-function weeklyDigest() { try { digest_(Utilities.formatDate(new Date(), 'Asia/Kolkata', 'u') === '4' ? 3 : 4, 0, false); } finally { cleanup(); } }
+// every Monday and Thursday at 8:30 (the only scheduled emails): Monday covers Thursday to Sunday, Thursday covers
+// Monday to Wednesday, so every day is in exactly one report. Also tidies visit rows older than KEEP_DAYS.
+function weeklyDigest() {
+  try { var wd = +Utilities.formatDate(new Date(), 'Asia/Kolkata', 'u'); digest_(wd === 4 ? 3 : 4, 0, false); }   // u: 1 Monday ... 7 Sunday
+  finally { cleanup(); }
+}
 
 // an older daily trigger may still call this until setupWeekly has run: it only tidies, it sends nothing
 function dailyDigest() { cleanup(); }
 
-// run by hand (choose it in the function list, press Run): the report for the last 4 days, today included, with the Excel file
+// run by hand (choose it in the function list, press Run): a report for the last 4 days, today included, with the Excel file
 function sendTestWeekly() { digest_(4, 1, true); }
 function sendTestReport() { sendTestWeekly(); }
 
@@ -493,7 +495,7 @@ function xlsx_(sheets, fileName) {
   return Utilities.zip(parts, fileName).setContentType('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 }
 
-// Everything the log holds for one week, one tab per subject. Only what visitors sent or agreed to (OK), plus
+// Everything the log holds for the report's days, one tab per subject. Only what visitors sent or agreed to (OK), plus
 // anonymous counts; IP addresses stay in the Sheet and are not copied into the file.
 function weekSheets_(data, s, p, from, to, label) {
   var t0 = ist_(from), t1 = ist_(to), c = data.c, lc = data.lc, tz = 'Asia/Kolkata';
@@ -507,7 +509,7 @@ function weekSheets_(data, s, p, from, to, label) {
   var sorted = function (o) { return Object.keys(o).sort(function (a, b) { return o[b] - o[a] || (a < b ? -1 : 1); }).map(function (k) { return [k, o[k]]; }); };
   var enquired = {}; L.forEach(function (r) { if (r[lc.visitor]) enquired[String(r[lc.visitor])] = 1; });
 
-  // what each visitor who pressed OK, and each company network, did in these days
+  // what each visitor who pressed OK, and each company network, did this week
   var people = {}, firms = {};
   V.forEach(function (r) {
     var vid = String(r[c.visitor] || ''), org = String(r[c.org] || ''), type = r[c.type], title = String(r[c.title] || r[c.page] || '');
@@ -592,12 +594,10 @@ function weekSheets_(data, s, p, from, to, label) {
 }
 
 // ---------------- run once ----------------
-// after pasting a new version: two triggers, every Monday and every Thursday at 8:30 India time (removes the old ones)
+// after pasting a new version: two triggers, every Monday and every Thursday at 8:30 India time (it removes older ones)
 function setupWeekly() {
   ScriptApp.getProjectTriggers().forEach(function (t) { if (/^(dailyDigest|weeklyDigest)$/.test(t.getHandlerFunction())) ScriptApp.deleteTrigger(t); });
-  [ScriptApp.WeekDay.MONDAY, ScriptApp.WeekDay.THURSDAY].forEach(function (day) {
-    ScriptApp.newTrigger('weeklyDigest').timeBased().onWeekDay(day).atHour(8).nearMinute(30).inTimezone('Asia/Kolkata').create();
-  });
+  [ScriptApp.WeekDay.MONDAY, ScriptApp.WeekDay.THURSDAY].forEach(function (d) { ScriptApp.newTrigger('weeklyDigest').timeBased().onWeekDay(d).atHour(8).nearMinute(30).inTimezone('Asia/Kolkata').create(); });
   var now = 'Triggers now: ' + ScriptApp.getProjectTriggers().map(function (t) { return t.getHandlerFunction(); }).join(', ');
   console.log(now);
   return now;
