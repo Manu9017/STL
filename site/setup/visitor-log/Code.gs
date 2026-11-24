@@ -1,5 +1,5 @@
 /**
- * SHIVAS website visitor log: Google Apps Script for a Google Sheet. Version 5 (24 Nov 2026).
+ * SHIVAS website visitor log: Google Apps Script for a Google Sheet. Version 5.1 (24 Nov 2026).
  * Receives what the website sends (assets/track.js) and writes it to two tabs:
  *   Visits: one row per page view (page, device, browser, country, city, network or company, time on page ...)
  *   Leads: every enquiry form and "ask our engineer" request, with what that visitor looked at before.
@@ -506,9 +506,9 @@ var WA_TEMPLATES = {
   shivas_visit: { text: 'Someone opened the SHIVAS website.\n\nFirst page: {{1}}\nCame from: {{2}}\nDevice: {{3}}\nPlace: {{4}}\n\nA visit has no name or number. If they send an enquiry, their number will come to this chat.',
     example: ['Zinc kettle', 'Google search', 'Phone, Android', 'Pune, India'] },
   shivas_daily: { text: 'SHIVAS website, yesterday ({{1}}).\n\nVisits: {{2}}\nEnquiries: {{3}}\nWhatsApp, phone and email taps: {{4}}\nCalculator uses: {{5}}\nCompanies: {{6}}\nMost viewed: {{7}}\n\nEach enquiry also came to this chat when it was sent. The full report comes by email every Monday.',
-    example: ['Mon 23 Nov', '12', '1: Ramesh Kumar, Example Steel Pvt Ltd', '3 (WhatsApp 2, phone 1)', '2: Galvanizing plant calculator, Wire drawing', 'Example Steel Pvt Ltd (Ludhiana)', 'Zinc kettle (4), Galvanizing furnace (2)'] },
+    example: ['Mon 23 Nov', '12', '1: Ramesh Kumar, Example Steel Pvt Ltd, +91 98765 43210', '3 (WhatsApp 2, phone 1)', '2: Galvanizing plant calculator, Wire drawing', 'Example Steel Pvt Ltd (Ludhiana)', 'Zinc kettle (4), Galvanizing furnace (2)'] },
   shivas_weekly: { text: 'SHIVAS website, week of {{1}}.\n\nVisits: {{2}}, the week before: {{3}}\nEnquiries: {{4}}\nCompanies: {{5}}\nMost viewed: {{6}}\nCalculators: {{7}}\n\nThe full report with every enquiry, company and page is in your email. Tap the button to open the visitor log.',
-    example: ['16 Nov to 22 Nov', '41', '29', '3: Ramesh Kumar, Example Steel Pvt Ltd; Sample buyer', 'Example Steel Pvt Ltd (Ludhiana)', 'Zinc kettle (9), Galvanizing furnace (5)', 'Galvanizing plant calculator 4, Wire drawing 2'], button: 'Open the visitor log' }
+    example: ['16 Nov to 22 Nov', '41', '29', '2: Ramesh Kumar, Example Steel Pvt Ltd, +91 98765 43210; Anil Verma, +91 99999 00000', 'Example Steel Pvt Ltd (Ludhiana)', 'Zinc kettle (9), Galvanizing furnace (5)', 'Galvanizing plant calculator 4, Wire drawing 2'], button: 'Open the visitor log' }
 };
 function waProps_() {
   var p = PropertiesService.getScriptProperties();
@@ -573,12 +573,12 @@ function waSum_(s) {
     .filter(function (x) { return /^(items\/(?!index)|galvanizing\.html|wire-drawing\.html|reinplast\.html|pultrusion\.html)/.test(x.page); })
     .sort(function (a, b) { return b.n - a.n; });
   return {
-    leads: waText_(s.leads.length ? s.leads.length + ': ' + s.leads.map(function (l) { return [l.name, l.company].filter(Boolean).join(', ') || 'no name'; }).join('; ') : 'none', 220),
+    leads: waText_(s.leads.length ? s.leads.length + ': ' + s.leads.map(function (l) { return [l.name || 'no name', l.company, l.contact].filter(Boolean).join(', '); }).join('; ') : 'none', 240),
     taps: waText_(total ? total + ' (' + ['WhatsApp', 'Phone', 'Email'].filter(function (k) { return s.tapN[k]; }).map(function (k) { return (k === 'WhatsApp' ? k : k.toLowerCase()) + ' ' + s.tapN[k]; }).join(', ') + ')' : 'none', 80),
-    calcs: waText_(s.calcs.length ? s.calcs.length + ': ' + calcs.slice(0, 3).join(', ') : 'none', 140),
-    calcN: waText_(calcs.length ? calcs.slice(0, 4).map(function (k) { return k + ' ' + s.calcN[k]; }).join(', ') : 'none', 160),
-    firms: waText_(firms.length ? firms.slice(0, 5).map(function (k) { var w = String(s.firms[k].where || '').split(',')[0]; return k + (w ? ' (' + w + ')' : ''); }).join('; ') : 'none identified', 220),
-    top: waText_(prod.length ? prod.slice(0, 3).map(function (x) { return x.title + ' (' + x.n + ')'; }).join(', ') : 'no product pages', 160)
+    calcs: waText_(s.calcs.length ? s.calcs.length + ': ' + calcs.slice(0, 3).join(', ') : 'none', 110),
+    calcN: waText_(calcs.length ? calcs.slice(0, 4).map(function (k) { return k + ' ' + s.calcN[k]; }).join(', ') : 'none', 120),
+    firms: waText_(firms.length ? firms.slice(0, 5).map(function (k) { var w = String(s.firms[k].where || '').split(',')[0]; return k + (w ? ' (' + w + ')' : ''); }).join('; ') : 'none identified', 150),
+    top: waText_(prod.length ? prod.slice(0, 3).map(function (x) { return x.title + ' (' + x.n + ')'; }).join(', ') : 'no product pages', 130)
   };
 }
 // every morning (WA_DAILY): yesterday in seven lines, only when something happened

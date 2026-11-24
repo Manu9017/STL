@@ -175,10 +175,10 @@ t.ctx.sendTestWeekly(); check(/did not go through/.test(t.mails[1].htmlBody) && 
 // mornings and Mondays
 t = run({ props: Object.assign({ 'WC_2020-01-01_Old': '1', 'WV_2020-01-01': '3' }, WA) });
 t.post({ type: 'view', landing: 1, at: new Date(Date.now() - 864e5).toISOString(), title: 'Zinc kettle', page: 'items/kettle.html' });
-t.post({ type: 'lead', source: 'Enquiry form', name: 'Asha', company: 'Example Wires', contact: '1', at: new Date(Date.now() - 864e5).toISOString() });
+t.post({ type: 'lead', source: 'Enquiry form', name: 'Asha', company: 'Example Wires', contact: '+91 90000 00001', at: new Date(Date.now() - 864e5).toISOString() });
 t.calls.length = 0; t.mails.length = 0; t.ctx.dailyDigest(); s1 = sends(t);
 check(s1.length === 1 && s1[0].template.name === 'shivas_daily' && t.mails.length === 0, 'every morning: a WhatsApp summary of yesterday, no email');
-check(flat(s1[0])[1] === '1' && flat(s1[0])[2] === '1: Asha, Example Wires' && flat(s1[0])[6] === 'Zinc kettle (1)', 'with the visits, the enquiry names and the most viewed: ' + flat(s1[0]).join(' | '));
+check(flat(s1[0])[1] === '1' && flat(s1[0])[2] === '1: Asha, Example Wires, +91 90000 00001' && flat(s1[0])[6] === 'Zinc kettle (1)', 'with the visits, each enquiry with its number, and the most viewed: ' + flat(s1[0]).join(' | '));
 check(!('WC_2020-01-01_Old' in t.props) && !('WV_2020-01-01' in t.props), 'old once-a-day markers are tidied');
 const q = run({ props: WA }); q.ctx.dailyDigest(); check(sends(q).length === 0, 'a morning after a day with no visits: no WhatsApp');
 t.calls.length = 0; t.mails.length = 0; t.ctx.sendTestWeekly(); s1 = sends(t);
@@ -198,6 +198,10 @@ check(/PENDING/.test(r1) && /again in a few minutes/.test(r1) && sends(t).length
 t = run({ props: WA, meta: c => (c.method === 'get' ? { json: { data: [{ name: (c.url.match(/name=(\w+)/) || [])[1], language: 'en', status: 'APPROVED' }] } } : {}) });
 const r2 = t.ctx.setupWhatsApp();
 check(/All five approved/.test(r2) && sends(t).length === 1 && flat(sends(t)[0])[0] === 'TEST from setupWhatsApp', 'once approved: a test enquiry arrives');
+{ const W = t.ctx.WA_TEMPLATES, big = run({ props: WA }), long = 'x'.repeat(400), S = { views: 1, visits: 99999, leads: Array(9).fill({ name: long, company: long, contact: long }), tapN: { WhatsApp: 99, Phone: 99, Email: 99 }, calcN: { [long]: 9, [long + 'b']: 9 }, calcs: Array(9).fill({}), firms: { [long]: { n: 9, where: long }, [long + 'c']: { n: 1, where: long } }, pages: { 'items/a.html': { page: 'items/a.html', title: long, n: 9 } } };
+  big.ctx.waDaily_(S, 'Mon 23 Nov'); big.ctx.waWeekly_(S, S, '16 Nov to 22 Nov'); big.post({ type: 'lead', source: long, name: long, company: long, contact: long, email: long, place: long, product: long, message: long, seen: Array(9).fill('1 Nov 10:00  ' + long).join('\n') });
+  const len = b => { let x = W[b.template.name].text; flat(b).forEach((v, i) => { x = x.replace('{{' + (i + 1) + '}}', v); }); return x.length; };
+  const L = sends(big).map(b => b.template.name + ' ' + len(b)); check(sends(big).length === 3 && sends(big).every(b => len(b) <= 1024), 'longest possible messages stay within 1,024 characters: ' + L.join(', ')); }
 check(t.ctx.waText_('a\nb\tc', 50) === 'a · b · c' && t.ctx.waText_('x'.repeat(80), 20).length === 20 && t.ctx.waText_('', 9) === '-' && t.ctx.waText_("'+91 1", 9) === '+91 1', 'values: line breaks out, length capped, never empty');
 check(!/EAA|token\s*=\s*'[A-Za-z0-9]{20,}/.test(SRC), 'no token written in Code.gs (it is public on the website)');
 
