@@ -1,4 +1,4 @@
-SHIVAS website visitor log (Version 4, 24 Nov 2026)
+SHIVAS website visitor log (Version 5, 24 Nov 2026)
 
 What you get
 - A Google Sheet with every page view: page, device (phone / computer, model, browser), country, city,
@@ -30,6 +30,41 @@ What it cannot do
 - Name the company of a visitor on home broadband or mobile data (Jio, Airtel ...). Companies are named
   only when people browse from an office network that is registered to the company.
 - Record location or company for visitors who press "No thanks". Their page views are still counted.
+
+WhatsApp (Version 5): enquiries and short summaries on your own WhatsApp
+What comes, all in one WhatsApp chat (you can mute it):
+- Every enquiry at once: name, phone (tap it to call), company, place, product, message and the pages
+  they looked at first.
+- A company network looking at the site, once a day per company: its name, city and the page.
+- Every morning at 8:00, if anything happened the day before: visits, enquiries, taps, calculator uses,
+  companies and the most viewed products.
+- Every Monday: the week against the week before, with a button that opens this Sheet.
+- Only if you want it: a message for every visit (script property WA_VISITS = on). A visit has no name
+  or number; the website learns a number only when someone types it into the enquiry form or a calculator.
+It goes through WhatsApp's official Business API (Meta), so an enquiry goes from your Sheet to your WhatsApp
+and to nobody else. Meta charges per message (about Rs 0.115 plus GST per utility message in India in 2026);
+with Meta's free test number no payment method is needed. The test number can message up to 5 numbers.
+Set up once, on a computer (about 20 minutes; Claude on your computer can click through it with you):
+1. developers.facebook.com: log in with Facebook (register as a developer if asked).
+2. My Apps > Create app > name "SHIVAS alerts" > use case "Connect with customers through WhatsApp" >
+   choose or create the business portfolio "SHIVAS" > Create.
+3. In the app: WhatsApp > API Setup. Write down the "Phone number ID" and the "WhatsApp Business Account
+   ID". Under "To", add +91 98186 10744 (and up to 4 more people) and enter the code WhatsApp sends.
+   Press "Send message": a "Hello World" arrives in a new chat. Everything will come to that chat.
+4. A token that does not expire: business.facebook.com > Settings > Users > System users > Add (name
+   "shivas-alerts", role Admin) > Assign assets: the app "SHIVAS alerts" and the WhatsApp account, full
+   control > Generate new token > app "SHIVAS alerts", expiry Never, permissions whatsapp_business_messaging
+   and whatsapp_business_management. Copy the token (it is shown once).
+5. Apps Script > Project settings (gear) > Script properties > Add: WA_TOKEN = the token, WA_PHONE_ID = the
+   Phone number ID, WA_WABA_ID = the WhatsApp Business Account ID. (WA_TO only for other numbers than
+   +91 98186 10744, comma-separated.) Never put the token in Code.gs or in a chat: Code.gs is public.
+6. Choose setupWhatsApp in the function list and press Run. It asks Meta to approve the five message
+   formats. Run it again after a few minutes until every line says APPROVED; then a test enquiry arrives.
+7. testWhatsApp sends yesterday's summary at once, and the Execution log shows what Meta answered.
+Switches (script properties, on or off): WA_LEADS, WA_COMPANIES, WA_DAILY and WA_WEEKLY are on, WA_VISITS
+is off, WEEKLY_EMAIL (the Monday email) is on. If WhatsApp stops, the Monday email names the last problem.
+If Meta ever stops the test number, add a spare SIM as the sender (WhatsApp > API Setup > Add phone number)
+and change WA_PHONE_ID; nothing else changes.
 
 Your own visits
 Open www.shivastechnology.com/?staff=1 once on each of your phones and computers (and in each browser you

@@ -15,7 +15,7 @@ let failed = 0;
 const check = (ok, what) => { console.log((ok ? '  ok    ' : '  FAIL  ') + what); if (!ok) failed++; };
 
 function run(opts = {}) {
-  const mails = [], props = Object.assign({ SHEET: 'SHEET-ID' }, opts.props || {}), tabs = { Visits: [], Leads: [] }, triggers = [];
+  const mails = [], props = Object.assign({ SHEET: 'SHEET-ID' }, opts.props || {}), tabs = { Visits: [], Leads: [] }, triggers = [], calls = [];
   const sheet = n => ({
     appendRow: r => tabs[n].push(r.slice()),
     getLastRow: () => tabs[n].length + 1,
@@ -31,9 +31,11 @@ function run(opts = {}) {
     LockService: { getScriptLock: () => ({ waitLock() {}, releaseLock() {} }) },
     CacheService: { getScriptCache: () => ({ get: () => null, put() {} }) },
     ContentService: { createTextOutput: t => t },
-    PropertiesService: { getScriptProperties: () => ({ getProperty: k => k in props ? props[k] : null, setProperty: (k, v) => { props[k] = v; }, deleteProperty: k => { delete props[k]; } }) },
+    PropertiesService: { getScriptProperties: () => ({ getProperty: k => k in props ? props[k] : null, setProperty: (k, v) => { props[k] = v; }, deleteProperty: k => { delete props[k]; }, getKeys: () => Object.keys(props) }) },
     SpreadsheetApp: { getActiveSpreadsheet: () => book, openById: () => book, create: () => book },
     ScriptApp: { getProjectTriggers: () => [], deleteTrigger() {}, newTrigger: () => ({}), WeekDay: { MONDAY: 1 } },
+    UrlFetchApp: { fetch: (url, o = {}) => { const c = { url, method: o.method || 'get', headers: o.headers || {}, body: o.payload ? JSON.parse(o.payload) : null }; calls.push(c);
+      const a = (opts.meta || (() => ({})))(c), code = a.code || 200; return { getResponseCode: () => code, getContentText: () => JSON.stringify(a.json || (c.method === 'post' ? { messages: [{ id: 'wamid.TEST' }] } : { data: [] })) }; } },
     MailApp: { sendEmail: m => { if (opts.mailFails) throw new Error('quota'); mails.push(m); }, getRemainingDailyQuota: () => 100 },
     Session: { getEffectiveUser: () => ({ getEmail: () => 'owner@example.com' }) },
     Utilities: { formatDate }
@@ -41,7 +43,7 @@ function run(opts = {}) {
   vm.createContext(ctx); vm.runInContext(SRC, ctx);
   const base = { page: 'index.html', title: 'SHIVAS home', device: 'Phone', os: 'Android', browser: 'Chrome', lang: 'en-IN', tz: 'Asia/Kolkata' };
   const post = d => ctx.doPost({ postData: { contents: JSON.stringify(Object.assign({ at: new Date().toISOString() }, base, d)) } });
-  return { ctx, post, mails, tabs, props };
+  return { ctx, post, mails, tabs, props, calls };
 }
 const C = {}; { const c = {}; vm.createContext(c); vm.runInContext(SRC, c); c.VISIT_COLS.forEach((x, i) => { C[x[0]] = i; }); }
 
@@ -140,6 +142,65 @@ const empty = run(); empty.ctx.weeklyDigest();
 check(/0 enquiries, 0 visits/.test(empty.mails[0].subject) && /No visits were recorded this week/.test(empty.mails[0].htmlBody), 'a quiet week still sends a short report');
 if (process.argv[2]) { fs.writeFileSync(process.argv[2], '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sample weekly report</title><body style="margin:0;padding:16px;background:#f6f8fb">' + h + '</body>'); console.log('        saved ' + process.argv[2]); }
 
+// ---------------- WhatsApp (Version 5), against a stand-in for Meta: nothing is sent anywhere ----------------
+console.log('\nWhatsApp');
+const WA = { WA_TOKEN: 'TEST-TOKEN', WA_PHONE_ID: '111', WA_WABA_ID: '222' };
+const sends = x => x.calls.filter(c => /\/111\/messages$/.test(c.url)).map(c => c.body);
+const flat = b => b.template.components[0].parameters.map(q => q.text);
+t = run(); t.post({ type: 'lead', source: 'Enquiry form', name: 'Test', contact: '+91 0000000000', product: 'Kettle' });
+check(t.calls.length === 0 && t.mails.length === 1, 'not set up: no WhatsApp call, the enquiry email still goes');
+t = run({ props: WA });
+t.post({ type: 'view', pv: 'a1', landing: 1, title: 'Zinc kettle', page: 'items/kettle.html', visitor: 'V-1' });
+t.post({ type: 'lead', source: 'Enquiry form', name: 'Ramesh\nKumar', company: 'Example Steel', contact: '+91 98765 43210', email: 'r@example.com', place: 'Pune', product: 'Galvanizing · Kettle', message: 'Line one\nline two\twith a tab', visitor: 'V-1' });
+let s1 = sends(t);
+check(s1.length === 1 && s1[0].template.name === 'shivas_enquiry' && s1[0].to === '919818610744' && t.mails.length === 1, 'enquiry: one WhatsApp to +91 98186 10744 and the email');
+check(flat(s1[0]).length === 7 && flat(s1[0]).every(x => x && !/[\n\t]/.test(x)), 'its 7 values are filled and have no line breaks: ' + JSON.stringify(flat(s1[0]).slice(0, 3)));
+check(flat(s1[0])[1] === '+91 98765 43210 · r@example.com' && flat(s1[0])[6] === 'Zinc kettle', 'the number to call, and the page they looked at first');
+check(t.calls[0].headers.Authorization === 'Bearer TEST-TOKEN' && /graph\.facebook\.com\/v\d+\.0\//.test(t.calls[0].url), 'official Cloud API with the token from the script properties');
+t = run({ props: WA });
+t.post({ type: 'view', landing: 1, org: 'Example Steel Pvt Ltd', city: 'Ludhiana', country: 'India', title: 'Zinc kettle' });
+t.post({ type: 'view', org: 'Example Steel Pvt Ltd', city: 'Ludhiana', country: 'India', title: 'Galvanizing furnace' });
+t.post({ type: 'update', pv: 'x', org: 'Example Steel Pvt Ltd', city: 'Ludhiana', country: 'India' });
+t.post({ type: 'view', landing: 1, org: 'Reliance Jio Infocomm', city: 'Pune', country: 'India' });
+s1 = sends(t);
+check(s1.length === 1 && s1[0].template.name === 'shivas_company' && flat(s1[0])[0] === 'Example Steel Pvt Ltd' && flat(s1[0])[1] === 'Ludhiana, India', 'a company network: one message a day per company, none for Jio');
+check(!s1.some(b => b.template.name === 'shivas_visit'), 'no message per visit unless WA_VISITS is on');
+t = run({ props: Object.assign({ WA_VISITS: 'on' }, WA) }); t.post({ type: 'view', landing: 1, title: 'Zinc kettle', ref: 'www.google.com (search)' });
+s1 = sends(t); check(s1.length === 1 && s1[0].template.name === 'shivas_visit' && flat(s1[0]).join('|') === 'Zinc kettle|Google search|Phone, Android|India (from the time zone)', 'WA_VISITS = on: ' + (s1[0] ? flat(s1[0]).join(' | ') : 'none'));
+t = run({ props: Object.assign({ WA_TO: '919818610744, +91 98109 20468; 98102 80104' }, WA) }); t.post({ type: 'lead', source: 'Enquiry form', name: 'Two', contact: '1' });
+check(sends(t).map(b => b.to).join(',') === '919818610744,919810920468,919810280104', 'WA_TO with three numbers, written three ways: all get it');
+t = run({ props: WA, meta: c => (c.method === 'post' ? { code: 400, json: { error: { message: '(#131030) Recipient phone number not in allowed list' } } } : {}) });
+check(t.post({ type: 'lead', source: 'Enquiry form', name: 'Fail', contact: '1' }) === 'ok' && t.tabs.Leads.length === 1 && t.mails.length === 1 && /131030/.test(t.props.WA_LAST || ''), 'Meta refuses: the enquiry is still saved and emailed, the reason is kept in WA_LAST');
+t.ctx.sendTestWeekly(); check(/did not go through/.test(t.mails[1].htmlBody) && /131030/.test(t.mails[1].htmlBody), 'and the Monday email says so at the foot');
+// mornings and Mondays
+t = run({ props: Object.assign({ 'WC_2020-01-01_Old': '1', 'WV_2020-01-01': '3' }, WA) });
+t.post({ type: 'view', landing: 1, at: new Date(Date.now() - 864e5).toISOString(), title: 'Zinc kettle', page: 'items/kettle.html' });
+t.post({ type: 'lead', source: 'Enquiry form', name: 'Asha', company: 'Example Wires', contact: '1', at: new Date(Date.now() - 864e5).toISOString() });
+t.calls.length = 0; t.mails.length = 0; t.ctx.dailyDigest(); s1 = sends(t);
+check(s1.length === 1 && s1[0].template.name === 'shivas_daily' && t.mails.length === 0, 'every morning: a WhatsApp summary of yesterday, no email');
+check(flat(s1[0])[1] === '1' && flat(s1[0])[2] === '1: Asha, Example Wires' && flat(s1[0])[6] === 'Zinc kettle (1)', 'with the visits, the enquiry names and the most viewed: ' + flat(s1[0]).join(' | '));
+check(!('WC_2020-01-01_Old' in t.props) && !('WV_2020-01-01' in t.props), 'old once-a-day markers are tidied');
+const q = run({ props: WA }); q.ctx.dailyDigest(); check(sends(q).length === 0, 'a morning after a day with no visits: no WhatsApp');
+t.calls.length = 0; t.mails.length = 0; t.ctx.sendTestWeekly(); s1 = sends(t);
+check(t.mails.length === 1 && s1.length === 1 && s1[0].template.name === 'shivas_weekly' && flat(s1[0])[1] === '1' && /\(test\)$/.test(flat(s1[0])[0]), 'Monday: the email and a WhatsApp summary: ' + flat(s1[0]).join(' | '));
+t = run({ props: Object.assign({ WEEKLY_EMAIL: 'off' }, WA) }); t.ctx.weeklyDigest(); check(t.mails.length === 0 && sends(t).length === 1, 'WEEKLY_EMAIL = off: WhatsApp only');
+// the message formats Meta has to approve
+t = run({ props: WA });
+const r1 = t.ctx.setupWhatsApp(), made = t.calls.filter(c => c.method === 'post' && /message_templates$/.test(c.url)).map(c => c.body);
+check(made.length === 5 && made.every(b => b.category === 'UTILITY' && b.language === 'en'), 'setupWhatsApp asks Meta for 5 formats (utility, English)');
+made.forEach(b => {
+  const body = b.components[0], n = (body.text.match(/\{\{\d+\}\}/g) || []).map(x => +x.slice(2, -2)), words = body.text.replace(/\{\{\d+\}\}/g, ' ').split(/\s+/).filter(Boolean).length;
+  check(!/^\s*\{\{/.test(body.text) && !/\}\}\s*$/.test(body.text) && n.every((x, i) => x === i + 1) && body.example.body_text[0].length === n.length && words / n.length >= 4 && body.text.length < 1024,
+    b.name + ': no variable at the start or end, numbered 1 to ' + n.length + ', ' + (words / n.length).toFixed(1) + ' words per variable, ' + body.text.length + ' characters');
+});
+check(made.find(b => b.name === 'shivas_weekly').components[1].buttons[0].url === 'https://docs.google.com/spreadsheets/d/SHEET-ID', 'the weekly one has a button that opens the Sheet');
+check(/PENDING/.test(r1) && /again in a few minutes/.test(r1) && sends(t).length === 0, 'first run: sent for review, nothing sent yet');
+t = run({ props: WA, meta: c => (c.method === 'get' ? { json: { data: [{ name: (c.url.match(/name=(\w+)/) || [])[1], language: 'en', status: 'APPROVED' }] } } : {}) });
+const r2 = t.ctx.setupWhatsApp();
+check(/All five approved/.test(r2) && sends(t).length === 1 && flat(sends(t)[0])[0] === 'TEST from setupWhatsApp', 'once approved: a test enquiry arrives');
+check(t.ctx.waText_('a\nb\tc', 50) === 'a · b · c' && t.ctx.waText_('x'.repeat(80), 20).length === 20 && t.ctx.waText_('', 9) === '-' && t.ctx.waText_("'+91 1", 9) === '+91 1', 'values: line breaks out, length capped, never empty');
+check(!/EAA|token\s*=\s*'[A-Za-z0-9]{20,}/.test(SRC), 'no token written in Code.gs (it is public on the website)');
+
 // doGet: first open runs setup and emails a confirmation; later opens only report "running"
 console.log('\nFirst open of the web app (doGet)');
 (function () {
@@ -159,7 +220,7 @@ console.log('\nFirst open of the web app (doGet)');
     Utilities: { formatDate } };
   vm.createContext(ctx); vm.runInContext(SRC, ctx);
   check(/is set up/.test(ctx.doGet()) && Object.keys(created).join(',') === 'Visits,Leads,Companies,Pages,Daily,Viewers' && triggers.length === 2 && props.SHEET === 'SHEET-ID', 'tabs, 2 triggers and the confirmation email "' + (mails[0] && mails[0].subject) + '"');
-  check(/every Monday at 8:30/.test(mails[0].htmlBody) && !/opens the website/.test(mails[0].htmlBody), 'the confirmation describes Version 4 (enquiries and the Monday report)');
+  check(/every Monday at 8:30/.test(mails[0].htmlBody) && !/opens the website/.test(mails[0].htmlBody), 'the confirmation describes the enquiry emails and the Monday report');
   check(ctx.doGet() === 'SHIVAS visitor log is running.' && mails.length === 1, 'opening it again only says it is running');
 })();
 console.log(failed ? '\n' + failed + ' FAILED' : '\nall passed');
