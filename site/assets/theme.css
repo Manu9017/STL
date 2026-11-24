@@ -350,11 +350,11 @@
 :root:not(#_)[data-theme="dark"] body[data-pt="app"] #read{background:var(--s-band)!important}
 
 /* ============================== 13. UNDER EVERY ANIMATION (24 Nov 2026) ==============================
-   Owner: "this part under all the animation looks weird". One row of controls (previous, pause and next joined into
-   one control, the modes, the Colour key button, zoom and full screen), the colour key below it (closed on phones,
-   open on computers; it wraps and never scrolls sideways) and the readouts as tiles that wrap, two columns on phones.
+   Owner: "this part under all the animation looks weird", then "remove the colour key altogether" (24 Nov 2026).
+   One row of controls (previous, pause and next joined into one control, the modes, zoom and full screen) and the
+   readouts as tiles that wrap, two columns on phones. There is no colour key under the drawings any more.
    The drawing stays on a dark stage in both themes, so these colours are fixed. */
-:root:not(#_) #app .xp-stage>:is(.xp-ctl,.xp-key,.xp-hud){background:#0f1d2c;border-top:1px solid #23405c}
+:root:not(#_) #app .xp-stage>:is(.xp-ctl,.xp-hud){background:#0f1d2c;border-top:1px solid #23405c}
 :root:not(#_) #app .xp-ctl{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px}
 :root:not(#_) #app .xp-ctl .xp-tr{order:1;display:inline-flex;flex:0 0 auto;border:1px solid #2d4860;border-radius:10px!important;overflow:hidden;background:#152b42}
 :root:not(#_) #app .xp-ctl .seg{order:2}
@@ -370,24 +370,15 @@
 :root:not(#_) #app .xp-ctl .xp-tr .ib+.ib{border-left:1px solid #2d4860}
 :root:not(#_) #app .xp-ctl .ib:hover{color:#ffc35a;border-color:#ffc35a}
 :root:not(#_) #app .xp-ctl .xp-tr .ib:hover{background:#1c3756}
-:root:not(#_) #app .xp-ctl .xk-b{display:inline-flex;align-items:center;gap:8px;font-size:13px;white-space:nowrap}
-:root:not(#_) #app .xp-ctl .xk-b::before{content:"";width:12px;height:12px;flex:0 0 auto;border-radius:3px!important;background:conic-gradient(#e2562c 0 25%,#5fb4ff 0 50%,#c8ced6 0 75%,#e8a317 0)}
-:root:not(#_) #app .xp-ctl .xk-b[aria-expanded="true"]{border-color:#e8a317;color:#ffc35a}
-:root:not(#_) #app .xp-key{display:flex;flex-wrap:wrap;align-items:center;gap:7px 16px;padding:10px 12px 12px;overflow:visible;font:400 12.5px/1.35 var(--f-body);color:#c9d5e1}
-:root:not(#_) #app .xp-key[hidden]{display:none!important}
-:root:not(#_) #app .xp-key .xk-cap{flex:1 0 100%;margin:0;color:#97aabd;font-size:12px}
-:root:not(#_) #app .xp-key span{white-space:normal}
-:root:not(#_) #app .xp-key i{width:12px;height:12px;border-radius:3px!important;box-shadow:0 0 0 1px rgba(255,255,255,.18)!important}
 :root:not(#_) #app .xp-hud{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;padding:10px 12px 12px;overflow:visible;background:#0f1d2c}
 :root:not(#_) #app .xp-hud div{min-width:0;padding:8px 11px;background:#152b42;border:1px solid #23405c;border-radius:8px!important}
 :root:not(#_) #app .xp-hud span{color:#9fb3c6;letter-spacing:.08em}
 :root:not(#_) #app .xp-hud b{color:#f2f6fa;font-weight:600;font-size:14px;line-height:1.3;margin-top:3px;overflow-wrap:anywhere}
-:root:not(#_) #app .xp.full .xp-key{width:min(100%,1100px);margin-inline:auto}
 /* while a drawing is full screen the page's menu rows and back-to-top button stay out of its way (they showed on top) */
 :root:not(#_).xpfull :is(.nav,.v40-sb,.v42sub,.totop,.dock){visibility:hidden!important}
 /* full screen on a phone held upright turns the drawing sideways: only the drawing and a column of buttons (anything
-   else in that row, the key or the readouts, squeezed the drawing to nothing; it did so before 24 Nov too) */
-:root:not(#_) #app .xp.full.rot :is(.xp-key,.xp-hud,.xp-rngs,.xk-b,.xp-ctl .sp){display:none!important}
+   else in that row, such as the readouts, squeezed the drawing to nothing) */
+:root:not(#_) #app .xp.full.rot :is(.xp-hud,.xp-rngs,.xp-ctl .sp){display:none!important}
 :root:not(#_) #app .xp.full.rot .xp-ctl{flex:0 0 auto;flex-direction:column;flex-wrap:nowrap;padding:0;border:0;background:transparent;gap:8px}
 :root:not(#_) #app .xp.full.rot .xp-ctl .seg{flex:0 0 auto;flex-direction:column;flex-wrap:nowrap}
 :root:not(#_) #app .xp.full.rot .xp-ctl .xp-tr{flex-direction:column}
@@ -398,14 +389,9 @@
   :root:not(#_) #app .xp-ctl .seg{order:0;flex:1 1 100%}
   :root:not(#_) #app .xp-ctl .ib{height:44px;min-width:44px}
   :root:not(#_) #app .xp-ctl .xp-tr .ib{width:46px}
-  :root:not(#_) #app .xp-ctl .xk-b{padding:0 10px}
   :root:not(#_) #app .ln .xp-ctl .ln-now{flex:1 1 100%}
   :root:not(#_) #app .xp-hud{grid-template-columns:1fr 1fr;gap:6px;padding:8px 10px 10px}
   :root:not(#_) #app .xp-hud div{padding:6px 9px}
   :root:not(#_) #app .xp-hud div:last-child:nth-child(odd){grid-column:1/-1}
   :root:not(#_) #app .xp-hud b{font-size:13px}
-}
-@media (max-width:370px){
-  :root:not(#_) #app .xp-ctl .xk-b{width:44px;padding:0;justify-content:center;font-size:0}
-  :root:not(#_) #app .xp-ctl .xk-b::before{width:15px;height:15px}
 }

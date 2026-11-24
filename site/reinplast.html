@@ -1042,12 +1042,6 @@ footer.night{background:#0b1520!important}
 .rein-only .howto li b{background:#0e7c86}
 .howto-box{margin-top:8px;padding:14px 16px;border:1px solid var(--line2);border-left:4px solid #e8a317;border-radius:4px;background:var(--panel);font-size:15px;line-height:1.5;color:var(--fg);max-width:78ch}
 .howto-box b{font-weight:700}
-/* colour key under every animated drawing */
-.xp-key{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:8px 12px;border-top:1px solid #2d4860;background:#0f1d2c;font:400 11.5px var(--f-mono);color:#c3cfdb}
-.xp-key span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
-.xp-key i{width:12px;height:12px;border-radius:2px;flex:0 0 auto;box-shadow:0 0 0 1px rgba(255,255,255,.15)}
-.xp-key .xk-cap{color:#97aabd;margin-right:4px}
-@media (max-width:760px){.xp-key{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:6px 10px}}
 /* breadcrumbs (formerly drawing title blocks) */
 .tblock{grid-template-columns:repeat(3,auto)!important;font-size:11px!important}
 .tblock span:nth-child(-n+2){border-bottom:0!important}
@@ -4259,10 +4253,9 @@ function Explorer(root,list,acc){
   <div class="xp-prog" aria-hidden="true"><i></i><span>Auto tour · tap anything to stay on a machine</span></div>
   <div class="xp-main"><div class="xp-stage night"><div class="xp-cv"><canvas></canvas></div><div class="xp-rngs"></div>
    <div class="xp-ctl"><span class="xp-tr" role="group" aria-label="Animation"><button type="button" class="ib" data-a="prev" aria-label="Previous machine">←</button><button type="button" class="ib" data-a="play" aria-label="Pause">❚❚</button><button type="button" class="ib" data-a="next" aria-label="Next machine">→</button></span><div class="seg" role="group" aria-label="Mode"></div><span class="sp"></span>
-    <button type="button" class="ib xk-b" data-a="key" aria-expanded="${KEY_OPEN()}">Colour key</button><button type="button" class="ib zm" data-a="zoom" aria-label="Zoom drawing">⊕</button><button type="button" class="ib" data-a="full" aria-label="Expand">⤢</button></div>
-   <div class="xp-key"${KEY_OPEN()?'':' hidden'}></div><div class="xp-hud"></div></div>
+    <button type="button" class="ib zm" data-a="zoom" aria-label="Zoom drawing">⊕</button><button type="button" class="ib" data-a="full" aria-label="Expand">⤢</button></div>
+   <div class="xp-hud"></div></div>
    <div class="xp-info"><span class="eyebrow xp-code"></span><h3 class="xp-name"></h3><p class="xp-lead"></p><a class="xp-more" hidden></a><span class="eyebrow">Tap a number to find it on the drawing</span><ol class="xp-calls"></ol><dl class="xp-specs"></dl><button type="button" class="card-btn xp-enq">Enquire about this →</button></div></div>`;
-  root.querySelector('.xp-key').innerHTML=keyHTML(root.dataset.div);
   const cv=root.querySelector('canvas'),ctx=cv.getContext('2d'),tabs=[...root.querySelectorAll('.xp-tabs button')],seg=root.querySelector('.seg'),hud=root.querySelector('.xp-hud'),callsEl=root.querySelector('.xp-calls'),playB=root.querySelector('[data-a=play]');
   let W=0,d=1,scale=1,small=false;
   new ResizeObserver(()=>{const r={width:cv.offsetWidth,height:cv.offsetHeight};if(!r.width)return;d=Math.min(2,devicePixelRatio||1);W=r.width;cv.width=Math.round(r.width*d);cv.height=Math.round(r.height*d);scale=r.width/800;small=r.width<560;self.dirty=true}).observe(cv);
@@ -5076,7 +5069,7 @@ function LineXP(root,lines,turnEl){
  root.classList.add('xp','ln');
  root.innerHTML=`<div class="xp-tabs" role="tablist" aria-label="Lines">${lines.map((l,i)=>`<button type="button" role="tab" aria-selected="${i===0}" data-i="${i}"><span>${String(i+1).padStart(2,'0')}</span><b>${l.name}</b></button>`).join('')}</div>
  <div class="xp-main"><div class="ln-left"><div class="xp-stage night"><div class="xp-cv"><canvas></canvas></div>
-   <div class="xp-ctl"><span class="ln-now" aria-live="polite"></span><span class="xp-tr" role="group" aria-label="Animation"><button type="button" class="ib" data-a="prev" aria-label="Previous stage">←</button><button type="button" class="ib" data-a="play" aria-label="Pause">❚❚</button><button type="button" class="ib" data-a="next" aria-label="Next stage">→</button></span><button type="button" class="ib xk-b" data-a="key" aria-expanded="${KEY_OPEN()}">Colour key</button></div><div class="xp-key"${KEY_OPEN()?'':' hidden'}>${keyHTML('lines')}</div></div>
+   <div class="xp-ctl"><span class="ln-now" aria-live="polite"></span><span class="xp-tr" role="group" aria-label="Animation"><button type="button" class="ib" data-a="prev" aria-label="Previous stage">←</button><button type="button" class="ib" data-a="play" aria-label="Pause">❚❚</button><button type="button" class="ib" data-a="next" aria-label="Next stage">→</button></span></div></div>
   <div class="ln-set"><div class="ln-opts"></div><div class="xp-rngs"></div><div class="xp-hud"></div></div></div>
   <div class="ln-info"><span class="eyebrow xp-code"></span><h3 class="xp-name"></h3><p class="xp-lead"></p><a class="xp-more" hidden></a><ol class="ln-steps"></ol><div class="ln-utils"></div></div></div>`;
  const cv=root.querySelector('canvas'),ctx=cv.getContext('2d'),tabs=[...root.querySelectorAll('.xp-tabs button')],hud=root.querySelector('.xp-hud'),list=root.querySelector('.ln-steps'),nowEl=root.querySelector('.ln-now'),playB=root.querySelector('[data-a=play]');
@@ -5222,18 +5215,6 @@ LineXP(host,LINES,$('#lnTurn'));
 
 
 /* ================= CLARITY: counts, search, back to top ================= */
-function keyHTML(div){
-  const K={
-   wire:[[C.zinc,'Wire / steel'],['#ffffff','Moving dots: wire travel'],[C.amber,'Numbered part'],[C.water,'Cooling water']],
-   zinc:[[C.heat,'Flame / heat'],[C.flue,'Flue gas'],[C.air,'Combustion air'],[C.gas,'Fuel gas'],[C.zinc,'Zinc / steel'],[C.water,'Water'],[C.acid,'Acid'],[C.flux,'Flux']],
-   rein:[[C.acid,'Acid / fume'],[C.water,'Water'],[C.frp,'FRP / treated'],[C.sludge,'Sludge / solids'],[C.heat,'Heat'],[C.zinc,'Steel / wire']],
-   lines:[['#c9b458','Acid / fume'],[C.water,'Rinse water'],[C.flux,'Flux'],['#c8ced6','Zinc'],[C.heat,'Heat'],['#ffffff','Moving dots: wire travel'],['#e8a317','Dashed frame: selected stage']]
-  }[div]||[];
-  return `<span class="xk-cap">Simplified animated drawing, not to scale</span>`+K.map(k=>`<span><i style="background:${k[0]}"></i>${k[1]}</span>`).join('');
-}
-// the colour key sits under the controls: open on computers, closed on phones until its button opens it
-function KEY_OPEN(){return !matchMedia('(max-width:760px)').matches}
-document.addEventListener('click',e=>{const b=e.target.closest('.xp [data-a=key]');if(!b)return;const k=b.closest('.xp-stage').querySelector('.xp-key');if(!k)return;k.hidden=!k.hidden;b.setAttribute('aria-expanded',String(!k.hidden))});
 (function(){
  // counts on start tiles
  const cnt={wire:[EX_WIRE.length,'machines'],hdg:[EX_HDG.length,'pieces of equipment'],rein:[EX_REIN.length,'pieces of equipment']};
