@@ -5,7 +5,7 @@ description: Turn on, change or check the SHIVAS website visitor log (Google She
 
 # Visitor tracking
 
-**Status (23 Nov 2026): the visitor log is on.** `sheetUrl` in `site/assets/config.js` is the live Apps Script web app (Version 3, final link); GA4 and `companyScript` are empty. `site/setup/visitor-log/Code.gs` mirrors the live script byte for byte. With all three values empty the site records nothing.
+**Status (23 Nov 2026): the visitor log is on.** `sheetUrl` in `site/assets/config.js` is the live Apps Script web app (Version 3, final link); GA4 and `companyScript` are empty. `site/setup/visitor-log/Code.gs` is Version 4 (24 Nov 2026), which the owner pastes in and deploys as a new version of the same deployment (Deploy > Manage deployments > Edit > New version; never New deployment, which changes the link). When the owner says the emails are noise or asks what the data is good for: the per-visit alert and the daily report stay off, the Monday report is the summary to act on, and their own browsers are left out with `?staff=1` (see `site/setup/visitor-log/README.txt`). With all three values empty the site records nothing.
 
 ```js
 window.SHIVAS_CONFIG = { sheetUrl: '', ga4: '', companyScript: '' };
@@ -21,7 +21,7 @@ window.SHIVAS_CONFIG = { sheetUrl: '', ga4: '', companyScript: '' };
   - Leads: enquiries.
 
   Pages, Daily, Viewers and Companies are `QUERY` formulas over Visits, written by `setup()`.
-- **Emails:**
+- **Emails (Version 4, 24 Nov 2026: each enquiry at once, plus the Monday report; the per-visit alert and the daily report are off unless the script properties `VISIT_ALERTS` or `DAILY_REPORT` are set to on). The lines below describe each email:**
   - Each lead, straight away, to ALERT_TECH or ALERT_REIN.
   - A visit alert (`visitAlert_`, added 22 Nov 2026): one email per visit, on its first page (track.js sends `landing: 1`, a yes/no flag kept in the tab), at most `VISIT_ALERTS_PER_DAY` (25) a day; `VISIT_ALERTS = false` turns it off. It never names a person; city and company appear only for visitors who pressed OK.
   - `dailyDigest` at 08:00 IST (yesterday) and `weeklyDigest` on Mondays at 08:30 (last 7 days). Both contain every page viewed, the 3D models opened, each consented visitor with the pages they viewed, companies, taps, calculators and a link to the Sheet.

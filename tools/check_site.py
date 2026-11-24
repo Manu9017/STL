@@ -247,14 +247,9 @@ def main():
             warnings.append(f".htaccess: missing Redirect 301 {a} {b} (it is in _redirects)")
         for a, b in sorted(have - want):
             warnings.append(f".htaccess: Redirect {a} {b} is not in _redirects")
-    # The owner asked for no em dashes anywhere (22 Nov 2026): pages, scripts, styles and the Apps Script.
-    # One exception (owner, 23 Nov 2026): setup/visitor-log/Code.gs mirrors the live Apps Script (Version 3) byte for
-    # byte, which still has five em dashes in a comment, an error text, the enquiry email subject and the report lines.
-    # Change that file only together with a new version of the live deployment, and remove it from this list then.
-    LIVE_MIRROR = {"setup/visitor-log/Code.gs"}
+    # The owner asked for no em dashes anywhere (22 Nov 2026): pages, scripts, styles and the Apps Script
+    # (setup/visitor-log/Code.gs is clean since Version 4, 24 Nov 2026).
     for rel in sorted(files):
-        if rel in LIVE_MIRROR:
-            continue
         if rel.endswith((".html", ".js", ".css", ".gs", ".json", ".md", ".txt")) and not rel.startswith("assets/resp/"):
             try:
                 with open(os.path.join(root, rel), encoding="utf-8") as fh:

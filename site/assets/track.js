@@ -2,7 +2,8 @@
    Records each page view (page, device, browser, language, time zone, where the visitor came from) and, after the
    visitor presses OK, their approximate location, network / company name (looked up from the IP address) and a
    random visitor number, so repeat visits and a later enquiry can be tied together. Enquiries and "ask our engineer"
-   requests are always sent, because the visitor sends them. Writes to the SHIVAS Google Sheet (sheetUrl). */
+   requests are always sent, because the visitor sends them. Writes to the SHIVAS Google Sheet (sheetUrl).
+   SHIVAS's own devices are left out after one visit to any page with ?staff=1 (see STAFF below). */
 (function () {
   'use strict';
   var C = window.SHIVAS_CONFIG || {};
@@ -19,6 +20,26 @@
   var rid = function () { return Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-5); };
   var consent = ls('shivas.consent');                          // 'yes' | 'no' | null (not asked yet)
   if (!consent && navigator.globalPrivacyControl === true) consent = 'no';
+  // SHIVAS's own phones and computers: open any page once with ?staff=1 and this browser is not counted any more
+  // (?staff=0 counts it again). Enquiries are still sent. The ?staff part is taken out of the address at once, so a
+  // link copied from the address bar never carries it to someone else.
+  var STAFF = ls('shivas.staff') === '1';
+  try {
+    var sq = new URLSearchParams(location.search), sv = sq.get('staff');
+    if (sv === '1' || sv === '0') {
+      STAFF = sv === '1'; ls('shivas.staff', STAFF ? '1' : null); sq.delete('staff');
+      history.replaceState(history.state, '', location.pathname + (sq.toString() ? '?' + sq : '') + location.hash);
+      note(STAFF ? 'This browser is no longer counted in the SHIVAS visitor log.' : 'This browser is counted in the SHIVAS visitor log again.');
+    }
+  } catch (e) {}
+  function note(t) {
+    var show = function () {
+      var n = document.createElement('div'); n.setAttribute('role', 'status'); n.textContent = t;
+      n.style.cssText = 'position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:10000;width:max-content;max-width:calc(100% - 32px);padding:12px 16px;border-radius:10px;background:#0b1622;color:#fff;font:600 14px/1.4 Arial,sans-serif;box-shadow:0 8px 30px rgba(0,0,0,.35)';
+      document.body.appendChild(n); setTimeout(function () { n.remove(); }, 6000);
+    };
+    if (document.body) show(); else document.addEventListener('DOMContentLoaded', show);
+  }
 
   /* ---------- what every row carries (nothing here identifies a person) ---------- */
   function device() {
@@ -117,7 +138,7 @@
   var sentLeads = {};
   window.SHIVAS_TRACK = {
     on: ON && !!C.sheetUrl,
-    event: function (type, data) { if (!ON || BOT) return false; send(type, data); return !!C.sheetUrl; },
+    event: function (type, data) { if (!ON || BOT || STAFF) return false; send(type, data); return !!C.sheetUrl; },
     lead: function (d) {
       if (!C.sheetUrl) return false;
       var key = JSON.stringify(d).slice(0, 400); if (sentLeads[key]) return true; sentLeads[key] = 1;
@@ -127,7 +148,18 @@
   };
   if (!ON || BOT) return;
 
-  /* ---------- page view, time on page, clicks that matter, enquiry form ---------- */
+  /* ---------- the enquiry form: sent from every browser, SHIVAS's own included ---------- */
+  document.addEventListener('submit', function (e) {
+    var f = e.target; if (!f || f.id !== 'qForm') return;
+    var v = function (id) { var el = document.getElementById(id); return el ? (el.value || '').trim() : ''; };
+    var opt = function (id) { var el = document.getElementById(id); return el && el.selectedOptions && el.selectedOptions[0] ? el.selectedOptions[0].textContent : ''; };
+    if (!v('qName') || !v('qContact')) return;
+    var ok = window.SHIVAS_TRACK.lead({ source: 'Enquiry form', div: v('qDiv'), name: v('qName'), company: v('qCo'), contact: v('qContact'), place: v('qCountry'), product: [opt('qDiv'), opt('qProd')].filter(Boolean).join(' · '), message: v('qMsg'), to: opt('qTo') });
+    if (ok) setTimeout(function () { var p = document.querySelector('#qOut p'); if (p) p.textContent = 'Sent to SHIVAS. We will get back to you. For a faster reply, also send it on WhatsApp:'; }, 0);
+  }, true);
+  if (STAFF) return;
+
+  /* ---------- page view, time on page, clicks that matter ---------- */
   if (consent === 'yes') { ready = lookup(); extras(); }
   // first page of this visit (a yes/no flag kept in this browser tab only): the visitor log emails the owner once per visit
   var landing = !ss('shivas.landed'); ss('shivas.landed', '1');
@@ -146,13 +178,5 @@
     var a = e.target.closest && e.target.closest('a[href]'); if (!a) return;
     var h = a.getAttribute('href') || '', kind = /wa\.me|whatsapp/i.test(h) ? 'WhatsApp' : /^mailto:/i.test(h) ? 'Email' : /^tel:/i.test(h) ? 'Phone' : /(^|\/)v\/[^/]+\.html/.test(h) ? '3D viewer' : /^https?:/i.test(h) && h.indexOf(location.host) < 0 ? 'Other site' : '';
     if (kind) send('click', { detail: kind + ': ' + (h.replace(/^(mailto:|tel:)/, '').split('?')[0] + ' · ' + (a.textContent || '').trim().slice(0, 60)) });
-  }, true);
-  document.addEventListener('submit', function (e) {
-    var f = e.target; if (!f || f.id !== 'qForm') return;
-    var v = function (id) { var el = document.getElementById(id); return el ? (el.value || '').trim() : ''; };
-    var opt = function (id) { var el = document.getElementById(id); return el && el.selectedOptions && el.selectedOptions[0] ? el.selectedOptions[0].textContent : ''; };
-    if (!v('qName') || !v('qContact')) return;
-    var ok = window.SHIVAS_TRACK.lead({ source: 'Enquiry form', div: v('qDiv'), name: v('qName'), company: v('qCo'), contact: v('qContact'), place: v('qCountry'), product: [opt('qDiv'), opt('qProd')].filter(Boolean).join(' · '), message: v('qMsg'), to: opt('qTo') });
-    if (ok) setTimeout(function () { var p = document.querySelector('#qOut p'); if (p) p.textContent = 'Sent to SHIVAS. We will get back to you. For a faster reply, also send it on WhatsApp:'; }, 0);
   }, true);
 })();

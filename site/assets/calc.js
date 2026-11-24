@@ -7,6 +7,10 @@
   'use strict';
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var root = document.getElementById('calc'); if (!root) return;
+  // the visitor log hears about this calculator only once the visitor changes something (as the other calculators)
+  var used = false, logT = 0;
+  ['input', 'change'].forEach(function (k) { root.addEventListener(k, function () { used = true; }, true); });
+  root.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('button,[data-mode],[data-mg]')) used = true; }, true);
   var RHO = 7.85e-3; // kg per mm2 per m
   // ---------- profile library (nominal dimensions, mm) ----------
   var F = {
@@ -226,6 +230,8 @@
       '\n\nCalculator estimate: kettle ' + o.Lk + ' × ' + o.Wk + ' × ' + o.Dk + ' m, ' + fmt(o.tph, 2) + ' t/h, zinc ' + fmt(o.zTot, 1) + ' kg/t, running cost ' + rs(o.perT) + ' per tonne.\n\nLink: ' + location.href.split('?')[0] + qs;
     $('#oMail').target = '_blank'; $('#oMail').href = 'mailto:info@shivastechnology.com?cc=shivastechnology@gmail.com,info@shivasasia.com,shivasasia@gmail.com,shivas1470@gmail.com&subject=' + encodeURIComponent('Galvanizing plant: ' + st.t + ' t/month') + '&body=' + encodeURIComponent(summary);
     $('#oWa').href = 'https://wa.me/919810920468?text=' + encodeURIComponent(summary);
+    // what was planned, 15 s after the visitor last changed something: the Monday report lists it under Calculators
+    if (used) { clearTimeout(logT); logT = setTimeout(function () { var T = window.SHIVAS_TRACK; if (T) T.event('calc', { calc: 'Galvanizing plant', detail: ('Galvanizing plant calculator\n' + summary.split('\n\nLink:')[0].replace(/^Galvanizing plant enquiry from the SHIVAS calculator\n\n/, '')).slice(0, 900) }); }, 15000); }
     $('#oCopy').onclick = function () { try { navigator.clipboard.writeText(summary); this.textContent = 'Copied'; var b = this; setTimeout(function () { b.textContent = 'Copy the summary'; }, 1600); } catch (e) {} };
   }
   drawRows(); if (st.mode === 'spin') { st.mode = 'batch'; setMode('spin'); } else setMode(st.mode); $('#fuelU').textContent = '₹ / ' + FUEL[st.fuel].u;
