@@ -2,7 +2,7 @@
    Load this right after assets/library.js (item pages and the three division pages do). It adds the photos to
    window.SHIVAS_LIBRARY: their entries, their places in each product's gallery (own photos before supplier
    photos) and, where set, the product's lead photo (owner, 23 Nov 2026: the blue and white die box leads, not the
-   red primer one). Files: assets/own/ (FULL and THUMB) and assets/resp/ (480/960 px for phones). Originals, for the
+   red primer one; 25 Nov 2026: his two photos of a hot air strip dryer lead the air dryer page). Files: assets/own/ (FULL and THUMB) and assets/resp/ (480/960 px for phones). Originals, for the
    pipeline: docs/own-photos/. When the library is next rebuilt with these photos in it, delete this file and its
    <script> tags. Captions say only what the photo shows. */
 (function () {
@@ -168,6 +168,38 @@
   "full": "assets/own/slm-photo-own-51015c0838_FULL.webp",
   "full_w": 1200,
   "full_h": 1600
+ },
+ "r-airdryer-photo-own-994399fe9b": {
+  "type": "photo",
+  "tag": "Photo",
+  "alt": "Photo: Hot air dryer for strip: the strip runs through the slot over the entry roller, and warm air is blown onto it from above and below",
+  "config": "Hot air dryer for strip: the strip runs through the slot over the entry roller, and warm air is blown onto it from above and below",
+  "verified": true,
+  "preview": "assets/own/r-airdryer-photo-own-994399fe9b_THUMB.webp",
+  "preview_w": 720,
+  "preview_h": 480,
+  "thumb": "assets/own/r-airdryer-photo-own-994399fe9b_THUMB.webp",
+  "thumb_w": 720,
+  "thumb_h": 480,
+  "full": "assets/own/r-airdryer-photo-own-994399fe9b_FULL.webp",
+  "full_w": 1600,
+  "full_h": 1200
+ },
+ "r-airdryer-photo-own-7ffc8d6194": {
+  "type": "photo",
+  "tag": "Photo",
+  "alt": "Photo: The same dryer from its other end: the air box with twelve nozzle pipes at the top and the round duct connection below",
+  "config": "The same dryer from its other end: the air box with twelve nozzle pipes at the top and the round duct connection below",
+  "verified": true,
+  "preview": "assets/own/r-airdryer-photo-own-7ffc8d6194_THUMB.webp",
+  "preview_w": 720,
+  "preview_h": 480,
+  "thumb": "assets/own/r-airdryer-photo-own-7ffc8d6194_THUMB.webp",
+  "thumb_w": 720,
+  "thumb_h": 480,
+  "full": "assets/own/r-airdryer-photo-own-7ffc8d6194_FULL.webp",
+  "full_w": 1600,
+  "full_h": 1200
  }
 };
   var G = {
@@ -185,6 +217,13 @@
    "slm-photo-own-825e2992cd",
    "slm-photo-own-3849c2346c",
    "slm-photo-own-12cbae9704"
+  ]
+ },
+ "r-airdryer": {
+  "image": "r-airdryer-photo-own-994399fe9b",
+  "first": [
+   "r-airdryer-photo-own-994399fe9b",
+   "r-airdryer-photo-own-7ffc8d6194"
   ]
  },
  "diebox": {
