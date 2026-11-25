@@ -1,8 +1,8 @@
 SHIVAS website: notes for the developer (25 Nov 2026)
 
 THE FILE
-SHIVAS-website-final-2026-11-25-v13.zip is the complete new website for www.shivastechnology.com.
-- It replaces every earlier zip (v5 to v12). If one of those is already online, upload this whole zip over it,
+SHIVAS-website-final-2026-11-25-v14.zip is the complete new website for www.shivastechnology.com.
+- It replaces every earlier zip (v5 to v13). If one of those is already online, upload this whole zip over it,
   then delete the file calculators/wire-weight.html from the server: that calculator was removed and its
   page is no longer linked from anywhere.
 - Static files only: HTML, CSS, JavaScript and images. No PHP, no database, no build step.
@@ -61,6 +61,12 @@ CHECKS AFTER UPLOAD
 - The galvanizing plant calculator (/calculator.html) asks for the zinc kettle size and shows the largest
   article it takes.
 - The spooler page (/items/spooler.html) has a Photos section with three pictures.
+- Every page opens in the light theme, even on a phone or computer set to dark mode. The moon button
+  switches to dark for that visit; the next visit opens light again.
+- https://www.shivastechnology.com/3d-models.html shows the models in four groups (complete plants,
+  furnaces, acid regeneration and effluent, zinc recovery and dross removal).
+- If the browser still shows the old look after the upload, reload the page once (Ctrl+F5); the server
+  may keep the previous files for a short while.
 - Pages are compressed:
     curl -sI -H "Accept-Encoding: gzip" https://www.shivastechnology.com/
   shows "content-encoding: gzip" (or br).
