@@ -307,34 +307,39 @@
     }
   });
 
-  /* ---------------- 9. Wire weight, length, coil and zinc on galvanized wire ---------------- */
+  /* ---------------- 9. Inline phosphating line: bath length, coating time, phosphate and output ----------------
+     Owner, 25 Nov 2026 (in place of the wire weight calculator). Times and coating weights are the ranges electrolytic
+     phosphating suppliers publish (MFL, Sirio Wire, Metiz, Eurodraw); nothing else is assumed. */
   CALCS.push({
-    id: 'wireweight', div: 'wire', t: 'Wire weight and length', s: 'kg per km, metres per coil, output, zinc',
-    lead: 'From the wire size: the weight per metre and per kilometre, how many metres a coil or spool holds and how long it takes to fill, what the machine makes in an hour and a day, and the zinc a galvanized coating puts on each tonne of wire.',
+    id: 'phos', div: 'rein', t: 'Inline phosphating line', s: 'Bath length, coating time, phosphate and output',
+    lead: 'For an inline phosphating line ahead of the drawing machine: what it makes from your rod size, strands and speed, the surface it coats and the phosphate it lays down, and the length of bath an electrolytic cell needs to give the coating its few seconds, beside a conventional bath at the same speed.',
     inputs: [
-      { k: 'd', l: 'Wire Ø', u: 'mm', v: 2.5, step: 0.01, min: 0.05 },
-      { k: 'coil', l: 'Coil or spool weight', u: 'kg', v: 1000, step: 10, min: 1 },
-      { k: 'v', l: 'Line speed', u: 'm/s', v: 10, step: 0.5, min: 0.05, max: 40 },
-      { k: 'g', l: 'Zinc coating, if galvanized', u: 'g/m²', v: 0, step: 5, min: 0, hint: '0 = black wire' },
-      { k: 'n', adv: 1, l: 'Strands or machines running', u: 'no.', v: 1, step: 1, min: 1 },
+      { k: 'd', l: 'Rod or wire Ø', u: 'mm', v: 5.5, step: 0.1, min: 0.8, max: 30 },
+      { k: 'n', l: 'Strands', u: 'no.', v: 4, step: 1, min: 1, max: 56 },
+      { k: 'v', l: 'Line speed', u: 'm/min', v: 90, step: 5, min: 5, max: 400 },
+      { k: 'c', l: 'Phosphate coating', u: 'g/m²', v: 7, step: 0.5, min: 1, max: 20, hint: 'electrolytic ≈ 5–10' },
+      { k: 'te', adv: 1, l: 'Coating time, electrolytic', u: 's', v: 3, step: 0.5, min: 1, max: 15, hint: '≈ 2–5 s' },
+      { k: 'td', adv: 1, l: 'Coating time, conventional bath', u: 's', v: 10, step: 1, min: 5, max: 900, hint: 'at least ≈ 10 s inline' },
       { k: 'hrs', adv: 1, l: 'Running hours', u: 'h/day', v: 20, step: 0.5, min: 1, max: 24 },
-      { k: 'util', adv: 1, l: 'Utilisation (stops, coil changes)', u: '%', v: 80, step: 1, min: 10, max: 100 },
-      { k: 'rho', adv: 1, l: 'Steel density', u: 'kg/m³', v: 7850, step: 10, min: 7000, max: 8100 }
+      { k: 'util', adv: 1, l: 'Utilisation (stops, coil changes)', u: '%', v: 80, step: 1, min: 10, max: 100 }
     ],
     run: function (v) {
-      if (!(v.d > 0) || !(v.v > 0)) return { warn: ['Enter the wire size and the line speed.'] };
-      var kgm = v.rho * Math.PI / 4 * v.d * v.d * 1e-6, len = v.coil / kgm, fill = len / v.v / 60;
-      var kgh = kgm * v.v * 3600 * v.n, tday = kgh * v.hrs * v.util / 100 / 1000;
-      var perM = Math.PI * v.d / 1000, sa = perM / kgm * 1000, zt = v.g * sa / 1000, warn = [];   // m² of surface per metre and per tonne; zinc kg/t
-      if (fill < 5) warn.push('A coil of ' + fx(v.coil) + ' kg fills in under 5 minutes at this speed. A bigger package or a twin take-up saves stops.');
-      var rows = [['Metres per kg', fx(1 / kgm, 2) + ' m'], ['Cross-section', fx(Math.PI / 4 * v.d * v.d, 3) + ' mm²'], ['Output a day', fx(tday, 1) + ' t at ' + v.hrs + ' h and ' + v.util + ' %'], ['Surface per tonne', fx(sa, 1) + ' m²']];
-      if (v.g > 0) rows = rows.concat([['Coating thickness', fx(v.g / 7.14, 1) + ' µm'], ['Zinc per tonne of wire', fx(zt, 1) + ' kg'], ['Zinc in one coil', fx(v.g * perM * len / 1000, 1) + ' kg'], ['Galvanized wire weight', fx((kgm + v.g * perM / 1000) * 1000, 1) + ' kg/km']]);
+      if (!(v.d > 0) || !(v.v > 0) || !(v.n > 0)) return { warn: ['Enter the rod size, the strands and the line speed.'] };
+      var kgm = 7850 * Math.PI / 4 * v.d * v.d * 1e-6, th = kgm * v.v * 60 * v.n / 1000, tday = th * v.hrs * v.util / 100;
+      var area = v.n * Math.PI * v.d / 1000 * v.v * 60, ph = area * v.c / 1000, sa = 4000 / (7.85 * v.d), pt = v.c * sa / 1000;
+      var le = v.v * v.te / 60, ld = v.v * v.td / 60, warn = [];   // metres of bath = metres of rod that pass in the coating time
+      if (v.te < 2) warn.push('Under about 2 s the phosphate may not form fully; electrolytic lines quote 2 to 5 s.');
+      if (le > 5) warn.push('This needs ' + fx(le, 1) + ' m of electrolytic bath. Reference lines use a bath of about 5 m, so plan two cells in series or run slower.');
+      if (v.c < 5 || v.c > 10) warn.push('Electrolytic phosphating lines quote about 5 to 10 g/m²; check this coating weight with the phosphate supplier.');
       return {
-        key: [['Weight', fx(kgm * 1000, 1) + ' kg/km', fx(kgm, 4) + ' kg per metre'], ['One coil holds', fx(len) + ' m', fx(len / 1000, 2) + ' km in ' + fx(v.coil) + ' kg'],
-          ['Output', fx(kgh / 1000, 2) + ' t/h', (v.n > 1 ? v.n + ' strands' : 'one strand') + ' at ' + v.v + ' m/s'], ['Coil fills in', fx(fill, fill < 10 ? 1 : 0) + ' min', 'at ' + v.v + ' m/s']],
-        rows: rows,
+        key: [['Output', fx(th, 2) + ' t/h', fx(tday, 0) + ' t a day at ' + v.hrs + ' h and ' + v.util + ' %'],
+          ['Electrolytic bath', fx(le, 1) + ' m', 'for ' + v.te + ' s at ' + v.v + ' m/min'],
+          ['Phosphate laid down', fx(ph, 1) + ' kg/h', fx(pt, 2) + ' kg per tonne of rod'],
+          ['Conventional bath', fx(ld, 1) + ' m', 'for ' + v.td + ' s at the same speed']],
+        rows: [['Surface coated', fx(area) + ' m²/h'], ['Surface per tonne of rod', fx(sa, 1) + ' m²'], ['Phosphate on the rod a day', fx(ph * v.hrs * v.util / 100) + ' kg'],
+          ['Rod weight', fx(kgm * 1000, 1) + ' kg/km'], ['Bath saved by going electrolytic', fx(Math.max(0, ld - le), 1) + ' m']],
         warn: warn,
-        note: 'Weight from the nominal size at ' + fx(v.rho) + ' kg/m³. Surface per tonne = 4,000 ÷ (7.85 × Ø in mm). Coating thickness at 7.14 g/m² per µm of zinc; zinc lost to dross, ash and wiping comes on top. Check the coating mass against the standard on your order, for example IS 4826 or ISO 7989-2.'
+        note: 'Rod weight at 7,850 kg/m³; surface per tonne = 4,000 ÷ (7.85 × Ø in mm). Bath length = line speed × coating time. Coating times and weights are the ranges electrolytic phosphating suppliers publish: about 2 to 5 s and 5 to 10 g/m² for electrolytic phosphating, at least about 10 s for a conventional high-acid-point bath inline, and minutes in batch. The phosphate on the rod is the coating itself; the chemistry, current and bath temperature are set with the phosphate supplier for your rod.'
       };
     }
   });
@@ -616,7 +621,7 @@
   CALCS.push(ZLD);
 
   /* Most used and most important first; the plant calculator (its own page) leads the list */
-  var ORDER = ['wire', 'burner', 'zld', 'coating', 'wireweight', 'scrubber', 'acid', 'neutralise', 'bagfilter', 'fan', 'rectifier', 'frp'];
+  var ORDER = ['wire', 'burner', 'zld', 'coating', 'phos', 'scrubber', 'acid', 'neutralise', 'bagfilter', 'fan', 'rectifier', 'frp'];
   CALCS.sort(function (a, b) { return ORDER.indexOf(a.id) - ORDER.indexOf(b.id); });
 
   window.SHIVAS_CALCS = CALCS;
@@ -625,14 +630,14 @@
      One panel, three ways to show it:
      1. calculators.html: <div class="cx" id="calcs"> with .cx-nav and .cx-pane. Every calculator, picked from the
         list; the address carries #id and the page colour follows the calculator's company.
-     2. A division page: <div class="cx cx-app" data-calcs="wire,wireweight" data-h="3"> (data-ext="1" puts the
+     2. A division page: <div class="cx cx-app" data-calcs="wire,phos" data-h="3"> (data-ext="1" puts the
         plant calculator first). The same list with only these; the address does not change.
      3. One calculator: <div class="cx-one" data-calc="zld" data-h="3"> on a product page, or data-h="0" on the
         calculator's own page, calculators/<PAGE[id]>.html, where the page carries the title. data-div="hdg|wire|rein"
         names the company for the label and the enquiry when the page belongs to another one.
      Pages that do not load this file themselves get it from site.js when a calculator comes near the screen.
      Links in the calculators are written from the site root; rel() makes them work from any folder. */
-  var PAGE = { wire: 'wire-drawing', burner: 'burner-kw', zld: 'etp-zld', coating: 'coating-thickness', wireweight: 'wire-weight', scrubber: 'fume-scrubber', acid: 'pickling-acid', neutralise: 'acid-neutralisation', bagfilter: 'bag-filter', fan: 'fan-motor', rectifier: 'eg-rectifier', frp: 'frp-profile' };
+  var PAGE = { wire: 'wire-drawing', burner: 'burner-kw', zld: 'etp-zld', coating: 'coating-thickness', phos: 'phosphating-line', scrubber: 'fume-scrubber', acid: 'pickling-acid', neutralise: 'acid-neutralisation', bagfilter: 'bag-filter', fan: 'fan-motor', rectifier: 'eg-rectifier', frp: 'frp-profile' };
   window.SHIVAS_CALC_PAGES = PAGE;
   var DIVN = { hdg: 'Galvanizing', wire: 'Wire', rein: 'Reinplast', frp: 'FRP profiles' }, DCL = { frp: 'hdg' };
   var ME = document.currentScript || document.querySelector('script[src*="calcs.js"]');
