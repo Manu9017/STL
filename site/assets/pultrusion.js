@@ -1,11 +1,12 @@
 /* SHIVAS Products India: the pultrusion line, animated (pultrusion.html).
    Creel → resin bath → preformer → heated die → two reciprocating pullers → flying cut-off saw.
    It makes each profile in turn, changing after every cut (owner, 25 Nov 2026: animations play by themselves); a profile
-   a visitor picks stays for 30 s. Pauses off screen; starts paused for reduced motion. */
+   a visitor picks stays for 30 s. Pauses off screen. It plays whatever the device's reduce-motion setting, like every
+   animation on the site (owner); the Pause button stops it. */
 (function () {
   var box = document.getElementById('pu-anim'); if (!box) return;
   var cv = box.querySelector('canvas'), ctx = cv.getContext('2d');
-  var W = 1100, H = 330, K = 1, dpr = 1, run = !matchMedia('(prefers-reduced-motion: reduce)').matches, vis = true, t = 0, last = 0, looping = false, hold = 0;
+  var W = 1100, H = 330, K = 1, dpr = 1, run = true, vis = true, t = 0, last = 0, looping = false, hold = 0;
   var playB = box.querySelector('.pa-play'), nameEl = box.querySelector('.pa-now');
   var SH = [
     ['angle', 'Equal angle'], ['channel', 'Channel'], ['ibeam', 'I-beam'], ['sq', 'Square tube'],

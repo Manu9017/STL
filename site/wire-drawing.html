@@ -981,7 +981,7 @@ footer.night{background:#0b1520!important}
 .fm-u path{stroke-dasharray:3 6;animation:fmU 1s linear infinite}
 @keyframes fmF{to{stroke-dashoffset:-15}}
 @keyframes fmU{to{stroke-dashoffset:-9}}
-@media (prefers-reduced-motion:reduce){.fm-f,.fm-w,.fm-u path{animation:none}}
+
 @media (min-width:961px){
  .ln-left{position:sticky;top:calc(var(--stick) + 10px);align-self:start;transition:top .28s ease}
 }
@@ -1487,7 +1487,7 @@ html{scroll-padding-top:calc(var(--nav-h,60px) + 12px)} /* V35 scroll-pad */
 .anim-on #dipSvg .bub,.anim-on #dipSvg .fm{animation-play-state:running}
 @keyframes dipBub{0%{transform:translateY(0);opacity:0}15%{opacity:.9}100%{transform:translateY(-58px);opacity:0}}
 @keyframes dipFm{0%{transform:translateY(0) scale(.6);opacity:0}20%{opacity:.8}100%{transform:translateY(-90px) scale(1.8);opacity:0}}
-@media (prefers-reduced-motion:reduce){#dipSvg .bub,#dipSvg .fm{animation:none}}
+
 .anim-on #dipSvg .rip{animation-play-state:running}
 @keyframes dipRip{0%{transform:translateX(0)}50%{transform:translateX(-14px)}100%{transform:translateX(0)}}
 #dipSvg .heat{animation:dipHeat 2.4s ease-in-out infinite alternate;animation-play-state:paused}
@@ -5306,52 +5306,51 @@ requestAnimationFrame(frame);
 </script>
 
 <script id="v52dip">
-/* V56 (25 Nov 2026, owner: "automatically playing at a good pace ... when the passivation ends it can start over from
-   degreasing ... people don't really need to do it manually"; then "not autoplaying on phone"): the line runs by itself,
-   about 5 s a tank, and starts again at degreasing after passivation. The beam is drawn straight from the play position;
-   the sideways scroller only follows a real gesture (a finger or mouse drag on the line, or a sideways trackpad swipe),
-   so stray or late scroll events (iPhone) never stop it, and a finger resting on it holds it only while it rests.
-   A swipe, a drag or a tap on a step moves the beam; it carries on by itself 6 s later. Pause stops it.
-   Reduced motion: it still goes tank to tank by itself, with cuts instead of glides. */
+/* V57 (25 Nov 2026, owner: "automatically playing at a good pace ... when the passivation ends it can start over from
+   degreasing ... people don't really need to do it manually", then twice "not autoplaying on phone"): the line runs by
+   itself, about 5 s a tank, and starts again at degreasing after passivation, on every device. Like every animation on
+   these pages (V29: the owner wants them running whatever the device's reduce-motion setting), it ignores that setting.
+   The beam is drawn straight from the play position, by elapsed time (a phone that slows the frame rate still gets the
+   right pace). The hidden sideways scroller only moves the beam during a real gesture (a finger or mouse drag on the line,
+   or a sideways trackpad swipe); other scroll events just put it back. Touching the line does not hold it: only moving it
+   does. A swipe, a drag or a tap on a step moves the beam; it carries on by itself 6 s later. Pause stops it. */
 (function(){var sec=document.getElementById('dip');if(!sec)return;var sw=sec.querySelector('.v54-sw'),stage=sec.querySelector('.dip-stage');if(!sw||!stage)return;
-var N=9,TANK=5,RESUME=6000,p=0,last=0,vis=false,run=false,uT=-1e9,railT=-1e9,gT=-1e9,tT=0,setL=-1,drag=null,touch=false,moved=false,paused=false,acc=0,settleT=0,glide=null,
-RM=matchMedia('(prefers-reduced-motion: reduce)').matches,rail=sec.querySelector('.v53-rail'),bs=rail?[].slice.call(rail.children):[],lastI=-1,pb=sec.querySelector('.v55-play');
+var N=9,TANK=5,RESUME=6000,p=0,last=0,vis=false,run=false,uT=-1e9,railT=-1e9,gT=-1e9,tT=0,setL=-1,drag=null,touch=false,moved=false,paused=false,settleT=0,glide=null,
+rail=sec.querySelector('.v53-rail'),bs=rail?[].slice.call(rail.children):[],lastI=-1,pb=sec.querySelector('.v55-play');
 var inner=sw.firstElementChild;function size(){var w=sw.clientWidth||1;inner.style.width=(w+N*(w>700?230:165))+'px';}size();
 function now(){return performance.now();}
 function rng(){return Math.max(1,sw.scrollWidth-sw.clientWidth);}
 function push(){window.__dipP=Math.min(.9999,Math.max(0,p));dispatchEvent(new Event('scroll'));var i=Math.min(N-1,Math.floor(window.__dipP*N));
  if(i!==lastI){lastI=i;bs.forEach(function(b,k){b.classList.toggle('on',k===i);b.classList.toggle('done',k<i);b.setAttribute('aria-current',k===i?'step':'false');});
-  var b=bs[i],t=now();if(b&&rail.scrollWidth>rail.clientWidth&&t-railT>3000&&t-uT>3000){rail.scrollTo({left:b.offsetLeft-(rail.clientWidth-b.offsetWidth)/2,behavior:RM?'auto':'smooth'});}}}
+  var b=bs[i],t=now();if(b&&rail.scrollWidth>rail.clientWidth&&t-railT>3000&&t-uT>3000){try{rail.scrollTo({left:b.offsetLeft-(rail.clientWidth-b.offsetWidth)/2,behavior:'smooth'});}catch(e){rail.scrollLeft=b.offsetLeft-(rail.clientWidth-b.offsetWidth)/2;}}}}
 function place(){setL=Math.round(p*rng());sw.scrollLeft=setL;}
-function user(){uT=now();acc=0;}
+function user(){uT=now();}
 function inGesture(){return touch||drag||now()-gT<800;}
-function goTo(t){if(RM){glide=null;p=t;push();place();}else glide={a:p,b:t,t0:now()};}
+function goTo(t){glide={a:p,b:t,t0:now()};}
 function settle(){clearTimeout(settleT);settleT=setTimeout(function(){if(drag||touch)return;var k=Math.max(0,Math.min(N-1,Math.round(p*N-.62)));goTo((k+.62)/N);},160);}
 /* the scroller moves the beam only during a gesture; any other scroll event just puts the scroller back */
 sw.addEventListener('scroll',function(){var l=sw.scrollLeft;if(Math.abs(l-setL)<=1)return;if(!inGesture()){place();return;}
  setL=-1;glide=null;p=l/rng();if(touch)moved=true;gT=now();user();push();settle();},{passive:true});
-sw.addEventListener('touchstart',function(){touch=true;tT=now();glide=null;place();},{passive:true});
+sw.addEventListener('touchstart',function(){touch=true;tT=now();moved=false;place();},{passive:true});
 function tEnd(){if(!touch)return;touch=false;gT=now();if(moved){moved=false;user();settle();}}
 ['touchend','touchcancel'].forEach(function(ev){sw.addEventListener(ev,tEnd,{passive:true});document.addEventListener(ev,tEnd,{passive:true,capture:true});});
 sw.addEventListener('wheel',function(e){if(Math.abs(e.deltaX)<=Math.abs(e.deltaY))return;if(now()-gT>800){glide=null;place();}gT=now();},{passive:true});
-sw.addEventListener('pointerdown',function(e){if(e.pointerType!=='mouse')return;user();glide=null;place();drag={x:e.clientX,l:sw.scrollLeft};sw.setPointerCapture(e.pointerId);sw.classList.add('drag');e.preventDefault();});
+sw.addEventListener('pointerdown',function(e){if(e.pointerType!=='mouse')return;user();glide=null;place();drag={x:e.clientX,l:sw.scrollLeft};try{sw.setPointerCapture(e.pointerId);}catch(er){}sw.classList.add('drag');e.preventDefault();});
 sw.addEventListener('pointermove',function(e){if(!drag)return;sw.scrollLeft=drag.l-(e.clientX-drag.x);});
 function up(){if(!drag)return;drag=null;gT=now();sw.classList.remove('drag');user();settle();}
 sw.addEventListener('pointerup',up);sw.addEventListener('pointercancel',up);
 if(rail)rail.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;user();goTo((+b.dataset.i+.62)/N);});
 if(rail)['pointerdown','touchstart','wheel'].forEach(function(ev){rail.addEventListener(ev,function(){railT=now();},{passive:true});});
 function label(){if(!pb)return;pb.innerHTML=paused?'<span aria-hidden="true">▶</span> Play':'<span aria-hidden="true">❚❚</span> Pause';}
-if(pb)pb.addEventListener('click',function(){paused=!paused;if(!paused){uT=-1e9;acc=0;}label();});label();
-function loop(t){if(!vis){run=false;return;}var n=now(),dt=Math.max(0,Math.min(.05,(t-last)/1000));last=t;
+if(pb)pb.addEventListener('click',function(){paused=!paused;if(!paused)uT=-1e9;label();});label();
+function loop(t){if(!vis){run=false;return;}var n=now(),dt=Math.max(0,Math.min(.25,(n-last)/1000));last=n;
  if(touch&&n-tT>8000)touch=false;
  if(glide){var g=Math.min(1,(n-glide.t0)/450),e=g<.5?2*g*g:1-Math.pow(2-2*g,2)/2;p=glide.a+(glide.b-glide.a)*e;push();if(g>=1){glide=null;place();}}
- else if(!paused&&!drag&&!touch&&n-uT>RESUME){
-  if(RM){acc+=dt;if(acc>=TANK){acc=0;var k=(Math.round(p*N-.62)+1)%N;p=(k+.62)/N;push();}}
-  else{p+=dt/(N*TANK);if(p>=1)p-=1;push();}}
+ else if(!paused&&!drag&&!moved&&n-uT>RESUME){p+=dt/(N*TANK);if(p>=1)p-=1;push();}
  requestAnimationFrame(loop);}
-function start(){if(run||!vis)return;run=true;last=performance.now();requestAnimationFrame(loop);}
+function start(){if(run||!vis)return;run=true;last=now();requestAnimationFrame(loop);}
 if('IntersectionObserver' in window)new IntersectionObserver(function(es){vis=es[0].isIntersecting;if(vis)start();},{threshold:0}).observe(stage);else{vis=true;start();}
 addEventListener('resize',function(){size();place();});
-p=RM?.62/N:0;place();push();})();
+p=0;place();push();})();
 </script></body>
 </html>

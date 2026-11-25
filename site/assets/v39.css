@@ -328,7 +328,7 @@ h3:not(#v39a):not(#v39b):not(#v61){font-weight:700!important;letter-spacing:-.01
 .zfd .ar.e{stroke:#b5891a}.zfd .ar.st{stroke:#8296ab;marker-end:url(#zarst)}.zfd .mkst,.zfd .o.st{fill:#5a6c80}.zfd .ar.pw{stroke:#b07d00;marker-end:url(#zarpw)}.zfd .mkpw,.zfd .o.pw{fill:#7a5600}
 .zfd rect.ac{stroke:none}.zfd .ac-e{fill:#c99a1e}.zfd .ac-t{fill:#5d7590}.zfd .ac-w{fill:#0f97a3}.zfd .ac-ev{fill:#7a5fb0}.zfd .ac-s{fill:#945400}
 @keyframes zfl{to{stroke-dashoffset:-16}}
-@media (prefers-reduced-motion:reduce){.zfd .fl{animation:none}}
+
 :root[data-theme="dark"] .zfd .fl.w{stroke:#5fe0e8}:root[data-theme="dark"] .zfd .fl.e{stroke:#ffcf5a}:root[data-theme="dark"] .zfd .fl.s{stroke:#ffb36b}:root[data-theme="dark"] .zfd .fl.st{stroke:#c9d4de}
 :root[data-theme="dark"] .zfd :is(.mkst,.o.st){fill:#c9d4de}:root[data-theme="dark"] .zfd :is(.mkpw,.o.pw){fill:#ffcf5a}
 .zwb{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:14px 16px;margin:0 0 6px}
