@@ -1,9 +1,10 @@
 SHIVAS website: notes for the developer (25 Nov 2026)
 
 THE FILE
-SHIVAS-website-final-2026-11-25-v9.zip is the complete new website for www.shivastechnology.com.
-- It replaces every earlier zip (v5 to v8). If one of those is already online, upload this whole zip over it:
-  it changes the animations on the Galvanizing and pultrusion pages and two style files.
+SHIVAS-website-final-2026-11-25-v10.zip is the complete new website for www.shivastechnology.com.
+- It replaces every earlier zip (v5 to v9). If one of those is already online, upload this whole zip over it,
+  then delete the file calculators/wire-weight.html from the server: that calculator was removed and its
+  page is no longer linked from anywhere.
 - Static files only: HTML, CSS, JavaScript and images. No PHP, no database, no build step.
 - The files are at the top level of the zip, so index.html must end up directly in the web root.
 - 765 files, about 36 MB. The largest file is 11 MB (3D model data).
@@ -52,6 +53,8 @@ CHECKS AFTER UPLOAD
   no colour key.
 - On the Galvanizing page, the line under "How galvanizing works" (degreasing to passivation) moves by
   itself and starts again after passivation. On the pultrusion page the profile changes after each cut.
+- On the Reinplast page, "Wire pretreatment lines" has five tabs, including the inline electrolytic
+  phosphating line and the inline borax coating line, and https://www.shivastechnology.com/calculators/phosphating-line.html opens.
 - Pages are compressed:
     curl -sI -H "Accept-Encoding: gzip" https://www.shivastechnology.com/
   shows "content-encoding: gzip" (or br).
