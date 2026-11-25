@@ -7,7 +7,7 @@ SHIVAS-website-final-2026-11-25-v10.zip is the complete new website for www.shiv
   page is no longer linked from anywhere.
 - Static files only: HTML, CSS, JavaScript and images. No PHP, no database, no build step.
 - The files are at the top level of the zip, so index.html must end up directly in the web root.
-- 765 files, about 36 MB. The largest file is 11 MB (3D model data).
+- 773 files, about 38 MB. The largest file is 11 MB (3D model data).
 - On 24 Nov 2026 www.shivastechnology.com still showed the old 2019 site. Please upload this zip there.
 - If an earlier copy of the new site was put anywhere for testing (another address or a test server), please
   take it down once this one is live: it sends its visits to the same SHIVAS visitor log.
