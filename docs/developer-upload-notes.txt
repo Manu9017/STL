@@ -1,8 +1,8 @@
 SHIVAS website: notes for the developer (25 Nov 2026)
 
 THE FILE
-SHIVAS-website-final-2026-11-25-v8.zip is the complete new website for www.shivastechnology.com.
-- It replaces every earlier zip (v5, v6, v7). If one of those is already online, upload this whole zip over it:
+SHIVAS-website-final-2026-11-25-v9.zip is the complete new website for www.shivastechnology.com.
+- It replaces every earlier zip (v5 to v8). If one of those is already online, upload this whole zip over it:
   it changes the animations on the Galvanizing and pultrusion pages and two style files.
 - Static files only: HTML, CSS, JavaScript and images. No PHP, no database, no build step.
 - The files are at the top level of the zip, so index.html must end up directly in the web root.
