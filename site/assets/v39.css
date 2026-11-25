@@ -218,8 +218,8 @@ header.top .dsw small{text-transform:none!important;letter-spacing:0!important}
 .v54-sw::-webkit-scrollbar{display:none}
 .v54-sw.drag{cursor:grabbing;user-select:none}
 .v54-sw>i{display:block;width:500%;height:1px}
-.v54-cue{position:absolute;z-index:3;bottom:12px;left:50%;transform:translateX(-50%);white-space:nowrap;padding:6px 14px;background:rgba(10,30,50,.82);border:1px solid rgba(255,255,255,.35);color:#fff;font:600 14px "Noto Sans",Arial,sans-serif;pointer-events:none;transition:opacity .4s}
-.v54-u .v54-cue{opacity:0}
+
+
 .v53-rail{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:4px;margin:10px 0 2px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .v53-rail::-webkit-scrollbar{display:none}
 .v53-rail button{display:grid;gap:1px;justify-items:start;min-width:0;padding:8px 10px;border:1px solid rgba(255,255,255,.22);border-top:3px solid rgba(255,255,255,.22);background:rgba(255,255,255,.04);color:#cfe0ee;text-align:left;cursor:pointer;font:500 14px "Noto Sans",Arial,sans-serif}

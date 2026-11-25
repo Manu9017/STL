@@ -1773,8 +1773,8 @@ html{scroll-padding-top:calc(var(--nav-h,60px) + 12px)} /* V35 scroll-pad */
         <p class="stage-text" id="stText">Oil, grease and drawing soap come off first. Zinc only bonds to clean steel, so this bath sets the result for everything after it.</p>
       </div>
     </div>
-    <div class="dip-stage"><svg id="dipSvg" preserveAspectRatio="xMidYMid meet" role="img" aria-label="A steel beam hung from a crane moves through degreasing, rinse, pickling, rinse, flux, dryer, zinc kettle, quench and passivation"></svg><div class="v54-sw" aria-hidden="true"><i></i></div><span class="v54-cue" aria-hidden="true">‹ Swipe the line ›</span></div>
-    <div class="wrap v52-w"><div class="v53-rail" role="group" aria-label="Process steps: tap one to stop the beam there"><button type="button" data-i="0"><b>01</b><span>Degreasing</span><em>50 °C</em></button><button type="button" data-i="1"><b>02</b><span>Rinse</span><em>30 °C</em></button><button type="button" data-i="2"><b>03</b><span>Pickling</span><em>30 °C</em></button><button type="button" data-i="3"><b>04</b><span>Rinse</span><em>30 °C</em></button><button type="button" data-i="4"><b>05</b><span>Fluxing</span><em>55 °C</em></button><button type="button" data-i="5"><b>06</b><span>Drying</span><em>110 °C</em></button><button type="button" data-i="6"><b>07</b><span>Galvanizing</span><em>450 °C</em></button><button type="button" data-i="7"><b>08</b><span>Quench</span><em>35 °C</em></button><button type="button" data-i="8"><b>09</b><span>Passivation</span><em>30 °C</em></button></div><p class="v53-hint" id="dHint">Swipe or drag the line sideways to move the beam from tank to tank, or tap a step. Left alone, it runs by itself.</p></div><div class="dip-foot wrap">
+    <div class="dip-stage"><svg id="dipSvg" preserveAspectRatio="xMidYMid meet" role="img" aria-label="A steel beam hung from a crane moves through degreasing, rinse, pickling, rinse, flux, dryer, zinc kettle, quench and passivation"></svg><div class="v54-sw" aria-hidden="true"><i></i></div></div>
+    <div class="wrap v52-w"><div class="v53-rail" role="group" aria-label="Process steps: tap one to move the beam there"><button type="button" data-i="0"><b>01</b><span>Degreasing</span><em>50 °C</em></button><button type="button" data-i="1"><b>02</b><span>Rinse</span><em>30 °C</em></button><button type="button" data-i="2"><b>03</b><span>Pickling</span><em>30 °C</em></button><button type="button" data-i="3"><b>04</b><span>Rinse</span><em>30 °C</em></button><button type="button" data-i="4"><b>05</b><span>Fluxing</span><em>55 °C</em></button><button type="button" data-i="5"><b>06</b><span>Drying</span><em>110 °C</em></button><button type="button" data-i="6"><b>07</b><span>Galvanizing</span><em>450 °C</em></button><button type="button" data-i="7"><b>08</b><span>Quench</span><em>35 °C</em></button><button type="button" data-i="8"><b>09</b><span>Passivation</span><em>30 °C</em></button></div><div class="v55-row"><button type="button" class="v55-play"></button><p class="v53-hint" id="dHint">It runs by itself from degreasing to passivation, then starts again. Swipe the line or tap a step to stop at one tank; it carries on a few seconds later.</p></div></div><div class="dip-foot wrap">
       <div class="coat">
         <div class="coat-top"><span class="mono">Coating section · Fe–Zn layers</span><span><b id="coatUm">0</b> <span class="mono">µm</span></span></div>
         <div class="coat-bar" aria-hidden="true">
@@ -5306,35 +5306,43 @@ requestAnimationFrame(frame);
 </script>
 
 <script id="v52dip">
-/* V54: swipe or drag the process line sideways to move the beam tank to tank; it runs by itself when left alone.
-   Vertical page scroll is never held. Tap a step on the rail to jump. */
+/* V55 (25 Nov 2026, owner: "automatically playing at a good pace ... when the passivation ends it can start over from
+   degreasing ... people don't really need to do it manually"): the line runs by itself, about 5 s a tank, and starts again
+   at degreasing after passivation. Scrolling the page past it never stops it (a finger resting on it only holds it while
+   it rests). A sideways swipe or drag, or a tap on a step, moves the beam; the line carries on by itself 6 s later.
+   Pause stops it. Reduced motion: it still goes tank to tank by itself, with cuts instead of glides. */
 (function(){var sec=document.getElementById('dip');if(!sec)return;var sw=sec.querySelector('.v54-sw');if(!sw)return;
-var N=9,p=0,last=0,vis=false,run=false,uT=-1e9,setL=-1,drag=null,settleT=0,
-RM=matchMedia('(prefers-reduced-motion: reduce)').matches,rail=sec.querySelector('.v53-rail'),bs=rail?[].slice.call(rail.children):[],lastI=-1;
+var N=9,TANK=5,RESUME=6000,p=0,last=0,vis=false,run=false,uT=-1e9,railT=-1e9,setL=-1,drag=null,touch=false,moved=false,paused=false,acc=0,settleT=0,
+RM=matchMedia('(prefers-reduced-motion: reduce)').matches,rail=sec.querySelector('.v53-rail'),bs=rail?[].slice.call(rail.children):[],lastI=-1,pb=sec.querySelector('.v55-play');
 var inner=sw.firstElementChild;function size(){var w=sw.clientWidth||1;inner.style.width=(w+N*(w>700?230:165))+'px';}size();
 function rng(){return Math.max(1,sw.scrollWidth-sw.clientWidth);}
 function push(){window.__dipP=Math.min(.9999,Math.max(0,p));dispatchEvent(new Event('scroll'));var i=Math.min(N-1,Math.floor(window.__dipP*N));
  if(i!==lastI){lastI=i;bs.forEach(function(b,k){b.classList.toggle('on',k===i);b.classList.toggle('done',k<i);b.setAttribute('aria-current',k===i?'step':'false');});
-  var b=bs[i];if(b&&rail.scrollWidth>rail.clientWidth&&performance.now()-uT>3000){rail.scrollTo({left:b.offsetLeft-(rail.clientWidth-b.offsetWidth)/2,behavior:'smooth'});}}}
+  var b=bs[i],now=performance.now();if(b&&rail.scrollWidth>rail.clientWidth&&now-railT>3000&&now-uT>3000){rail.scrollTo({left:b.offsetLeft-(rail.clientWidth-b.offsetWidth)/2,behavior:RM?'auto':'smooth'});}}}
 function place(){setL=Math.round(p*rng());sw.scrollLeft=setL;}
-function user(){uT=performance.now();sec.classList.add('v54-u');}
-function settle(){clearTimeout(settleT);settleT=setTimeout(function(){if(drag)return;var k=Math.max(0,Math.min(N-1,Math.round(p*N-.62))),t=(k+.62)/N;
+function user(){uT=performance.now();acc=0;}
+function settle(){clearTimeout(settleT);settleT=setTimeout(function(){if(drag||touch)return;var k=Math.max(0,Math.min(N-1,Math.round(p*N-.62))),t=(k+.62)/N;
  if(Math.abs(t-p)>.004)sw.scrollTo({left:t*rng(),behavior:RM?'auto':'smooth'});},160);}
-sw.addEventListener('scroll',function(){var l=sw.scrollLeft;if(Math.abs(l-setL)<=1)return;setL=-1;p=l/rng();user();push();settle();},{passive:true});
-['touchstart','wheel'].forEach(function(ev){sw.addEventListener(ev,user,{passive:true});});
-sw.addEventListener('pointerdown',function(e){user();if(e.pointerType!=='mouse')return;drag={x:e.clientX,l:sw.scrollLeft};sw.setPointerCapture(e.pointerId);sw.classList.add('drag');e.preventDefault();});
+/* only a real sideways move of the line counts as the visitor taking over */
+sw.addEventListener('scroll',function(){var l=sw.scrollLeft;if(Math.abs(l-setL)<=1)return;setL=-1;p=l/rng();if(touch)moved=true;user();push();settle();},{passive:true});
+sw.addEventListener('touchstart',function(){touch=true;},{passive:true});
+['touchend','touchcancel'].forEach(function(ev){sw.addEventListener(ev,function(){touch=false;if(moved){moved=false;user();settle();}},{passive:true});});
+sw.addEventListener('pointerdown',function(e){if(e.pointerType!=='mouse')return;user();drag={x:e.clientX,l:sw.scrollLeft};sw.setPointerCapture(e.pointerId);sw.classList.add('drag');e.preventDefault();});
 sw.addEventListener('pointermove',function(e){if(!drag)return;sw.scrollLeft=drag.l-(e.clientX-drag.x);});
-function up(){if(!drag)return;drag=null;sw.classList.remove('drag');settle();}
+function up(){if(!drag)return;drag=null;sw.classList.remove('drag');user();settle();}
 sw.addEventListener('pointerup',up);sw.addEventListener('pointercancel',up);
 if(rail)rail.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;user();sw.scrollTo({left:(+b.dataset.i+.62)/N*rng(),behavior:RM?'auto':'smooth'});});
-if(rail)['pointerdown','touchstart','wheel'].forEach(function(ev){rail.addEventListener(ev,function(){uT=performance.now();},{passive:true});});
+if(rail)['pointerdown','touchstart','wheel'].forEach(function(ev){rail.addEventListener(ev,function(){railT=performance.now();},{passive:true});});
+function label(){if(!pb)return;pb.innerHTML=paused?'<span aria-hidden="true">▶</span> Play':'<span aria-hidden="true">❚❚</span> Pause';}
+if(pb)pb.addEventListener('click',function(){paused=!paused;if(!paused){uT=-1e9;acc=0;}label();});label();
 function loop(t){if(!vis){run=false;return;}var dt=Math.min(.05,(t-last)/1000);last=t;
- if(!RM&&!drag&&t-uT>9000){p+=dt/(N*3.6);if(p>=1)p=0;place();push();}
+ if(!paused&&!drag&&!touch&&t-uT>RESUME){
+  if(RM){acc+=dt;if(acc>=TANK){acc=0;var k=(Math.round(p*N-.62)+1)%N;p=(k+.62)/N;place();push();}}
+  else{p+=dt/(N*TANK);if(p>=1)p-=1;place();push();}}
  requestAnimationFrame(loop);}
 function start(){if(run||!vis)return;run=true;last=performance.now();requestAnimationFrame(loop);}
 if('IntersectionObserver' in window)new IntersectionObserver(function(es){vis=es[0].isIntersecting;if(vis)start();},{threshold:.15}).observe(sec);else{vis=true;start();}
 addEventListener('resize',function(){size();place();});
-var cue=sec.querySelector('.v54-cue');if(cue&&matchMedia('(pointer:fine)').matches)cue.textContent='‹ Drag the line, or scroll sideways ›';
-p=0;place();push();})();
+p=RM?.62/N:0;place();push();})();
 </script></body>
 </html>

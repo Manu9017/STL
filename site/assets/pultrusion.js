@@ -1,10 +1,11 @@
 /* SHIVAS Products India: the pultrusion line, animated (pultrusion.html).
    Creel → resin bath → preformer → heated die → two reciprocating pullers → flying cut-off saw.
-   Pick a profile to change what comes out of the die. Pauses off screen; starts paused for reduced motion. */
+   It makes each profile in turn, changing after every cut (owner, 25 Nov 2026: animations play by themselves); a profile
+   a visitor picks stays for 30 s. Pauses off screen; starts paused for reduced motion. */
 (function () {
   var box = document.getElementById('pu-anim'); if (!box) return;
   var cv = box.querySelector('canvas'), ctx = cv.getContext('2d');
-  var W = 1100, H = 330, K = 1, dpr = 1, run = !matchMedia('(prefers-reduced-motion: reduce)').matches, vis = true, t = 0, last = 0;
+  var W = 1100, H = 330, K = 1, dpr = 1, run = !matchMedia('(prefers-reduced-motion: reduce)').matches, vis = true, t = 0, last = 0, looping = false, hold = 0;
   var playB = box.querySelector('.pa-play'), nameEl = box.querySelector('.pa-now');
   var SH = [
     ['angle', 'Equal angle'], ['channel', 'Channel'], ['ibeam', 'I-beam'], ['sq', 'Square tube'],
@@ -13,13 +14,18 @@
   var cur = 2, pieces = [], made = 0;
   var segs = box.querySelector('.pa-shapes');
   segs.innerHTML = SH.map(function (s, i) { return '<button type="button" data-i="' + i + '" aria-pressed="' + (i === cur) + '">' + s[1] + '</button>'; }).join('');
+  function shape(i) {
+    cur = i; nameEl.textContent = SH[cur][1];
+    [].forEach.call(segs.children, function (x, k) { x.setAttribute('aria-pressed', String(k === cur)); });
+  }
   segs.addEventListener('click', function (e) {
-    var b = e.target.closest('button'); if (!b) return; cur = +b.getAttribute('data-i');
-    [].forEach.call(segs.children, function (x) { x.setAttribute('aria-pressed', String(x === b)); });
-    nameEl.textContent = SH[cur][1]; if (!run) draw();
+    var b = e.target.closest('button'); if (!b) return; shape(+b.getAttribute('data-i')); hold = t + 30;
+    if (!run) draw();
   });
-  nameEl.textContent = SH[cur][1];
-  playB.addEventListener('click', function () { run = !run; sync(); if (run) { last = performance.now(); requestAnimationFrame(loop); } });
+  shape(cur);
+  // one drawing loop at a time (the observer and the start-up used to start two)
+  function kick() { if (looping || !run || !vis) return; looping = true; last = performance.now(); requestAnimationFrame(loop); }
+  playB.addEventListener('click', function () { run = !run; sync(); kick(); });
   function sync() { playB.textContent = run ? 'Pause' : 'Play'; playB.setAttribute('aria-pressed', String(!run)); }
   sync();
   function size() {
@@ -29,7 +35,7 @@
   }
   addEventListener('resize', size);
   if (window.ResizeObserver) new ResizeObserver(function () { var w = cv.getBoundingClientRect().width; if (w && Math.abs(w * dpr - cv.width) > 2) size(); }).observe(cv);
-  if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { vis = es[0].isIntersecting; if (vis && run) { last = performance.now(); requestAnimationFrame(loop); } }, { threshold: 0 }).observe(cv);
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { vis = es[0].isIntersecting; kick(); }, { threshold: 0 }).observe(cv);
 
   var Y = 168, SPEED = 46;               // profile centre line; px per second along the line
   function rr(x, y, w, h, r) { ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
@@ -150,7 +156,7 @@
     ctx.fillStyle = '#5d7590'; ctx.fillRect(sxp - 3, 60, 6, bladeY - 60 - 22);
     ctx.fillStyle = '#3b5672'; ctx.fillRect(sxp - 30, 50, 60, 14); ctx.fillStyle = '#2d4860'; ctx.fillRect(sxp - 8, 0, 16, 50);
     if (down) { for (var di = 0; di < 18; di++) { var dph = ((t * 1.8) + di / 18) % 1, da = -1.2 + (di % 7) * .35; ctx.fillStyle = 'rgba(214,236,230,' + (.6 * (1 - dph)).toFixed(3) + ')'; ctx.beginPath(); ctx.arc(sxp + Math.cos(da) * dph * 46, Y + Math.sin(da) * dph * 30 - dph * 10, 1.6 + dph * 2.4, 0, 6.283); ctx.fill(); } }
-    if (down && Math.abs(sp - .58) < .02 && (!pieces.length || t - pieces[pieces.length - 1].t > 3)) { pieces.push({ t: t, k: SH[cur][0] }); made++; }
+    if (down && Math.abs(sp - .58) < .02 && (!pieces.length || t - pieces[pieces.length - 1].t > 3)) { pieces.push({ t: t, k: SH[cur][0] }); made++; if (t >= hold) shape((cur + 1) % SH.length); }
     pieces = pieces.filter(function (pc) { return t - pc.t < 9; });
     pieces.forEach(function (pc) {
       var age = t - pc.t, x0 = 960 + age * SPEED * .9;
@@ -169,8 +175,8 @@
     label(74, 1, 'Creel'); label(285, 2, 'Resin bath'); label(402, 3, 'Preformer'); label(560, 4, 'Heated die'); label(790, 5, 'Pullers'); label(930, 6, 'Saw');
   }
   function loop(now) {
-    if (!run || !vis) return;
+    if (!run || !vis) { looping = false; return; }
     var dt = Math.min(.05, (now - last) / 1000); last = now; t += dt; draw(); requestAnimationFrame(loop);
   }
-  size(); draw(); if (run) { last = performance.now(); requestAnimationFrame(loop); }
+  size(); draw(); kick();
 })();

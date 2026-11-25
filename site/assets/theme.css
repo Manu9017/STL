@@ -395,3 +395,13 @@
   :root:not(#_) #app .xp-hud div:last-child:nth-child(odd){grid-column:1/-1}
   :root:not(#_) #app .xp-hud b{font-size:13px}
 }
+
+/* ============================== 14. THE DIP LINE PLAYS BY ITSELF (25 Nov 2026) ==============================
+   Owner: the galvanizing dip line runs on its own and loops. A Pause button sits beside the hint under the steps. */
+:root:not(#_) #dip .v55-row{display:flex;align-items:center;gap:12px;margin-top:10px}
+:root:not(#_) #dip .v55-row .v53-hint{margin:0;flex:1 1 auto;min-width:0}
+:root:not(#_) #dip .v55-play{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;min-width:96px;padding:0 14px;border:1px solid #2d4860;border-radius:10px!important;background:#152b42;color:#e7edf3;font:600 14px/1 "Noto Sans",Arial,sans-serif;cursor:pointer}
+:root:not(#_) #dip .v55-play:hover{color:#ffc35a;border-color:#ffc35a}
+:root:not(#_) #dip .v55-play:focus-visible{outline:2px solid #ffc35a;outline-offset:2px}
+:root:not(#_) #dip .v55-play span{font-size:12px;font-variant-emoji:text}
+@media (max-width:760px){:root:not(#_) #dip .v55-play{height:44px}}
