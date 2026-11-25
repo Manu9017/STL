@@ -2,7 +2,7 @@
    Load this right after assets/library.js (item pages and the three division pages do). It adds the photos to
    window.SHIVAS_LIBRARY: their entries, their places in each product's gallery (own photos before supplier
    photos) and, where set, the product's lead photo (owner, 23 Nov 2026: the blue and white die box leads, not the
-   red primer one; 25 Nov 2026: his two photos of a hot air strip dryer go on the strip pickling line page, after its photos, and his three pictures of a spooler lead the spooler's photos). Files: assets/own/ (FULL and THUMB) and assets/resp/ (480/960 px for phones). Originals, for the
+   red primer one; 25 Nov 2026: his two photos of a hot air strip dryer go on the strip pickling line page, after its photos, and his three pictures of a spooler lead the spooler's photos, the first of them as its main picture). Files: assets/own/ (FULL and THUMB) and assets/resp/ (480/960 px for phones). Originals, for the
    pipeline: docs/own-photos/. When the library is next rebuilt with these photos in it, delete this file and its
    <script> tags. Captions say only what the photo shows. */
 (function () {
@@ -275,6 +275,7 @@
   ]
  },
  "spooler": {
+  "image": "spooler-photo-own-f129cdc6ef",
   "first": [
    "spooler-photo-own-f129cdc6ef",
    "spooler-photo-own-4e0f094dd8",
