@@ -122,7 +122,7 @@
 :root:not(#_) body[data-pt="home"] #articles{--ico:var(--i-doc)}
 :root:not(#_) body[data-pt="home"] #group{--ico:var(--i-building)}
 :root:not(#_) body[data-pt="home"] #enquire{--ico:var(--i-chat)}
-:root:not(#_) body[data-pt="app"] :is(#dip,#wire,#hdg-machines,#wire-machines,#rein-machines){--ico:var(--i-play)}
+:root:not(#_) body[data-pt="app"] :is(#dip,#wire,#hdg-machines,#hdg-fume,#hdg-flux,#wire-machines,#wire-takeup,#wire-coating,#rein-machines,#rein-fume,#rein-water){--ico:var(--i-play)}
 :root:not(#_) body[data-pt="app"] #kettle{--ico:var(--i-flame)}
 :root:not(#_) body[data-pt="app"] :is(#plants,#rein-lines,#rein-plants){--ico:var(--i-factory)}
 :root:not(#_) body[data-pt="app"] :is(#hall,#rein-3d){--ico:var(--i-cube)}
@@ -285,12 +285,12 @@
 :root:not(#_) body[data-pt="app"] #app section.hall-sec{background:linear-gradient(180deg,#0f2338,var(--s-dark))!important;color:var(--s-on-dark)}
 :root:not(#_) body[data-pt="app"] #app section.hall-sec h2{color:#fff!important}
 :root:not(#_) body[data-pt="app"] #app section.hall-sec :is(.lede,p.sub,.hall-note){color:var(--s-on-dark2)!important}
-:root:not(#_) #app[data-page="hdg"] :is(#kettle,#plants,#tools){background:#fff!important}
-:root:not(#_) #app[data-page="hdg"] :is(#hdg-machines,#range,#standards){background:var(--s-band)!important}
-:root:not(#_) #app[data-page="wire"] :is(#wire-machines,#tools){background:var(--s-band)!important}
-:root:not(#_) #app[data-page="wire"] #plants{background:#fff!important}
-:root:not(#_) #app[data-brand="rein"] :is(#rein-loop,#rein-lines,#rein-range){background:#fff!important}
-:root:not(#_) #app[data-brand="rein"] :is(#rein-machines,#rein-plants,#rein-calc){background:var(--s-band)!important}
+:root:not(#_) #app[data-page="hdg"] :is(#kettle,#hdg-fume,#plants,#tools){background:#fff!important}
+:root:not(#_) #app[data-page="hdg"] :is(#hdg-machines,#hdg-flux,#range,#standards){background:var(--s-band)!important}
+:root:not(#_) #app[data-page="wire"] :is(#wire-machines,#wire-coating,#tools){background:var(--s-band)!important}
+:root:not(#_) #app[data-page="wire"] :is(#plants,#wire-takeup){background:#fff!important}
+:root:not(#_) #app[data-brand="rein"] :is(#rein-loop,#rein-fume,#rein-lines,#rein-range){background:#fff!important}
+:root:not(#_) #app[data-brand="rein"] :is(#rein-machines,#rein-water,#rein-plants,#rein-calc){background:var(--s-band)!important}
 /* the 3D model list beside the viewer: dark cards on the dark band, the chosen model marked in amber */
 :root:not(#_) body[data-pt="app"] #app section.hall-sec .hall-card{background:var(--s-dark2)!important;border:1px solid rgba(255,255,255,.14)!important;border-radius:10px!important;color:var(--s-on-dark)!important}
 :root:not(#_) body[data-pt="app"] #app section.hall-sec .hall-card[aria-pressed="true"]{border-color:#ffc35a!important;box-shadow:inset 4px 0 0 #ffc35a!important}
@@ -318,12 +318,12 @@
 :root:not(#_)[data-theme="dark"] body[data-pt="home"] .more a{background:transparent;color:#9cc4ec!important;border-color:#9cc4ec}
 :root:not(#_)[data-theme="dark"] body[data-pt="home"] .more a:hover{background:#9cc4ec;color:#08121c!important}
 :root:not(#_)[data-theme="dark"] body[data-pt="home"] #models3d .more a{color:#ffc35a!important;border-color:#ffc35a}
-:root:not(#_)[data-theme="dark"] #app[data-page="hdg"] :is(#kettle,#plants,#tools),
-:root:not(#_)[data-theme="dark"] #app[data-page="wire"] #plants,
-:root:not(#_)[data-theme="dark"] #app[data-brand="rein"] :is(#rein-loop,#rein-lines,#rein-range){background:var(--s-page)!important}
-:root:not(#_)[data-theme="dark"] #app[data-page="hdg"] :is(#hdg-machines,#range,#standards),
-:root:not(#_)[data-theme="dark"] #app[data-page="wire"] :is(#wire-machines,#tools),
-:root:not(#_)[data-theme="dark"] #app[data-brand="rein"] :is(#rein-machines,#rein-plants,#rein-calc){background:var(--s-band)!important}
+:root:not(#_)[data-theme="dark"] #app[data-page="hdg"] :is(#kettle,#hdg-fume,#plants,#tools),
+:root:not(#_)[data-theme="dark"] #app[data-page="wire"] :is(#plants,#wire-takeup),
+:root:not(#_)[data-theme="dark"] #app[data-brand="rein"] :is(#rein-loop,#rein-fume,#rein-lines,#rein-range){background:var(--s-page)!important}
+:root:not(#_)[data-theme="dark"] #app[data-page="hdg"] :is(#hdg-machines,#hdg-flux,#range,#standards),
+:root:not(#_)[data-theme="dark"] #app[data-page="wire"] :is(#wire-machines,#wire-coating,#tools),
+:root:not(#_)[data-theme="dark"] #app[data-brand="rein"] :is(#rein-machines,#rein-water,#rein-plants,#rein-calc){background:var(--s-band)!important}
 
 /* contrast on the new surfaces: the about page's teal labels on the page tone, links in dark Reinplast panels */
 :root:not(#_):not([data-theme="dark"]) body[data-pt="page"] .ab-eye{color:var(--s-rein-x)!important}
