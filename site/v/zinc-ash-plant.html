@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>(function(){var t=null;try{t=sessionStorage.getItem('shivas.mode')}catch(e){}document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light')})()</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#1f4e79">
 <title>Zinc ash recovery plant · 3D model | SHIVAS</title>
@@ -211,7 +212,7 @@ details.ds p{margin:0 12px 10px;font-size:13.5px;color:var(--muted)}
   <div class="tb-mark"><b>SHIVAS</b><span>Technology Limited</span></div>
   <div class="tb-title"><h1>Zinc ash recovery system</h1><p>Hot ash separation, cold milling and screening, induction remelt, fume control. Interactive 3D model.</p></div>
   <div class="tb-cells">
-    <div><small>Theme</small><button class="theme-btn" id="themeBtn" type="button">Auto</button></div>
+    <div><small>Theme</small><button class="theme-btn" id="themeBtn" type="button">Light</button></div>
   </div>
 </header>
 <nav class="tabs" id="tabs" role="tablist" hidden></nav>
@@ -1810,9 +1811,9 @@ function showTab(id){if(!$(id))id='t-3d';build(id);document.querySelectorAll('se
 window.showTab=showTab;
 $('tabs').innerHTML=TABS.map(t=>`<button role="tab" data-t="${t[0]}" aria-selected="false"><small>${t[1]}</small><span>${t[2]}</span></button>`).join('');
 document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{showTab(b.dataset.t);window.scrollTo({top:0});});
-(function(){const btn=$('themeBtn');const order=['auto','light','dark'];let cur='auto';try{cur=localStorage.getItem('zar-theme')||'auto';}catch(e){}
- const ap=()=>{if(cur==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',cur);btn.textContent=cur[0].toUpperCase()+cur.slice(1);};ap();
- btn.onclick=()=>{cur=order[(order.indexOf(cur)+1)%3];try{localStorage.setItem('zar-theme',cur);}catch(e){}ap();};})();
+(function(){const btn=$('themeBtn');const order=['auto','light','dark'];let cur=document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light';try{localStorage.removeItem('zar-theme');}catch(e){}
+ const ap=()=>{document.documentElement.setAttribute('data-theme',cur);btn.textContent=cur[0].toUpperCase()+cur.slice(1);};ap();
+ btn.onclick=()=>{cur=cur==='dark'?'light':'dark';try{sessionStorage.setItem('shivas.mode',cur);}catch(e){}ap();};})();
 showTab('t-'+((location.hash||'#3d').slice(1)));
 </script>
 <script defer src="shivas-bar.js" data-name="Zinc ash recovery plant" data-item="ash" data-d="top:76px;right:24px" data-p="top:160px;right:12px"></script>

@@ -18,19 +18,11 @@
   var me = document.currentScript; if (!me) return;
   var D = me.dataset, NAME = D.name || document.title.replace(/\s*[·|].*$/, ''), PHONE = '919810920468';
   var base = me.src.replace(/v\/shivas-bar\.js.*$/, '');
-  var MODELS = [            // most important first: whole plants, then the furnace and kettle, pretreatment, environment, auxiliaries
-    ['hdg-plant', 'Hot-dip galvanizing plant'],
-    ['hv-furnace', 'High-velocity furnace and four-position dryer'],
-    ['spin-galvanizing', 'Spin galvanizing plant'],
-    ['electric-furnace', 'Electric kettle furnace'],
-    ['acid-room-2line', 'Enclosed acid room, two lines'],
-    ['etp-zld-compact', 'ETP and ZLD, compact site'],
-    ['etp-zld-spread', 'ETP and ZLD, open site'],
-    ['arp-10', 'Acid regeneration plant ARP-10'],
-    ['zinc-ash-plant', 'Zinc ash recovery plant'],
-    ['zinc-ash-hoist', 'Zinc ash unit, hoist tilt'],
-    ['zinc-ash-hydraulic', 'Zinc ash unit, hydraulic tilt'],
-    ['dross-grab', 'Pneumatic dross grab']
+  var MODELS = [            // in groups of like models (owner, 25 Nov 2026), most important first
+    ['Complete plants', [['hdg-plant', 'Hot-dip galvanizing plant'], ['spin-galvanizing', 'Spin galvanizing plant'], ['acid-room-2line', 'Enclosed acid room, two lines']]],
+    ['Furnaces', [['hv-furnace', 'High-velocity furnace and four-position dryer'], ['electric-furnace', 'Electric kettle furnace']]],
+    ['Acid regeneration and effluent', [['etp-zld-compact', 'ETP and ZLD, compact site'], ['etp-zld-spread', 'ETP and ZLD, open site'], ['arp-10', 'Acid regeneration plant ARP-10']]],
+    ['Zinc recovery and dross removal', [['zinc-ash-plant', 'Zinc ash recovery plant'], ['zinc-ash-hoist', 'Zinc ash unit, hoist tilt'], ['zinc-ash-hydraulic', 'Zinc ash unit, hydraulic tilt'], ['dross-grab', 'Pneumatic dross grab']]]
   ];
   var HERE = (location.pathname.split('/').pop() || '').replace(/\.html$/, '');
   var css = '' +
@@ -53,6 +45,7 @@
     '.shv-h b{display:block;font-size:12px;letter-spacing:.08em;color:#1f4e79}' +
     '.shv-h span{display:block;font-size:13px;color:#4f6275}' +
     '.shv-g{font:600 11px/1 "Noto Sans","Segoe UI",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#4f6275;padding:8px 6px 2px}' +
+    '.shv-gl{font:700 12px/1.2 "Noto Sans","Segoe UI",Arial,sans-serif;color:#1f4e79;padding:8px 10px 0}' +
     '.shv-m a{display:flex;align-items:center;gap:10px;min-height:44px;padding:8px 10px;border-radius:8px;text-decoration:none;color:#13202c}' +
     '.shv-m a.shv-s{min-height:38px;padding:6px 10px;font-size:13.5px}' +
     '.shv-m a:hover,.shv-m a:focus-visible{background:#eef3f8;outline:none}' +
@@ -63,8 +56,8 @@
       'font:500 13.5px/1.35 "Noto Sans","Segoe UI",Arial,sans-serif;text-align:center;white-space:nowrap;pointer-events:none;' +
       'opacity:0;transition:opacity .45s}' +
     '.shv-hint.on{opacity:1}' +
-    '@media (prefers-color-scheme:dark){.shv-m{background:#0f1d2c;border-color:#24394f;color:#e7edf3}.shv-h{border-color:#24394f}' +
-      '.shv-h b{color:#8fb3d6}.shv-h span,.shv-g{color:#a3b5c7}.shv-m a{color:#e7edf3}.shv-m a:hover,.shv-m a:focus-visible{background:#132539}}';
+    ':root[data-theme="dark"] .shv-m{background:#0f1d2c;border-color:#24394f;color:#e7edf3}:root[data-theme="dark"] .shv-h{border-color:#24394f}' +
+      ':root[data-theme="dark"] .shv-h b{color:#8fb3d6}:root[data-theme="dark"] .shv-h span,:root[data-theme="dark"] .shv-g{color:#a3b5c7}:root[data-theme="dark"] .shv-gl{color:#8fb3d6}:root[data-theme="dark"] .shv-m a{color:#e7edf3}:root[data-theme="dark"] .shv-m a:hover,:root[data-theme="dark"] .shv-m a:focus-visible{background:#132539}';
   var ic = {
     wa: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4a.5.5 0 0 0 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.2c0-.1-.2-.2-.4-.3z"/></svg>',
     tel: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>',
@@ -99,7 +92,6 @@
 
   function build() {
     var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
-    var others = MODELS.filter(function (m) { return m[0] !== HERE; });
     var w = document.createElement('div'); w.className = 'shv';
     w.innerHTML =
       '<nav class="shv-m" id="shvMenu" aria-label="SHIVAS" hidden>' +
@@ -108,8 +100,11 @@
         '<a href="tel:+' + PHONE + '">' + ic.tel + 'Call +91 98109 20468</a>' +
         (D.item ? '<a href="' + base + 'items/' + esc(D.item) + '.html">' + ic.doc + 'Details and photos</a>' : '') +
         '<div class="shv-g">Switch 3D model</div>' +
-        others.map(function (m) {
-          return '<a class="shv-s" href="' + base + 'v/' + m[0] + '.html">' + ic.cube + esc(m[1]) + '</a>';
+        MODELS.map(function (g) {
+          var ms = g[1].filter(function (m) { return m[0] !== HERE; });
+          return ms.length ? '<div class="shv-gl">' + esc(g[0]) + '</div>' + ms.map(function (m) {
+            return '<a class="shv-s" href="' + base + 'v/' + m[0] + '.html">' + ic.cube + esc(m[1]) + '</a>';
+          }).join('') : '';
         }).join('') +
         '<a href="' + base + '3d-models.html">' + ic.cube + 'All 3D models</a>' +
         '<a href="' + base + '">' + ic.home + 'SHIVAS home</a>' +

@@ -1502,7 +1502,7 @@ html{scroll-padding-top:calc(var(--nav-h,60px) + 12px)} /* V35 scroll-pad */
 }
 
 </style><link id="v39c" rel="stylesheet" href="assets/v39.css"><script id="v39j" defer src="assets/v39.js"></script><link id="theme26" rel="stylesheet" href="assets/theme.css">
-<script>(function(){var t=null;try{t=localStorage.getItem('shivas.mode')}catch(e){}if(t!=='dark'&&t!=='light'){try{t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}catch(e){}}document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light')})()</script>
+<script>(function(){var t=null;try{t=sessionStorage.getItem('shivas.mode');localStorage.removeItem('shivas.mode')}catch(e){}document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light')})()</script>
 
 <a class="skip" href="#top">Skip to content</a>
 <script>window.SHIVAS_START="rein"</script><div id="app" data-brand="rein" data-page="hdg">
@@ -1909,9 +1909,11 @@ html{scroll-padding-top:calc(var(--nav-h,60px) + 12px)} /* V35 scroll-pad */
     <div class="tblock" aria-label="You are here"><span>SHIVAS Technology</span><span>3D models</span><span>Interactive</span></div>
     <span class="eyebrow">Interactive</span>
     <h2>3D models of <em>our plants</em></h2>
-    <p class="lede">The 3D models our engineers build for real projects. Orbit, zoom, cut sections and tap any part. Each model loads only when you ask for it, and opens full screen in its own tab.</p>
-    <div class="hall" id="hallTech"></div>
-    <p class="hall-note">Models are indicative general arrangements; client names and commercial data removed. <a href="3d-models.html">See all 3D models on one page</a></p>
+    <p class="lede">The 3D models our engineers build for real projects, in three groups: complete plants, furnaces, and zinc recovery and dross removal. Orbit, zoom, cut sections and tap any part. Each model loads only when you ask for it.</p>
+    <div class="hall-grp"><h3>Complete plants</h3><p class="sub">The whole galvanizing plant, the spin plant for fasteners, and the enclosed acid room.</p><div class="hall" id="hallTech"></div></div>
+    <div class="hall-grp"><h3>Furnaces</h3><p class="sub">The high-velocity furnace with its four-position dryer, and the electric kettle furnace.</p><div class="hall" id="hallTech2"></div></div>
+    <div class="hall-grp"><h3>Zinc recovery and dross removal</h3><p class="sub">The zinc ash recovery plant in three versions, and the pneumatic dross grab.</p><div class="hall" id="hallTech3"></div></div>
+    <p class="hall-note">Models are indicative; client names and commercial data removed. <a href="3d-models.html">See all 3D models on one page</a></p>
   </div>
 </section>
 <!-- ZINC DIVISION -->
@@ -2022,7 +2024,7 @@ html{scroll-padding-top:calc(var(--nav-h,60px) + 12px)} /* V35 scroll-pad */
     <h2>From first study to first dip</h2>
     <ol class="steps">
       <li><span class="n">01</span><b>Study</b><p>Capacity, product mix, layout, zinc and fuel cost, and the return on the plant.</p></li>
-      <li><span class="n">02</span><b>Engineer</b><p>Process design, P&amp;IDs, GA drawings, combustion and control philosophy.</p></li>
+      <li><span class="n">02</span><b>Engineer</b><p>Process design, plant layout, combustion and controls.</p></li>
       <li><span class="n">03</span><b>Fabricate</b><p>PP-H, FRP and MS made in our shops. Bought-out items to our specification.</p></li>
       <li><span class="n">04</span><b>Erect</b><p>Our crew installs furnace, kettle, tanks, ducting and controls on site.</p></li>
       <li><span class="n">05</span><b>Commission</b><p>Furnace dry-out, kettle fill, first dip and operator training.</p></li>
@@ -2239,7 +2241,7 @@ html{scroll-padding-top:calc(var(--nav-h,60px) + 12px)} /* V35 scroll-pad */
     <h2>3D models of <em>our plants</em></h2>
     <p class="lede">The ETP + ZLD plant in two layouts (packed into a tight two-level footprint, or spread out at grade) and our ARP-10 acid regeneration package.</p>
     <div class="hall" id="hallRein"></div>
-    <p class="hall-note">Models are indicative general arrangements; client names and commercial data removed. <a href="3d-models.html">See all 3D models on one page</a></p>
+    <p class="hall-note">Models are indicative; client names and commercial data removed. <a href="3d-models.html">See all 3D models on one page</a></p>
   </div>
 </section>
 <section class="range rein-range" id="rein-range">
@@ -2497,7 +2499,7 @@ const WDM=[
  {id:'acc',code:'Wire drawing',name:'Wire drawing accessories',icon:'acc',d:'Die holders, soap boxes, straightening roller sets, guide pulleys and spares for SHIVAS and other machines.',f:['Die holders','Straightening rollers','Guide pulleys','Spares']}
 ];
 const HDG=[
- {id:'turnkey',cat:'turnkey',code:'Galvanizing',name:'Turnkey galvanizing plant',icon:'turnkey',flag:'Feasibility to first dip',d:'Complete plants: capacity planning, layout, zinc and fuel cost study, process design, supply, erection and commissioning.',f:['Feasibility and cost study','Layout and P&ID','Single or double line','Operator training']},
+ {id:'turnkey',cat:'turnkey',code:'Galvanizing',name:'Turnkey galvanizing plant',icon:'turnkey',flag:'Feasibility to first dip',d:'Complete plants: capacity planning, layout, zinc and fuel cost study, process design, supply, erection and commissioning.',f:['Feasibility and cost study','Layout and process design','Single or double line','Operator training']},
  {"id": "spin", "cat": "turnkey", "code": "Galvanizing", "name": "Spin galvanizing plant", "icon": "spin", "flag": "For fasteners", "d": "Automatic spin (centrifuge) galvanizing for bolts, nuts and washers: baskets are dipped, then spun inside a fixed spin hood just above the bath so excess zinc flies off the threads and runs straight back into the kettle.", "f": ["M10–M36 bolts, nuts, washers", "Small kettle, less zinc tied up", "Spun in a hood over the bath", "Quench, passivation and weighing"], "spec": [["Designed for", "500 t/month of fasteners"], ["Range", "M10–M36; bolts up to 300 mm long"], ["Rated output", "≈ 1.15 t/h"], ["Zinc kettle", "SAIL DSQ steel, 1,350 × 1,100 × 1,400 mm inside, ≈ 12 t zinc"], ["Heating", "2 × 175 kW high-velocity pulse-fired burners, PNG or LPG"], ["Galvanizing", "One automatic dip-spin head; the basket spins inside a fixed hood over the bath"], ["Bath surface", "A red skimming flap and two vanes on the basket clear the ash before the basket comes out"], ["Zinc ash", "SHIVAS SH-ZAV recovery: hydraulic tilting rotary drum, zinc back to the kettle"], ["After the zinc", "Water quench on a drag-out belt, separate Cr(III) passivation, air knife, belt dryer"], ["Every lot", "Weighed in and out, so zinc pick-up is known for each batch"]], "steps": [["Weigh and fill", "Parts are weighed into perforated baskets: one part number per basket, each with its own recipe."], ["Pretreatment", "Degreasing, pickling, rinsing and fluxing in rotating drums in PP-H tanks inside an enclosed acid room."], ["Dry", "A flue-gas-heated dryer brings the parts up to temperature; a dry check stops any wet basket going into the zinc."], ["Dip", "The dip-spin head lowers the basket into the zinc and agitates it so gas escapes from nuts and recesses."], ["Clear the surface", "Two red vanes on the basket and a red skimming flap push the ash over the weir, so the basket comes up through a clean surface."], ["Spin", "The basket rises into the fixed spin hood and spins; flung zinc runs back into the kettle while still liquid."], ["Discharge", "The basket opens at one station and the parts drop into the quench."], ["Quench and passivate", "The parts drop through a perforated plate into the water quench, then a separate Cr(III) passivation limits white rust."], ["Dry, inspect, weigh", "Air knife and belt dryer, an inspection belt, and output weighing for every lot."]]},
  {id:'furnace',cat:'heat',code:'Galvanizing',name:'Galvanizing furnace',icon:'furnace',d:'High-velocity burners fire along the kettle wall for even heat flux. Ceramic fibre lining, PID control and flue heat sent on to the dryer.',f:['High-velocity burners','Even wall heat','Ceramic fibre lining','Gas or oil fired']},
  {id:'kettle',cat:'heat',code:'Galvanizing',name:'Zinc kettle',icon:'kettle',d:'Kettles in kettle-grade low-silicon steel, sized to your largest article and stiffened for the zinc they carry. New plants and replacements.',f:['Kettle-grade steel','Sized to article','Wall thermocouples','Replacements']},
@@ -4887,7 +4889,9 @@ function Hall(root,items){
   root.querySelector('.hall-full').addEventListener('click',()=>{if(live)poster();V3.open(items[cur],vi)});
   render();
 }
-Hall($('#hallTech'),HALL.tech);Hall($('#hallRein'),HALL.rein);
+/* V86 (owner, 25 Nov 2026): the galvanizing models in groups of like models, one strip each; a model left out of the groups goes in the last */
+{const HG=[['hallTech',['hdg','spin','room']],['hallTech2',['hvf','ef']],['hallTech3',['zar','dg']]];const all=HG.flatMap(g=>g[1]);HG[HG.length-1][1]=HG[HG.length-1][1].concat(HALL.tech.filter(x=>!all.includes(x.id)).map(x=>x.id));
+ HG.forEach(([id,ids])=>{const el=$('#'+id);if(el)Hall(el,ids.map(k=>HALL.tech.find(x=>x.id===k)).filter(Boolean))})}Hall($('#hallRein'),HALL.rein);
 
 /* ---------- phone interaction ---------- */
 (function(){
@@ -4917,7 +4921,7 @@ Hall($('#hallTech'),HALL.tech);Hall($('#hallRein'),HALL.rein);
 (function(){const r=document.documentElement,b=$('#thmBtn');if(!b)return;
   const dark=()=>r.getAttribute('data-theme')==='dark';
   const sync=()=>{const d=dark();b.setAttribute('aria-label',d?'Switch to light mode':'Switch to dark mode');b.innerHTML=d?'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>':'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>'};
-  b.addEventListener('click',()=>{const nd=!dark();r.setAttribute('data-theme',nd?'dark':'light');try{localStorage.setItem('shivas.mode',nd?'dark':'light')}catch(e){}sync()});
+  b.addEventListener('click',()=>{const nd=!dark();r.setAttribute('data-theme',nd?'dark':'light');try{sessionStorage.setItem('shivas.mode',nd?'dark':'light')}catch(e){}sync()});
   try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',sync)}catch(e){}sync()})();
 
 const PT=[
@@ -5484,14 +5488,14 @@ requestAnimationFrame(frame);
 <script id="v52dip">
 /* V57 (25 Nov 2026, owner: "automatically playing at a good pace ... when the passivation ends it can start over from
    degreasing ... people don't really need to do it manually", then twice "not autoplaying on phone"): the line runs by
-   itself, about 4.5 s a tank, and starts again at degreasing after passivation, on every device. Like every animation on
+   itself, about 3.8 s a tank (25 Nov 2026: 5 s, then 4.5 s, then "slightly faster" again), and starts again at degreasing after passivation, on every device. Like every animation on
    these pages (V29: the owner wants them running whatever the device's reduce-motion setting), it ignores that setting.
    The beam is drawn straight from the play position, by elapsed time (a phone that slows the frame rate still gets the
    right pace). The hidden sideways scroller only moves the beam during a real gesture (a finger or mouse drag on the line,
    or a sideways trackpad swipe); other scroll events just put it back. Touching the line does not hold it: only moving it
    does. A swipe, a drag or a tap on a step moves the beam; it carries on by itself 6 s later. Pause stops it. */
 (function(){var sec=document.getElementById('dip');if(!sec)return;var sw=sec.querySelector('.v54-sw'),stage=sec.querySelector('.dip-stage');if(!sw||!stage)return;
-var N=9,TANK=4.5,RESUME=6000,p=0,last=0,vis=false,run=false,uT=-1e9,railT=-1e9,gT=-1e9,tT=0,setL=-1,drag=null,touch=false,moved=false,paused=false,settleT=0,glide=null,
+var N=9,TANK=3.8,RESUME=6000,p=0,last=0,vis=false,run=false,uT=-1e9,railT=-1e9,gT=-1e9,tT=0,setL=-1,drag=null,touch=false,moved=false,paused=false,settleT=0,glide=null,
 rail=sec.querySelector('.v53-rail'),bs=rail?[].slice.call(rail.children):[],lastI=-1,pb=sec.querySelector('.v55-play');
 var inner=sw.firstElementChild;function size(){var w=sw.clientWidth||1;inner.style.width=(w+N*(w>700?230:165))+'px';}size();
 function now(){return performance.now();}

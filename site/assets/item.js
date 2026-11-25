@@ -7,7 +7,7 @@
  var MOON='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>';
  function dark(){return r.getAttribute('data-theme')==='dark'}
  function sync(){if(!tb)return;var d=dark();tb.innerHTML=d?SUN:MOON;tb.setAttribute('aria-label',d?'Switch to light mode':'Switch to dark mode')}
- if(tb){tb.addEventListener('click',function(){var nd=!dark();r.setAttribute('data-theme',nd?'dark':'light');try{localStorage.setItem('shivas.mode',nd?'dark':'light')}catch(e){}sync()});sync()}
+ if(tb){tb.addEventListener('click',function(){var nd=!dark();r.setAttribute('data-theme',nd?'dark':'light');try{sessionStorage.setItem('shivas.mode',nd?'dark':'light')}catch(e){}sync()});sync()}
 
  // ---- pictures: listed in the image library manifest (assets/library.js), never guessed from file names ----
  var LIB=window.SHIVAS_LIBRARY,id=document.body.getAttribute('data-item'),sec=document.getElementById('photos');

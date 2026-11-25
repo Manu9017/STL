@@ -439,10 +439,10 @@ function renderPane() {
     const keys = Object.keys(META).filter(k => META[k].pidgroup && META[k].pid);
     const ord = t => { const m = /^([A-Z]+)-?(\d+)?/.exec(t) || []; return [m[1] || t, +(m[2] || 0)]; };
     const sorter = (a, b) => { const x = ord(META[a].pid), y = ord(META[b].pid); return x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : x[1] - y[1]; };
-    P.innerHTML = `<p class="empty" style="padding-top:0">The burner gas and combustion-air trains, modelled tag for tag from the P&amp;ID. Tap an item to fly to it.</p>` +
+    P.innerHTML = `<p class="empty" style="padding-top:0">The burner gas and combustion-air trains. Tap an item to fly to it.</p>` +
       Object.entries(G).map(([g, t]) => { const ks = keys.filter(k => META[k].pidgroup === g).sort(sorter); if (!ks.length) return '';
         return `<h3 style="font-size:13px;margin:14px 0 4px;color:var(--muted)">${esc(t)}</h3>` + ks.map(k => `<button class="pr pidr" type="button" data-k="${esc(k)}"><span class="tg">${esc(META[k].pid)}</span><span class="nm">${esc(META[k].title)}</span></button>`).join(''); }).join('') +
-      (DATA && DATA.holds && DATA.holds.length ? `<h3 style="font-size:13px;margin:14px 0 4px;color:var(--muted)">Holds on the P&amp;ID</h3>` + DATA.holds.map(d => `<div class="dc"><b>${esc(d.id)}</b>${esc(d.what)}<p>In the model: ${esc(d.where)}</p></div>`).join('') : '');
+      (DATA && DATA.holds && DATA.holds.length ? `<h3 style="font-size:13px;margin:14px 0 4px;color:var(--muted)">Open points</h3>` + DATA.holds.map(d => `<div class="dc"><b>${esc(d.id)}</b>${esc(d.what)}<p>In the model: ${esc(d.where)}</p></div>`).join('') : '');
     P.querySelectorAll('.pidr').forEach(b => b.onclick = () => { const k = b.dataset.k; PART[k].on = true; SYSVIS[META[k].system] = true; applyVis(); select(k, true); });
     return;
   }

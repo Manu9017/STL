@@ -575,7 +575,8 @@ h2{font-size:clamp(24px,2.6vw,34px)}
 .m3-f:hover img{transform:scale(1.03)}
 .m3-f span{position:absolute;left:12px;bottom:12px;background:rgba(11,22,34,.82);color:#fff;font-weight:600;font-size:14px;padding:7px 12px;border-radius:999px}
 .m3-b{display:grid;gap:8px;align-content:start;padding:18px}
-.m3-b h2{font-size:clamp(20px,2vw,24px)}
+.m3-b :is(h2,h3){font-size:clamp(20px,2vw,24px);margin:0}
+.m3grp{margin-top:22px}.m3grp>h2{margin:0 0 4px}.m3grp>.sub{margin:0 0 14px}
 .m3-b p{margin:0;color:var(--muted);font-size:15px;line-height:1.5}
 @media (max-width:800px){.m3s{grid-template-columns:1fr}}
 /* V36: SHIVAS Products India, pultrusion page */

@@ -271,7 +271,7 @@
 /* the same dark viewer cards as the home page, with a 3D badge */
 :root:not(#_) body[data-pt="hub"] article.m3{position:relative;background:var(--s-dark2)!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:14px!important;overflow:hidden;color:var(--s-on-dark);box-shadow:0 18px 40px -24px rgba(5,13,22,.8)!important}
 :root:not(#_) body[data-pt="hub"] article.m3::before{content:"3D";position:absolute;z-index:2;top:12px;left:12px;padding:5px 9px;border-radius:7px;background:#ffc35a;color:#111;font:800 12px/1 Archivo,"Noto Sans",sans-serif;letter-spacing:.04em}
-:root:not(#_) body[data-pt="hub"] article.m3 .m3-b h2{color:#fff!important}
+:root:not(#_) body[data-pt="hub"] article.m3 .m3-b :is(h2,h3){color:#fff!important}
 :root:not(#_) body[data-pt="hub"] article.m3 .m3-b :is(p,li){color:var(--s-on-dark2)!important}
 :root:not(#_) body[data-pt="hub"] article.m3 .m3-b>.k{color:#ffc35a!important}
 :root:not(#_) body[data-pt="hub"] article.m3 .m3-f{background:#0a1826}
@@ -284,6 +284,12 @@
 :root:not(#_) body[data-pt="app"] #app main section{border-top:1px solid var(--s-line)}
 :root:not(#_) body[data-pt="app"] #app section.hall-sec{background:linear-gradient(180deg,#0f2338,var(--s-dark))!important;color:var(--s-on-dark)}
 :root:not(#_) body[data-pt="app"] #app section.hall-sec h2{color:#fff!important}
+/* V86 (owner, 25 Nov 2026): the 3D models in groups of like models, each with its heading and its own strip */
+:root:not(#_) body[data-pt="app"] #app section.hall-sec .hall-grp{margin-top:34px}
+:root:not(#_) body[data-pt="app"] #app section.hall-sec .hall-grp:first-of-type{margin-top:18px}
+:root:not(#_) body[data-pt="app"] #app section.hall-sec .hall-grp>h3{margin:0 0 4px;color:#fff!important;font:700 clamp(19px,2vw,23px)/1.2 Archivo,"Noto Sans",sans-serif;display:flex;align-items:center;gap:10px}
+:root:not(#_) body[data-pt="app"] #app section.hall-sec .hall-grp>h3::before{content:"";width:6px;height:22px;border-radius:3px;background:#ffc35a}
+:root:not(#_) body[data-pt="app"] #app section.hall-sec .hall-grp>p.sub{margin:0 0 12px}
 :root:not(#_) body[data-pt="app"] #app section.hall-sec :is(.lede,p.sub,.hall-note){color:var(--s-on-dark2)!important}
 :root:not(#_) #app[data-page="hdg"] :is(#plants,#hdg-machines,#hdg-flux,#tools){background:#fff!important}
 :root:not(#_) #app[data-page="hdg"] :is(#kettle,#hdg-fume,#range,#standards){background:var(--s-band)!important}

@@ -1,4 +1,5 @@
-<!doctype html><html lang="en"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><style>/* 3D view only */
+<!doctype html><html lang="en"><head>
+<script>(function(){var t=null;try{t=sessionStorage.getItem('shivas.mode')}catch(e){}document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light')})()</script><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><style>/* 3D view only */
 html,body{height:100%!important;overflow:hidden!important}
 .panel,#kpis,.kpis{display:none!important}
 .app{display:flex!important;flex-direction:column!important;height:100%!important}
@@ -2163,7 +2164,7 @@ document.querySelectorAll('.sw button').forEach(b => b.addEventListener('click',
 /* ------------------------------------------------------------ theme */
 function isDark() { const a = document.documentElement.getAttribute('data-theme'); return a ? a === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; }
 function syncTheme() { const cs = getComputedStyle(document.documentElement); S.setSky(cs.getPropertyValue('--sky2').trim() || '#F4F8FC'); }
-$('#thm').addEventListener('click', () => { const nd = !isDark(); document.documentElement.setAttribute('data-theme', nd ? 'dark' : 'light'); store.set('theme', nd ? 'dark' : 'light'); syncTheme(); });
+$('#thm').addEventListener('click', () => { const nd = !isDark(); document.documentElement.setAttribute('data-theme', nd ? 'dark' : 'light'); try { sessionStorage.setItem('shivas.mode', nd ? 'dark' : 'light'); } catch (e) { } syncTheme(); });
 const th0 = store.get('theme'); if (th0 && !document.documentElement.getAttribute('data-theme')) document.documentElement.setAttribute('data-theme', th0);
 try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncTheme); } catch (e) { }
 new MutationObserver(syncTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
@@ -2267,7 +2268,7 @@ R.compare = () => {
 };
 W.compare = () => { document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => setOpt(b.dataset.go)); $('#hlc').onclick = () => { if (st.changes) unfocus(); else showChanges(); renderTab(); }; };
 const ALLDR = () => { const mine = DR.filter(d => d.opt === st.opt), other = DR.filter(d => d.opt !== st.opt); return mine.concat(D.figs.map(f => Object.assign({ fig: 1 }, f))).concat(other); };
-R.drawings = () => `<section><h2>Drawings</h2><p class="lead">Open any drawing full screen to pan and zoom. On the P&IDs, tap an equipment symbol to find it in 3D.</p>
+R.drawings = () => `<section><h2>Drawings</h2><p class="lead">Open any drawing full screen to pan and zoom.</p>
   <div class="dw">${ALLDR().map(d => `<button data-dw="${d.id}"><img src="${d.thumb}" alt="${esc(d.title)} thumbnail" loading="lazy"><b>${esc(d.title)}${d.opt ? ` <span class="optb ${d.opt}">${d.opt}</span>` : ''}</b><small>${esc(d.sub)}</small></button>`).join('')}</div></section>`;
 W.drawings = () => document.querySelectorAll('[data-dw]').forEach(b => b.onclick = () => openDrawing(b.dataset.dw));
 R.design = () => {
