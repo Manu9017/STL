@@ -102,14 +102,14 @@
   }
 </style>
 <link id="v52f" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap"></head>
-<body><div id="shv-load" role="status"><style>#shv-load{position:fixed;inset:0;z-index:2147482000;display:grid;place-items:center;background:#0b1622;color:#e7edf3;font:500 15px/1.4 "Noto Sans","Segoe UI",Arial,sans-serif;animation:shvL .4s ease 25s forwards}#shv-load .b{display:grid;justify-items:center;gap:12px;text-align:center;padding:24px;max-width:420px}#shv-load i{width:44px;height:44px;border-radius:50%;border:3px solid rgba(255,255,255,.18);border-top-color:#e8a317;animation:shvS .9s linear infinite}#shv-load b{font-size:17px}#shv-load small{color:#a3b5c7;font-size:14px}@keyframes shvS{to{transform:rotate(360deg)}}@keyframes shvL{to{opacity:0;visibility:hidden}}@media (prefers-reduced-motion:reduce){#shv-load i{animation:none}}</style><div class="b"><i aria-hidden="true"></i><b>Loading the 3D model</b><small>Electric kettle furnace</small><small>SHIVAS · indicative general arrangement</small></div></div>
+<body><div id="shv-load" role="status"><style>#shv-load{position:fixed;inset:0;z-index:2147482000;display:grid;place-items:center;background:#0b1622;color:#e7edf3;font:500 15px/1.4 "Noto Sans","Segoe UI",Arial,sans-serif;animation:shvL .4s ease 25s forwards}#shv-load .b{display:grid;justify-items:center;gap:12px;text-align:center;padding:24px;max-width:420px}#shv-load i{width:44px;height:44px;border-radius:50%;border:3px solid rgba(255,255,255,.18);border-top-color:#e8a317;animation:shvS .9s linear infinite}#shv-load b{font-size:17px}#shv-load small{color:#a3b5c7;font-size:14px}@keyframes shvS{to{transform:rotate(360deg)}}@keyframes shvL{to{opacity:0;visibility:hidden}}@media (prefers-reduced-motion:reduce){#shv-load i{animation:none}}</style><div class="b"><i aria-hidden="true"></i><b>Loading the 3D model</b><small>Electric kettle furnace</small><small>SHIVAS · indicative 3D model</small></div></div>
 <div id="app"></div>
 <div id="load">Loading model&hellip;</div>
 
 <div id="hdr">
-  <h1>STL-EF-3D-01 <span class="sub">Rev A</span></h1>
+  <h1>Electric kettle furnace</h1>
   <div class="sub">Electrically Heated Zinc Kettle Furnace &nbsp;&middot;&nbsp; Kettle 6700 &times; 1250 &times; 1310
-    &nbsp;&middot;&nbsp; 840 kW in 8 zones &nbsp;&middot;&nbsp; Shivas Technology Limited</div>
+    &nbsp;&middot;&nbsp; 840 kW in 8 zones &nbsp;&middot;&nbsp; SHIVAS Technology Limited</div>
   <div class="tag">CLICK ANY COMPONENT</div>
 </div>
 
@@ -139,7 +139,7 @@
       <input type="range" id="clipZ" min="0" max="100" value="100"><span class="val" id="clipZV">off</span></div>
     <div class="slider"><span class="lab">Y</span>
       <input type="range" id="clipY" min="0" max="100" value="100"><span class="val" id="clipYV">off</span></div>
-    <div class="hint" style="margin-top:4px">Drag Z to about 50 % for the transverse section on STL-EF-GA-01.</div>
+    <div class="hint" style="margin-top:4px">Drag Z to about 50 % for a cross-section.</div>
   </div>
 
   <h2>Components</h2>
@@ -166,23 +166,6 @@
 <div class="pnl" id="right">
   <h2>Inspector</h2>
   <div class="sec" id="insp"></div>
-  <h2>Design summary</h2>
-  <div class="sec">
-    <table style="width:100%;border-collapse:collapse;font-size:10.5px">
-      <tr><td style="color:#8494a6">Installed power</td><td style="text-align:right">840 kW / furnace</td></tr>
-      <tr><td style="color:#8494a6">Running duty</td><td style="text-align:right">626 kW</td></tr>
-      <tr><td style="color:#8494a6">Net to bath (ceiling)</td><td style="text-align:right">610.9 kW</td></tr>
-      <tr><td style="color:#8494a6">Active area</td><td style="text-align:right">24.434 m&sup2;</td></tr>
-      <tr><td style="color:#8494a6">Design flux</td><td style="text-align:right">25.0 kW/m&sup2;</td></tr>
-      <tr><td style="color:#8494a6">Radiant gap</td><td style="text-align:right">369 mm</td></tr>
-      <tr><td style="color:#8494a6">Flux ripple</td><td style="text-align:right">1.0 &times; 10<sup>&minus;12</sup></td></tr>
-      <tr><td style="color:#8494a6">Casing loss</td><td style="text-align:right">15.0 kW (97.6 %)</td></tr>
-      <tr><td style="color:#8494a6">Throughput</td><td style="text-align:right">10.06 t/h</td></tr>
-      <tr><td style="color:#8494a6">Envelope</td><td style="text-align:right">8200 &times; 2750 mm</td></tr>
-    </table>
-    <div class="hint" style="margin-top:8px">All figures derived in STL-EF-DBR-01 Rev A. Where the model and that
-      document disagree, the document governs.</div>
-  </div>
 </div>
 
 <div id="legend"><h3 id="legTitle">Legend</h3><div id="legBody"></div></div>
@@ -742,10 +725,10 @@ function drawLegend() {
   const title = document.getElementById('legTitle');
   if (MODE === 'zone') {
     title.textContent = 'Control zones';
-    const info = { Z1: 'Side A rows 1-6   116.25 kW', Z2: 'Side A rows 7-12   116.25 kW',
-      Z3: 'Side B rows 1-6   116.25 kW', Z4: 'Side B rows 7-12   116.25 kW',
-      Z5: 'Both end walls   87.0 kW', Z6: 'Hearth tubes 1-9   96.0 kW',
-      Z7: 'Hearth tubes 10-18   96.0 kW', Z8: 'Hearth tubes 19-27   96.0 kW' };
+    const info = { Z1: 'Side A rows 1-6', Z2: 'Side A rows 7-12',
+      Z3: 'Side B rows 1-6', Z4: 'Side B rows 7-12',
+      Z5: 'Both end walls', Z6: 'Hearth tubes 1-9',
+      Z7: 'Hearth tubes 10-18', Z8: 'Hearth tubes 19-27' };
     body.innerHTML = Object.keys(info).map(z =>
       '<div class="lr"><span class="sw" style="background:#' +
       ZONE_COL[z].toString(16).padStart(6, '0') + '"></span>' +
@@ -882,8 +865,8 @@ function showInfo(o) {
     insp.innerHTML = '<div class="hint">Click any component to inspect it.<br><br>' +
       '<b style="color:#c8d4e2">Navigate:</b> drag to orbit &middot; right-drag or shift-drag to pan &middot; ' +
       'scroll to zoom.<br><br>Use <b style="color:#c8d4e2">Zones</b> to see the eight-zone split, ' +
-      '<b style="color:#c8d4e2">Temperature</b> for the thermal gradient from 58 &deg;C casing to 897 &deg;C ' +
-      'element, and the <b style="color:#c8d4e2">Z</b> clip slider for the transverse section.</div>';
+      '<b style="color:#c8d4e2">Temperature</b> for how the heat falls from the elements to the casing, ' +
+      'and the <b style="color:#c8d4e2">Z</b> clip slider for the transverse section.</div>';
     return;
   }
   const ud = o.userData, g = GROUPS[ud.group];
@@ -891,13 +874,6 @@ function showInfo(o) {
   let h = '<div class="title">' + g.name + '</div>';
   h += '<div class="subt">' + (ud.zone ? 'Zone ' + ud.zone + ' &middot; ' : '') +
        (ud.label ? ud.label : 'Assembly') + '</div>';
-  if (ud.spec) h += '<div style="font-size:10.5px;color:#c8d4e2;margin-bottom:7px">' + ud.spec + '</div>';
-  h += '<table>' + rows.map(r => '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>').join('') + '</table>';
-  if (ud.zone && ZONE_KW[ud.zone]) {
-    h += '<table style="margin-top:6px"><tr><td>Zone ' + ud.zone + ' power</td><td>' +
-         ZONE_KW[ud.zone] + '</td></tr></table>';
-  }
-  if (ud.note) h += '<div class="note">' + ud.note + '</div>';
   insp.innerHTML = h;
 }
 const ZONE_KW = { Z1: '116.25 kW / 161.7 A', Z2: '116.25 kW / 161.7 A', Z3: '116.25 kW / 161.7 A',
@@ -923,8 +899,7 @@ function loop() {
       o.userData.group === 'tubes' ? 0x0e3a24 : 0x8a1c05);
     else o.material.emissive.setHex(0x000000);
   });
-  stat.innerHTML = 'STL-EF-3D-01 Rev A &nbsp;|&nbsp; ' + PARTS.length + ' parts<br>' +
-    'camera ' + cam.r.toFixed(1) + ' m &nbsp;|&nbsp; mode ' + MODE.toUpperCase();
+  stat.innerHTML = 'SHIVAS electric kettle furnace &nbsp;|&nbsp; ' + PARTS.length + ' parts';
   renderer.render(scene, camera);
 }
 addEventListener('resize', () => {

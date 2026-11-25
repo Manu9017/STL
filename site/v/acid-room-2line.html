@@ -56,7 +56,7 @@ button.frp.on{background:#00a37a;border-color:#00e5a0;color:#001a12}
  #frpbar{top:52px;left:8px;right:8px;transform:none;font-size:11px;text-align:center}
  .li{font-size:13px;padding:7px 6px}
 }
-</style><link id="v52f" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap"></head><body><div id="shv-load" role="status"><style>#shv-load{position:fixed;inset:0;z-index:2147482000;display:grid;place-items:center;background:#0b1622;color:#e7edf3;font:500 15px/1.4 "Noto Sans","Segoe UI",Arial,sans-serif;animation:shvL .4s ease 25s forwards}#shv-load .b{display:grid;justify-items:center;gap:12px;text-align:center;padding:24px;max-width:420px}#shv-load i{width:44px;height:44px;border-radius:50%;border:3px solid rgba(255,255,255,.18);border-top-color:#e8a317;animation:shvS .9s linear infinite}#shv-load b{font-size:17px}#shv-load small{color:#a3b5c7;font-size:14px}@keyframes shvS{to{transform:rotate(360deg)}}@keyframes shvL{to{opacity:0;visibility:hidden}}@media (prefers-reduced-motion:reduce){#shv-load i{animation:none}}</style><div class="b"><i aria-hidden="true"></i><b>Loading the 3D model</b><small>Enclosed acid room, two lines</small><small>SHIVAS · indicative general arrangement</small></div></div>
+</style><link id="v52f" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap"></head><body><div id="shv-load" role="status"><style>#shv-load{position:fixed;inset:0;z-index:2147482000;display:grid;place-items:center;background:#0b1622;color:#e7edf3;font:500 15px/1.4 "Noto Sans","Segoe UI",Arial,sans-serif;animation:shvL .4s ease 25s forwards}#shv-load .b{display:grid;justify-items:center;gap:12px;text-align:center;padding:24px;max-width:420px}#shv-load i{width:44px;height:44px;border-radius:50%;border:3px solid rgba(255,255,255,.18);border-top-color:#e8a317;animation:shvS .9s linear infinite}#shv-load b{font-size:17px}#shv-load small{color:#a3b5c7;font-size:14px}@keyframes shvS{to{transform:rotate(360deg)}}@keyframes shvL{to{opacity:0;visibility:hidden}}@media (prefers-reduced-motion:reduce){#shv-load i{animation:none}}</style><div class="b"><i aria-hidden="true"></i><b>Loading the 3D model</b><small>Enclosed acid room, two lines</small><small>SHIVAS · indicative 3D model</small></div></div>
 <canvas id="c"></canvas>
 <div id="load">building model…</div>
 <div id="hud" class="panel">
@@ -65,7 +65,7 @@ button.frp.on{background:#00a37a;border-color:#00e5a0;color:#001a12}
  22.051 × 18.592 m · steel top 6.500 m · enclosed roof 4.100 m</div>
  <div class="rev" id="stat"></div>
 </div>
-<div id="frpbar">FRP LINING MODE: lined members highlighted · 630.57 m² · 2 mm acid-grade</div>
+<div id="frpbar">FRP LINING MODE: members with acid-grade FRP lining highlighted</div>
 <div id="legend" class="panel"></div>
 <div id="ctr" class="panel">
  <button id="bLeg" onclick="document.body.classList.toggle('sh-leg');this.classList.toggle('on')">Layers</button>
@@ -202,7 +202,7 @@ DATA.m.forEach(m=>{
   }
 });
 document.getElementById('stat').textContent=
-  DATA.m.length+' members · '+Object.keys(groups).length+' families · Rev 20 VERIFIED';
+  DATA.m.length+' members · '+Object.keys(groups).length+' families';
 
 /* ---------- legend ---------- */
 const lg=document.getElementById('legend');
@@ -276,13 +276,9 @@ cv.addEventListener('click',e=>{
   const dx=(m.mx[0]-m.mn[0]),dy=(m.mx[1]-m.mn[1]),dz=(m.mx[2]-m.mn[2]);
   info.style.display='block';
   info.innerHTML='<div class="t">'+m.n+'</div>'+
-   row('Family',LABEL[m.f]||m.f)+row('Section',m.s)+row('Scope',({OURS:'SHIVAS',CUSTOMER:'Client',BY_OTHERS:'By others'})[m.sc]||m.sc)+
+   row('Family',LABEL[m.f]||m.f)+row('Scope',({OURS:'SHIVAS',CUSTOMER:'Client',BY_OTHERS:'By others'})[m.sc]||m.sc)+
    row('FRP lined',m.frp==='yes'?'YES, 2 mm acid-grade':'no')+
-   row('Size (m)',dx.toFixed(3)+' × '+dy.toFixed(3)+' × '+dz.toFixed(3))+
-   row('X',m.mn[0].toFixed(3)+' → '+m.mx[0].toFixed(3))+
-   row('Y',m.mn[1].toFixed(3)+' → '+m.mx[1].toFixed(3))+
-   row('Z',m.mn[2].toFixed(3)+' → '+m.mx[2].toFixed(3))+
-   (m.nt?'<div class="r"><span class="k">'+m.nt+'</span></div>':'');
+   '';
 });
 function row(k,v){return '<div class="r"><span class="k">'+k+'</span><span class="v">'+v+'</span></div>';}
 

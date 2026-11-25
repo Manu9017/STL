@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#1f4e79">
 <title>High-velocity furnace and four-position dryer · 3D model | SHIVAS</title>
-<meta name="description" content="A pulse-fired furnace with two high-velocity burners round a 6.7 m kettle, with the four-position dryer, heat-recovery loop, zinc fume enclosure and gas train. 236 parts you can open, cut and measure.">
+<meta name="description" content="A pulse-fired furnace with two high-velocity burners round a 6.7 m kettle, with the four-position dryer, heat-recovery loop, zinc fume enclosure and gas train. 236 parts you can open and cut away.">
 <link rel="canonical" href="https://www.shivastechnology.com/v/hv-furnace.html">
-<meta property="og:type" content="website"><meta property="og:site_name" content="SHIVAS"><meta property="og:title" content="High-velocity furnace and four-position dryer · 3D model | SHIVAS"><meta property="og:description" content="A pulse-fired furnace with two high-velocity burners round a 6.7 m kettle, with the four-position dryer, heat-recovery loop, zinc fume enclosure and gas train. 236 parts you can open, cut and measure."><meta property="og:url" content="https://www.shivastechnology.com/v/hv-furnace.html"><meta property="og:image" content="https://www.shivastechnology.com/v/img/hv-furnace.jpg"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:type" content="website"><meta property="og:site_name" content="SHIVAS"><meta property="og:title" content="High-velocity furnace and four-position dryer · 3D model | SHIVAS"><meta property="og:description" content="A pulse-fired furnace with two high-velocity burners round a 6.7 m kettle, with the four-position dryer, heat-recovery loop, zinc fume enclosure and gas train. 236 parts you can open and cut away."><meta property="og:url" content="https://www.shivastechnology.com/v/hv-furnace.html"><meta property="og:image" content="https://www.shivastechnology.com/v/img/hv-furnace.jpg"><meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../favicon.ico" sizes="48x48"><link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -163,7 +163,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   <div id="labels"></div>
   <header id="top">
     <div class="brand"><b>SHIVAS</b><span>HV pulse-fired furnace · kettle 6.7 m · 4-position dryer</span></div>
-    <div class="meta mono" id="metaline">SHV-FUR-6700 · indicative general arrangement · FFL ±0.000</div>
+    <div class="meta mono" id="metaline">Indicative 3D model of a SHIVAS design</div>
     <div class="acts">
       <div id="mtog"><button class="btn" id="bSys" type="button">Systems</button><button class="btn" id="bInfo" type="button">Details</button></div>
     </div>
@@ -179,10 +179,6 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 
   <aside class="side" id="right" aria-label="Details">
     <div class="ph" style="padding-bottom:0;border:0"><h2>Details</h2><button class="x" type="button" data-close="right" aria-label="Close">✕</button></div>
-    <div class="tabs" role="tablist">
-      <button role="tab" type="button" aria-selected="true" data-tab="part">Part</button>
-      <button role="tab" type="button" aria-selected="false" data-tab="pid">P&amp;ID</button>
-    </div>
     <div class="pb" id="pane"></div>
   </aside>
 
@@ -199,8 +195,6 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
       <button type="button" id="tSect" aria-pressed="false">Section</button>
       <button type="button" id="tFlow" aria-pressed="true">Flow</button>
       <button type="button" id="tLbl" aria-pressed="true">Labels</button>
-      <button type="button" id="tLev" aria-pressed="false">Levels</button>
-      <button type="button" id="tMeas" aria-pressed="false">Measure</button>
       <button type="button" id="tAll">Show all</button>
     </div>
     <div class="grp" role="group" aria-label="Moving parts">
@@ -211,7 +205,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
       <button type="button" id="dDoors" aria-pressed="false">Dryer doors: closed</button>
     </div>
   </div>
-  <div id="hint">Drag to orbit · right-drag to pan · scroll to zoom · tap a part for its data</div>
+  <div id="hint">Drag to orbit · right-drag to pan · scroll to zoom · tap a part to see what it is</div>
 
   <div id="load" role="status"><div class="ld"><b>SHIVAS</b><h1>HV Furnace 6700</h1><div class="bar"><i id="ldb"></i></div><p id="ldt">Loading the model</p></div></div>
 </div>
@@ -341,7 +335,7 @@ Promise.all([fetch('hv-furnace/parts.json').then(r => r.json()), fetch('hv-furna
     for (const k in PART) PART[k].on = !META[k].hidden;
     initEnc();
     const nP = Object.keys(META).filter(k => META[k].layer !== 'flow').length;
-    $('#metaline').textContent = `SHV-FUR-6700 · ${nP} parts · indicative general arrangement · FFL ±0.000`;
+    $('#metaline').textContent = `Indicative 3D model of a SHIVAS design · ${nP} parts`;
     buildTree(); buildFlows(); buildLevels(); buildLabels(); applyVis(); renderPane(); go('iso', true);
     ldt.textContent = 'Ready'; $('#load').classList.add('done');
   }).catch(err => { ldt.textContent = 'The model did not load: ' + (err && err.message || err); });
@@ -420,24 +414,18 @@ function renderPane() {
   const P = $('#pane');
   if (tab === 'part') {
     if (!selected) {
-      P.innerHTML = `<p class="empty">Tap any part in the model, or pick one from Systems, to see its specification, material and its extents in plant coordinates.</p>
-      <dl class="kv"><dt>Datum</dt><dd>FFL ±0.000 at the kettle centre on plan; X east, Y north, Z up (mm)</dd><dt>Kettle</dt><dd>6,700 × 1,250 × 1,310 inside, rim +0.300, 64.3 t zinc</dd>
-      <dt>Casing</dt><dd>8,200 × 2,750 inside, −1.575 → +0.150, sunk</dd><dt>Burners</dt><dd>2 × Bloom HV-400, 586 kW each, direct spark, axis −0.390</dd>
-      <dt>Firing</dt><dd>1,172 kW installed; ≈760 kW at 6.0 t/h</dd><dt>Dryer</dt><dd>4 positions, 6.0 × 7.5 × 1.4 m clear, 100–120 °C</dd>
-      <dt>Loop</dt><dd>AEP-ZA-9.0 48,000 m³/h at the SW corner, Ø1100 suction duct from mixing box S2, Ø400 × 12 m stack</dd>
-      <dt>Enclosure</dt><dd>8.2 × 2.75 × 4.72 m on the deck; 2 sliding roof covers; east lift door; west door lifts to skim and turns down to become the kettle cover; 20,000 m³/h to the bag filter</dd>
-      <dt>Flue</dt><dd>South end wall, SW corner, 50 above the hearth; R700 bend in the south pit; no mitred corners</dd></dl>
-      <p class="note">Indicative general arrangement of a SHIVAS design. Client names and commercial details are removed. Ask SHIVAS for the drawings and data for your own plant.</p>`;
+      P.innerHTML = `<p class="empty">Tap any part in the model, or pick one from Systems, to see what it is and what it is made of.</p>
+      <dl class="kv"><dt>Kettle</dt><dd>6,700 × 1,250 × 1,310 mm inside, 64.3 t zinc</dd><dt>Burners</dt><dd>2 high-velocity pulse-fired burners, direct spark ignition</dd>
+      <dt>Dryer</dt><dd>4 positions, 100–120 °C, heated through the heat-recovery loop</dd>
+      <dt>Enclosure</dt><dd>Zinc fume enclosure on the deck with sliding roof covers and lifting doors</dd></dl>
+      <p class="note">Indicative model of a SHIVAS design. Ask SHIVAS about a furnace for your own plant.</p>`;
       return;
     }
     const m = META[selected], e = extents(PART[selected].box);
     const r = n => Math.round(n).toLocaleString('en-IN');
     P.innerHTML = `<div class="card"><div class="tagrow"><span class="tag">${esc(m.tag)}</span></div>
       <h3>${esc(m.title)}</h3>
-      <dl class="kv"><dt>Specification</dt><dd>${esc(m.spec)}</dd>${m.material ? `<dt>Material</dt><dd>${esc(m.material)}</dd>` : ''}<dt>Quantity</dt><dd>${esc(m.qty)}</dd><dt>System</dt><dd>${esc(SYSN[m.system])}</dd>
-      <dt>Extent X</dt><dd class="mono">${r(e.X[0])} → ${r(e.X[1])} (${r(e.X[1] - e.X[0])})</dd>
-      <dt>Extent Y</dt><dd class="mono">${r(e.Y[0])} → ${r(e.Y[1])} (${r(e.Y[1] - e.Y[0])})</dd>
-      <dt>Levels Z</dt><dd class="mono">${(e.Z[0] / 1000).toFixed(3)} → ${(e.Z[1] / 1000).toFixed(3)} m</dd></dl>
+      <dl class="kv"><dt>Specification</dt><dd>${esc(m.spec)}</dd>${m.material ? `<dt>Material</dt><dd>${esc(m.material)}</dd>` : ''}<dt>Quantity</dt><dd>${esc(m.qty)}</dd><dt>System</dt><dd>${esc(SYSN[m.system])}</dd></dl>
       <div class="row-btns"><button class="sb" type="button" id="pFly">Fly to</button><button class="sb" type="button" id="pIso">Show only this</button><button class="sb" type="button" id="pHide">Hide</button><button class="sb" type="button" id="pClr">Clear</button></div></div>`;
     $('#pFly').onclick = () => flyToBox(PART[selected].box);
     $('#pIso').onclick = () => { for (const k in PART) PART[k].on = k === selected; for (const s in SYSVIS) SYSVIS[s] = true; $$('.sysh input').forEach(c => c.checked = true); applyVis(); flyToBox(PART[selected].box); };
@@ -496,7 +484,7 @@ function measure(hit) {
     mlabel.hidden = false;
   }
 }
-$('#tMeas').onclick = () => { measuring = !measuring; $('#tMeas').setAttribute('aria-pressed', measuring); mpts = []; if (!measuring) { if (mobj) scene.remove(mobj); mobj = null; if (mlabel) mlabel.hidden = true; } };
+($('#tMeas') || {}).onclick = () => { measuring = !measuring; $('#tMeas').setAttribute('aria-pressed', measuring); mpts = []; if (!measuring) { if (mobj) scene.remove(mobj); mobj = null; if (mlabel) mlabel.hidden = true; } };
 
 /* ---------------- flows + flames ---------------- */
 let flowGroup = null; const streams = []; const flames = [];
@@ -642,7 +630,7 @@ applySect();
 /* ---------------- overlay toggles ---------------- */
 $('#tFlow').onclick = () => { showFlow = !showFlow; $('#tFlow').setAttribute('aria-pressed', showFlow); applyVis(); };
 $('#tLbl').onclick = () => { showLbl = !showLbl; $('#tLbl').setAttribute('aria-pressed', showLbl); };
-$('#tLev').onclick = () => { showLev = !showLev; $('#tLev').setAttribute('aria-pressed', showLev); if (levels.grp) levels.grp.visible = showLev; };
+($('#tLev') || {}).onclick = () => { showLev = !showLev; $('#tLev').setAttribute('aria-pressed', showLev); if (levels.grp) levels.grp.visible = showLev; };
 $('#tAll').onclick = () => { for (const k in PART) PART[k].on = !META[k].hidden || PART[k].on; for (const s in SYSVIS) SYSVIS[s] = true; $$('.sysh input').forEach(c => c.checked = true);
   for (const k in S) S[k].e.checked = false; applySect(); applyVis(); };
 

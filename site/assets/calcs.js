@@ -381,7 +381,7 @@
   });
 
   /* ---------------- 11. FRP pultruded profile: weight and deflection beside steel ---------------- */
-  var SHP = { ib: 'I-beam', ch: 'Channel', rt: 'Square or rectangular tube', ct: 'Round tube', ang: 'Equal angle', rod: 'Round rod', flat: 'Flat strip' };
+  var SHP = { ib: 'I-beam', ch: 'Channel', rt: 'Square or rectangular tube', ct: 'Round tube', fd: 'Fan deck plank (multi-cell)', ang: 'Equal angle', ua: 'Unequal angle', rod: 'Round rod', flat: 'Flat strip' };
   CALCS.push({
     id: 'frp', div: 'frp', t: 'FRP profile weight and deflection', s: 'kg per metre, steel comparison, beam check',
     lead: 'For a pultruded FRP section: its weight per metre and per piece, what the same section weighs in steel, and how far it bends as a simply supported beam under your load, beside steel of the same size.',
@@ -393,6 +393,7 @@
       { k: 'L', l: 'Span, and the piece length', u: 'm', v: 3, step: 0.1, min: 0.1 },
       { k: 'w', l: 'Load spread along the span', u: 'kN/m', v: 1, step: 0.1, min: 0 },
       { k: 'tf', adv: 1, l: 'Flange thickness, I-beam and channel', u: 'mm', v: 0, step: 0.5, min: 0, hint: '0 = same as t', auto: 'same as t' },
+      { k: 'nw', adv: 1, l: 'Webs across a fan deck plank', u: 'no.', v: 4, step: 1, min: 2, max: 12, hint: 'the two outer walls included' },
       { k: 'rho', adv: 1, l: 'FRP density', u: 'g/cm³', v: 1.9, step: 0.05, min: 1.2, max: 2.4 },
       { k: 'E', adv: 1, l: 'FRP modulus along the length', u: 'GPa', v: 23, step: 0.5, min: 5, max: 60, hint: 'use the value your supplier guarantees' },
       { k: 'G', adv: 1, l: 'FRP shear modulus', u: 'GPa', v: 3, step: 0.1, min: 0.5, max: 10 }
@@ -412,6 +413,13 @@
         A = Math.PI / 4 * H * H; I = Math.PI / 64 * Math.pow(H, 4); Aw = 0.9 * A; dims = 'Ø' + H;
       } else if (s === 'flat') {
         A = B * t; I = B * Math.pow(t, 3) / 12; Aw = A * 5 / 6; c = t / 2; dims = B + ' × ' + t;
+      } else if (s === 'fd') {
+        var nw = Math.max(2, Math.round(v.nw || 2));
+        if (2 * t >= H || nw * t >= B) return { warn: [bad] };
+        A = B * H - (B - nw * t) * (H - 2 * t); I = (B * Math.pow(H, 3) - (B - nw * t) * Math.pow(H - 2 * t, 3)) / 12; Aw = nw * H * t; dims = H + ' × ' + B + ' × ' + t + ', ' + nw + ' webs';
+      } else if (s === 'ua') {
+        if (t >= H || t >= B) return { warn: [bad] };
+        A = t * (H + B - t); dims = H + ' × ' + B + ' × ' + t;
       } else {
         if (t >= H) return { warn: [bad] };
         A = t * (2 * H - t); dims = H + ' × ' + H + ' × ' + t;
@@ -621,7 +629,7 @@
   CALCS.push(ZLD);
 
   /* Most used and most important first; the plant calculator (its own page) leads the list */
-  var ORDER = ['wire', 'burner', 'zld', 'coating', 'phos', 'scrubber', 'acid', 'neutralise', 'bagfilter', 'fan', 'rectifier', 'frp'];
+  var ORDER = ['rectifier', 'wire', 'burner', 'zld', 'coating', 'phos', 'scrubber', 'acid', 'neutralise', 'bagfilter', 'fan', 'frp'];
   CALCS.sort(function (a, b) { return ORDER.indexOf(a.id) - ORDER.indexOf(b.id); });
 
   window.SHIVAS_CALCS = CALCS;

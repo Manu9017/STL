@@ -2,7 +2,7 @@
    Load this right after assets/library.js (item pages and the three division pages do). It adds the photos to
    window.SHIVAS_LIBRARY: their entries, their places in each product's gallery (own photos before supplier
    photos) and, where set, the product's lead photo (owner, 23 Nov 2026: the blue and white die box leads, not the
-   red primer one; 25 Nov 2026: his two photos of a hot air strip dryer go on the strip pickling line page, after its photos). Files: assets/own/ (FULL and THUMB) and assets/resp/ (480/960 px for phones). Originals, for the
+   red primer one; 25 Nov 2026: his two photos of a hot air strip dryer go on the strip pickling line page, after its photos, and his three pictures of a spooler lead the spooler's photos). Files: assets/own/ (FULL and THUMB) and assets/resp/ (480/960 px for phones). Originals, for the
    pipeline: docs/own-photos/. When the library is next rebuilt with these photos in it, delete this file and its
    <script> tags. Captions say only what the photo shows. */
 (function () {
@@ -200,6 +200,54 @@
   "full": "assets/own/r-strip-photo-own-7ffc8d6194_FULL.webp",
   "full_w": 1600,
   "full_h": 1200
+ },
+ "spooler-photo-own-f129cdc6ef": {
+  "type": "photo",
+  "tag": "Photo",
+  "alt": "Photo: Spooler: geared drive motor with a belt drive inside the yellow guard, beside the spool chamber and its spindle",
+  "config": "Spooler: geared drive motor with a belt drive inside the yellow guard, beside the spool chamber and its spindle",
+  "verified": true,
+  "preview": "assets/own/spooler-photo-own-f129cdc6ef_THUMB.webp",
+  "preview_w": 720,
+  "preview_h": 480,
+  "thumb": "assets/own/spooler-photo-own-f129cdc6ef_THUMB.webp",
+  "thumb_w": 720,
+  "thumb_h": 480,
+  "full": "assets/own/spooler-photo-own-f129cdc6ef_FULL.webp",
+  "full_w": 1448,
+  "full_h": 1086
+ },
+ "spooler-photo-own-4e0f094dd8": {
+  "type": "photo",
+  "tag": "Photo",
+  "alt": "Photo: Spooler from the front: traverse rod with its geared motor across the top, two pneumatic cylinders under the spool platform, drive motor and gearbox on the right",
+  "config": "Spooler from the front: traverse rod with its geared motor across the top, two pneumatic cylinders under the spool platform, drive motor and gearbox on the right",
+  "verified": true,
+  "preview": "assets/own/spooler-photo-own-4e0f094dd8_THUMB.webp",
+  "preview_w": 720,
+  "preview_h": 480,
+  "thumb": "assets/own/spooler-photo-own-4e0f094dd8_THUMB.webp",
+  "thumb_w": 720,
+  "thumb_h": 480,
+  "full": "assets/own/spooler-photo-own-4e0f094dd8_FULL.webp",
+  "full_w": 1536,
+  "full_h": 1024
+ },
+ "spooler-photo-own-54edb6d546": {
+  "type": "photo",
+  "tag": "Photo",
+  "alt": "Photo: Spooler drive side: motor and V-belt drive to the gearbox, inside the yellow guard",
+  "config": "Spooler drive side: motor and V-belt drive to the gearbox, inside the yellow guard",
+  "verified": true,
+  "preview": "assets/own/spooler-photo-own-54edb6d546_THUMB.webp",
+  "preview_w": 720,
+  "preview_h": 480,
+  "thumb": "assets/own/spooler-photo-own-54edb6d546_THUMB.webp",
+  "thumb_w": 720,
+  "thumb_h": 480,
+  "full": "assets/own/spooler-photo-own-54edb6d546_FULL.webp",
+  "full_w": 1448,
+  "full_h": 1086
  }
 };
   var G = {
@@ -224,6 +272,13 @@
   "add": [
    "r-strip-photo-own-994399fe9b",
    "r-strip-photo-own-7ffc8d6194"
+  ]
+ },
+ "spooler": {
+  "first": [
+   "spooler-photo-own-f129cdc6ef",
+   "spooler-photo-own-4e0f094dd8",
+   "spooler-photo-own-54edb6d546"
   ]
  },
  "diebox": {

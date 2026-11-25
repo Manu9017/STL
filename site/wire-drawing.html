@@ -1862,8 +1862,8 @@ html{scroll-padding-top:calc(var(--nav-h,60px) + 12px)} /* V35 scroll-pad */
   <div class="wrap">
     <div class="tblock" aria-label="You are here"><span>SHIVAS Technology</span><span>Wire drawing</span><span>Take-up and joining</span></div>
     <span class="eyebrow">Interactive</span>
-    <h2>Take-up, joining and <em>drying</em></h2>
-    <p class="lede">The coiler and spooler that take the wire off the machine, the butt welder that joins one rod coil to the next, and the wire coil dryer.</p>
+    <h2>Take-up, drying and <em>joining</em></h2>
+    <p class="lede">The coiler and spooler that take the wire off the machine, the wire coil dryer, and the butt welder that joins one rod coil to the next.</p>
     <div id="xpWire2" data-div="wire"></div>
   </div>
 </section>
@@ -1954,7 +1954,7 @@ html{scroll-padding-top:calc(var(--nav-h,60px) + 12px)} /* V35 scroll-pad */
       <span class="pill-cta">Open the calculator →</span>
     </a>
     <div class="cx cx-app pg-hdg" data-calcs="burner,coating,acid,bagfilter" data-h="3" data-div="hdg" data-label="Galvanizing calculators"><a class="cx-ph" href="calculators/burner-kw.html"><b>High-velocity burner kW</b><span>Firing rate, burners, wall heat flux, fuel</span><em>Open the calculator →</em></a></div>
-    <div class="cx cx-app pg-wire" data-calcs="wire,phos,rectifier" data-h="3" data-div="wire" data-label="Wire drawing calculators"><a class="cx-ph" href="calculators/wire-drawing.html"><b>Wire drawing</b><span>Passes, die sequence, block speeds, kW and output</span><em>Open the calculator →</em></a></div>
+    <div class="cx cx-app pg-wire" data-calcs="rectifier,wire,phos" data-h="3" data-div="wire" data-label="Wire drawing calculators"><a class="cx-ph" href="calculators/wire-drawing.html"><b>Wire drawing</b><span>Passes, die sequence, block speeds, kW and output</span><em>Open the calculator →</em></a></div>
     <a class="calc-band cb2" href="calculators.html">
       <span class="cb-t"><span class="eyebrow">12 engineering calculators</span><b>Wire drawing, burner kW, ETP and ZLD, ISO 1461 coating check, inline phosphating, scrubber and blower, acid</b><span>Passes and die sequence with kW per block; burner kW and wall heat flux; a whole ETP and ZLD plant with RO, MEE or MVR and the ATFD; coating thickness against ISO 1461; kg per km and zinc on GI wire; scrubber tower and blower motor; acid use, lime and sludge; bag filter, fan, EG rectifier and FRP profiles.</span></span>
       <span class="cb-chips" aria-hidden="true"><i>Wire</i><i>Burner</i><i>ETP + ZLD</i><i>Coating</i><i>Phosphating</i><i>Scrubber</i></span>
@@ -3582,37 +3582,50 @@ const EX_WIRE=[
   return [['Step',P[ph][0]],['Joint','≈ '+temp+' °C'],['Upset',bulge>0?'Ends forged':'-'],['Result','Joint passes the dies']];
  }},
 {id:'coildryer',code:'Wire drawing',name:'Wire coil dryer',prod:'Wire coil dryer',
- lead:'Coils coming off pickling and coating are dried before drawing, so the carrier coating sets and no water reaches the dies. Trolleys index through a recirculating hot-air oven; moist air is vented and the rest is reheated and reused.',
- calls:[['Wet coils in','Coated coils on a trolley, still wet.'],['Doors','Lift only while trolleys move.'],['Recirculation fan','Drives hot air down through the coils.'],['Heater','Burner or flue-gas heated air.'],['Moisture vent','Wet air leaves; dry air is reused.'],['Dry coils out','Coating set, ready to draw.']],
- specs:[['Load','Coils on trolleys'],['Air','Recirculated'],['Heat','Burner or flue gas'],['Use','After pickling + coating']],
- draw(g,t){const tc=t%12,S=[90,300,500,710],c=g.ctx;let door=0,mv=0;
-  if(tc<1)door=ease(tc);else if(tc<3.5){door=1;mv=ease((tc-1)/2.5)}else if(tc<4.5){door=1-ease(tc-3.5);mv=1}else mv=1;
+ lead:'Coils coming off pickling and coating are dried before drawing, so the carrier coating sets and no water reaches the dies. One coil at a time: the crane lowers it in through a sliding door in the roof, it dries on its seat in recirculated hot air, and it comes out the same way it went in. Moist air is vented and the rest is reheated and reused.',
+ calls:[['Roof door','Slides open so the crane can lift the dry coil out and set the wet one in, through the same opening.'],['Coil seat','The coil sits here while it dries.'],['Recirculation fan','Drives hot air down through the coil.'],['Heater','Burner or flue-gas heated air.'],['Moisture vent','Wet air leaves; dry air is reused.'],['Crane hook','Lowers the wet coil in and lifts the dry coil out.']],
+ specs:[['Load','One coil at a time'],['Door','Sliding, in the roof'],['Air','Recirculated'],['Heat','Burner or flue gas']],
+ draw(g,t){/* V84 (owner, 25 Nov 2026): one coil, in and out through the same sliding door in the roof */
+  const T=12,tc=t%T,c=g.ctx,X=400,YS=318,YT=96,RW=40,HY=60,seg=(a,b)=>clamp((tc-a)/(b-a),0,1),E=x=>ease(clamp(x,0,1));
+  const door=tc<1?E(tc):tc<7.5?1:tc<8.5?1-E(tc-7.5):0,hookD=E(seg(1,1.6)),lift=E(seg(1.6,3)),lower=E(seg(5.5,7)),hookU=E(seg(7,7.5));
   g.floor();
-  // rails
-  c.fillStyle='#3a4a5a';c.fillRect(0,398,800,4);c.fillRect(0,404,800,3);
-  // oven: insulated panel shell, warm inside
-  c.fillStyle='#1d140e';c.fillRect(186,150,428,250);const ig=c.createLinearGradient(0,150,0,400);ig.addColorStop(0,'rgba(255,120,40,.14)');ig.addColorStop(1,'rgba(255,120,40,.03)');c.fillStyle=ig;c.fillRect(186,150,428,250);
-  c.strokeStyle='rgba(255,200,160,.06)';c.lineWidth=1;for(let x=230;x<614;x+=48){c.beginPath();c.moveTo(x,150);c.lineTo(x,398);c.stroke()}
-  g.box(176,134,448,18,'#9fb1c2',{d:6,shadow:false});
-  // roof plant: recirculation fan with motor, heater with burner, moisture vent
-  g.pump(355,104,30,t*10);g.motor(392,86,52,30);g.box(320,128,70,8,'#1b2b3d',{d:2,shadow:false});
-  g.box(446,78,96,54,'#4a5a6a',{d:5,shadow:false});for(let j=0;j<6;j++){c.fillStyle=mix('#5a3a28','#ff8a3c',.5+.4*Math.sin(t*3+j));c.fillRect(454+j*14,86,6,38)}g.glow(494,105,40,'#ff7a2c',.22);g.flame(542,118,22,0,t,8);
-  g.pipe([[355,134],[355,152]],'#5a4a3e',16,false);g.pipe([[494,132],[494,152]],'#5a4a3e',10,false);
-  g.cyl(566,8,26,126,'#6d7f90',true);g.puffs(579,8,t,'#eef3f8',.22,60,6,14,.8);
-  // hot air driven down through the coils
-  for(let i=0;i<4;i++){const x=236+i*100;g.flow([[x,160],[x+Math.sin(i)*10,280],[x,392]],t+i*.2,60,70,'rgba(255,180,110,.4)',1.2)}
-  // trolleys of coils, wet blue going in, dry grey coming out
-  for(let k=0;k<3;k++){const x=lerp(S[k],S[k+1],mv),dry=clamp((x-90)/620,0,1),col=mix('#4f7fa8','#aab4bd',dry);
-   g.box(x-80,370,160,14,'#3b4c5d',{d:4,shadow:false});[x-55,x+55].forEach(wx=>{c.beginPath();c.arc(wx,390,8,0,TAU);c.fillStyle='#1b2b3d';c.fill();c.strokeStyle='#8aa0b5';c.lineWidth=1.2;c.stroke()});
-   for(let j=0;j<3;j++){const y=340-j*30;g.coilband(x,y,60,14,22,col)}
-   if(dry<.2)for(let dd=0;dd<4;dd++){const p=(t*1.3+dd/4)%1;g.circ0(x-45+dd*30,372+p*26,2,rgba(C.water,1-p))}
-   if(dry>.25&&dry<.85)g.puffs(x,262,t+k,'#e7edf3',.2,70,4,22,.6)}
-  // roller doors
-  const dy=150-door*140;[[172],[614]].forEach(([x])=>{g.box(x-4,134,6,266,'#6f8295',{d:0,shadow:false});c.save();c.beginPath();c.rect(x,150,14,250);c.clip();c.fillStyle='#b6c4d1';c.fillRect(x+1,dy,12,250);c.strokeStyle='rgba(30,45,60,.45)';c.lineWidth=1;for(let y=dy+8;y<dy+250;y+=9){c.beginPath();c.moveTo(x+1,y);c.lineTo(x+13,y);c.stroke()}c.restore()});
-  g.gauge(590,180,12,.62);
-  g.label('WET IN',90,440,{size:10,col:C.water});g.label('DRY OUT',710,440,{size:10,col:C.zinc});
-  g.call(1,90,250,90,300);g.call(2,150,180,172,190);g.call(3,355,52,355,74);g.call(4,494,52,494,78);g.call(5,612,26,594,30);g.call(6,710,250,710,300);
-  return [['Oven','≈ 150 °C, typical'],['Doors',door>.05?'Open':'Closed'],['Phase',tc<4.5?'Indexing':'Drying'],['Air','Recirculated + vented']];
+  // oven: insulated shell, warm inside
+  c.fillStyle='#1d140e';c.fillRect(250,212,300,180);const ig=c.createLinearGradient(0,212,0,392);ig.addColorStop(0,'rgba(255,120,40,.14)');ig.addColorStop(1,'rgba(255,120,40,.03)');c.fillStyle=ig;c.fillRect(250,212,300,180);
+  c.strokeStyle='rgba(255,200,160,.06)';c.lineWidth=1;for(let x=290;x<550;x+=40){c.beginPath();c.moveTo(x,212);c.lineTo(x,390);c.stroke()}
+  g.box(238,196,12,212,'#6f8295',{d:3,shadow:false});g.box(550,196,12,212,'#6f8295',{d:3,shadow:false});c.fillStyle='#24180f';c.fillRect(250,392,300,16);
+  // the coil seat
+  g.box(X-56,382,112,10,'#5d6f80',{d:3,shadow:false});g.box(X-10,370,20,12,'#7d8fa0',{d:2,shadow:false});
+  // plant beside the oven: heater with burner, recirculation fan with motor, moisture vent
+  g.pipe([[562,250],[600,250]],'#5a4a3e',14);g.flow([[600,250],[562,250]],t,90,18,'rgba(255,180,110,.6)',1.6);
+  g.box(600,222,86,56,'#4a5a6a',{d:5,shadow:false});for(let j=0;j<5;j++){c.fillStyle=mix('#5a3a28','#ff8a3c',.5+.4*Math.sin(t*3+j));c.fillRect(608+j*15,230,6,40)}g.glow(643,250,40,'#ff7a2c',.22);g.flame(686,262,20,0,t,7);
+  g.pump(632,330,26,t*10);g.motor(662,316,48,28);g.pipe([[606,330],[562,330]],'#5a4a3e',14);g.flow([[562,330],[606,330]],t,90,18,'rgba(255,180,110,.45)',1.6);
+  g.pipe([[632,278],[632,304]],'#5a4a3e',10,false);
+  g.cyl(704,96,22,180,'#6d7f90',true);g.pipe([[686,236],[704,236]],'#5a4a3e',8,false);g.puffs(715,96,t,'#eef3f8',.22,60,6,14,.8);
+  // hot air driven down through the coil
+  for(let i=0;i<4;i++){const x=280+i*80;g.flow([[x,222],[x+Math.sin(i)*8,300],[x,388]],t+i*.2,60,70,'rgba(255,180,110,.4)',1.2)}
+  // one coil, wet blue going in, dry grey coming out, lifted by a hook and a two-leg sling
+  const coil=(x,y,dry)=>{const col=mix('#4f7fa8','#aab4bd',dry);g.coilband(x,y,62,16,64,col);
+   if(dry<.15)for(let d=0;d<4;d++){const p=(t*1.3+d/4)%1;g.circ0(x-45+d*30,y+82+p*24,2,rgba(C.water,1-p))}};
+  const hoist=(x,hy,carry)=>{g.box(x-20,RW+6,40,14,'#e8a317',{d:3,shadow:false});g.circ0(x-12,RW+6,3,'#33495e');g.circ0(x+12,RW+6,3,'#33495e');
+   const hk=carry!==undefined?carry-34:hy;g.chain(x,HY,x,hk-14);g.hook(x,hk);if(carry!==undefined){g.line([[x,hk+4],[x-42,carry]],'#9fb2c4',1.6);g.line([[x,hk+4],[x+42,carry]],'#9fb2c4',1.6)}};
+  // the coil inside dries; at the start of the next cycle it is lifted out and carried away to the right
+  {let x=X,y=YS;if(tc>=1.6&&tc<3)y=lerp(YS,YT,lift);else if(tc>=3){y=YT;x=lerp(X,880,E(seg(3,5.5)))}
+   if(tc<5.5)coil(x,y,1);
+   if(tc<1)hoist(X,96);else if(tc<1.6)hoist(X,lerp(96,YS-30,hookD));else if(tc<5.5)hoist(x,0,y);else if(tc<8.5)hoist(880,96);else hoist(lerp(880,X,E(seg(8.5,12))),96);
+   if(tc<1)g.puffs(X,YS,t,'#e7edf3',.08,60,4,20,.5)}
+  // the next wet coil comes in from the left and goes down through the same door; the crane goes back for another
+  {const x=lerp(-80,X,E(seg(0,5.5))),y=lerp(YT,YS,lower);
+   if(tc<7){coil(x,y,0);hoist(x,0,y)}else{const d=clamp((tc-7)/5,0,1);coil(X,YS,d);if(d<.85)g.puffs(X,YS,t,'#e7edf3',.2,70,4,22,.6);hoist(tc<8.5?X:lerp(X,-80,E(seg(8.5,12))),tc<7.5?lerp(YS-30,96,hookU):96)}}
+  // runway, and the roof with its sliding door
+  g.beam(0,RW,800,RW,12,'#2f4d6b');
+  g.line([[120,192],[560,192]],'#5d6f80',2);g.box(250,196,70,16,'#9fb1c2',{d:6,shadow:false});g.box(480,196,70,16,'#9fb1c2',{d:6,shadow:false});
+  {const x0=320-160*door;g.box(x0,196,160,16,'#c3cfda',{d:6,shadow:false});c.strokeStyle='rgba(30,45,60,.45)';c.lineWidth=1;for(let x=x0+10;x<x0+160;x+=12){c.beginPath();c.moveTo(x,198);c.lineTo(x,210);c.stroke()}
+   c.beginPath();c.arc(x0+12,194,3,0,TAU);c.arc(x0+148,194,3,0,TAU);c.fillStyle='#33495e';c.fill()}
+  g.gauge(578,370,12,.62);
+  g.label('WET IN',44,24,{size:10,col:C.water});g.label('DRY OUT',752,24,{size:10,col:C.zinc});
+  g.call(1,230,176,290,204);g.call(2,500,372,X+50,386);g.call(3,632,384,632,356);g.call(4,643,196,643,222);g.call(5,746,86,726,100);g.call(6,456,96,X+14,92);
+  const ph=tc<1?'Roof door opening':tc<3?'Dry coil lifted out':tc<5.5?'Wet coil brought in':tc<7.5?'Wet coil set down':tc<8.5?'Roof door closing':'Drying';
+  return [['Oven','≈ 150 °C, typical'],['Coil','One at a time'],['Roof door',door>.05?'Open':'Closed'],['Phase',ph]];
  }},
 {id:'mig',code:'Wire drawing',name:'CO₂ / MIG wire plant',prod:'CO₂ / MIG wire plant',
  modes:[{id:'line',label:'Full line'},{id:'copper',label:'Copper coating'},{id:'spool',label:'Layer winding'}],
@@ -3839,11 +3852,12 @@ const EX_HDG=[
   return [['Bend',Math.round(th*2)+'°'],['Corner',bent?'Formed on press':'Fillet-welded'],['Corner welds',bent?'None':'4'],['Seams',bent?'Straight walls':'At corners']];
  }},
 {id:'dryer',code:'Galvanizing',name:'Recirculating dryer · 4 positions',prod:'Dryer',
- lead:'Loads index through four positions in a closed chamber. Entry and exit doors open only while the line moves, and a fan recirculates hot air through the loads, heated by furnace flue gas with a burner top-up.',
- calls:[['Entry door','Opens to admit the next load, then closes to hold the heat in.'],['Positions P1–P4','Each load dries in four steps, wettest at P1.'],['Recirculation fan','Moves hot air up through the loads and back.'],['Flue gas heat exchanger','Furnace flue heat, with a top-up burner when needed.'],['Hot air','Rises through the work and returns to the fan.'],['Exit door','Releases the driest load towards the kettle.']],
- specs:[['Positions','4'],['Doors','Entry + exit, motorised'],['Air','Recirculated'],['Heat','Flue gas + top-up']],
- draw(g,t){const tc=t%10,S=[75,205,335,465,595,725],c=g.ctx;
-  let door=0,mv=0;if(tc<1.2)door=ease(tc/1.2);else if(tc<3.7){door=1;mv=ease((tc-1.2)/2.5)}else if(tc<4.9){door=1-ease((tc-3.7)/1.2);mv=1}else{door=0;mv=1}
+ lead:'Loads go in from the top at the left end and come out from the top at the right end. A sliding roof door over the first position opens so the crane can lower the next load onto its hanger; inside, the loads sit on four hangers and step forward one position at a time; a sliding roof door over the last position opens so the crane can lift the driest load out towards the kettle. The roof between the two doors is fixed. A fan recirculates hot air through the loads, heated by furnace flue gas with a burner top-up.',
+ calls:[['Entry door','Slides open in the roof over P1 so the crane can lower the next load in.'],['Hangers P1–P4','Each load sits on a hanger and steps forward one position per cycle, wettest at P1.'],['Recirculation fan','Moves hot air up through the loads and back.'],['Flue gas heat exchanger','Furnace flue heat, with a top-up burner when needed.'],['Hot air','Rises through the work and returns to the fan.'],['Exit door','Slides open in the roof over P4 so the crane can lift the driest load out towards the kettle.'],['Fixed roof','The middle of the roof never opens, so the heat stays in.']],
+ specs:[['Positions','4 hangers'],['Doors','Two sliding roof doors'],['Air','Recirculated'],['Heat','Flue gas + top-up']],
+ draw(g,t){/* V84 (owner, 25 Nov 2026): in from the top at the left, out from the top at the right, fixed roof between */
+  const T=12,tc=t%T,S=[205,335,465,595],c=g.ctx,YJ=262,YT=86,RW=40,HY=60,seg=(a,b)=>clamp((tc-a)/(b-a),0,1),E=x=>ease(clamp(x,0,1));
+  const door=tc<1?E(tc):tc<7.5?1:tc<8.5?1-E(tc-7.5):0,hookD=E(seg(1,1.6)),lift=E(seg(1.6,3)),step=E(seg(3,5)),lower=E(seg(5,7)),hookU=E(seg(7,7.5));
   g.floor();
   // plant pit below the floor: recirculation fan and flue-gas heat exchanger
   c.fillStyle='#0c151f';c.fillRect(300,412,300,82);c.strokeStyle='rgba(150,180,210,.25)';c.lineWidth=1;c.strokeRect(300,412,300,82);
@@ -3853,36 +3867,53 @@ const EX_HDG=[
   g.pipe([[470,452],[414,452]],'#5a4a3e',12);g.flow([[470,452],[414,452]],t,110,16,C.flue,2);
   g.motor(318,440,44,30);g.pump(386,452,24,t*10,C.heat);
   g.pipe([[386,428],[386,398]],'#5a4a3e',14);g.flow([[386,428],[386,398]],t,110,12,C.flue,2.2);
-  // chamber: insulated panels, roof, floor grating, plenum
-  c.fillStyle='#1d140e';c.fillRect(140,142,520,250);
-  const ig=c.createLinearGradient(0,142,0,392);ig.addColorStop(0,'rgba(255,120,40,.12)');ig.addColorStop(1,'rgba(255,120,40,.03)');c.fillStyle=ig;c.fillRect(140,142,520,250);
-  c.strokeStyle='rgba(255,200,160,.06)';c.lineWidth=1;for(let x=192;x<660;x+=52){c.beginPath();c.moveTo(x,142);c.lineTo(x,380);c.stroke()}
-  g.box(128,124,544,18,'#9fb1c2',{d:6,shadow:false});for(let x=150;x<660;x+=40){c.fillStyle='rgba(0,0,0,.18)';c.fillRect(x,126,1.5,14)}
+  // chamber: insulated walls, floor grating, plenum
+  c.fillStyle='#1d140e';c.fillRect(140,212,520,180);
+  const ig=c.createLinearGradient(0,212,0,392);ig.addColorStop(0,'rgba(255,120,40,.12)');ig.addColorStop(1,'rgba(255,120,40,.03)');c.fillStyle=ig;c.fillRect(140,212,520,180);
+  c.strokeStyle='rgba(255,200,160,.06)';c.lineWidth=1;for(let x=192;x<660;x+=52){c.beginPath();c.moveTo(x,212);c.lineTo(x,380);c.stroke()}
+  g.box(128,196,12,212,'#6f8295',{d:3,shadow:false});g.box(660,196,12,212,'#6f8295',{d:3,shadow:false});
   c.fillStyle='#3a2e24';c.fillRect(140,380,520,12);c.fillStyle='#0d0907';for(let x=144;x<656;x+=7)c.fillRect(x,381,3,10);
   c.fillStyle='#24180f';c.fillRect(140,392,520,16);
-  // hot air rising through the work and back along the roof
-  for(let i=0;i<7;i++){const x=176+i*72;g.flow([[x,390],[x+Math.sin(i)*8,250],[x+Math.sin(i*2)*12,150]],t+i*.17,60,58,'rgba(255,180,110,.55)',1.3)}
-  g.line([[620,146],[620,118],[700,118],[700,500]],'rgba(255,138,76,.28)',2,[6,6]);g.arrow(700,488,Math.PI/2,'rgba(255,138,76,.6)',6);
-  // crane runway and the loads on their jigs
-  g.beam(0,56,800,56,12,'#2f4d6b');
-  for(let k=0;k<5;k++){const x=lerp(S[k],S[k+1],mv),dry=clamp((x-75)/650,0,1),col=mix('#3d6f9a','#b9b6a8',dry),inside=x>130&&x<670;
-   g.box(x-20,62,40,14,'#e8a317',{d:3,shadow:false});g.circ0(x-12,62,3,'#33495e');g.circ0(x+12,62,3,'#33495e');
-   g.chain(x-30,76,x-30,203);g.chain(x+30,76,x+30,203);
-   g.beam(x-60,207,x+60,207,8,'#6a7a8a');
-   // three articles: an I-beam, an angle and a pipe
-   const ib=(y)=>{c.fillStyle=col;c.fillRect(x-52,y,104,18);c.fillStyle=mix(col,'#000000',.35);c.fillRect(x-52,y+6,104,6);c.fillStyle='rgba(255,255,255,.18)';c.fillRect(x-52,y,104,1.5)};
-   g.line([[x-40,211],[x-40,224]],'#8a9aa8',1);g.line([[x+40,211],[x+40,224]],'#8a9aa8',1);ib(224);
-   c.fillStyle=col;c.fillRect(x-48,258,96,8);c.fillRect(x-48,258,8,20);c.fillStyle='rgba(255,255,255,.15)';c.fillRect(x-48,258,96,1.4);g.line([[x-30,242],[x-30,258]],'#8a9aa8',1);g.line([[x+30,242],[x+30,258]],'#8a9aa8',1);
-   g.cyl(x-50,294,100,16,col,false);g.line([[x-36,278],[x-36,294]],'#8a9aa8',1);g.line([[x+36,278],[x+36,294]],'#8a9aa8',1);
-   if(dry<.25)for(let d=0;d<4;d++){const p=(t*1.2+d/4)%1;g.circ0(x-36+d*24,312+p*60,2,`rgba(90,160,220,${(1-p).toFixed(3)})`)}
-   if(inside&&dry<.75)g.puffs(x,226,t+k,'#e7edf3',.22*(1-dry),70,4,22,.6)}
-  for(let i=0;i<4;i++){g.rr(S[i+1]-15,148,30,16,8,'rgba(10,20,32,.85)',wA(C.amber,.7),1);g.text('P'+(i+1),S[i+1],156,{size:9.5,w:700,col:C.amber})}
-  // insulated roller doors at entry and exit, posts either side
-  [[124,'l'],[662,'r']].forEach(([x])=>{g.box(x,124,14,284,'#6f8295',{d:3,shadow:false});const dy=142-door*230,dh=238;c.save();c.beginPath();c.rect(x+1,142,12,250);c.clip();c.fillStyle='#b6c4d1';c.fillRect(x+2,dy,10,dh);c.strokeStyle='rgba(30,45,60,.45)';for(let y=dy+8;y<dy+dh;y+=9){c.beginPath();c.moveTo(x+2,y);c.lineTo(x+12,y);c.stroke()}c.restore()});
-  g.gauge(612,184,13,.55);g.text('110 °C',612,206,{size:8.5,w:700,col:C.amber});
-  g.label('FLUE GAS IN',730,426,{size:9.5,col:C.flue});
-  g.call(1,104,200,124,200);g.call(2,272,180,S[2],150);g.call(3,330,404,344,440);g.call(4,520,404,520,420);g.call(5,500,330);g.call(6,694,200,676,200);
-  return [['Chamber','≈ 110 °C'],['Positions','4 · P1 → P4'],['Doors',door>.05?'Open':'Closed'],['Phase',tc<4.9?'Indexing':'Drying']];
+  // the four hangers the loads sit on, and the chain that steps them forward
+  S.forEach(x=>{[x-60,x+60].forEach(px=>g.beam(px,YJ+8,px,380,6,'#5d6f80'));g.beam(x-66,YJ+8,x+66,YJ+8,5,'#7d8fa0')});
+  g.line([[150,386],[650,386]],'#4d5d6c',2);if(tc>=3&&tc<5)g.flow([[150,386],[650,386]],t,70,16,'rgba(232,163,23,.8)',1.6);
+  // hot air rising through the work
+  for(let i=0;i<7;i++){const x=176+i*72;g.flow([[x,390],[x+Math.sin(i)*8,300],[x+Math.sin(i*2)*12,220]],t+i*.17,60,58,'rgba(255,180,110,.5)',1.3)}
+  g.line([[660,300],[704,300],[704,500]],'rgba(255,138,76,.28)',2,[6,6]);g.arrow(704,488,Math.PI/2,'rgba(255,138,76,.6)',6);
+  for(let i=0;i<4;i++){g.rr(S[i]-15,218,30,16,8,'rgba(10,20,32,.85)',wA(C.amber,.7),1);g.text('P'+(i+1),S[i],226,{size:9.5,w:700,col:C.amber})}
+  // one load: a jig beam with an I-beam, an angle and a pipe hanging from it
+  const load=(x,y,dry,inside)=>{const col=mix('#3d6f9a','#b9b6a8',dry);g.beam(x-60,y,x+60,y,8,'#6a7a8a');
+   g.line([[x-40,y+4],[x-40,y+16]],'#8a9aa8',1);g.line([[x+40,y+4],[x+40,y+16]],'#8a9aa8',1);
+   c.fillStyle=col;c.fillRect(x-52,y+16,104,16);c.fillStyle=mix(col,'#000000',.35);c.fillRect(x-52,y+21,104,5);c.fillStyle='rgba(255,255,255,.18)';c.fillRect(x-52,y+16,104,1.5);
+   g.line([[x-30,y+32],[x-30,y+46]],'#8a9aa8',1);g.line([[x+30,y+32],[x+30,y+46]],'#8a9aa8',1);c.fillStyle=col;c.fillRect(x-48,y+46,96,7);c.fillRect(x-48,y+46,7,18);c.fillStyle='rgba(255,255,255,.15)';c.fillRect(x-48,y+46,96,1.4);
+   g.line([[x-36,y+64],[x-36,y+76]],'#8a9aa8',1);g.line([[x+36,y+64],[x+36,y+76]],'#8a9aa8',1);g.cyl(x-50,y+76,100,15,col,false);
+   if(dry<.25)for(let d=0;d<4;d++){const p=(t*1.2+d/4)%1;g.circ0(x-36+d*24,y+92+p*28,2,`rgba(90,160,220,${(1-p).toFixed(3)})`)}
+   if(inside&&dry<.75)g.puffs(x,y+14,t+x*.01,'#e7edf3',.2*(1-dry),60,4,20,.55)};
+  // a crane hoist on the runway, with its hook down to height hy, or carrying a load
+  const hoist=(x,hy,carry)=>{g.box(x-20,RW+6,40,14,'#e8a317',{d:3,shadow:false});g.circ0(x-12,RW+6,3,'#33495e');g.circ0(x+12,RW+6,3,'#33495e');
+   if(carry!==undefined){g.chain(x-30,HY,x-30,carry-4);g.chain(x+30,HY,x+30,carry-4)}else{g.chain(x,HY,x,hy-14);g.hook(x,hy)}};
+  const dryOf=k=>clamp((k+tc/T)/4,0,1);
+  // the loads inside: before the step they sit at P1..P4; the one at P4 is lifted out
+  for(let k=0;k<3;k++)load(lerp(S[k],S[k+1],step),YJ,dryOf(k),true);
+  // the driest load: lifted out at P4, then away to the right; the exit crane comes back empty while the others dry
+  {let x=S[3],y=YJ;if(tc>=1.6&&tc<3)y=lerp(YJ,YT,lift);else if(tc>=3){y=YT;x=lerp(S[3],880,E(seg(3,6)))}
+   if(tc<6)load(x,y,1,tc<3);
+   if(tc<1)hoist(S[3],96);else if(tc<1.6)hoist(S[3],lerp(96,YJ-6,hookD));else if(tc<6)hoist(x,0,y);else if(tc<8.5)hoist(880,96);else hoist(lerp(880,S[3],E(seg(8.5,12))),96)}
+  // the next wet load: brought in from the left over P1, lowered through the entry door; the entry crane goes back for another
+  {const x=lerp(-80,S[0],E(seg(0,3))),y=lerp(YT,YJ,lower);
+   if(tc<7){load(x,y,0,tc>=5.5);hoist(x,0,y)}else{load(S[0],YJ,clamp((tc-7)/T/4,0,1),true);hoist(tc<8.5?S[0]:lerp(S[0],-80,E(seg(8.5,12))),tc<7.5?lerp(YJ-6,96,hookU):96)}}
+  // runway over the dryer
+  g.beam(0,RW,800,RW,12,'#2f4d6b');
+  // roof: fixed in the middle, a sliding door at each end on its rails
+  g.line([[0,192],[140,192]],'#5d6f80',2);g.line([[660,192],[800,192]],'#5d6f80',2);
+  g.box(270,196,260,16,'#9fb1c2',{d:6,shadow:false});for(let x=290;x<530;x+=40){c.fillStyle='rgba(0,0,0,.18)';c.fillRect(x,198,1.5,12)}
+  [[140-130*door],[530+130*door]].forEach(([x0])=>{g.box(x0,196,130,16,'#c3cfda',{d:6,shadow:false});c.strokeStyle='rgba(30,45,60,.45)';c.lineWidth=1;for(let x=x0+10;x<x0+130;x+=12){c.beginPath();c.moveTo(x,198);c.lineTo(x,210);c.stroke()}
+   c.beginPath();c.arc(x0+12,194,3,0,TAU);c.arc(x0+118,194,3,0,TAU);c.fillStyle='#33495e';c.fill()});
+  g.gauge(690,262,12,.55);g.text('110 °C',690,284,{size:8.5,w:700,col:C.amber});
+  g.label('FLUE GAS IN',730,426,{size:9.5,col:C.flue});g.label('WET IN',44,24,{size:9.5,col:'#5aa0dc'});g.label('DRY OUT',752,24,{size:9.5,col:'#cfd6dd'});
+  g.call(1,104,236,150,204);g.call(2,270,252,S[1]-60,300);g.call(3,330,404,344,440);g.call(4,520,404,520,420);g.call(5,400,240);g.call(6,696,236,650,204);g.call(7,400,176,400,198);
+  const ph=tc<1?'Roof doors opening':tc<3?'Dry load out at P4':tc<5?'Loads step forward':tc<7?'Wet load in at P1':tc<8.5?'Roof doors closing':'Drying';
+  return [['Chamber','≈ 110 °C'],['Positions','4 hangers · P1 → P4'],['Roof doors',door>.05?'Open':'Closed'],['Phase',ph]];
  }},
 {id:'fluxheat',code:'Galvanizing',name:'Flux tank heating',prod:'Pretreatment tanks',
  lead:'Flux works best warm. Galvanized work brings about 450 °C of heat into the quench tank on every dip; a pump sends that hot quench water through a coil in the flux tank and back, and a 3-way valve driven by the flux sensor holds the set point. The flux is warmed and the quench is cooled, with no fuel burnt.',
@@ -4710,26 +4741,29 @@ const EX_RPLANT=[
  specs:[['Acid','Regenerated'],['Water','Back to process'],['Fume','Scrubbed'],['Discharge','Zero liquid']],
  draw(g,t){const c=g.ctx;
   const P=[320,190,160,110],S=[330,40,140,70],A=[600,170,170,80],E=[60,300,160,80],Z=[320,380,160,80],O=[620,400,150,70];
-  const link=(p,col,lab,lx,ly,sp=80)=>{g.pipe(p,mix(col,'#0b1622',.55),7,false);g.flow(p,t,sp,22,col,2.2);const e=p[p.length-1],q=p[p.length-2];g.arrow(e[0],e[1],Math.atan2(e[1]-q[1],e[0]-q[0]),col,6);if(lab)g.label(lab,lx,ly,{size:9.5,col})};
-  link([[400,190],[400,110]],'#d4d45a','FUME',416,150,70);
-  link([[480,230],[600,230]],'#d4d45a','SPENT ACID',540,218);
-  link([[600,190],[480,190]],'#25adb8','REGEN ACID',540,180);
-  link([[320,260],[140,260],[140,300]],'#3b8fd6','RINSE WATER',230,248);
-  link([[330,75],[140,75],[140,300]],'#9fd4ff','BLEED',220,64,60);
-  link([[220,340],[300,340],[300,410],[320,410]],'#3b8fd6','TREATED',262,328);
-  link([[480,420],[560,420],[560,280],[480,280],[480,270]],'#9fd4ff','WATER BACK',600,300,60);
-  link([[685,250],[685,400]],'#c27a2c','Fe₂O₃',705,325,40);
-  link([[480,440],[620,440]],'#efe6d2','SALT',550,430,40);link([[140,380],[140,470],[620,470],[620,455]],'#b08a5a','CAKE',380,486,40);
+  const tags=[],link=(p,col,lab,lx,ly,sp=80)=>{g.pipe(p,mix(col,'#0b1622',.55),7,false);g.flow(p,t,sp,22,col,2.2);const e=p[p.length-1],q=p[p.length-2];g.arrow(e[0],e[1],Math.atan2(e[1]-q[1],e[0]-q[0]),col,6);if(lab)tags.push([lab,lx,ly,col])};
+  // V85 (owner, 25 Nov 2026: calmer text): stream names on small dark tags with a colour dot, drawn last so no pipe crosses them
+  const tag=(s,x,y,col)=>{if(g.small)return;const w=s.length*5.7+24;g.rr(x-w/2,y-8,w,16,8,'rgba(8,16,26,.9)');g.circ0(x-w/2+9,y,3,col);g.text(s,x+6,y,{size:9,w:600,col:'#dbe6f0'})};
+  link([[400,190],[400,110]],'#d4d45a','Fume',436,150,70);
+  link([[480,230],[600,230]],'#d4d45a','Spent acid',540,248);
+  link([[600,190],[480,190]],'#25adb8','Regenerated acid',540,174);
+  link([[320,260],[140,260],[140,300]],'#3b8fd6','Rinse water',232,244);
+  link([[330,75],[140,75],[140,300]],'#9fd4ff','Bleed',236,59,60);
+  link([[220,340],[300,340],[300,410],[320,410]],'#3b8fd6','Treated',266,324);
+  link([[480,420],[560,420],[560,280],[480,280],[480,270]],'#9fd4ff','Water back',618,300,60);
+  link([[685,250],[685,400]],'#c27a2c','Iron oxide',732,325,40);
+  link([[480,440],[620,440]],'#efe6d2','Salt',550,455,40);link([[140,380],[140,470],[620,470],[620,455]],'#b08a5a','Filter cake',380,486,40);
   // each node: a card with its plant drawn small
   const card=(x,y,w,h,lab,sub,col,art)=>{g.rr(x,y,w,h,10,'rgba(12,24,38,.96)',wA(col,.8),1.4);c.save();c.beginPath();if(c.roundRect)c.roundRect(x+2,y+2,w-4,h-4,8);else c.rect(x+2,y+2,w-4,h-4);c.clip();art(x,y,w,h);c.restore();
-   c.fillStyle='rgba(6,14,22,.75)';c.fillRect(x+2,y+h-30,w-4,28);g.text(lab,x+w/2,y+h-20,{size:11,w:700,col:C.fg});g.text(sub,x+w/2,y+h-8,{size:8.5,col})};
-  card(...P,'PICKLING','HCl · PP-H tanks','#d4d45a',(x,y,w)=>{for(let k=0;k<3;k++){const tx=x+14+k*46;g.tankPP(tx,y+28,38,44,{col:'#d5cebb',legs:false,shadow:false,floor:y+72});g.liquor(tx+2,y+34,34,36,'#c4c46a',t+k,{a0:.75,a1:.5});g.puffs(tx+19,y+30,t+k,'#d4d45a',.22,24,3,10,.4)}});
-  card(...S,'SCRUBBER','packed bed','#25adb8',(x,y)=>{g.vessel(x+18,y+6,28,44,{col:'#7fa89a',legs:false,shadow:false,seams:1});g.pump(x+70,y+26,12,t*12,C.teal);c.fillStyle='#5d7a6e';c.fillRect(x+100,y+2,10,40);g.puffs(x+105,y+4,t,'#e7edf3',.14,30,3,8,.4)});
-  card(...A,'ACID REGEN','spray roaster','#25adb8',(x,y)=>{g.vessel(x+16,y+4,34,48,{col:'#6a4a3a',legs:false,shadow:false,seams:1});g.glow(x+33,y+30,26,'#ff7a2c',.4);g.vessel(x+70,y+8,22,44,{col:'#7fa89a',legs:false,shadow:false,seams:1});g.vessel(x+110,y+16,26,36,{col:'#8ea1b3',legs:false,shadow:false,seams:1})});
-  card(...E,'ETP','neutralise · settle','#3b8fd6',(x,y)=>{for(let k=0;k<2;k++){g.tankPP(x+12+k*40,y+16,34,32,{col:'#c3c8c9',legs:false,shadow:false,floor:y+48});g.liquor(x+14+k*40,y+20,30,26,k?'#8ea6ae':'#7f8a8c',t+k,{a0:.75,a1:.55})}c.fillStyle='#8ea6ae';c.fillRect(x+98,y+10,46,26);c.beginPath();c.moveTo(x+98,y+36);c.lineTo(x+144,y+36);c.lineTo(x+126,y+50);c.lineTo(x+116,y+50);c.closePath();c.fillStyle='#8a6a48';c.fill()});
-  card(...Z,'ZLD','RO · MEE/MVR · ATFD','#8b6cff',(x,y)=>{g.cyl(x+12,y+22,50,10,'#e6eaed',false);g.cyl(x+12,y+34,50,10,'#e6eaed',false);for(let k=0;k<3;k++)g.vessel(x+74+k*24,y+4,18,46,{col:'#8ea1b3',legs:false,shadow:false,seams:1})});
-  card(...O,'SOLIDS OUT','oxide · cake · salt','#c9a26b',(x,y)=>{[['#b5562a',x+20],['#7a4a24',x+62],['#efe6d2',x+104]].forEach(([col,bx])=>{c.beginPath();c.moveTo(bx,y+10);c.quadraticCurveTo(bx-2,y+30,bx+4,y+40);c.lineTo(bx+30,y+40);c.quadraticCurveTo(bx+36,y+30,bx+34,y+10);c.closePath();const bg=c.createLinearGradient(bx,0,bx+34,0);bg.addColorStop(0,mix(col,'#000000',.3));bg.addColorStop(.4,mix(col,'#ffffff',.2));bg.addColorStop(1,mix(col,'#000000',.35));c.fillStyle=bg;c.fill()})});
-  g.call(1,320,190);g.call(2,330,40);g.call(3,770,170);g.call(4,60,300);g.call(5,480,380);g.call(6,560,300);g.call(7,770,400);
+   c.fillStyle='rgba(6,14,22,.8)';c.fillRect(x+2,y+h-30,w-4,28);if(g.small)g.text(lab==='Acid regeneration'?'Acid regen':lab,x+w/2,y+h-16,{size:11,w:700,col:'#f2f6fa'});else{g.text(lab,x+w/2,y+h-20,{size:11,w:700,col:'#f2f6fa'});g.text(sub,x+w/2,y+h-8,{size:8.5,col:'#a9bacb'})}};
+  card(...P,'Pickling','HCl · PP-H tanks','#d4d45a',(x,y,w)=>{for(let k=0;k<3;k++){const tx=x+14+k*46;g.tankPP(tx,y+28,38,44,{col:'#d5cebb',legs:false,shadow:false,floor:y+72});g.liquor(tx+2,y+34,34,36,'#c4c46a',t+k,{a0:.75,a1:.5});g.puffs(tx+19,y+30,t+k,'#d4d45a',.22,24,3,10,.4)}});
+  card(...S,'Scrubber','Packed bed','#25adb8',(x,y)=>{g.vessel(x+18,y+6,28,44,{col:'#7fa89a',legs:false,shadow:false,seams:1});g.pump(x+70,y+26,12,t*12,C.teal);c.fillStyle='#5d7a6e';c.fillRect(x+100,y+2,10,40);g.puffs(x+105,y+4,t,'#e7edf3',.14,30,3,8,.4)});
+  card(...A,'Acid regeneration','Spray roaster','#25adb8',(x,y)=>{g.vessel(x+16,y+4,34,48,{col:'#6a4a3a',legs:false,shadow:false,seams:1});g.glow(x+33,y+30,26,'#ff7a2c',.4);g.vessel(x+70,y+8,22,44,{col:'#7fa89a',legs:false,shadow:false,seams:1});g.vessel(x+110,y+16,26,36,{col:'#8ea1b3',legs:false,shadow:false,seams:1})});
+  card(...E,'ETP','Neutralise · settle','#3b8fd6',(x,y)=>{for(let k=0;k<2;k++){g.tankPP(x+12+k*40,y+16,34,32,{col:'#c3c8c9',legs:false,shadow:false,floor:y+48});g.liquor(x+14+k*40,y+20,30,26,k?'#8ea6ae':'#7f8a8c',t+k,{a0:.75,a1:.55})}c.fillStyle='#8ea6ae';c.fillRect(x+98,y+10,46,26);c.beginPath();c.moveTo(x+98,y+36);c.lineTo(x+144,y+36);c.lineTo(x+126,y+50);c.lineTo(x+116,y+50);c.closePath();c.fillStyle='#8a6a48';c.fill()});
+  card(...Z,'ZLD','RO · MEE or MVR · ATFD','#8b6cff',(x,y)=>{g.cyl(x+12,y+22,50,10,'#e6eaed',false);g.cyl(x+12,y+34,50,10,'#e6eaed',false);for(let k=0;k<3;k++)g.vessel(x+74+k*24,y+4,18,46,{col:'#8ea1b3',legs:false,shadow:false,seams:1})});
+  card(...O,'Solids out','Oxide · cake · salt','#c9a26b',(x,y)=>{[['#b5562a',x+20],['#7a4a24',x+62],['#efe6d2',x+104]].forEach(([col,bx])=>{c.beginPath();c.moveTo(bx,y+10);c.quadraticCurveTo(bx-2,y+30,bx+4,y+40);c.lineTo(bx+30,y+40);c.quadraticCurveTo(bx+36,y+30,bx+34,y+10);c.closePath();const bg=c.createLinearGradient(bx,0,bx+34,0);bg.addColorStop(0,mix(col,'#000000',.3));bg.addColorStop(.4,mix(col,'#ffffff',.2));bg.addColorStop(1,mix(col,'#000000',.35));c.fillStyle=bg;c.fill()})});
+  g.call(1,320,190);g.call(2,330,40);g.call(3,770,170);g.call(4,60,300);g.call(5,480,380);g.call(6,560,352);g.call(7,770,400);
+  tags.forEach(a=>tag(...a));
   return [['Acid','Regenerated'],['Water','≈ 90 % back'],['Fume','Scrubbed'],['Liquid out','None']];
  }},
 {id:'arpplant',code:'Complete plant',name:'Acid regeneration',prod:'Acid regeneration',
@@ -4777,13 +4811,13 @@ const EX_RPLANT=[
 /* Tabs by importance, most important first (owner's request, 22 Nov 2026); visitors swipe on to the rest */
 (function(){const ord=(L,ids)=>L.sort((a,b)=>{const i=ids.indexOf(a.id),j=ids.indexOf(b.id);return (i<0?99:i)-(j<0?99:j)});
  ord(EX_HDG,['furnace','burner','corner','dryer','zfe','efurnace','fluxregen','gastrain','fluxheat']);
- ord(EX_WIRE,['slm','oto','dbc','diebox','spooler','mig','eg','butt','coildryer']);
+ ord(EX_WIRE,['slm','oto','dbc','diebox','spooler','mig','eg','coildryer','butt']);
  ord(EX_REIN,['ppl','tunnel','cpl','fumeless','scrubber','etp','zld','tank']);{const k=EX_REIN.findIndex(e=>e.id==='pultrusion');if(k>=0)EX_REIN.splice(k,1)}})();
 /* ================= REINPLAST HALL ================= */
 /* V83 (owner, 25 Nov 2026: "no one would want to swipe to 10 different slides"): each list in groups of like machines,
    one explorer per group, each in its own section; the order inside a group stays the order above */
 const grp=(L,ids)=>{const out=L.filter(e=>ids.includes(e.id));return out};
-const GROUPS=[['xpWire',EX_WIRE,[['slm','oto','diebox'],['dbc','spooler','butt','coildryer'],['mig','eg']],C.amber],
+const GROUPS=[['xpWire',EX_WIRE,[['slm','oto','diebox'],['dbc','spooler','coildryer','butt'],['mig','eg']],C.amber],
  ['xpHdg',EX_HDG,[['furnace','burner','efurnace','gastrain'],['corner','zfe'],['dryer','fluxheat','fluxregen']],C.amber],
  ['xpRein',EX_REIN,[['ppl','tunnel','cpl','fumeless'],['scrubber','tank'],['etp','zld']],C.teal]];
 GROUPS.forEach(([box,L,gs,col])=>{const left=L.filter(e=>!gs.flat().includes(e.id));if(left.length)gs[gs.length-1]=gs[gs.length-1].concat(left.map(e=>e.id));
@@ -4798,12 +4832,12 @@ const HALL={
   {id:'spin',title:'Spin galvanizing plant · fasteners',sub:'SG500 · 500 t/month, M10–M36 · drum pretreatment, carousel dryer, DSQ kettle, dip-spin head with a fixed spin hood, quench · ZFE, AFE, flux regeneration, ash recovery · guided tour',tags:['HDG','Spin','Fasteners'],v:[{l:'3D',f:'v/spin-galvanizing.html',i:'v/img/spin-galvanizing.jpg'}]},
   {id:'ef',title:'Electric kettle furnace',sub:'840 kW in 8 zones · kettle 6.7 × 1.25 × 1.31 m · explode and section',tags:['HDG','Furnace'],v:[{l:'3D',f:'v/electric-furnace.html',i:'v/img/electric-furnace.jpg'}]},
   {id:'room',title:'Enclosed acid room · two lines',sub:'22 × 18.6 m pretreatment room · steel, FRP-lined columns, polycarbonate and glass skin, monorails, trolleys',tags:['HDG','Acid room'],v:[{l:'3D',f:'v/acid-room-2line.html',i:'v/img/acid-room-2line.jpg'}]},
-  {id:'zar',title:'Zinc ash recovery plant',sub:'Full SH-ZAR plant · rotary drum, hot bay, fume system · run a batch, measure, drawings and mass balance',tags:['HDG','Recovery'],v:[{l:'Full plant',f:'v/zinc-ash-plant.html',i:'v/img/zinc-ash-plant.jpg'},{l:'Compact · hoist tilt',f:'v/zinc-ash-hoist.html',i:'v/img/zinc-ash-hoist.jpg'},{l:'Compact · hydraulic tilt',f:'v/zinc-ash-hydraulic.html',i:'v/img/zinc-ash-hydraulic.jpg'}]},
-  {id:'dg',title:'Pneumatic dross grab · SH-DG-400',sub:'Crane-suspended clamshell for bottom dross · 400 kg bite · kettles 1.4–3.2 m deep · animated cycle, jaw control, BOM',tags:['HDG','Dross'],v:[{l:'3D',f:'v/dross-grab.html',i:'v/img/dross-grab.jpg'}]}
+  {id:'zar',title:'Zinc ash recovery plant',sub:'Full plant · rotary drum, hot bay, fume system · run a batch',tags:['HDG','Recovery'],v:[{l:'Full plant',f:'v/zinc-ash-plant.html',i:'v/img/zinc-ash-plant.jpg'},{l:'Compact · hoist tilt',f:'v/zinc-ash-hoist.html',i:'v/img/zinc-ash-hoist.jpg'},{l:'Compact · hydraulic tilt',f:'v/zinc-ash-hydraulic.html',i:'v/img/zinc-ash-hydraulic.jpg'}]},
+  {id:'dg',title:'Pneumatic dross grab · SH-DG-400',sub:'Crane-suspended clamshell for bottom dross · 400 kg bite · kettles 1.4–3.2 m deep · animated cycle and jaw control',tags:['HDG','Dross'],v:[{l:'3D',f:'v/dross-grab.html',i:'v/img/dross-grab.jpg'}]}
  ],
  rein:[
   {id:'zld',title:'ETP + ZLD · 90 m³/day',sub:'Same process, two layouts: packed into 17 × 12 m on two levels, or laid out on an open site at grade',tags:['ETP','ZLD','MEE / MVR'],v:[{l:'Space-restricted',f:'v/etp-zld-compact.html',i:'v/img/etp-zld-compact.jpg'},{l:'Open site',f:'v/etp-zld-spread.html',i:'v/img/etp-zld-spread.jpg'}]},
-  {id:'arp',title:'Acid regeneration · ARP-10',sub:'10 m³/h spray roaster · 3D model, drawings and documents',tags:['ARP','HCl'],v:[{l:'3D + package',f:'v/arp-10.html',i:'v/img/arp-10.jpg'}]},
+  {id:'arp',title:'Acid regeneration · ARP-10',sub:'10 m³/h spray roaster · 3D model with a process tour',tags:['ARP','HCl'],v:[{l:'3D',f:'v/arp-10.html',i:'v/img/arp-10.jpg'}]},
   {id:'room2',title:'Enclosed acid room · two lines',sub:'Pretreatment room built around the acid tanks, ready for extraction',tags:['Pickling','Fume'],v:[{l:'3D',f:'v/acid-room-2line.html',i:'v/img/acid-room-2line.jpg'}]}
  ]};
 const PHONE=()=>matchMedia('(max-width:899px)').matches;

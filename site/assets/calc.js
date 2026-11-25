@@ -1,5 +1,5 @@
 /* SHIVAS galvanizing plant sizing and running-cost calculator.
-   Pick the profiles you galvanize (a mix), set your monthly black-steel target and largest article, and the page works out
+   Pick the profiles you galvanize (a mix), set your monthly black-steel target and zinc kettle, and the page works out the largest article,
    surface per tonne, coating to ISO 1461 / IS 4759, zinc with dross and ash, kettle and furnace size, pretreatment line,
    fuel, acid, flux, power and labour, and the running cost per tonne and per month. Every rate and assumption is editable.
    Planning estimates only: real figures depend on steel chemistry, surface condition and plant practice. */
@@ -25,6 +25,9 @@
     hat: { n: 'Solar: hat / omega sections', k: 'hat', unit: 'h × top × flange × t', list: [[40,30,15,2],[40,40,20,2],[50,60,20,2.5],[60,80,25,3]], use: 'Module rails, bracing' },
     chs: { n: 'Round pipes (CHS)', k: 'chs', unit: 'OD × t', list: [[21.3,2],[26.9,2.3],[33.7,2.6],[42.4,2.6],[48.3,2.9],[60.3,2.9],[76.1,3.2],[88.9,3.2],[114.3,3.6],[139.7,4.5],[168.3,4.5],[219.1,5]], use: 'Solar piles, poles, scaffolding, fencing (galvanized inside and out)' },
     shs: { n: 'Square / rectangular tubes (SHS / RHS)', k: 'shs', unit: 'B × H × t', list: [[25,25,2],[40,40,2.6],[50,50,3],[72,72,3.2],[100,100,4],[120,120,3],[150,150,5],[60,40,2.6],[80,40,3],[100,50,3.2],[122,61,3.6],[145,82,4.8]], use: 'Solar torque tubes, frames, gates (inside and out)' },
+    rbar: { n: 'Round bars (solid)', k: 'rbar', unit: 'Ø d', list: [[10],[12],[16],[20],[25],[32],[40],[50]], label: ['Ø10','Ø12','Ø16','Ø20','Ø25','Ø32','Ø40','Ø50'], use: 'Anchor bolts, tie rods, railing and fencing bars' },
+    sqbar: { n: 'Square bars (solid)', k: 'sqbar', unit: 'a × a', list: [[10],[12],[16],[20],[25],[32],[40]], label: ['10 × 10','12 × 12','16 × 16','20 × 20','25 × 25','32 × 32','40 × 40'], use: 'Grills, gates, railings' },
+    flatbar: { n: 'Flat bars', k: 'flatbar', unit: 'b × t', list: [[25,5],[32,6],[40,6],[50,6],[50,8],[65,8],[75,10],[100,10]], use: 'Bracing, cleats, earthing strips, gratings' },
     cb: { n: 'Crash barriers', k: 'wbeam', unit: 'developed width × t', list: [[483,2.5],[483,3],[749,3]], label: ['W-beam 2.5 mm','W-beam 3 mm','Thrie-beam 3 mm'], use: 'Highway safety barriers' },
     tower: { n: 'Transmission / telecom tower angles', k: 'angle', unit: 'a × a × t', list: [[45,45,5],[50,50,6],[65,65,6],[75,75,6],[90,90,7],[100,100,8],[110,110,10],[130,130,10],[150,150,12],[200,200,16]], use: 'Lattice towers, bolted' },
     plate: { n: 'Plates and fabrications', k: 'plate', unit: 'thickness t', list: [[3],[5],[6],[8],[10],[12],[16],[20],[25]], use: 'Base plates, brackets, tanks, gratings' },
@@ -40,6 +43,9 @@
       case 'hat': h = d[0]; b = d[1]; c = d[2]; t = d[3]; var w = b + 2 * h + 2 * c; return { A: w * t, P: 2 * w, t: t };
       case 'chs': return { A: Math.PI * (d[0] - d[1]) * d[1], P: Math.PI * (2 * d[0] - 2 * d[1]), t: d[1] };
       case 'shs': b = d[0]; h = d[1]; t = d[2]; return { A: 2 * t * (b + h - 2 * t), P: 4 * (b + h) - 8 * t, t: t };
+      case 'rbar': return { A: Math.PI * d[0] * d[0] / 4, P: Math.PI * d[0], t: d[0] };
+      case 'sqbar': return { A: d[0] * d[0], P: 4 * d[0], t: d[0] };
+      case 'flatbar': return { A: d[0] * d[1], P: 2 * (d[0] + d[1]), t: d[1] };
       case 'wbeam': return { A: d[0] * d[1], P: 2 * d[0], t: d[1] };
       case 'plate': return { A: 1000 * d[0], P: 2000, t: d[0] };
       case 'bolt': var dd = d[0]; // cylinder with thread, head, nut and washer allowance
@@ -68,6 +74,9 @@
     else if (k === 'chs') { var r = 32, ri = Math.max(r - d[1] * 32 / (d[0] / 2), r - 9); s = '<path class="sx" fill-rule="evenodd" d="M8 40a32 32 0 1 0 64 0a32 32 0 1 0-64 0ZM' + (40 - ri) + ' 40a' + ri + ' ' + ri + ' 0 1 0 ' + 2 * ri + ' 0a' + ri + ' ' + ri + ' 0 1 0 ' + (-2 * ri) + ' 0Z"/>'; }
     else if (k === 'shs') { var B = d[0], Hh = d[1], tt = d[2]; sc = 64 / Math.max(B, Hh); var bw2 = B * sc, hw = Hh * sc, T4 = Math.max(tt * sc, 1.6); x0 = 40 - bw2 / 2; y0 = 40 - hw / 2;
       s = '<path class="sx" fill-rule="evenodd" d="M' + x0 + ' ' + y0 + 'h' + bw2 + 'v' + hw + 'h' + (-bw2) + 'ZM' + (x0 + T4) + ' ' + (y0 + T4) + 'v' + (hw - 2 * T4) + 'h' + (bw2 - 2 * T4) + 'v' + (-(hw - 2 * T4)) + 'Z"/>'; }
+    else if (k === 'rbar') { s = '<circle class="sx" cx="40" cy="40" r="' + Math.max(8, Math.min(30, d[0] * .6)).toFixed(1) + '"/>'; }
+    else if (k === 'sqbar') { var q2 = Math.max(16, Math.min(56, d[0] * 1.2)); s = poly([[40 - q2 / 2, 40 - q2 / 2], [40 + q2 / 2, 40 - q2 / 2], [40 + q2 / 2, 40 + q2 / 2], [40 - q2 / 2, 40 + q2 / 2]]); }
+    else if (k === 'flatbar') { var fw = 64, ft = Math.max(3, fw * d[1] / d[0]); s = poly([[8, 40 - ft / 2], [72, 40 - ft / 2], [72, 40 + ft / 2], [8, 40 + ft / 2]]); }
     else if (k === 'wbeam') { s = d[0] > 600 ? '<path class="sx2" d="M6 30q6-14 12 0t12 0t12 0t12 0t12 0t12 0" stroke-width="2.2"/>' : '<path class="sx2" d="M8 40q8-18 16 0t16 0t16 0t16 0" stroke-width="2.2"/>'; }
     else if (k === 'plate') { var th = Math.max(Math.min(d[0] * 1.6, 30), 3); s = poly([[8, 40 - th / 2], [72, 40 - th / 2], [72, 40 + th / 2], [8, 40 + th / 2]]); }
     else if (k === 'bolt') { s = '<path class="sx" d="M10 30h10v20H10Z"/><path class="sx2" d="M20 36h46v8H20" stroke-width="1.6"/><path d="M28 36l2 8M34 36l2 8M40 36l2 8M46 36l2 8M52 36l2 8M58 36l2 8" stroke="currentColor" stroke-width=".6"/><path class="sx" d="M48 31h8v18h-8Z"/>'; }
@@ -78,12 +87,14 @@
                fo: { n: 'Furnace oil', u: 'kg', cv: 41, eff: .45, price: 58, kg: 1 }, el: { n: 'Electric', u: 'kWh', cv: 3.6, eff: .88, price: 8.5 } };
   var SI = { low: { n: 'Low silicon, Al-killed (Si ≤ 0.03 %)', f: 1.15 }, sand: { n: 'Sandelin range (Si 0.03–0.12 %)', f: 1.8 }, seb: { n: 'Sebisty range (Si 0.15–0.25 %)', f: 1.35 }, high: { n: 'High silicon (Si > 0.25 %)', f: 2.0 } };
   var st = { rows: [{ f: 'cpur', i: 4, s: 50 }, { f: 'chs', i: 6, s: 30 }, { f: 'isa', i: 6, s: 20 }], mode: 'batch',
-    t: 1000, days: 26, shifts: 2, hours: 8, avail: 85, L: 6.5, W: 0.6, H: 1.2, fuel: 'ng', si: 'low',
+    t: 1000, days: 26, shifts: 2, hours: 8, avail: 85, KL: 6.6, KW: 0.7, KD: 1.4, fuel: 'ng', si: 'low',
     r: { zinc: 450, dross: 82.2, ash: 20, fuel: 48, power: 8.5, hcl: 4, chem: 500, wage: 20000, cons: 150, maint: 250, acidDisp: 4, water: 80 },
     x: { dross: 10, ash: 15, other: 3, hclkg: 25, kwh: 35, cycle: 12, crane: 5, lossP: 7, lossI: 3, lossW: .6, staff: 6 } };
   // ---------- state from the URL (so results can be shared) ----------
   try { var q = new URLSearchParams(location.search); if (q.get('mix')) { st.rows = q.get('mix').split(',').map(function (x) { var p = x.split(':'); return { f: p[0], i: +p[1], s: +p[2] }; }).filter(function (r) { return F[r.f] && F[r.f].list[r.i]; }); }
-    ['t','days','shifts','hours','L','W','H'].forEach(function (k) { if (q.get(k)) st[k] = +q.get(k); }); if (q.get('fuel') && FUEL[q.get('fuel')]) st.fuel = q.get('fuel'); if (q.get('si') && SI[q.get('si')]) st.si = q.get('si'); if (q.get('mode')) st.mode = q.get('mode');
+    ['t','days','shifts','hours','KL','KW','KD'].forEach(function (k) { if (q.get(k)) st[k] = +q.get(k); });
+    /* links shared before 25 Nov 2026 gave the largest article (L, W, H): turn it into the kettle */
+    if (q.get('L') && !q.get('KL')) st.KL = +(+q.get('L') + .1).toFixed(2); if (q.get('W') && !q.get('KW')) st.KW = +(+q.get('W') + .1).toFixed(2); if (q.get('H') && !q.get('KD')) st.KD = +(+q.get('H') + .2).toFixed(2); if (q.get('fuel') && FUEL[q.get('fuel')]) st.fuel = q.get('fuel'); if (q.get('si') && SI[q.get('si')]) st.si = q.get('si'); if (q.get('mode')) st.mode = q.get('mode');
     if (q.get('fam') && F[q.get('fam')]) { st.rows = [{ f: q.get('fam'), i: Math.floor(F[q.get('fam')].list.length / 2), s: 100 }]; if (q.get('fam') === 'fast') st.mode = 'spin'; }
   } catch (e) {}
   if (!st.rows.length) st.rows = [{ f: 'isa', i: 6, s: 100 }];
@@ -104,8 +115,10 @@
     // kettle
     var Lk, Wk, Dk, spinUnits = 0;
     if (st.mode === 'spin') { Lk = 2.5; Wk = 1.2; Dk = 1.5; spinUnits = Math.ceil(tph / 3.6); }
-    /* SHIVAS kettle rule: inside length and width = largest article + 100 mm; depth = article height + 100 mm of zinc below it + 100 mm left empty at the top */
-    else { Lk = +(st.L + .1).toFixed(2); Wk = +(st.W + .1).toFixed(2); Dk = +(st.H + .2).toFixed(2); }
+    /* the visitor gives the kettle (owner, 25 Nov 2026); the largest article follows the SHIVAS kettle rule in reverse:
+       article length and width = inside length and width - 100 mm; height as dipped = depth - 100 mm of zinc below it - 100 mm left empty at the top */
+    else { Lk = +st.KL; Wk = +st.KW; Dk = +st.KD; }
+    var aL = Math.max(0, Lk - .1), aW = Math.max(0, Wk - .1), aH = Math.max(0, Dk - .2);
     var zincT = Lk * Wk * (Dk - .1) * 6.6, ruleOk = zincT >= 10 * tph;
     if (!ruleOk && st.mode === 'spin') { while (Lk * Wk * (Dk - .1) * 6.6 < 10 * tph && Lk < 4) { Lk += .5; } }
     var zincT2 = Lk * Wk * (Dk - .1) * 6.6;
@@ -132,7 +145,7 @@
     var sum = 0; Object.keys(c).forEach(function (k) { sum += c[k]; });
     return { rows: rowsOut, m2t: m2t, coatKg: coatKg, zTot: zTot, drossKg: drossKg, ashKg: ashKg, tph: tph, hoursProd: hoursProd, Lk: Lk, Wk: Wk, Dk: Dk, zincT: zincT2, ruleOk: ruleOk,
       dips: dips, perDip: perDip, drop: perDip * 215e3 / (zincT2 * 1000 * .5), crane: crane, craneNeed: craneNeed, fuelUnits: fuelUnits, fuelPerT: fuelUnits / M, kwFurnace: kwFurnace, line: line, tank: [tankL, tankW, tankD], heads: heads, perShift: perShift,
-      cost: c, sum: sum, perT: sum / M, spinUnits: spinUnits, thin: thin };
+      cost: c, sum: sum, perT: sum / M, spinUnits: spinUnits, thin: thin, aL: aL, aW: aW, aH: aH };
   }
   // ---------- render ----------
   var LABEL = { zinc: 'Zinc (net of dross and ash sold)', fuel: 'Fuel / heating', chem: 'Acid, flux and chemicals', waste: 'Spent acid, water and effluent', power: 'Electricity (cranes, fans, pumps)', labour: 'Labour', other: 'Consumables and maintenance' };
@@ -197,15 +210,19 @@
     $('#oBar').innerHTML = Object.keys(c).map(function (k) { return '<i style="flex:' + Math.max(c[k], 0) + ';background:' + COL[k] + '" title="' + LABEL[k] + '"></i>'; }).join('');
     $('#oCost').innerHTML = '<tr><th>Cost head</th><th>₹ / t</th><th>₹ / month</th><th>Share</th></tr>' + Object.keys(c).map(function (k) { return '<tr><td><i class="sw" style="background:' + COL[k] + '"></i>' + LABEL[k] + '</td><td>' + fmt(c[k] / st.t) + '</td><td>' + fmt(c[k]) + '</td><td>' + fmt(c[k] / o.sum * 100, 1) + ' %</td></tr>'; }).join('') +
       '<tr class="tot"><td>Total running cost</td><td>' + fmt(o.perT) + '</td><td>' + fmt(o.sum) + '</td><td>100 %</td></tr>';
-    var kettleTxt = st.mode === 'spin' ? 'Spin kettle ' + o.Lk + ' × ' + o.Wk + ' × ' + o.Dk + ' m with ' + o.spinUnits + ' spinner' + (o.spinUnits > 1 ? 's' : '') : o.Lk + ' × ' + o.Wk + ' × ' + o.Dk + ' m (inside, L × W × D): your article + 100 mm in length and width, + 200 mm in depth';
+    var artTxt = fmt(o.aL, 2) + ' × ' + fmt(o.aW, 2) + ' × ' + fmt(o.aH, 2) + ' m';
+    var kettleTxt = st.mode === 'spin' ? 'Spin kettle ' + o.Lk + ' × ' + o.Wk + ' × ' + o.Dk + ' m with ' + o.spinUnits + ' spinner' + (o.spinUnits > 1 ? 's' : '') : fmt(o.Lk, 2) + ' × ' + fmt(o.Wk, 2) + ' × ' + fmt(o.Dk, 2) + ' m (inside, L × W × D), as you entered';
+    var ao = $('#cArtOut'); if (ao) ao.innerHTML = o.aL > 0 && o.aW > 0 && o.aH > 0 ? 'Largest article this kettle takes: <b>' + artTxt + '</b> (L × B × H as dipped)' : 'This kettle is too small for any article: make it at least 0.2 m long and wide and 0.3 m deep.';
+    var fh = st.fuel === 'el' ? 0 : o.kwFurnace * 3.6 / fu.cv, fuelH = st.fuel === 'el' ? '' : ' · about ' + fmt(fh, 0) + ' ' + fu.u + '/h of ' + ({ ng: 'natural gas', lpg: 'LPG', ldo: 'LDO', fo: 'furnace oil' })[st.fuel] + ' at full firing' + (fu.u !== 'kg' && fu.kg ? ' (≈ ' + fmt(fh * fu.kg, 0) + ' kg/h)' : '');
     $('#oSize').innerHTML = [
       ['Throughput needed', fmt(o.tph, 2) + ' t/h over ' + fmt(o.hoursProd) + ' production hours a month' + (o.tph > 5 && st.mode !== 'spin' ? '; above about 5 t/h most plants run two lines or a third shift' : '')],
       ['Zinc kettle', kettleTxt],
+      ['Largest article', st.mode === 'spin' ? 'Fasteners in perforated baskets' : artTxt + ' (L × B × H as dipped): the kettle less 100 mm in length and width, and 200 mm in depth'],
       ['Zinc in the kettle', '≈ ' + fmt(o.zincT, 0) + ' t (' + fmt(o.zincT / Math.max(o.tph, .01), 0) + ' × hourly throughput' + (o.ruleOk || st.mode === 'spin' ? '' : '; below 10 ×, so the bath cools more on each dip: lighter loads or a deeper kettle help') + ')'],
       ['Dips per hour', fmt(o.dips, 1) + ' dips at ' + x.cycle + ' min a dip, ' + fmt(o.perDip, 2) + ' t of steel per dip'],
       ['Bath drop per dip', '≈ ' + fmt(o.drop, 1) + ' °C' + (o.drop > 10 ? ' (high: lighter loads, a deeper kettle or a second line)' : ' (fine below about 10 °C)')],
       ['Cranes', fmt(o.crane, 1) + ' t SWL over the kettle' + (o.tph > 2 ? ', plus a pretreatment crane' : '')],
-      ['Furnace rating', '≈ ' + fmt(o.kwFurnace / 10, 0) * 10 + ' kW installed (' + fu.n + ')'],
+      ['Furnace rating', '≈ ' + fmt(Math.round(o.kwFurnace / 10) * 10) + ' kW installed (' + fu.n + ')' + fuelH],
       ['Pretreatment tanks', fmt(o.tank[0], 1) + ' × ' + fmt(o.tank[1], 1) + ' × ' + fmt(o.tank[2], 1) + ' m each'],
       ['People', o.perShift + ' a shift × ' + st.shifts + ' shifts + ' + x.staff + ' staff = ' + o.heads]
     ].map(function (r) { return '<div><dt>' + r[0] + '</dt><dd>' + r[1] + '</dd></div>'; }).join('');
@@ -223,10 +240,10 @@
     ].map(function (r) { return '<div><dt>' + r[0] + '</dt><dd>' + r[1] + '</dd></div>'; }).join('');
     // share link and enquiry text
     var mixq = st.rows.map(function (r) { return r.f + ':' + r.i + ':' + r.s; }).join(',');
-    var qs = '?mix=' + mixq + '&t=' + st.t + '&days=' + st.days + '&shifts=' + st.shifts + '&hours=' + st.hours + '&L=' + st.L + '&W=' + st.W + '&H=' + st.H + '&fuel=' + st.fuel + '&si=' + st.si + '&mode=' + st.mode;
+    var qs = '?mix=' + mixq + '&t=' + st.t + '&days=' + st.days + '&shifts=' + st.shifts + '&hours=' + st.hours + '&KL=' + st.KL + '&KW=' + st.KW + '&KD=' + st.KD + '&fuel=' + st.fuel + '&si=' + st.si + '&mode=' + st.mode;
     try { history.replaceState(null, '', qs); } catch (e) {}
     var summary = 'Galvanizing plant enquiry from the SHIVAS calculator\n\nProduct mix: ' + st.rows.map(function (r) { return F[r.f].n + ' ' + sizeLabel(r.f, r.i) + ' (' + r.s + ' %)'; }).join('; ') +
-      '\nTarget: ' + st.t + ' t of black steel a month, ' + st.days + ' days, ' + st.shifts + ' shifts of ' + st.hours + ' h\nLargest article: ' + st.L + ' × ' + st.W + ' × ' + st.H + ' m\nFuel: ' + fu.n +
+      '\nTarget: ' + st.t + ' t of black steel a month, ' + st.days + ' days, ' + st.shifts + ' shifts of ' + st.hours + ' h\nZinc kettle (inside): ' + st.KL + ' × ' + st.KW + ' × ' + st.KD + ' m' + (st.mode === 'spin' ? '' : ', largest article ' + artTxt) + '\nFuel: ' + fu.n +
       '\n\nCalculator estimate: kettle ' + o.Lk + ' × ' + o.Wk + ' × ' + o.Dk + ' m, ' + fmt(o.tph, 2) + ' t/h, zinc ' + fmt(o.zTot, 1) + ' kg/t, running cost ' + rs(o.perT) + ' per tonne.\n\nLink: ' + location.href.split('?')[0] + qs;
     $('#oMail').target = '_blank'; $('#oMail').href = 'mailto:info@shivastechnology.com?cc=shivastechnology@gmail.com,info@shivasasia.com,shivasasia@gmail.com,shivas1470@gmail.com&subject=' + encodeURIComponent('Galvanizing plant: ' + st.t + ' t/month') + '&body=' + encodeURIComponent(summary);
     $('#oWa').href = 'https://wa.me/919810920468?text=' + encodeURIComponent(summary);
