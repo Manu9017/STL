@@ -2054,7 +2054,7 @@ html{scroll-padding-top:calc(var(--nav-h,60px) + 12px)} /* V35 scroll-pad */
     <h2 class="start-h">SHIVAS Reinplast, start here</h2>
     <div class="start-grid">
       <a class="st" href="reinplast.html#rein-loop"><i>01</i><b>Waste streams</b><span>What leaves a wire or galvanizing plant, and what we build for each.</span></a>
-      <a class="st" href="reinplast.html#rein-lines"><i>02</i><b>Wire pretreatment lines</b><span>Galvanizing, fumeless pickling and electro-galvanizing lines, turnkey.</span></a>
+      <a class="st" href="reinplast.html#rein-lines"><i>02</i><b>Wire pretreatment lines</b><span>Galvanizing, fumeless pickling, phosphating, borax and electro-galvanizing lines, turnkey.</span></a>
       <a class="st" href="reinplast.html#rein-machines"><i>03</i><b>Equipment, animated</b><span data-count="rein">Scrubbers, blowers, tanks, pickling and effluent treatment.</span></a>
       <a class="st" href="reinplast.html#rein-plants"><i>04</i><b>Complete plants</b><span>A pickling shop and an acid regeneration plant, running.</span></a>
       <a class="st" href="reinplast.html#rein-3d"><i>05</i><b>3D models</b><span>Effluent treatment, acid regeneration and acid room models.</span></a>
@@ -2104,7 +2104,7 @@ html{scroll-padding-top:calc(var(--nav-h,60px) + 12px)} /* V35 scroll-pad */
     <div class="tblock" aria-label="You are here"><span>SHIVAS Reinplast</span><span>Wire lines</span><span>Turnkey</span></div>
     <span class="eyebrow">Interactive · turnkey</span>
     <h2>Wire pretreatment <em>lines</em></h2>
-    <p class="lede">Three wire lines, each built around its pretreatment: continuous hot-dip galvanizing, fumeless pickling before drawing, and electro-galvanizing. Each drawing is a simplified side view of the whole line, from the coil going in (top left) to the coil coming out (bottom left).</p>
+    <p class="lede">Five wire lines, each built around its pretreatment: continuous hot-dip galvanizing, fumeless pickling before drawing, inline electrolytic phosphating, inline borax coating, and electro-galvanizing. Each drawing is a simplified side view of the whole line, from the coil going in (top left) to the coil coming out (bottom left).</p>
     <ul class="howto" aria-label="How to use"><li><b>1</b> Pick a line from the tabs</li><li><b>2</b> Set strands, speed, size and options</li><li><b>3</b> Scroll the stage list, or tap a number</li><li><b>→</b> Step through stages with the arrows</li></ul>
     <div id="lnXP"></div>
     <a class="xbanner" href="wire-drawing.html"><span><b>Drawing in line?</b> The drawing machine, pay-offs, coilers and spoolers for these lines are built by SHIVAS Technology.</span><i>See wire drawing machines →</i></a>
@@ -4982,8 +4982,8 @@ const LNS=[];
 const host=$('#lnXP');if(!host)return;
 const LZ={pay:['Pay-off','#5d7d9a'],pre:['Pretreatment','#0e9aa5'],draw:['Drawing','#8a9bb0'],coat:['Coating','#e8a317'],post:['Post-treatment','#6f8fae'],take:['Take-up','#5d7d9a']};
 const LBY={R:['Reinplast','r'],T:['Technology','t'],RT:['Reinplast + Technology','r'],G:['SHIVAS group','']};
-const LQ={acid:'#c9b458',rinse:'#3b8fd6',degr:'#9fb4c8',flux:'#8fd1c0',phos:'#8c9a8f',plate:'#2fa7b0',pass:'#b7c48a'};
-const WC={rod:'#5a4636',bare:'#9aa4ad',flux:'#b4c4bc',zinc:'#e6edf3',phos:'#7f8a86',drawn:'#cfd6dd',eg:'#dfe8ef'};
+const LQ={acid:'#c9b458',rinse:'#3b8fd6',degr:'#9fb4c8',flux:'#8fd1c0',phos:'#8c9a8f',plate:'#2fa7b0',pass:'#b7c48a',borax:'#e3dcc3',soap:'#d3c48e'};
+const WC={rod:'#5a4636',bare:'#9aa4ad',flux:'#b4c4bc',zinc:'#e6edf3',phos:'#7f8a86',drawn:'#cfd6dd',eg:'#dfe8ef',scaled:'#6e6258',brushed:'#8b9096',borax:'#ebe6d6',carrier:'#a9b2a6'};
 const fx=v=>typeof v==='function'?v:()=>v;
 const kgm=d=>0.006165*d*d;
 
@@ -4997,6 +4997,12 @@ const DRAW={k:'draw',ty:'draw',z:'draw',lab:'DRAWING',by:'T',w:1.5,when:o=>o.dr=
 const RINSE=(L,lab='RINSE')=>({ty:'tank',z:'pre',lab,by:'R',w:.85,L,liq:LQ.rinse,
  name:'Cascade rinse',what:'Two or three counter-flow stages with a spray at the exit. Clean water enters only at the last stage, so water use stays low and the overflow goes to the ETP.',
  p:[['Stages','2–3, counter-flow'],['Overflow','To ETP or acid make-up'],['Build','PP-H tanks, PP spray headers']]});
+
+/* V82 (owner, 25 Nov 2026: inline phosphating and borax lines, "very detailed", from his reference lines):
+   rod stations shared by the two new lines */
+const ROD_PAY={ty:'payoff',z:'pay',lab:'PAY-OFF',by:'T',w:1,wc:WC.rod,name:'Rod pay-offs',what:'Overhead or rotating pay-offs feed hot-rolled rod. Butt welding joins each new coil to the last, so the line never has to be re-threaded.',p:[['Feed','Hot-rolled rod coils'],['Joining','Butt welding'],['Built by','SHIVAS Technology']]};
+const ROD_DESC={ty:'descaler',z:'pre',lab:'DESCALER',by:'T',w:1,wc:WC.scaled,name:'Mechanical descaler',what:'Rolls bend the rod back and forth in two planes. The brittle mill scale cracks and drops off dry into the bin below, with no acid.',p:[['Method','Reverse bending, two planes'],['Scale','Drops off dry, collected'],['Built by','SHIVAS Technology']]};
+const ROD_BRUSH={ty:'brush',z:'pre',lab:'BRUSHING',by:'T',w:1,wc:WC.brushed,name:'Brushing machine',what:'Pairs of rotating wire brushes above and below the rod take off the scale the bending loosened. The dust is extracted, not washed into the tanks.',p:[['Brushes','Rotating steel wire, in pairs'],['Dust','Extracted to a collector'],['Built by','SHIVAS Technology']]};
 
 const LINES=[
 {id:'cgl',code:'SHIVAS Reinplast',name:'Continuous galvanizing line',prod:'Continuous galvanizing line',
@@ -5042,6 +5048,43 @@ const LINES=[
  calc(r,st){const tph=r.n*r.v*60*kgm(r.d)/1000,pk=st.find(L=>L.s.lab==='HCl × 2'),len=st.reduce((a,L)=>a+(L.s.L||0),0);
   return [['Throughput',tph.toFixed(2)+' t/h'],['Per day',(tph*22).toFixed(0)+' t · 22 h'],['Acid contact',(pk?pk.s.L/r.v*60:0).toFixed(0)+' s'],['Process length','≈ '+len.toFixed(0)+' m']]}},
 
+{id:'eph',code:'SHIVAS Reinplast',name:'Inline electrolytic phosphating line',prod:'Inline electrolytic phosphating line',rod:1,acid:0,
+ lead:'Zinc phosphate laid on the rod by electric current in a few seconds, not minutes, so the coating keeps pace with the drawing machine. Descale and brush, clean and rinse, phosphate in a short electrolytic cell, rinse, add the carrier, dry, and draw. No strong acid and no iron phosphate sludge.',
+ opts:[{k:'dr',label:'Drawing',vals:[['on','Inline drawing'],['off','Not in line']]},{k:'tu',label:'Take-up',vals:[['coil','Coilers'],['spool','Spoolers']]}],
+ ranges:[{id:'n',label:'Strands',min:1,max:24,step:1,val:4},{id:'v',label:'Speed',min:20,max:180,step:5,val:90,unit:'m/min'},{id:'d',label:'Rod Ø',min:2,max:14,step:.5,val:5.5,unit:'mm'},{id:'c',label:'Phosphate',min:3,max:12,step:.5,val:7,unit:'g/m²'}],
+ stages:[
+  ROD_PAY,ROD_DESC,ROD_BRUSH,
+  {ty:'tank',z:'pre',lab:'E-CLEAN',by:'R',w:1.05,L:3,liq:LQ.degr,hot:1,elec:1,cover:1,wc:WC.bare,name:'Electrolytic cleaning',what:'Current passed through the bath, not through contact rolls, lifts the last oil and scale dust in seconds. Gas forming at the steel does the scrubbing and leaves the surface active.',p:[['Current','Contactless, through the bath'],['Removes','Oil, soap and scale dust'],['Build','PP-H cell, titanium electrodes, FRP lid']]},
+  RINSE(2),
+  {ty:'tank',z:'pre',lab:'HOT RINSE',by:'R',w:.85,L:2,liq:LQ.rinse,hot:1,name:'Hot rinse',what:'Water at up to about 90 °C washes the rod and warms it, so the phosphate starts at once and the coating dries faster later.',p:[['Temperature','Up to ≈ 90 °C'],['Water','Recirculated and reheated'],['Build','PP-H tank, heat exchanger']]},
+  {ty:'ephos',z:'coat',lab:'E-PHOSPHATE',by:'R',w:2,L:5,liq:LQ.phos,wc:WC.phos,name:'Electrolytic phosphating cell',what:'A zinc phosphate bath with electrodes above and below the rod and no contact rolls. Current passes through the bath into the rod, and very fine phosphate crystals grow on it in seconds. The coating weight follows the current, so it is set at the rectifier. No iron is dissolved, so no iron phosphate sludge builds up to be dug out.',p:[['Chemistry','Zinc phosphate, made for electrolytic use'],['Coating time','≈ 2–5 s'],['Coating','≈ 5–10 g/m², crystals ≈ 1–2 µm'],['Bath length','≈ 5 m'],['Electrodes','Titanium, mixed-oxide coated'],['Build','PP-H cell, rectifier, filter loop']]},
+  {ty:'tank',z:'post',lab:'RINSE',by:'R',w:.8,L:1.5,liq:LQ.rinse,name:'Rinse',what:'Takes the loose phosphate solution off the rod. The water is filtered and reused.',p:[['Water','Filtered and reused'],['Build','PP-H tank']]},
+  {ty:'tank',z:'post',lab:'CARRIER',by:'R',w:.95,L:2,liq:LQ.soap,hot:1,wc:WC.carrier,name:'Soap or lime carrier',what:'A thin soap, lime or polymer coat on top of the phosphate carries the drawing lubricant into the die.',p:[['Chemistry','Soap, lime or polymer'],['Bath','Kept warm, topped up'],['Build','PP-H tank, PTFE heating']]},
+  {ty:'dryer',z:'post',lab:'DRYER',by:'T',w:.95,L:3,name:'Hot air dryer',what:'Hot air dries the coating before the soap box, so it goes into the die dry and does not smear.',p:[['Heat','Hot air, recirculated'],['Build','Insulated box, hot-air blower']]},
+  DRAW,
+  TAKEUP],
+ utils:[['Fume scrubber + FRP blower','The covered cleaning cell and the hot tanks extract to a packed-bed scrubber.','R'],['Bath filtration','A filter loop keeps the phosphate bath clear. With no iron dissolved, there is no sludge to dig out of the cell.','R'],['Rectifiers','DC power for the cleaning and phosphating cells, set by rod size, speed and coating weight.','R'],['Rinse recycling + ETP','Rinse water is filtered and reused; the small bleed goes to the ETP.','R']],
+ coat:['Electrolytic phosphating cell and rectifiers','R'],
+ calc(r,st){const tph=r.n*r.v*60*kgm(r.d)/1000,area=r.n*Math.PI*r.d/1000*r.v*60,cell=st.find(L=>L.s.ty==='ephos'),tc=cell?cell.s.L/r.v*60:0;
+  return [['Throughput',tph.toFixed(2)+' t/h'],['Phosphated area',Math.round(area).toLocaleString('en-IN')+' m²/h'],['Phosphate on the rod',(area*r.c/1000).toFixed(1)+' kg/h'],['Time in the cell',tc.toFixed(1)+' s'+(tc<2?' · short':''),tc<2]]}},
+
+{id:'bxl',code:'SHIVAS Reinplast',name:'Inline borax coating line',prod:'Inline borax coating line',rod:1,acid:0,fume:0,
+ lead:'Rod made ready for drawing with no acid at all. Bending rolls and brushes take the scale off dry, a hot rinse cleans and warms the rod, a hot borax bath coats it, the dryer bakes the film hard and blowers cool the rod, so it reaches the soap box dry and cool.',
+ opts:[{k:'dr',label:'Drawing',vals:[['on','Inline drawing'],['off','Not in line']]},{k:'tu',label:'Take-up',vals:[['coil','Coilers'],['spool','Spoolers']]}],
+ ranges:[{id:'n',label:'Strands',min:1,max:12,step:1,val:2},{id:'v',label:'Speed',min:20,max:200,step:5,val:100,unit:'m/min'},{id:'d',label:'Rod Ø',min:5.5,max:16,step:.5,val:6.5,unit:'mm'}],
+ stages:[
+  ROD_PAY,ROD_DESC,ROD_BRUSH,
+  {ty:'tank',z:'pre',lab:'HOT RINSE',by:'R',w:.85,L:2,liq:LQ.rinse,hot:1,wc:WC.bare,name:'Hot water rinse',what:'Washes off the last scale dust and warms the rod. A warm rod takes an even borax film and dries it faster.',p:[['Water','Hot, filtered and recirculated'],['Build','PP-H tank, heat exchanger']]},
+  {ty:'tank',z:'coat',lab:'BORAX',by:'R',w:1.4,L:3,liq:LQ.borax,hot:1,fines:1,filt:1,wc:WC.borax,name:'Hot borax bath',what:'Borax dissolved in hot water wets the rod and leaves a thin film on it. The bath is kept near boiling and topped up with borax and water, and its strength is checked by density. Fine scale that gets past the brushes settles out and is filtered away, so it does not end up in the coating.',p:[['Chemistry','Borax pentahydrate or decahydrate'],['Temperature','≈ 88–93 °C'],['Strength','Checked by density, topped up daily'],['Film','At least ≈ 1 g/m² for dry drawing'],['Bath care','Fines settled and filtered out'],['Build','PP-H tank, PTFE heating, filter loop']]},
+  {ty:'dryer',z:'post',lab:'DRYER',by:'T',w:1.05,L:4,name:'Hot air or induction dryer',what:'The film has to be dry before the rod touches a sheave: wet borax turns sticky and patchy. Hot air or an induction heater bakes it hard in the line.',p:[['Heat','Hot air or induction'],['Result','Dry, hard, even film']]},
+  {ty:'aircool',z:'post',lab:'COOLING',by:'T',w:.85,L:3,name:'Air cooling',what:'Blowers bring the rod back down, so the drawing soap and the first die are not overheated.',p:[['Air','Blowers along the rod'],['Why','Rod cool enough for the soap and dies']]},
+  DRAW,
+  TAKEUP],
+ utils:[['Borax make-up','Borax and water are topped up daily, and the strength is checked by density.','R'],['Bath conditioning','A settling and filter loop keeps fine scale out of the borax.','R'],['Dust collector','The descaler and brushes are extracted; the scale is collected dry.','R'],['No acid on the line','No pickling, so no acid regeneration, no acid fume and no acid effluent.','G']],
+ coat:['Borax tank, heating and filter loop','R'],
+ calc(r,st){const tph=r.n*r.v*60*kgm(r.d)/1000,area=r.n*Math.PI*r.d/1000*r.v*60,bx=st.find(L=>L.s.lab==='BORAX'),dr=st.find(L=>L.s.ty==='dryer');
+  return [['Throughput',tph.toFixed(2)+' t/h'],['Coated area',Math.round(area).toLocaleString('en-IN')+' m²/h'],['In the borax',(bx?bx.s.L/r.v*60:0).toFixed(1)+' s'],['Borax at 1 g/m²',(area/1000).toFixed(1)+' kg/h']]}},
+
 {id:'egl',code:'SHIVAS Reinplast',name:'Electro-galvanizing line',prod:'Electro-galvanizing line',
  lead:'Zinc plated from an acid bath at high current density, for a bright, even, thin coat. Electrolytic cleaning and pickling up front, plating cells and rectifiers in the middle, passivation and drying before the take-up. Run it on drawn coils or put a drawing machine in line.',
  opts:[{k:'dr',label:'Drawing',vals:[['off','Not in line'],['on','Inline drawing']]},{k:'tu',label:'Take-up',vals:[['spool','Spoolers'],['coil','Coilers']]}],
@@ -5082,14 +5125,14 @@ function LineXP(root,lines,turnEl){
   for(let k=1;k<st.length;k++){acc+=wt[k-1];const df=Math.abs(acc-(tot-acc));if(df<bd){bd=df;best=k}}
   const rows=[st.slice(0,best),st.slice(best)],X0=20,X1=752,Y=[128,343],out=[];let n=0;
   rows.forEach((r,ri)=>{const sw=r.reduce((a,s)=>a+(s.w||1),0),u=(X1-X0)/sw;let cx=0;r.forEach(s=>{const w=(s.w||1)*u,x=ri===0?X0+cx:X1-cx-w;cx+=w;out.push({s,n:++n,row:ri,x,w,Y:Y[ri],dir:ri?-1:1})})});
-  let wc=WC.rod;out.forEach(L=>{L.p=spath(L);if(L.s.wc)wc=L.s.wc;L.wc=wc});
+  let wc=WC.rod;out.forEach(L=>{L.p=spath(L);const pre=wc;if(L.s.wc)wc=L.s.wc;L.wc=L.s.ty==='ephos'?pre:wc});
   const r1=out.filter(L=>!L.row),r2=out.filter(L=>L.row);
   self.turn=[[X1,Y[0]],[768,Y[0]],[784,Y[0]+16],[784,Y[1]-16],[768,Y[1]],[X1,Y[1]]];self.turnC=r1.length?r1[r1.length-1].wc:WC.rod;
   self.path=[].concat(...r1.map(L=>L.p),self.turn,...r2.map(L=>L.p));self.lay=out;}
  function spath(L){const {s,x,w,Y}=L;let p;
   if(s.ty==='payoff')p=[[x+w*.42,Y+24],[x+w*.42+12,Y],[x+w,Y]];
   else if(s.ty==='takeup')p=[[x,Y],[x+w*.58-12,Y],[x+w*.58,Y+24]];
-  else if(s.ty==='tank'||s.ty==='cells'||s.ty==='kettle'){const dp=56;p=[[x,Y],[x+w*.1,Y],[x+w*.2,Y+dp],[x+w*.8,Y+dp],[x+w*.9,Y],[x+w,Y]]}
+  else if(s.ty==='tank'||s.ty==='cells'||s.ty==='kettle'||s.ty==='ephos'){const dp=56;p=[[x,Y],[x+w*.1,Y],[x+w*.2,Y+dp],[x+w*.8,Y+dp],[x+w*.9,Y],[x+w,Y]]}
   else if(s.ty==='descaler'){p=[[x,Y]];for(let k=1;k<=4;k++)p.push([x+w*k/5,Y+(k%2?7:-7)]);p.push([x+w,Y])}
   else p=[[x,Y],[x+w,Y]];
   return L.dir<0?p.map(([a,b])=>[2*x+w-a,b]):p}
@@ -5104,14 +5147,14 @@ function LineXP(root,lines,turnEl){
  function renderHud(){const ro=ln().calc(self.rv,self.lay);hud.innerHTML=ro.map(r=>`<div><span>${r[0]}</span><b${r[2]?' class="ln-hud-w"':''}>${r[1]}</b></div>`).join('');list.querySelectorAll('dd[data-dw]').forEach(dd=>dd.textContent=dwell(+dd.dataset.dw))}
  function renderNow(){const L=self.lay.find(q=>q.n===self.hl);nowEl.innerHTML=L?`<i>${String(L.n).padStart(2,'0')} / ${self.lay.length}</i>${tx(L.s.name)}`:`<i>${self.lay.length} stages</i>Tap a number or scroll the list`}
  function renderTurn(){if(!turnEl)return;const l=ln(),o=self.opt,has=k=>self.lay.some(L=>L.s.k===k||L.s.ty===k);
-  const rows=[['Pay-off stands',l.id==='fpl'?'Rod pay-offs and butt welder':'One per strand','T',1]];
-  if(l.id==='fpl')rows.push(['Mechanical descaler','Reverse bending and brushing','T',1]);
+  const rod=l.id==='fpl'||l.rod,rows=[['Pay-off stands',rod?'Rod pay-offs and butt welder':'One per strand','T',1]];
+  if(rod)rows.push(['Mechanical descaler',has('brush')?'Reverse bending, then a brushing machine':'Reverse bending and brushing','T',1]);
   if(l.id==='cgl')rows.push(['Annealing furnace','For soft wire, lead-free','T',o.ann==='soft']);
   if(l.id!=='cgl')rows.push(['Inline drawing machine','Straight-line, to final size','T',o.dr==='on']);
-  rows.push(['Pretreatment tanks','PP-H tanks, FRP lids, water seals, guides','R',1],['Heating, recirculation, filtration','PTFE exchangers, PP pumps, filters','R',1],['Fume extraction','Slot ducts, scrubber, FRP blower, chimney','R',1],[l.coat[0],'Coating section',l.coat[1],1],['Dryers','Hot air or flue-gas heated','T',1],[has('takeup')&&o.tu==='spool'?'Spoolers':'Coilers','One per strand','T',1],['Electricals, PLC, drives','Synced line speed, one control desk','T',1]);
+  rows.push(['Pretreatment tanks','PP-H tanks, FRP lids, water seals, guides','R',1],['Heating, recirculation, filtration','PTFE exchangers, PP pumps, filters','R',1],l.fume===0?['Dust extraction','Descaler and brushes to a dust collector','R',1]:['Fume extraction','Slot ducts, scrubber, FRP blower, chimney','R',1],[l.coat[0],'Coating section',l.coat[1],1],['Dryers',l.id==='bxl'?'Hot air or induction':'Hot air or flue-gas heated','T',1],[has('takeup')&&o.tu==='spool'?'Spoolers':'Coilers','One per strand','T',1],['Electricals, PLC, drives','Synced line speed, one control desk','T',1]);
   if(l.id==='cgl')rows.push(['Flux regeneration','Iron out of the flux','RT',0]);
-  rows.push(['Acid regeneration','Spent acid back to fresh HCl','R',0],['ETP and ZLD','Rinse water back to process','R',0],['Erection and commissioning','Our crews, start-up and training','G',1]);
-  turnEl.innerHTML=`<span class="eyebrow">Turnkey</span><h3>One order, one line</h3><p>We take the ${l.name.toLowerCase()} from ${l.id==='fpl'||o.dr==='on'?'rod coil':'wire coil'} to finished ${o.tu==='spool'?'spool':'coil'}${o.dr==='on'?', drawing included':''}: layout, every tank, lid and duct, the coating section, take-ups, controls, the air and water systems, then erection and start-up. SHIVAS Reinplast builds the wet end and the environment side; SHIVAS Technology builds the machines.</p>
+  if(l.acid!==0)rows.push(['Acid regeneration','Spent acid back to fresh HCl','R',0]);rows.push(['ETP and ZLD','Rinse water back to process','R',0],['Erection and commissioning','Our crews, start-up and training','G',1]);
+  turnEl.innerHTML=`<span class="eyebrow">Turnkey</span><h3>One order, one line</h3><p>We take the ${l.name.toLowerCase()} from ${rod||o.dr==='on'?'rod coil':'wire coil'} to finished ${o.tu==='spool'?'spool':'coil'}${o.dr==='on'?', drawing included':''}: layout, every tank, lid and duct, the coating section, take-ups, controls, the air and water systems, then erection and start-up. SHIVAS Reinplast builds the wet end and the environment side; SHIVAS Technology builds the machines.</p>
    <ul class="ln-scope">${rows.map(r=>{const by=LBY[r[2]];return `<li><span><b>${r[0]}</b><small>${r[1]}</small></span><em class="${by[1]}">${by[0]}</em><u class="${r[3]?'y':'o'}">${r[3]?'Included':'Option'}</u></li>`}).join('')}</ul>
    <button type="button" class="card-btn" data-div="rein" data-prod="${l.prod}">Enquire about a turnkey ${l.name.toLowerCase()} →</button>`;}
  function renderOpts(){const l=ln();root.querySelector('.ln-opts').innerHTML=l.opts.map(op=>`<div class="ln-opt"><span>${op.label}</span><div class="seg" role="group" aria-label="${op.label}">${op.vals.map(v=>`<button type="button" data-k="${op.k}" data-v="${v[0]}" aria-pressed="${self.opt[op.k]===v[0]}">${v[1]}</button>`).join('')}</div></div>`).join('');
@@ -5163,10 +5206,14 @@ function LineXP(root,lines,turnEl){
   lay.forEach(L=>{if(!L.row)seg(L.p,L.wc)});seg(self.turn,self.turnC);lay.forEach(L=>{if(L.row)seg(L.p,L.wc)});
   g.circ(776,136,8,C.panel2,C.zinc,1.5);g.circ(776,335,8,C.panel2,C.zinc,1.5);
   g.flow(self.path,t,(rv.v||20)*1.6+20,34,'rgba(255,255,255,.85)',1.7);
+  /* V82: in the phosphating cell the rod turns from bare steel to phosphate grey, with crystals catching the light */
+  lay.forEach(L=>{if(L.s.ty!=='ephos')return;const a=L.p[2],b=L.p[3],gr=c.createLinearGradient(a[0],0,b[0],0);gr.addColorStop(0,L.wc);gr.addColorStop(.85,WC.phos);gr.addColorStop(1,WC.phos);
+   offs.forEach(o=>{g.line([[a[0],a[1]+o],[b[0],b[1]+o]],gr,2.3);g.line(L.p.slice(3).map(([px,py])=>[px,py+o]),WC.phos,2.3)});
+   for(let k=0;k<12;k++){const f=(k+.5)/12,ph=(t*1.3+k*.61)%1;if(ph>.45)continue;g.circ0(lerp(a[0],b[0],f),a[1]+offs[k%offs.length]+(k%2?-.6:.6),.7+f*.7,`rgba(236,244,240,${(f*(.45-ph)*2).toFixed(2)})`)}});
   // highlight frame + bubbles + labels
   lay.forEach(L=>{const on=L.n===hl;if(on)g.rr(L.x+1,L.Y-60,L.w-2,170,5,null,'#e8a317',1.6,[6,4]);
    fitLabel(g,L.s.lab+(L.s.ty==='payoff'||L.s.ty==='takeup'?' ×'+N:''),L.x+L.w/2,L.Y+104,L.w-6,9.5,on?C.fg:C.muted);
-   const bx=L.s.ty==='cells'?(L.dir>0?L.x+L.w*.16:L.x+L.w*.84):L.x+L.w/2;g.call(L.n,bx,L.Y-44)});}
+   const bx=(L.s.ty==='cells'||L.s.ty==='ephos')?(L.dir>0?L.x+L.w*.16:L.x+L.w*.84):L.x+L.w/2;g.call(L.n,bx,L.Y-44)});}
  function drawStage(g,L,t){const {s,x,w,Y,dir}=L,c=g.ctx,cx=x+w/2,ty=s.ty;
   /* V81: each stage drawn as its machine or tank, same footprint as before */
   if(ty==='payoff'||ty==='takeup'){const cc=ty==='payoff'?x+w*.42:(dir>0?x+w*.58:x+w*.42);
@@ -5186,6 +5233,39 @@ function LineXP(root,lines,turnEl){
    for(let k=0;k<3;k++){const xx=x+w*(.28+.22*k),pts=[];for(let j=0;j<=8;j++){const yy=Y+18-j*4.5;pts.push([xx+Math.sin(t*5+j*.9+k)*3,yy])}g.line(pts,rgba('#ffb36b',.4),1.2)}g.box(cx-8,Y+22,16,20,'#3b4c5d',{d:2,shadow:false});g.fan(cx,Y+52,10,t*8,C.zinc,5);return}
   if(ty==='wipe'){g.box(x+6,Y-20,w-12,40,'#2a5d5f',{d:3,shadow:false});g.poly([[cx-7,Y-16],[cx+7,Y-16],[cx,Y-5]],'#e8a317');g.poly([[cx-7,Y+16],[cx+7,Y+16],[cx,Y+5]],'#e8a317');for(let k=0;k<6;k++){const ph=(t*2+k/6)%1;g.circ0(cx+(dir>0?-1:1)*ph*w*.35,Y-6+ph*3+(k%2?8:0),1.3,`rgba(200,214,226,${(.7*(1-ph)).toFixed(2)})`)}return}
   if(ty==='draw'){const xs=[.25,.55,.85].map(f=>dir>0?x+w*f:x+w*(1-f));g.box(x+4,Y+36,w-8,10,'#2f5d8a',{d:3,shadow:false});xs.forEach(px=>{g.box(px-dir*22-6,Y-7,12,14,'#36506b',{d:2,shadow:false});v40drum(g,px,Y+36,0,24,30,t,5,3,1.2);g.motor(px-12,Y+48,24,14)});return}
+  /* V82: brushing machine. Brush pairs above and below the rod, spinning against it; scale flies off into the bin, dust goes up the duct */
+  if(ty==='brush'){g.box(x+4,Y-26,w-8,52,'#36506b',{d:4,shadow:false});c.fillStyle='rgba(6,14,22,.55)';c.fillRect(x+9,Y-21,w-18,42);
+   const nb=Math.max(2,Math.min(4,Math.floor((w-18)/26))),br=Math.min(10,(w-18)/(nb*2.3));
+   for(let k=0;k<nb;k++){const bxc=x+9+(w-18)*(k+.5)/nb;[-1,1].forEach(sd=>{const byc=Y+sd*(br+2.2),a0=t*9*sd*dir;
+     c.beginPath();c.arc(bxc,byc,br,0,TAU);c.fillStyle='#24323f';c.fill();c.strokeStyle='rgba(206,214,222,.7)';c.lineWidth=.9;c.beginPath();
+     for(let q=0;q<16;q++){const a=a0+q*TAU/16;c.moveTo(bxc+Math.cos(a)*br*.38,byc+Math.sin(a)*br*.38);c.lineTo(bxc+Math.cos(a)*br,byc+Math.sin(a)*br)}c.stroke();
+     c.beginPath();c.arc(bxc,byc,br*.34,0,TAU);c.fillStyle='#8aa0b5';c.fill()});
+    for(let j=0;j<6;j++){const ph=(t*2.6+j/6+k*.31)%1;g.circ0(bxc+dir*(ph*br*1.5-br*.2)*(j%3?1:-1),Y+(j%2?-1:1)*(1.5+ph*br*1.9),1.1,`rgba(150,112,78,${(.85*(1-ph)).toFixed(2)})`)}}
+   const dx=dir>0?x+w*.82:x+w*.18;g.box(dx-10,Y-38,20,12,'#2a5d5f',{d:2,shadow:false});g.pipe([[dx,Y-38],[dx,Y-58]],'#2a5d5f',5,false);g.flow([[dx,Y-38],[dx,Y-58]],t,24,11,'rgba(168,136,104,.85)',1.2);
+   g.fall(x+12,Y+30,w-24,38,t,6,'#8a6a48',42,2.5);g.box(x+10,Y+70,w-20,20,'#4a3a2a',{d:3,shadow:false});c.fillStyle='#6e5a48';c.fillRect(x+12,Y+73,w-24,5);return}
+  /* V82: air cooling. Two blowers under the box push cool air through nozzles above and below the rod */
+  if(ty==='aircool'){g.box(x+4,Y-24,w-8,48,'#3b5672',{d:3,shadow:false});c.fillStyle='rgba(6,14,22,.5)';c.fillRect(x+8,Y-19,w-16,38);
+   const nn=Math.max(2,Math.min(5,Math.floor((w-16)/16)));
+   for(let k=0;k<nn;k++){const nx=x+8+(w-16)*(k+.5)/nn;g.line([[nx,Y-19],[nx,Y-14]],C.zinc,2);g.line([[nx,Y+19],[nx,Y+14]],C.zinc,2);
+    for(let j=0;j<2;j++){const ph=(t*2.2+j/2+k*.23)%1,ca=`rgba(140,200,255,${(.8*(1-ph)).toFixed(2)})`;g.line([[nx-1.5+j*3,Y-13+ph*9],[nx-1.5+j*3,Y-10+ph*9]],ca,1.2);g.line([[nx-1.5+j*3,Y+13-ph*9],[nx-1.5+j*3,Y+10-ph*9]],ca,1.2)}}
+   [x+w*.27,x+w*.73].forEach((fxc,k)=>{g.pipe([[fxc,Y+24],[fxc,Y+40]],'#2f4d6b',6,false);g.circ(fxc,Y+50,10,'#24384c','#5d7590',1.5);g.fan(fxc,Y+50,8,t*11+k,'#cfd8e0',5)});
+   g.box(x+8,Y+64,w-16,8,'#2f4d6b',{d:2,shadow:false});return}
+  /* V82: electrolytic phosphating cell. Electrode pairs above and below the rod, alternating + and -, fed from a DC rectifier;
+     no contact rolls. Charge drifts through the bath between plates and rod, gas lifts off the plates, a filter loop keeps the bath clear */
+  if(ty==='ephos'){const tx0=x+4,tw=w-8,top=Y+8,bot=Y+92,lq=Y+24,wy=Y+56,e0=x+w*.22,e1=x+w*.78,ne=Math.max(4,Math.min(8,Math.round((e1-e0)/24))),ew=(e1-e0)/ne;
+   g.tankPP(tx0,top,tw,bot-top,{col:'#d5cebb',legs:false,floor:bot});g.liquor(tx0+3,lq,tw-6,bot-lq-3,s.liq,t+x,{a0:.7,a1:.5});
+   g.line([[tx0+5,bot],[tx0+5,bot+6]],'#4d6278',2);g.line([[tx0+tw-5,bot],[tx0+tw-5,bot+6]],'#4d6278',2);
+   [x+w*.2,x+w*.8].forEach(px=>{c.beginPath();c.arc(px,wy-5,4.5,0,TAU);c.fillStyle='#4a5d70';c.fill();c.strokeStyle='#c9d4de';c.lineWidth=1;c.stroke()});
+   g.rise(e0,lq+3,e1-e0,wy-lq-21,t,8,'#e7edf3',22,1.1);
+   for(let k=0;k<ne;k++){const ex=e0+k*ew+2,an=k%2===0,col=an?'#c8743a':'#4f7fb0',pw=ew-4;
+    [wy-17,wy+9].forEach(ey=>{c.fillStyle=col;c.fillRect(ex,ey,pw,8);c.fillStyle=an?'#f0b98e':'#9cc3ea';c.fillRect(ex,ey,pw,2);c.fillStyle='rgba(11,22,34,.3)';c.fillRect(ex,ey+6,pw,2)});
+    if(!g.small)g.text(an?'+':'−',ex+pw/2,wy-21.5,{size:7.5,w:700,col:an?'#f0b98e':'#9cc3ea'});
+    for(let j=0;j<3;j++){const ph=(t*1.6+j/3+k*.37)%1,xx=ex+pw*(.2+.3*j),al=(.85*(1-ph*.55)).toFixed(2),ic=an?`rgba(255,190,130,${al})`:`rgba(150,200,250,${al})`;
+     g.circ0(xx,an?lerp(wy-9,wy-2,ph):lerp(wy-2,wy-9,ph),1.1,ic);g.circ0(xx,an?lerp(wy+9,wy+2,ph):lerp(wy+2,wy+9,ph),1.1,ic)}}
+   const fxp=dir>0?x+w*.36:x+w*.64;g.cyl(fxp-4,Y-26,8,17,'#9fb2c4',true);g.pipe([[fxp,Y-9],[fxp,lq+6]],'#5d7590',3,false);g.flow([[fxp,lq+6],[fxp,Y-9]],t,16,9,rgba(s.liq,.95),1.1);
+   g.box(cx-27,Y-52,54,24,'#c9d1d9',{d:3,shadow:false});c.fillStyle='#071320';c.fillRect(cx-21,Y-48,42,11);if(g.small)g.text('DC',cx,Y-42.5,{size:8,w:700,col:'#e8a317'});else{g.text('DC',cx-10,Y-42.5,{size:8,w:700,col:'#e8a317'});
+   c.fillStyle='rgba(232,163,23,.25)';c.fillRect(cx-1,Y-45.5,18,5);c.fillStyle='#e8a317';c.fillRect(cx-1,Y-45.5,18*(.62+.22*Math.sin(t*1.3)),5)}
+   g.line([[cx-27,Y-40],[e0+2,Y-40],[e0+2,wy-17]],'#c8743a',2.2);g.line([[cx+27,Y-40],[e1-3,Y-40],[e1-3,wy-17]],'#4f7fb0',2.2);return}
   // wet stages
   const tx0=x+4,tw=w-8,top=Y+8,bot=Y+92,lq=Y+24;
   if(ty==='spray'){g.box(x+4,Y-22,w-8,44,'#3b5672',{d:3,shadow:false});c.fillStyle='rgba(6,14,22,.6)';c.fillRect(x+8,Y-18,w-16,36);for(let k=0;k<3;k++){const nx=x+w*(.3+.2*k);g.line([[nx,Y-20],[nx,Y-14]],C.zinc,2);g.line([[nx,Y+20],[nx,Y+14]],C.zinc,2);for(let j=0;j<3;j++){const ph=(t*3+j/3+k*.2)%1;g.circ0(nx+(j-1)*3*ph,Y-14+ph*10,1.2,rgba(LQ.rinse,.8));g.circ0(nx+(j-1)*3*ph,Y+14-ph*10,1.2,rgba(LQ.rinse,.8))}}g.tankPP(x+8,Y+30,w-16,16,{col:'#d5cebb',legs:false,shadow:false,floor:Y+46});g.liquor(x+10,Y+33,w-20,11,LQ.rinse,t,{a0:.7,a1:.5});return}
@@ -5201,6 +5281,9 @@ function LineXP(root,lines,turnEl){
    g.box(cx-26,Y-46,52,22,'#c9d1d9',{d:3,shadow:false});c.fillStyle='#071320';c.fillRect(cx-20,Y-42,40,10);g.text('DC',cx,Y-37,{size:8.5,w:700,col:'#e8a317'});g.line([[cx-26,Y-35],[x+w*.24,Y-35],[x+w*.24,Y+6]],'#c8743a',2.4);g.line([[cx+26,Y-35],[x+w*.76,Y-35],[x+w*.76,Y+6]],'#c8743a',2.4);
    [x+w*.07,x+w*.93].forEach(px=>{c.beginPath();c.arc(px,Y-8,6,0,TAU);const rg=c.createRadialGradient(px-2,Y-10,1,px,Y-8,6);rg.addColorStop(0,'#f0b98e');rg.addColorStop(1,'#7a3f1a');c.fillStyle=rg;c.fill()});return}
   if(s.elec){for(let k=0;k<3;k++){const ex=x+w*(.32+.18*k);g.cyl(ex-2,lq+6,4,bot-lq-14,'#7f93a8',true)}g.rise(x+w*.25,lq+4,w*.5,bot-lq-12,t,9,'#e7edf3',24,1.3)}
+  if(s.fines){g.fall(x+w*.24,Y+64,w*.52,22,t,7,'#7a6450',9,2);c.fillStyle='rgba(98,78,58,.5)';c.beginPath();c.moveTo(x+w*.28,bot-3);c.quadraticCurveTo(cx,bot-11,x+w*.72,bot-3);c.closePath();c.fill()}
+  if(s.filt){const fxp=dir>0?x+w*.7:x+w*.3,rx=fxp+(dir>0?9:-9);g.cyl(fxp-4,Y-32,8,18,'#9fb2c4',true);g.pipe([[fxp,Y-14],[fxp,lq+20]],'#5d7590',3,false);g.flow([[fxp,lq+20],[fxp,Y-14]],t,16,9,rgba(s.liq,.95),1.1);
+   g.pipe([[fxp,Y-30],[rx,Y-30],[rx,lq+4]],'#5d7590',3,false);g.flow([[fxp,Y-30],[rx,Y-30],[rx,lq+4]],t,16,9,rgba(s.liq,.95),1.1)}
   if(s.hot&&!s.cover)g.puffs(cx,Y+18,t,'#c9d4de',.16,36,4,10,.45);
   if(s.cover){const lx=x+2,lw2=w-4,sx=dir>0?x+w-12:x+12;
    c.fillStyle=rgba(LQ.rinse,.5);c.fillRect(lx-2,Y+2,6,12);c.fillRect(lx+lw2-4,Y+2,6,12);
