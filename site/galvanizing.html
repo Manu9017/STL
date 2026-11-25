@@ -5450,14 +5450,14 @@ requestAnimationFrame(frame);
 <script id="v52dip">
 /* V57 (25 Nov 2026, owner: "automatically playing at a good pace ... when the passivation ends it can start over from
    degreasing ... people don't really need to do it manually", then twice "not autoplaying on phone"): the line runs by
-   itself, about 5 s a tank, and starts again at degreasing after passivation, on every device. Like every animation on
+   itself, about 4.5 s a tank, and starts again at degreasing after passivation, on every device. Like every animation on
    these pages (V29: the owner wants them running whatever the device's reduce-motion setting), it ignores that setting.
    The beam is drawn straight from the play position, by elapsed time (a phone that slows the frame rate still gets the
    right pace). The hidden sideways scroller only moves the beam during a real gesture (a finger or mouse drag on the line,
    or a sideways trackpad swipe); other scroll events just put it back. Touching the line does not hold it: only moving it
    does. A swipe, a drag or a tap on a step moves the beam; it carries on by itself 6 s later. Pause stops it. */
 (function(){var sec=document.getElementById('dip');if(!sec)return;var sw=sec.querySelector('.v54-sw'),stage=sec.querySelector('.dip-stage');if(!sw||!stage)return;
-var N=9,TANK=5,RESUME=6000,p=0,last=0,vis=false,run=false,uT=-1e9,railT=-1e9,gT=-1e9,tT=0,setL=-1,drag=null,touch=false,moved=false,paused=false,settleT=0,glide=null,
+var N=9,TANK=4.5,RESUME=6000,p=0,last=0,vis=false,run=false,uT=-1e9,railT=-1e9,gT=-1e9,tT=0,setL=-1,drag=null,touch=false,moved=false,paused=false,settleT=0,glide=null,
 rail=sec.querySelector('.v53-rail'),bs=rail?[].slice.call(rail.children):[],lastI=-1,pb=sec.querySelector('.v55-play');
 var inner=sw.firstElementChild;function size(){var w=sw.clientWidth||1;inner.style.width=(w+N*(w>700?230:165))+'px';}size();
 function now(){return performance.now();}
