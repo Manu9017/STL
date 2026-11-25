@@ -29,12 +29,14 @@
   }
   // ---- section bar (division pages)
   var SECS = [['dip', 'How it works'], ['kettle', 'Kettles'], ['hdg-machines', 'Equipment'], ['wire', 'The line'], ['wire-machines', 'Machines'],
-    ['rein-loop', 'Environment'], ['rein-machines', 'Equipment'], ['rein-lines', 'Wire lines'], ['plants', 'Complete plant'], ['rein-plants', 'Complete plants'],
+    ['rein-loop', 'Environment'], ['rein-machines', 'Pickling'], ['rein-lines', 'Wire lines'], ['plants', 'Complete plant'], ['rein-plants', 'Complete plants'],
     ['hall', '3D models'], ['rein-3d', '3D models'], ['range', 'Products'], ['rein-range', 'Products'], ['tools', 'Calculators'], ['standards', 'Standards'], ['enquire', 'Get a quote']];
   var links = [];
   function buildBar() {
     if (!app || !document.getElementById('app')) return;
     var vis = SECS.filter(function (s) { var e = document.getElementById(s[0]); return e && e.offsetHeight > 0; });
+    // in the order the sections stand on the page (owner, 25 Nov 2026: most relevant first, so the page order can change)
+    vis.sort(function (a, b) { return document.getElementById(a[0]).compareDocumentPosition(document.getElementById(b[0])) & 4 ? -1 : 1; });
     if (vis.length < 3) return;
     hero = document.getElementById('top'); if (!hero || !hero.offsetHeight) hero = document.getElementById('reinplast');
     bar = document.createElement('nav'); bar.className = 'v40-sb'; bar.setAttribute('aria-label', 'On this page');
