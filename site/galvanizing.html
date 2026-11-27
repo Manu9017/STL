@@ -2092,8 +2092,8 @@ html{scroll-padding-top:calc(var(--nav-h,60px) + 12px)} /* V35 scroll-pad */
     <h2 class="start-h">SHIVAS Reinplast, start here</h2>
     <div class="start-grid">
       <a class="st" href="reinplast.html#rein-lines"><i>01</i><b>Wire pretreatment lines</b><span>Galvanizing, fumeless pickling, phosphating, borax and electro-galvanizing lines, turnkey.</span></a>
-      <a class="st" href="reinplast.html#rein-machines"><i>02</i><b>Pickling lines and equipment</b><span data-count="rein">Pickling lines first, then fume, tanks and effluent treatment.</span></a>
-      <a class="st" href="reinplast.html#rein-plants"><i>03</i><b>Complete plants</b><span>A pickling shop and an acid regeneration plant, running.</span></a>
+      <a class="st" href="reinplast.html#rein-machines"><i>02</i><b>Pickling lines and equipment</b><span data-count="rein">Pickling lines first, then fume and tanks, then acid regeneration, effluent and ZLD.</span></a>
+      <a class="st" href="reinplast.html#rein-plants"><i>03</i><b>Complete plants</b><span>A pickling shop where acid, water and fume come back, running.</span></a>
       <a class="st" href="reinplast.html#rein-loop"><i>04</i><b>Waste streams</b><span>What leaves a wire or galvanizing plant, and what we build for each.</span></a>
       <a class="st" href="reinplast.html#rein-3d"><i>05</i><b>3D models</b><span>Effluent treatment, acid regeneration and acid room models.</span></a>
       <a class="st" href="pultrusion.html"><i>06</i><b>FRP profiles</b><span>Made by our group company SHIVAS Products India.</span></a>
@@ -2202,7 +2202,7 @@ html{scroll-padding-top:calc(var(--nav-h,60px) + 12px)} /* V35 scroll-pad */
     <div class="tblock" aria-label="You are here"><span>SHIVAS Reinplast</span><span>Complete plants</span><span>Animated</span></div>
     <span class="eyebrow">Interactive</span>
     <h2>Complete plants, <em>running</em></h2>
-    <p class="lede">A pickling shop where acid, water and fume all come back or leave as solids, and a spray-roaster acid regeneration plant from spent liquor to fresh acid and iron oxide.</p>
+    <p class="lede">A pickling shop where acid, water and fume all come back or leave as solids. Its acid regeneration plant is shown in full under acid regeneration, effluent and ZLD.</p>
     <div id="xpRPlant" data-div="rein"></div>
   </div>
 </section>
@@ -2227,10 +2227,10 @@ html{scroll-padding-top:calc(var(--nav-h,60px) + 12px)} /* V35 scroll-pad */
 </section>
 <section class="xp-sec rein-xp" id="rein-water">
   <div class="wrap">
-    <div class="tblock" aria-label="You are here"><span>SHIVAS Reinplast</span><span>Effluent</span><span>Animated</span></div>
+    <div class="tblock" aria-label="You are here"><span>SHIVAS Reinplast</span><span>Acid and effluent</span><span>Animated</span></div>
     <span class="eyebrow">Interactive</span>
-    <h2>Effluent and <em>ZLD</em></h2>
-    <p class="lede">Effluent treatment, and zero liquid discharge with RO, MEE or MVR and an agitated thin film dryer.</p>
+    <h2>Acid regeneration, effluent and <em>ZLD</em></h2>
+    <p class="lede">Spent acid back to fresh acid and iron oxide in a spray-roasting acid regeneration plant, shown three ways: the whole plant, inside the roaster, and the gas and acid side. Then effluent treatment, and zero liquid discharge with RO, MEE or MVR and an agitated thin film dryer.</p>
     <div id="xpRein3" data-div="rein"></div>
   </div>
 </section>
@@ -4767,46 +4767,255 @@ const EX_RPLANT=[
   g.call(1,320,190);g.call(2,330,40);g.call(3,770,170);g.call(4,60,300);g.call(5,480,380);g.call(6,560,352);g.call(7,770,400);
   tags.forEach(a=>tag(...a));
   return [['Acid','Regenerated'],['Water','≈ 90 % back'],['Fume','Scrubbed'],['Liquid out','None']];
- }},
-{id:'arpplant',code:'Complete plant',name:'Acid regeneration',prod:'Acid regeneration',
- lead:'Spent pickle liquor is concentrated in a venturi, sprayed into a fired roaster and split into iron oxide and HCl gas. The gas is absorbed in rinse water to make regenerated acid, the oxide is collected as a by-product, and the off-gas is scrubbed before the stack.',
- calls:[['Spent acid tank','FeCl₂ liquor from the pickling line.'],['Venturi pre-concentrator','Hot roaster gas evaporates water from the feed.'],['Spray roaster','Fired roaster: FeCl₂ + H₂O + O₂ → Fe₂O₃ + HCl.'],['Burners','Tangential burners heat the roaster.'],['Cyclone','Returns carried-over oxide to the roaster.'],['Absorber column','Rinse water absorbs HCl to regenerated acid.'],['Off-gas scrubber + stack','Final scrub before the stack.'],['Iron oxide','Collected and bagged as a by-product.'],['Regenerated acid','Back to the pickling line.']],
- specs:[['Capacity','10 m³/h class'],['Process','Spray roasting'],['Product','HCl ≈ 18 %'],['By-product','Fe₂O₃ powder']],
- draw(g,t){const c=g.ctx;
-  // spent acid tank and feed to the venturi
-  g.tankPP(20,330,90,110,{col:'#d5cebb',legs:false,floor:440});g.liquor(23,342,84,94,'#9a8a3a',t,{a0:.78,a1:.55});g.label('SPENT',65,456,{size:9.5});
-  g.pipe([[110,400],[150,400],[150,140],[180,140]],'#5a5a2a',6);g.flow([[110,400],[150,400],[150,140],[180,140]],t,70,18,'#d4d45a',2);
-  // venturi pre-concentrator
-  g.vessel(180,90,60,200,{col:'#7f93a8',legs:false,shadow:false,seams:2});c.fillStyle='rgba(6,14,22,.7)';c.fillRect(190,110,40,160);g.fall(192,112,36,150,t,14,'#d4d45a',90,6);g.label('VENTURI',210,80,{size:9.5});
-  g.pipe([[240,250],[300,250],[300,70],[350,70]],'#5a5a2a',6);g.flow([[240,250],[300,250],[300,70],[350,70]],t,70,18,'#e0d070',2);
-  // spray roaster: steel shell, refractory lining, spray, tangential burners, oxide cone
-  g.vessel(334,40,152,340,{col:'#5d6f80',legs:false,shadow:false,seams:4});g.bricks(346,74,128,290,{col:'#5a3220',bw:16,bh:10});c.fillStyle='#160d08';c.fillRect(358,84,104,270);
-  g.glow(410,300,110,'#ff6a1c',.25);
-  for(let k=0;k<5;k++){const x=362+k*24;g.line([[x,62],[x,86]],'#c9d4de',2);c.fillStyle='rgba(212,212,90,.18)';c.beginPath();c.moveTo(x,88);c.lineTo(x-8,108);c.lineTo(x+8,108);c.closePath();c.fill()}
-  for(let i=0;i<60;i++){const ph=(t*.35+hr(i))%1;g.circ0(362+hr(i+2)*96,92+ph*258,1.6+ph*1.2,mix('#d4d45a','#b5562a',ph))}
-  [[334,300,0],[486,262,1]].forEach(([x,y,k])=>{g.cyl(k?x:x-26,y-9,26,18,'#5b7a99',false);g.flame(x+(k?-2:2),y,48,k?Math.PI:0,t+k,16)});
-  c.beginPath();c.moveTo(346,380);c.lineTo(474,380);c.lineTo(428,432);c.lineTo(392,432);c.closePath();c.fillStyle='#4a5a6a';c.fill();c.strokeStyle='rgba(4,10,18,.6)';c.lineWidth=1;c.stroke();
-  for(let i=0;i<10;i++){const p=(t*.8+hr(i+40))%1;g.circ0(402+hr(i)*16,432+p*28,2,'#b5562a')}
-  c.beginPath();c.moveTo(380,460);c.quadraticCurveTo(378,480,386,494);c.lineTo(434,494);c.quadraticCurveTo(442,480,440,460);c.closePath();const bg=c.createLinearGradient(380,0,440,0);bg.addColorStop(0,'#7a3a1a');bg.addColorStop(.4,'#c8693a');bg.addColorStop(1,'#6a2f12');c.fillStyle=bg;c.fill();g.text('Fe₂O₃',410,478,{size:10,w:700,col:'#fff'});
-  // gas: cyclone, back through the venturi, to the absorber
-  const gp=[[410,40],[410,22],[540,22],[540,60]];g.pipe(gp,'#5a6672',8);g.flow(gp,t,110,18,'#ffd59a',2);
-  c.beginPath();c.moveTo(518,60);c.lineTo(562,60);c.lineTo(562,118);c.lineTo(546,172);c.lineTo(534,172);c.lineTo(518,118);c.closePath();const cg=c.createLinearGradient(518,0,562,0);cg.addColorStop(0,'#4a5d70');cg.addColorStop(.4,'#a9bccd');cg.addColorStop(1,'#33475c');c.fillStyle=cg;c.fill();c.strokeStyle='rgba(4,10,18,.6)';c.stroke();g.label('CYCLONE',540,188,{size:9.5});
-  const g2=[[562,88],[600,88],[600,40],[660,40],[660,70]];g.pipe(g2,'#5a6672',8);g.flow(g2,t,110,18,'#ffd59a',2);
-  g.vessel(630,58,60,300,{col:'#7fa89a',legs:false,shadow:false,seams:3});c.fillStyle='rgba(6,14,22,.75)';c.fillRect(638,92,44,240);for(let k=0;k<6;k++)g.line([[640,112+k*36],[680,124+k*36]],'#7fc4c9',1.2);g.fall(640,94,40,232,t,16,'#9fd4ff',100,6);g.label('ABSORBER',660,372,{size:9.5,col:C.teal});
-  g.pipe([[798,120],[690,120]],'#2d5675',5);g.flow([[798,120],[692,120]],t,60,16,'#9fd4ff',1.8);g.label('RINSE WATER',788,108,{size:9,col:C.water,align:'right'});
-  const ra=[[660,358],[660,400],[560,400],[560,440],[520,440]];g.pipe(ra,'#1f5b5f',6);g.flow(ra,t,60,16,'#25adb8',2.2);
-  g.tankPP(470,420,50,60,{col:'#d5cebb',legs:false,floor:480});g.liquor(473,428,44,48,'#25adb8',t,{a0:.75,a1:.5});g.label('REGEN HCl',495,494,{size:9.5,col:C.teal});
-  // off-gas scrubber and stack
-  const og=[[690,80],[740,80],[740,200]];g.pipe(og,'#5a6672',6);g.flow(og,t,80,16,'#e7edf3',1.8);
-  g.vessel(720,200,42,112,{col:'#7fa89a',legs:false,shadow:false,seams:1});g.cyl(768,140,16,172,'#6d7f90',true);g.line([[762,262],[768,262]],'#6d7f90',4);g.puffs(776,140,t,'#e7edf3',.12,70,5,10,.6);
-  g.call(1,65,320,65,330);g.call(2,210,300,210,290);g.call(3,410,200);g.call(4,320,320,330,300);g.call(5,580,140,560,118);g.call(6,700,200,690,200);g.call(7,770,340,770,312);g.call(8,360,477,380,477);g.call(9,470,470,470,450);
-  return [['Feed','Spent HCl · FeCl₂'],['Roaster','Fired · spray'],['Acid out','Regenerated'],['Oxide','Bagged']];
  }}
 ];
 
+/* V87 (owner, 27 Nov 2026: "make an animation for the acid regeneration as well ... detailed as much as it is supposed to be"):
+   the spray-roasting acid regeneration plant in three views, built from the parts library. The process and the figures
+   are those of our ARP-10 model (v/arp-10.html, its process tour): no other numbers. */
+const ARP={
+ SPL:'#c9b458',PCL:'#a8873a',RA:'#25adb8',RW:'#5aa6e6',WA:'#8fc6e8',HOT:'#ff9a4c',WARM:'#ffd59a',PG:'#f0dca0',CLEAN:'#e7edf3',OX:'#c0602e',NA:'#b9a6f0',NG:'#e3c04f',AIR:'#a9cbe9',FRP:'#7fa89a',
+ /* a stream name on a small dark tag, as on the closed-loop drawing (V85); none on phones */
+ tag(g,s,x,y,col,al='center'){if(g.small)return;const c=g.ctx;c.font=`600 ${g.px(10)}px "Noto Sans","Segoe UI",Arial,sans-serif`;const tw=c.measureText(s).width,w=tw+g.px(22),h=g.px(16),x0=al==='left'?x:al==='right'?x-w:x-w/2;
+  g.rr(x0,y-h/2,w,h,h/2,'rgba(8,16,26,.9)');g.circ0(x0+g.px(8.5),y,g.px(3),col);g.text(s,x0+g.px(14),y,{size:9,w:600,col:'#dbe6f0',align:'left'})},
+ /* random-packed rings in a column bed, drawn once and reused */
+ pack(g,x,y,w,h){texture('arpk',g.ctx,x,y,w,h,(c,W,H)=>{c.fillStyle='rgba(28,48,58,.92)';c.fillRect(0,0,W,H);c.lineWidth=1;for(let yy=3,r=0;yy<H;yy+=6.5,r++)for(let xx=(r%2?4:0)+3;xx<W;xx+=8){c.strokeStyle=r%3?'rgba(196,222,228,.42)':'rgba(150,190,200,.34)';c.beginPath();c.ellipse(xx,yy,2.6,1.9,(xx+yy)%3,0,TAU);c.stroke()}
+  c.fillStyle='rgba(255,255,255,.12)';c.fillRect(0,0,W,1);c.fillRect(0,H-1,W,1)})},
+ /* gas rising through a column: faint streaks moving up */
+ up(g,x,y,w,h,t,n,col,sp=46,l=10){const c=g.ctx;c.lineCap='round';c.lineWidth=Math.max(g.px(1),1.3);c.beginPath();for(let i=0;i<n;i++){const xx=x+hr(i+3)*w+Math.sin(t*1.7+i)*1.6,yy=y+h-((t*sp+hr(i+21)*h)%h);c.moveTo(xx,yy);c.lineTo(xx,Math.min(y+h,yy+l))}c.strokeStyle=wA(col,.5);c.stroke()},
+ /* liquid trickling down a column, the same way */
+ drip(g,x,y,w,h,t,n,col,sp=90,l=8){const c=g.ctx;c.lineCap='round';c.lineWidth=Math.max(g.px(1),1.2);c.beginPath();for(let i=0;i<n;i++){const xx=x+hr(i)*w,yy=y+((t*sp+hr(i+50)*h)%h);c.moveTo(xx,yy);c.lineTo(xx,Math.min(y+h,yy+l))}c.strokeStyle=wA(col,.75);c.stroke()},
+ /* droplets in colour bands, one path per band */
+ dots(g,pts,r){const c=g.ctx,B={};pts.forEach(q=>{const k=Math.min(7,Math.floor(q[2]*8));(B[k]=B[k]||[]).push(q)});Object.keys(B).forEach(k=>{c.beginPath();B[k].forEach(([x,y,p])=>{const rr=r(p);c.moveTo(x+rr,y);c.arc(x,y,rr,0,TAU)});c.fillStyle=ARP.dcol((+k+.5)/8);c.fill()})},
+ /* an FRP column cut open: packed beds, liquid trickling down, gas rising, a sump */
+ column(g,x,y,w,h,t,o){const c=g.ctx;g.vessel(x,y,w,h,{col:o.col||ARP.FRP,legs:false,shadow:o.shadow!==false,seams:4,floor:o.floor});
+  const wx=x+5,wy=y+Math.max(14,h*.08),ww=w-10,wh=h-2*Math.max(14,h*.08);c.fillStyle='rgba(6,14,22,.84)';c.fillRect(wx,wy,ww,wh);
+  (o.beds||[]).forEach(([a,b])=>{const by=y+h*a,bh=h*(b-a);ARP.pack(g,wx,by,ww,bh);g.line([[wx+2,by-5],[wx+ww-2,by-5]],'#9fb2c4',1.4);for(let k=0;k<4;k++)g.circ0(wx+ww*(k+.5)/4,by-5,1.3,'#d6dee7')});
+  if(o.demister){const dy=wy+6;for(let k=0;k<2;k++){g.line([...Array(Math.floor(ww/6)+1)].map((_,j)=>[wx+j*6,dy+k*8+(j%2?4:0)]),'#c9d4de',1)}}
+  ARP.drip(g,wx+2,wy+(o.demister?22:4),ww-4,wh-(o.demister?36:18),t,o.nf||9,o.liq);ARP.up(g,wx+2,wy+(o.demister?20:2),ww-4,wh-(o.demister?34:16),t,o.nu||9,o.gas,44,9);
+  if(o.sump)g.liquor(wx,wy+wh-13,ww,13,o.sump,t,{a0:.88,a1:.62,glint:false});
+  c.strokeStyle='rgba(200,220,230,.22)';c.lineWidth=Math.max(g.px(1),1);c.strokeRect(wx,wy,ww,wh)},
+ /* a pulsing ring round whatever the story is at */
+ ring(g,x,y,r,t){const c=g.ctx,p=(t*1.6)%1;g.glow(x,y,r*1.15,g.acc,.16);c.save();c.strokeStyle=wA(g.acc,.9);c.lineWidth=Math.max(g.px(1.4),1.8);c.setLineDash([7,5]);c.lineDashOffset=-t*18;c.beginPath();c.arc(x,y,r,0,TAU);c.stroke();c.setLineDash([]);c.strokeStyle=wA(g.acc,.45*(1-p));c.lineWidth=Math.max(g.px(1),1.2);c.beginPath();c.arc(x,y,r+p*12,0,TAU);c.stroke();c.restore()},
+ /* a droplet's colour on its way down the roaster: liquor, dried chloride, iron oxide */
+ dcol(p){return p<.3?mix(ARP.SPL,'#e2d8a6',p/.3):mix('#e2d8a6',ARP.OX,(p-.3)/.45)},
+ /* the whole-plant story: one stop every 3.5 s */
+ STEPS:[['Spent liquor in','FeCl₂ liquor, filtered','Spent liquor from the pickling line is stored, then filtered',[39,322,34]],
+  ['Venturi','Gas ≈ 390 → 95 °C','The roaster’s hot gas boils water out of the liquor and is cooled by it',[383,98,30]],
+  ['Spray roasting','Oxide + HCl gas','Lances spray the concentrate down into the hot roaster',[276,162,46]],
+  ['Burners','650–700 °C zone','Tangential burners fire into a swirling hot zone',[246,258,34]],
+  ['Iron oxide out','Fe₂O₃ ≥ 98.5 %','The oxide leaves through a rotary valve and is blown to the silo',[160,186,46]],
+  ['Absorption','18 % HCl','The HCl gas dissolves in weak acid running down a packed column',[509,170,44]],
+  ['Gas cleaning','Stack HCl ≤ 10 mg/Nm³','Water and alkaline scrubbers, then the fan and the stack',[640,262,62]],
+  ['Acid back','≈ 99.8 % of the chloride','Cooled, stored and pumped back to the pickling line',[510,374,30]]],
+ /* ---------- view 1: the whole plant ---------- */
+ plant(g,t){const c=g.ctx,A=ARP;g.floor();
+  const si=Math.floor(t/3.5)%8,st=A.STEPS[si];
+  // pipes and ducts first, equipment over their ends
+  const P=(p,col,w,fc,sp,gap,r)=>{g.pipe(p,col,w);if(fc)g.flow(p,t,sp||60,gap||18,fc,r||1.8)};
+  P([[39,200],[39,236]],'#5a5a2a',5,A.SPL,50,16);g.arrow(39,232,Math.PI/2,A.SPL,6);
+  P([[62,398],[74,398]],'#5a5a2a',5,A.SPL);P([[80,384],[80,372],[104,372]],'#5a5a2a',5,A.SPL);
+  P([[110,401],[110,405],[392,405],[392,398]],'#5a5a2a',5,A.SPL,60,20);
+  P([[402,398],[388,398]],'#4a3d1f',5,A.PCL);P([[380,384],[380,380],[362,380],[362,72],[374,72]],'#4a3d1f',5,A.PCL,70,18);
+  P([[362,380],[362,394],[358,394]],'#4a3d1f',4,A.PCL);P([[350,385],[350,382],[342,382],[342,48],[280,48]],'#4a3d1f',5,A.PCL,80,18);
+  P([[258,60],[258,30],[244,30]],'#5a4a40',9,A.HOT,90,18,2.2);P([[233,18],[233,8],[382,8],[382,40]],'#5a4a40',10,A.HOT,100,20,2.4);
+  P([[426,136],[426,112],[468,112],[468,286],[484,286]],'#4f5a62',9,A.PG,90,20,2.2);
+  P([[509,36],[509,22],[552,22],[552,360],[562,360]],'#4f5a62',9,A.CLEAN,90,22,2);
+  P([[598,166],[608,166],[608,370],[616,370]],'#4f5a62',9,A.CLEAN,90,22,2);
+  P([[634,140],[634,124],[690,124],[690,372],[700,372]],'#4f5a62',9,A.CLEAN,90,22,2);
+  P([[736,372],[752,372]],'#4f5a62',9,A.CLEAN,90,22,2);
+  P([[580,58],[580,150]],'#2d5675',4,A.RW,60,16);g.arrow(580,146,Math.PI/2,A.RW,6);
+  P([[562,398],[557,398]],'#2d5675',4,A.WA);P([[550,386],[550,380],[541,380],[541,64],[534,64]],'#2d5675',4,A.WA,70,18);
+  P([[509,306],[509,338]],'#1f5b5f',5,A.RA,50,14);P([[492,398],[470,398]],'#1f5b5f',5,A.RA,50,14);g.arrow(468,398,Math.PI,A.RA,6);
+  P([[276,372],[276,382],[190,382],[190,124],[184,124]],'#5a3a2a',5,A.OX,60,14,1.7);P([[296,382],[280,382]],'#2d4a60',4,A.AIR,50,12,1.4);
+  // spent liquor tank, feed pump and self-cleaning filter
+  g.vessel(14,236,50,172,{col:A.FRP,legs:false,seams:3});c.fillStyle='rgba(6,14,22,.8)';c.fillRect(22,262,34,132);g.liquor(22,300,34,94,A.SPL,t,{a0:.82,a1:.55});
+  g.pump(80,392,8,t*9,A.SPL);g.vessel(104,352,12,50,{col:'#8ea1b3',legs:false,seams:1,shadow:false});
+  // oxide silo with its bag filter, and a big bag filling under the spout
+  c.fillStyle='#1a2b3f';c.fillRect(139,214,5,194);c.fillRect(176,214,5,194);g.line([[141,300],[178,262]],'#2c4560',2);g.line([[141,262],[178,300]],'#2c4560',2);
+  g.vessel(136,104,48,118,{col:'#8b9298',legs:false,shadow:false,seams:3});
+  {const gr=c.createLinearGradient(136,0,184,0);gr.addColorStop(0,'#4b5157');gr.addColorStop(.4,'#a9b0b6');gr.addColorStop(1,'#3b4045');g.poly([[137,214],[183,214],[166,250],[154,250]],gr,'rgba(4,10,18,.6)',1)}
+  g.box(144,90,32,14,'#5d6f80',{d:3,shadow:false});for(let k=0;k<5;k++)g.line([[149+k*6,92],[149+k*6,102]],'rgba(0,0,0,.3)',1);g.puffs(160,88,t,'#e7edf3',.08,26,3,6,.35);
+  c.fillStyle='#3b4045';c.fillRect(156,250,8,12);for(let i=0;i<8;i++){const p=(t*1.3+hr(i+60))%1;g.circ0(158+hr(i)*4,262+p*52,1.4,A.OX)}
+  c.beginPath();c.moveTo(146,320);c.quadraticCurveTo(144,352,150,366);c.lineTo(170,366);c.quadraticCurveTo(176,352,174,320);c.closePath();{const bg=c.createLinearGradient(146,0,174,0);bg.addColorStop(0,'#bfb59c');bg.addColorStop(.4,'#f1e9d6');bg.addColorStop(1,'#a49a80');c.fillStyle=bg;c.fill()}
+  g.line([[148,320],[144,312]],'#8a7a5a',1.6);g.line([[172,320],[176,312]],'#8a7a5a',1.6);g.box(142,366,36,8,'#2c4a68',{d:2});
+  // spray roaster: shell, cut-away with the brick lining, lances, droplets, burners, oxide cone, rotary valve
+  g.beam(230,292,230,408,6);g.beam(322,292,322,408,6);g.beam(230,394,322,394,5);
+  g.vessel(226,58,100,252,{col:'#5d6f80',legs:false,shadow:false,seams:5});
+  {const gr=c.createLinearGradient(226,0,326,0);gr.addColorStop(0,'#2c3844');gr.addColorStop(.35,'#7f93a6');gr.addColorStop(1,'#25303a');g.poly([[226,298],[326,298],[287,356],[265,356]],gr,'rgba(4,10,18,.6)',1)}
+  c.fillStyle='#120a06';c.fillRect(236,88,80,206);g.bricks(236,88,8,206,{col:'#6a3a22',bw:8,bh:8});g.bricks(308,88,8,206,{col:'#6a3a22',bw:8,bh:8});
+  c.save();c.beginPath();c.rect(244,88,64,206);c.clip();
+  g.glow(276,262,78,'#ff6a1c',.3);g.glow(276,150,60,'#ff9a4c',.1);
+  for(let k=0;k<3;k++){const x=280+k*14;c.fillStyle=wA(A.SPL,.16);c.beginPath();c.moveTo(x,96);c.lineTo(x-9,126);c.lineTo(x+9,126);c.closePath();c.fill()}
+  {const D=[];for(let i=0;i<64;i++){const p=(t*.28+hr(i))%1;D.push([250+hr(i+2)*52+Math.sin(t*1.2+i*.7)*p*6,98+p*192,p])}A.dots(g,D,p=>1.5-p*.4)}
+  [[248,236,.18],[248,276,-.12]].forEach(([x,y,a],k)=>g.flame(x,y,44,a,t+k*.7,11));
+  c.strokeStyle=wA('#ffb15a',.55);c.lineWidth=2;c.setLineDash([8,6]);c.lineDashOffset=-t*40;c.beginPath();c.ellipse(276,258,28,6,0,0,TAU);c.stroke();c.setLineDash([]);
+  c.restore();
+  g.circ0(296,262,6,'#3b4a58','#ffb15a',1.2);g.glow(296,262,10,'#ffb15a',.4);
+  [236,276].forEach(y=>{g.cyl(204,y-7,24,14,'#5b7a99',false);g.box(196,y-9,8,18,'#2c4a68',{d:2,shadow:false})});
+  for(let k=0;k<3;k++){const x=280+k*14;g.line([[x,48],[x,96]],'#c9d4de',2.2);g.circ0(x,96,2,'#e8eef4')}
+  c.fillStyle=wA(A.OX,.95);c.beginPath();c.moveTo(268,346);c.lineTo(284,346);c.lineTo(282,356);c.lineTo(270,356);c.closePath();c.fill();
+  g.box(266,356,20,16,'#3b4a58',{d:3,shadow:false});c.save();c.translate(276,364);c.rotate(t*2);c.strokeStyle='#c9d4de';c.lineWidth=1.4;for(let k=0;k<6;k++){c.rotate(TAU/6);c.beginPath();c.moveTo(0,0);c.lineTo(6,0);c.stroke()}c.restore();
+  g.box(296,376,22,18,'#3b5b7b',{d:3});g.text('M',307,385,{size:7,w:700,col:'#d6dee7'});
+  // cyclone on the roof: fines go back down into the roaster
+  g.cyl(222,18,22,28,'#7d8c99',true);{const gr=c.createLinearGradient(222,0,244,0);gr.addColorStop(0,'#3a4651');gr.addColorStop(.4,'#a6b4c0');gr.addColorStop(1,'#2d3843');g.poly([[222,46],[244,46],[236,70],[230,70]],gr,'rgba(4,10,18,.6)',1)}
+  for(let i=0;i<4;i++){const p=(t*1.1+i/4)%1;g.circ0(233,52+p*16,1.2,A.OX)}
+  // venturi and its separator
+  {const vx=372,vw=20,poly=[[vx,40],[vx+vw,40],[vx+vw-6,84],[vx+vw,124],[vx+vw,292],[vx,292],[vx,124],[vx+6,84]];const gr=c.createLinearGradient(vx,0,vx+vw,0);gr.addColorStop(0,'#4f6c62');gr.addColorStop(.35,'#a9c9bd');gr.addColorStop(1,'#3d564e');g.poly(poly,gr,'rgba(4,10,18,.6)',1)}
+  for(let i=0;i<10;i++){const p=(t*1.6+hr(i+80))%1;g.circ0(379+hr(i)*6,76+p*60,1.2,mix(A.PCL,A.WARM,p))}
+  g.pipe([[382,290],[382,300],[402,300]],'#4f6c62',14);
+  A.column(g,402,136,50,272,t,{liq:A.PCL,gas:A.PG,sump:A.PCL,nf:8,nu:7});
+  g.pump(380,392,8,t*12,A.PCL);g.pump(350,394,8,t*15,A.PCL);
+  // absorber on its frame, the graphite cooler and the regenerated acid tank under it
+  g.beam(488,300,488,408,6);g.beam(530,300,530,408,6);g.beam(488,322,530,322,4);
+  A.column(g,484,36,50,270,t,{beds:[[.2,.44],[.56,.8]],liq:A.WA,gas:A.PG,sump:A.RA,shadow:false,floor:306});
+  g.box(500,312,18,16,'#2b3036',{d:3,shadow:false});for(let k=0;k<3;k++)g.line([[503,315+k*4],[515,315+k*4]],'rgba(255,255,255,.18)',1);
+  g.vessel(492,338,36,70,{col:A.FRP,legs:false,seams:1});c.fillStyle='rgba(6,14,22,.8)';c.fillRect(498,350,24,46);g.liquor(498,362,24,34,A.RA,t,{a0:.85,a1:.6,glint:false});
+  g.pump(550,392,7,t*12,A.WA);
+  // water scrubber and alkaline scrubber, caustic tank
+  A.column(g,562,150,36,258,t,{beds:[[.34,.66]],liq:A.RW,gas:A.CLEAN,sump:A.WA,nf:7,nu:7});
+  A.column(g,616,140,36,268,t,{beds:[[.36,.64]],liq:A.NA,gas:A.CLEAN,sump:A.NA,nf:7,nu:7,demister:true});
+  g.vessel(658,368,22,40,{col:'#8ea1b3',legs:false,seams:1});
+  // ID fan, FRP stack in its lattice tower, emission monitoring platform
+  c.beginPath();c.arc(718,372,18,0,TAU);{const gr=c.createRadialGradient(712,366,2,718,372,19);gr.addColorStop(0,'#9fb4c6');gr.addColorStop(1,'#2c4258');c.fillStyle=gr;c.fill()}c.strokeStyle='rgba(4,10,18,.7)';c.lineWidth=1;c.stroke();
+  g.fan(718,372,13,t*14,'#c9d4de',6);g.box(706,392,24,14,'#2c4a68',{d:3});
+  [746,786].forEach(x=>g.line([[x,30],[x,408]],'#5f7387',1.6));for(let y=30;y<400;y+=42){g.line([[746,y],[786,y+42]],'#4e6276',1);g.line([[786,y],[746,y+42]],'#4e6276',1);g.line([[746,y],[786,y]],'#5f7387',1.2)}
+  g.cyl(752,18,28,390,'#86bdb2',true);g.line([[740,214],[792,214]],'#e8a317',2);g.box(784,198,12,14,'#c9d1d9',{d:2,shadow:false});
+  g.puffs(766,18,t,'#e7edf3',.14,70,6,12,.6);
+  // the story: a ring where the process is now, and one line along the bottom
+  A.ring(g,st[3][0],st[3][1],st[3][2],t);
+  g.call(1,39,286);g.call(2,404,70,388,84);g.call(3,276,114);g.call(4,212,212,214,229);g.call(5,210,40,222,34);g.call(6,160,150);g.call(7,509,112);g.call(8,607,252);g.call(9,718,330,718,354);g.call(10,510,374);
+  A.tag(g,'From pickling',4,188,A.SPL,'left');A.tag(g,'Rinse water',566,46,A.RW,'left');A.tag(g,'To pickling',466,420,A.RA);A.tag(g,'Iron oxide',160,420,A.OX);A.tag(g,'Clean gas',744,44,A.CLEAN,'right');
+  if(!g.small){const s1=(si+1)+' / 8 · '+st[0],s2=st[2];c.font=`700 ${g.px(12)}px "Noto Sans","Segoe UI",Arial,sans-serif`;const w1=c.measureText(s1).width;c.font=`600 ${g.px(11)}px "Noto Sans","Segoe UI",Arial,sans-serif`;const w2=c.measureText(s2).width,gap=g.px(10),W=w1+gap+w2+g.px(28),H=g.px(24),x0=400-W/2,y0=470;
+   g.rr(x0,y0-H/2,W,H,H/2,'rgba(8,16,26,.92)');g.rr(x0,y0-H/2,W,H,H/2,null,wA(g.acc,.55),1);g.text(s1,x0+g.px(14),y0,{size:11,w:700,col:g.acc,align:'left'});g.text(s2,x0+g.px(14)+w1+gap,y0,{size:10,w:600,col:'#dbe6f0',align:'left'});
+   for(let k=0;k<8;k++)g.circ0(400+(k-3.5)*g.px(12),y0-H/2-g.px(9),g.px(k===si?3.4:2.4),k===si?g.acc:'rgba(200,215,228,.35)')}
+  return [['Now',(si+1)+' · '+st[0]],['Here',st[1]],['Acid out','≈ 18 % HCl'],['By-product','Fe₂O₃ powder']];
+ },
+ /* ---------- view 2: inside the roaster ---------- */
+ roaster(g,t){const c=g.ctx,A=ARP;
+  // ground slab
+  {const gr=c.createLinearGradient(0,478,0,500);gr.addColorStop(0,'#1c2d40');gr.addColorStop(1,'#0e1a28');c.fillStyle=gr;c.fillRect(0,478,800,22);g.line([[0,478],[800,478]],'rgba(255,255,255,.12)',1)}
+  // feed header and lances
+  g.pipe([[150,26],[470,26]],'#4a3d1f',6);g.flow([[150,26],[470,26]],t,80,22,A.PCL,1.8);
+  // gas out of the roof to the cyclone, clean gas on to the venturi
+  g.pipe([[505,48],[505,30],[606,30]],'#5a4a40',11);g.flow([[505,48],[505,30],[606,30]],t,90,20,A.HOT,2.4);
+  g.pipe([[626,22],[626,8],[796,8]],'#5a4a40',10);g.flow([[626,22],[626,8],[796,8]],t,100,22,A.HOT,2.4);g.arrow(794,8,0,A.HOT,6);
+  g.pipe([[626,150],[626,160],[540,206]],'#5a3a2a',6);g.flow([[626,160],[540,206]],t,40,12,A.OX,1.5);for(let k=0;k<4;k++){const f=(k+.5)/4;g.circ0(lerp(626,540,f)+2,lerp(160,206,f)+5,1.4,wA(A.AIR,.6+.4*Math.sin(t*6+k)))}
+  // shell: dished roof, cylinder, cone, with the wall cut open
+  const X0=260,X1=540,YT=64,YB=318,WL=33;
+  {const gr=c.createLinearGradient(X0,0,X1,0);gr.addColorStop(0,'#2c3844');gr.addColorStop(.3,'#8a9db0');gr.addColorStop(.6,'#5d6f80');gr.addColorStop(1,'#222c36');c.fillStyle=gr;c.beginPath();c.moveTo(X0,YT);c.ellipse(400,YT,140,26,0,Math.PI,0);c.lineTo(X1,YB);c.lineTo(416,424);c.lineTo(384,424);c.lineTo(X0,YB);c.closePath();c.fill();c.strokeStyle='rgba(4,10,18,.7)';c.lineWidth=1;c.stroke()}
+  // wall layers, left and right: steel shell, acid-proof membrane, insulating brick, acid-resistant brick
+  const layer=(x,w,col,tex)=>{if(tex)g.bricks(x,YT,w,YB-YT,{col,bw:tex,bh:9});else{c.fillStyle=col;c.fillRect(x,YT,w,YB-YT)}};
+  layer(X0,5,'#4c5966');layer(X0+5,2,'#0b0d10');layer(X0+7,10,'#b59a72',12);layer(X0+17,16,'#7a3a22',16);
+  layer(X1-5,5,'#4c5966');layer(X1-7,2,'#0b0d10');layer(X1-17,10,'#b59a72',12);layer(X1-33,16,'#7a3a22',16);
+  // the hot inside
+  const IX0=X0+WL,IX1=X1-WL;c.save();c.beginPath();c.moveTo(IX0,YT-4);c.lineTo(IX1,YT-4);c.lineTo(IX1,YB);c.lineTo(408,418);c.lineTo(392,418);c.lineTo(IX0,YB);c.closePath();c.clip();
+  {const gr=c.createLinearGradient(0,YT,0,418);gr.addColorStop(0,'#1d1109');gr.addColorStop(.6,'#3a1a0a');gr.addColorStop(1,'#20100a');c.fillStyle=gr;c.fillRect(IX0,YT-4,IX1-IX0,360)}
+  g.glow(400,288,170,'#ff5a14',.32);g.glow(400,150,140,'#ff9a4c',.1);
+  // lance sprays
+  const LX=[330,365,400,435,470];LX.forEach(x=>{const gr=c.createLinearGradient(0,86,0,132);gr.addColorStop(0,wA(A.SPL,.32));gr.addColorStop(1,wA(A.SPL,0));c.fillStyle=gr;c.beginPath();c.moveTo(x,86);c.lineTo(x-17,132);c.lineTo(x+17,132);c.closePath();c.fill()});
+  // tangential swirl in the burner zone
+  c.lineCap='round';for(let k=0;k<3;k++){c.strokeStyle=wA(k?'#ffb15a':'#ffe08a',.45-k*.1);c.lineWidth=3-k*.6;c.setLineDash([16,12]);c.lineDashOffset=-t*(70+k*16);c.beginPath();c.ellipse(400,288-k*18,96-k*10,16-k*3,0,0,TAU);c.stroke()}c.setLineDash([]);
+  // droplets: liquor, then dried chloride, then iron oxide; the swirl carries them round
+  {const D=[];for(let i=0;i<150;i++){const p=(t*.2+hr(i+5))%1,x0=LX[i%5]+(hr(i)-.5)*30,sw=Math.sin(t*1.1+i*.7)*p*34;D.push([clamp(x0+sw,IX0+4,IX1-4),88+p*230,p])}A.dots(g,D,p=>2.1-p*.7)}
+  // oxide piling in the cone, the lump breaker turning in it
+  {const gr=c.createLinearGradient(0,368,0,418);gr.addColorStop(0,mix(A.OX,'#000000',.15));gr.addColorStop(1,mix(A.OX,'#000000',.45));c.fillStyle=gr;c.beginPath();c.moveTo(352,372);c.quadraticCurveTo(400,360+Math.sin(t*2)*2,448,372);c.lineTo(408,418);c.lineTo(392,418);c.closePath();c.fill()}
+  for(let i=0;i<14;i++){const p=(t*.6+hr(i+90))%1;g.circ0(lerp(360+hr(i)*80,400,p),372+p*40,1.3,mix(A.OX,'#ffd0a0',.2))}
+  c.restore();
+  // the tangential burners (left and right) and a burner port on the front face
+  [[X0,288,0],[X1,262,1]].forEach(([x,y,k])=>{g.cyl(k?x:x-30,y-9,30,18,'#5b7a99',false);g.box(k?x+30:x-40,y-12,10,24,'#2c4a68',{d:3,shadow:false});g.flame(k?IX1:IX0,y,92,k?Math.PI+.16:-.16,t+k,15)});
+  g.circ0(400,300,8,'#3b4a58','#ffb15a',1.4);g.glow(400,300,16,'#ffb15a',.45);
+  // gas train and combustion air to the left burner: two shut-off valves and a flame guard
+  g.pipe([[40,290],[220,290]],'#2d4a60',9);g.flow([[40,290],[220,290]],t,70,20,A.AIR,1.8);
+  g.pipe([[40,334],[245,334],[245,297]],'#5a4a1a',5);g.flow([[40,334],[245,334],[245,297]],t,60,18,A.NG,1.6);g.valve(170,334,'#4fbf8c',7);g.valve(196,334,'#4fbf8c',7);
+  g.box(226,262,16,12,'#c9d1d9',{d:2,shadow:false});g.circ0(234,268,2.2,'#4fbf8c');
+  // lances through the roof
+  LX.forEach(x=>{g.line([[x,26],[x,86]],'#c9d4de',2.6);g.circ0(x,86,2.4,'#e8eef4')});
+  // cyclone
+  g.cyl(606,22,40,70,'#7d8c99',true);{const gr=c.createLinearGradient(606,0,646,0);gr.addColorStop(0,'#3a4651');gr.addColorStop(.4,'#a6b4c0');gr.addColorStop(1,'#2d3843');g.poly([[606,92],[646,92],[630,150],[622,150]],gr,'rgba(4,10,18,.6)',1)}
+  c.save();c.strokeStyle=wA(A.HOT,.5);c.lineWidth=1.2;for(let k=0;k<4;k++){const y=34+k*14+((t*30)%14);c.beginPath();c.ellipse(626,y,16-k*1.5,3,0,0,TAU);c.stroke()}c.restore();
+  for(let i=0;i<6;i++){const p=(t*.9+i/6)%1;g.circ0(626+Math.sin(t*5+i)*(10-p*8),92+p*56,1.4,A.OX)}
+  // rotary valve under the cone, Roots blower, conveying line to the silo
+  g.box(378,426,44,26,'#3b4a58',{d:4,shadow:false});c.save();c.translate(400,439);c.rotate(t*1.8);for(let k=0;k<6;k++){c.rotate(TAU/6);c.fillStyle=wA(A.OX,.85);c.beginPath();c.moveTo(0,0);c.arc(0,0,11,0,TAU/12);c.closePath();c.fill();c.strokeStyle='#c9d4de';c.lineWidth=1.4;c.beginPath();c.moveTo(0,0);c.lineTo(11,0);c.stroke()}c.restore();g.circ0(400,439,2.4,'#d6dee7');
+  c.save();c.translate(400,410);c.rotate(-t*3);for(let k=0;k<8;k++){c.rotate(TAU/8);c.fillStyle='#9fb2c4';c.fillRect(6,-1.5,4,3)}c.restore();g.circ0(400,410,6,'#5d6f80','#c9d4de',1);
+  g.pipe([[400,450],[400,464]],'#5a3a2a',7);g.pipe([[362,464],[656,464],[656,244],[680,244]],'#5a3a2a',7);g.flow([[400,452],[400,464],[656,464],[656,244],[680,244]],t,90,16,A.OX,1.8);g.flow([[362,464],[400,464]],t,60,14,A.AIR,1.4);
+  g.box(326,452,36,26,'#3b5b7b',{d:4});g.text('ROOTS',344,465,{size:6.5,w:700,col:'#d6dee7'});
+  // oxide silo, bag filter, a big bag
+  c.fillStyle='#1a2b3f';c.fillRect(684,380,5,98);c.fillRect(728,380,5,98);
+  g.vessel(680,232,56,154,{col:'#8b9298',legs:false,shadow:false,seams:3});{const gr=c.createLinearGradient(680,0,736,0);gr.addColorStop(0,'#4b5157');gr.addColorStop(.4,'#a9b0b6');gr.addColorStop(1,'#3b4045');g.poly([[681,380],[735,380],[714,414],[702,414]],gr,'rgba(4,10,18,.6)',1)}
+  g.box(690,216,36,16,'#5d6f80',{d:3,shadow:false});g.puffs(708,214,t,'#e7edf3',.08,30,3,6,.35);
+  c.beginPath();c.moveTo(694,428);c.quadraticCurveTo(692,462,698,476);c.lineTo(718,476);c.quadraticCurveTo(724,462,722,428);c.closePath();{const bg=c.createLinearGradient(694,0,722,0);bg.addColorStop(0,'#bfb59c');bg.addColorStop(.4,'#f1e9d6');bg.addColorStop(1,'#a49a80');c.fillStyle=bg;c.fill()}
+  for(let i=0;i<6;i++){const p=(t*1.3+hr(i+70))%1;g.circ0(706+hr(i)*4,414+p*14,1.3,A.OX)}
+  // temperature scale on the left, and what the droplets turn into
+  if(!g.small){g.text('≈ 400 °C',240,YT+12,{size:10,w:700,col:'#ffc08a',align:'right'});g.text('at the gas outlet',240,YT+26,{size:8.5,col:'#a9bacb',align:'right'});
+   g.text('650–700 °C',240,232,{size:10,w:700,col:'#ff8a4c',align:'right'});g.text('in the burner zone',240,246,{size:8.5,col:'#a9bacb',align:'right'});
+   {const s='2 FeCl₂ + 2 H₂O + ½ O₂ → Fe₂O₃ + 4 HCl';c.font=`700 ${g.px(10)}px "Noto Sans","Segoe UI",Arial,sans-serif`;const w=c.measureText(s).width+g.px(20),h=g.px(20);g.rr(400-w/2,196-h/2,w,h,h/2,'rgba(8,16,26,.82)');g.text(s,400,196,{size:9,w:700,col:'#ffe3c2'})}
+   [['Liquor droplet',ARP.SPL],['Dried iron chloride','#e2d8a6'],['Iron oxide',ARP.OX]].forEach(([s,col],k)=>{const y=392+k*20;g.circ0(36,y,4.5,col);g.text(s,48,y,{size:9.5,w:600,col:'#dbe6f0',align:'left'})})}
+  A.tag(g,'Pre-concentrate, ≈ 6 bar',40,44,A.PCL,'left');A.tag(g,'Combustion air',40,272,A.AIR,'left');A.tag(g,'Natural gas',40,350,A.NG,'left');A.tag(g,'To venturi ≈ 390 °C',796,40,A.HOT,'right');A.tag(g,'Oxide to the silo',530,450,A.OX);
+  g.call(1,314,96,330,86);g.call(2,400,244);g.call(3,330,262,306,282);g.call(4,276,150);g.call(5,520,70,505,50);g.call(6,664,70,646,70);g.call(7,446,440,422,440);g.call(8,708,300);
+  return [['Burner zone','650–700 °C'],['Gas outlet','≈ 400 °C'],['Gas in the roaster','≈ 38 s'],['Oxide','Fe₂O₃ ≥ 98.5 %']];
+ },
+ /* ---------- view 3: venturi, absorption and gas cleaning ---------- */
+ gas(g,t){const c=g.ctx,A=ARP;g.floor();
+  const P=(p,col,w,fc,sp,gap,r)=>{g.pipe(p,col,w);if(fc)g.flow(p,t,sp||60,gap||18,fc,r||1.8)};
+  P([[0,30],[52,30],[52,52]],'#5a4a40',14,A.HOT,100,22,2.6);
+  P([[22,398],[96,398]],'#4a3d1f',5,A.PCL);P([[14,386],[14,104],[44,104]],'#4a3d1f',5,A.PCL,70,18);P([[14,360],[0,360]],'#4a3d1f',5,A.PCL,60,14);g.arrow(3,360,Math.PI,A.PCL,6);
+  c.save();c.setLineDash([5,5]);g.line([[124,52],[124,68],[66,68]],'#4a95d4',3);c.restore();g.valve(95,68,'#e0533a',6);
+  P([[150,160],[196,160],[196,330],[214,330]],'#4f5a62',11,A.PG,90,22,2.2);
+  P([[242,40],[242,22],[394,22],[394,370],[420,370]],'#4f5a62',11,A.CLEAN,90,22,2.2);
+  P([[420,398],[410,398]],'#2d5675',5,A.WA);P([[402,386],[402,380],[380,380],[380,64],[270,64]],'#2d5675',5,A.WA,70,18);
+  P([[445,64],[445,120]],'#2d5675',5,A.RW,60,16);g.arrow(445,116,Math.PI/2,A.RW,6);
+  P([[470,140],[488,140],[488,372],[506,372]],'#4f5a62',11,A.CLEAN,90,22,2.2);
+  P([[531,110],[531,92],[620,92],[620,350],[642,350]],'#4f5a62',11,A.CLEAN,90,22,2.2);
+  P([[686,350],[700,350],[700,330],[740,330]],'#4f5a62',11,A.CLEAN,90,22,2.2);
+  P([[242,330],[242,348],[268,348]],'#1f5b5f',6,A.RA,50,14);P([[292,348],[318,348],[318,330]],'#1f5b5f',6,A.RA,50,14);P([[346,396],[372,396]],'#1f5b5f',6,A.RA,50,14);g.arrow(372,396,0,A.RA,7);
+  c.save();c.setLineDash([4,4]);g.line([[578,372],[578,362],[556,362]],A.NA,2);g.line([[605,384],[605,354],[556,354]],'#e9e2b0',2);c.restore();
+  // venturi: converging inlet, throat sprays, diffuser, elbow into the separator
+  {const vx=36,vw=32,poly=[[vx,52],[vx+vw,52],[vx+vw-10,112],[vx+vw,160],[vx+vw,306],[vx,306],[vx,160],[vx+10,112]];const gr=c.createLinearGradient(vx,0,vx+vw,0);gr.addColorStop(0,'#4f6c62');gr.addColorStop(.35,'#a9c9bd');gr.addColorStop(1,'#3d564e');g.poly(poly,gr,'rgba(4,10,18,.6)',1)}
+  c.fillStyle='rgba(6,14,22,.8)';c.beginPath();c.moveTo(42,56);c.lineTo(62,56);c.lineTo(55,112);c.lineTo(62,160);c.lineTo(62,300);c.lineTo(42,300);c.lineTo(42,160);c.lineTo(49,112);c.closePath();c.fill();
+  for(let i=0;i<28;i++){const p=(t*1.2+hr(i+40))%1,x=52+(hr(i)-.5)*(p<.3?6:16),y=104+p*190;g.circ0(x,y,1.5,mix(A.PCL,A.WARM,p*.6))}
+  for(let i=0;i<10;i++){const p=(t*1.5+hr(i+11))%1;g.circ0(52+(hr(i+3)-.5)*14,58+p*46,1.3,wA(A.HOT,.9-p*.4))}
+  g.pipe([[52,300],[52,330],[98,330]],'#4f6c62',22);g.flow([[52,300],[52,330],[98,330]],t,80,20,A.PG,2);
+  A.column(g,96,120,58,288,t,{liq:A.PCL,gas:A.PG,sump:A.PCL,nf:9,nu:8});
+  g.pump(14,392,8,t*12,A.PCL);
+  // emergency quench water, set high on a frame
+  g.beam(106,50,106,122,4);g.beam(142,50,142,122,4);g.vessel(100,8,48,44,{col:'#7fa0b8',legs:false,shadow:false,seams:1});c.fillStyle='rgba(6,14,22,.75)';c.fillRect(107,18,34,26);g.liquor(107,24,34,20,'#4a95d4',t,{a0:.8,a1:.6,glint:false});
+  // absorber on its frame, graphite cooler, regenerated acid tank
+  g.beam(218,330,218,408,6);g.beam(266,330,266,408,6);g.beam(218,372,266,372,4);
+  A.column(g,214,40,56,290,t,{beds:[[.2,.44],[.56,.8]],liq:A.WA,gas:A.PG,sump:A.RA,shadow:false,floor:330,nf:12,nu:11});
+  g.box(268,338,24,20,'#2b3036',{d:4,shadow:false});for(let k=0;k<4;k++)g.line([[271,342+k*4],[289,342+k*4]],'rgba(255,255,255,.18)',1);
+  g.line([[275,358],[275,404]],'#2d5675',2.4);g.line([[285,358],[285,404]],'#2d5675',2.4);
+  g.vessel(296,330,50,78,{col:ARP.FRP,legs:false,seams:1});c.fillStyle='rgba(6,14,22,.8)';c.fillRect(304,344,34,52);g.liquor(304,356,34,40,A.RA,t,{a0:.85,a1:.6,glint:false});
+  g.pump(402,392,8,t*12,A.WA);
+  // water scrubber, alkaline polishing scrubber, caustic and thiosulphate tanks
+  A.column(g,420,120,50,288,t,{beds:[[.32,.64]],liq:A.RW,gas:A.CLEAN,sump:A.WA,nf:9,nu:9});
+  A.column(g,506,110,50,298,t,{beds:[[.36,.62]],liq:A.NA,gas:A.CLEAN,sump:A.NA,nf:9,nu:9,demister:true});
+  g.vessel(566,372,24,36,{col:'#8ea1b3',legs:false,seams:1});g.vessel(596,384,18,24,{col:'#c9c3a6',legs:false,seams:1});
+  // ID fan with its motor
+  c.beginPath();c.arc(664,350,22,0,TAU);{const gr=c.createRadialGradient(657,343,2,664,350,23);gr.addColorStop(0,'#9fb4c6');gr.addColorStop(1,'#2c4258');c.fillStyle=gr;c.fill()}c.strokeStyle='rgba(4,10,18,.7)';c.lineWidth=1;c.stroke();g.fan(664,350,16,t*14,'#c9d4de',7);
+  g.box(650,376,28,10,'#1c2f44',{d:2});g.motor(646,386,40,22);
+  // FRP stack in a lattice tower, emission monitoring at its platform
+  [734,790].forEach(x=>g.line([[x,22],[x,408]],'#5f7387',1.6));for(let y=22;y<400;y+=48){g.line([[734,y],[790,y+48]],'#4e6276',1);g.line([[790,y],[734,y+48]],'#4e6276',1);g.line([[734,y],[790,y]],'#5f7387',1.2)}
+  g.cyl(742,10,32,398,'#86bdb2',true);g.line([[726,190],[798,190]],'#e8a317',2.4);g.rail(726,798,190,12,'#e8a317');g.hmi(778,160,20,24,[.18,.12],{d:2,lamps:['#4fbf8c']});
+  g.puffs(758,10,t,'#e7edf3',.14,70,6,12,.6);
+  A.tag(g,'Roaster gas',4,12,A.HOT,'left');A.tag(g,'To lances',20,376,A.PCL,'left');A.tag(g,'95 °C',158,144,A.PG,'left');A.tag(g,'Weak acid',300,80,A.WA,'left');A.tag(g,'Rinse water in',445,52,A.RW);
+  A.tag(g,'18 % HCl to pickling',318,422,A.RA);A.tag(g,'NaOH',578,422,A.NA);A.tag(g,'Thiosulphate',630,440,'#e9e2b0');A.tag(g,'Clean gas',708,422,A.CLEAN);
+  g.call(1,52,232);g.call(2,125,250);g.call(3,124,30);g.call(4,242,192);g.call(5,280,326,280,338);g.call(6,321,372);g.call(7,445,250);g.call(8,531,250);g.call(9,664,316,664,330);g.call(10,758,140);
+  return [['Venturi gas','≈ 390 → 95 °C'],['Acid out','18 % HCl at ≈ 90 °C'],['Stack HCl','≤ 10 mg/Nm³'],['Stack Cl₂','≤ 5 mg/Nm³']];
+ }
+};
+const EX_ARP={id:'arpplant',code:'SHIVAS Reinplast · Complete plant',name:'Acid regeneration',prod:'Acid regeneration',dur:30,
+ modes:[{id:'plant',label:'Whole plant'},{id:'roaster',label:'Inside the roaster'},{id:'gas',label:'Gas and acid'}],
+ lead:'Spent pickle liquor goes in; fresh hydrochloric acid and iron oxide powder come out. The roaster’s own hot gas concentrates the liquor in a venturi, lances spray it into a fired roaster where iron chloride turns into iron oxide and HCl gas, and the gas is absorbed in rinse water as 18 % acid. The oxide is collected and bagged, and the gas is scrubbed before the stack. Figures are from our ARP-10 plant.',
+ calls:m=>m==='roaster'?[['Spray lances','Pre-concentrated liquor is sprayed down into the roaster as fine droplets, at about 6 bar.'],['Droplet to oxide','Water flashes off, the iron chloride dries, then reacts with steam and oxygen to iron oxide and HCl gas.'],['Tangential burners','Fire into a swirling zone of 650 to 700 °C. Each burner has its own shut-off valves, air and gas ratio control and flame guard.'],['Refractory lining','Steel shell, acid-proof membrane, insulating brick and acid-resistant brick on the hot face.'],['Gas outlet','HCl, water vapour and combustion gas leave the top at about 400 °C.'],['Cyclone','Catches fine oxide carried by the gas and sends it back through an aerated chute to be roasted again.'],['Rotary valve and lump breaker','Let the oxide out of the cone without letting air in, and break up any lumps.'],['Pneumatic conveying and silo','A Roots blower carries the oxide to the silo, then into 1 t big bags or a bulk tanker.']]
+  :m==='gas'?[['Venturi pre-concentrator','Roaster gas at about 390 °C meets circulating liquor in the throat. Water evaporates, the gas cools to about 95 °C and the liquor gets stronger.'],['Venturi separator','Drops the liquor out of the gas. Pumps send it round the venturi and on to the roaster lances.'],['Emergency quench tank','Set high, it floods the venturi by gravity if the gas runs hot or the circulation stops, to protect the FRP.'],['Absorption column','HCl in the gas dissolves in weak acid running down two packed beds. 18 % hydrochloric acid leaves the bottom at about 90 °C.'],['Graphite cooler','Cools the regenerated acid to about 45 °C.'],['Regenerated acid tank','Stores the acid and sends it back to the pickling line on demand.'],['Water scrubber','Rinse water from the pickling line takes up the HCl left in the gas, and this weak acid then feeds the absorber.'],['Alkaline scrubber','Caustic soda polishes the gas and thiosulphate destroys any chlorine: HCl at most 10 and chlorine at most 5 mg/Nm³ at the stack.'],['ID fan','Pulls the gas through the whole plant and keeps the roaster under a slight suction.'],['FRP stack','With continuous emission monitoring at its platform.']]
+  :[['Spent liquor tank','FeCl₂ liquor from the pickling line, pumped out through a self-cleaning filter.'],['Venturi','The roaster’s hot gas evaporates water from the liquor and is cooled by it.'],['Spray roaster','Lances spray the concentrate into the fired roaster: iron chloride turns into iron oxide and HCl gas.'],['Tangential burners','Fire into a swirling hot zone of 650 to 700 °C.'],['Cyclone','Returns fine oxide carried by the gas to the roaster.'],['Iron oxide','Leaves through a rotary valve, is blown to the silo and filled into big bags.'],['Absorber','HCl gas dissolves in weak acid: 18 % hydrochloric acid.'],['Scrubbers','A water scrubber, then an alkaline polishing scrubber.'],['ID fan and stack','Keep the roaster under suction and send clean gas up an FRP stack.'],['Regenerated acid','Cooled in a graphite cooler, stored and sent back to pickling.']],
+ specs:[['Process','Spray roasting'],['Product','HCl ≈ 18 %'],['By-product','Fe₂O₃ powder, ≥ 98.5 %'],['Chloride back','≈ 99.8 %']],
+ draw(g,t,m){return m==='roaster'?ARP.roaster(g,t):m==='gas'?ARP.gas(g,t):ARP.plant(g,t)}};
+
 /* splice corrected / new exhibits into the existing lists */
 (function(){const fi=EX_HDG.findIndex(e=>e.id==='furnace');if(fi>=0)EX_HDG[fi]=EX_FURN;const bi=EX_HDG.findIndex(e=>e.id==='burner');if(bi>=0)EX_HDG[bi]=EX_BURN;EX_HDG.splice((bi>=0?bi:1)+1,0,EX_EF);
- const ci=EX_REIN.findIndex(e=>e.id==='cpl');EX_REIN.splice(ci>=0?ci+1:3,0,EX_TUNNEL);
+ const ci=EX_REIN.findIndex(e=>e.id==='cpl');EX_REIN.splice(ci>=0?ci+1:3,0,EX_TUNNEL);EX_REIN.push(EX_ARP);
  const g=EX_HDG.find(e=>e.id==='gastrain');if(g)g.lead='One burner fires gas or oil. Each fuel has its own train of isolation, filtration, pressure control and safety shut-off valves, and every changeover starts with an air purge. On our two-furnace plants one common gas train feeds all four burners, each with its own solenoids, ratio controller and BCU.';
 })();
 
@@ -4814,14 +5023,14 @@ const EX_RPLANT=[
 (function(){const ord=(L,ids)=>L.sort((a,b)=>{const i=ids.indexOf(a.id),j=ids.indexOf(b.id);return (i<0?99:i)-(j<0?99:j)});
  ord(EX_HDG,['furnace','burner','corner','dryer','zfe','efurnace','fluxregen','gastrain','fluxheat']);
  ord(EX_WIRE,['slm','oto','dbc','diebox','spooler','mig','eg','coildryer','butt']);
- ord(EX_REIN,['ppl','tunnel','cpl','fumeless','scrubber','etp','zld','tank']);{const k=EX_REIN.findIndex(e=>e.id==='pultrusion');if(k>=0)EX_REIN.splice(k,1)}})();
+ ord(EX_REIN,['ppl','tunnel','cpl','fumeless','scrubber','arpplant','etp','zld','tank']);{const k=EX_REIN.findIndex(e=>e.id==='pultrusion');if(k>=0)EX_REIN.splice(k,1)}})();
 /* ================= REINPLAST HALL ================= */
 /* V83 (owner, 25 Nov 2026: "no one would want to swipe to 10 different slides"): each list in groups of like machines,
    one explorer per group, each in its own section; the order inside a group stays the order above */
 const grp=(L,ids)=>{const out=L.filter(e=>ids.includes(e.id));return out};
 const GROUPS=[['xpWire',EX_WIRE,[['slm','oto','diebox'],['dbc','spooler','coildryer','butt'],['mig','eg']],C.amber],
  ['xpHdg',EX_HDG,[['furnace','burner','efurnace','gastrain'],['corner','zfe'],['dryer','fluxheat','fluxregen']],C.amber],
- ['xpRein',EX_REIN,[['ppl','tunnel','cpl','fumeless'],['scrubber','tank'],['etp','zld']],C.teal]];
+ ['xpRein',EX_REIN,[['ppl','tunnel','cpl','fumeless'],['scrubber','tank'],['arpplant','etp','zld']],C.teal]];
 GROUPS.forEach(([box,L,gs,col])=>{const left=L.filter(e=>!gs.flat().includes(e.id));if(left.length)gs[gs.length-1]=gs[gs.length-1].concat(left.map(e=>e.id));
  gs.forEach((ids,k)=>{const el=$('#'+box+(k?k+1:''));if(el)Explorer(el,grp(L,ids),col)})});
 /* ================= v5 · plants explorers + 3D hall + phone interaction ================= */
