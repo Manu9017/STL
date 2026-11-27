@@ -1,8 +1,8 @@
-SHIVAS website: notes for the developer (25 Nov 2026)
+SHIVAS website: notes for the developer (27 Nov 2026)
 
 THE FILE
-SHIVAS-website-final-2026-11-25-v15.zip is the complete new website for www.shivastechnology.com.
-- It replaces every earlier zip (v5 to v14). If one of those is already online, upload this whole zip over it,
+SHIVAS-website-final-2026-11-27-v16.zip is the complete new website for www.shivastechnology.com.
+- It replaces every earlier zip (v5 to v15). If one of those is already online, upload this whole zip over it,
   then delete the file calculators/wire-weight.html from the server: that calculator was removed and its
   page is no longer linked from anywhere.
 - Static files only: HTML, CSS, JavaScript and images. No PHP, no database, no build step.
@@ -66,6 +66,8 @@ CHECKS AFTER UPLOAD
   switches to dark for that visit; the next visit opens light again.
 - https://www.shivastechnology.com/3d-models.html shows the models in four groups (complete plants,
   furnaces, acid regeneration and effluent, zinc recovery and dross removal).
+- On the Reinplast page, the section "Acid regeneration, effluent and ZLD" opens with the acid regeneration
+  animation, which has three buttons under it: Whole plant, Inside the roaster, Gas and acid.
 - If the browser still shows the old look after the upload, reload the page once (Ctrl+F5); the server
   may keep the previous files for a short while.
 - Pages are compressed:
